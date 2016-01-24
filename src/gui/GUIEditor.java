@@ -52,12 +52,12 @@ import gui.elements.ValueField;
 
 
 public class GUIEditor extends AbstractFrame {
-	
+
 	private static final long serialVersionUID = -3426470254615698936L;
-	
+
 	private static final int[] columnWidths = {100, 15, 100, 15, 100, 15, 100};
 	private static final double[] columnWeights = {1.0, 0.25, 1.0, 0.25, 1.0, 0.25, 1.0};
-	
+
 	private final LayoutManager gbl_contentPane = new GridBagLayoutExtended(new int[]{200, 200, 100, 200, 200, 100}, new int[]{30, 400, 30, 30}, new double[]{0, 0, 0.5, 0, 0, 0.5}, new double[]{0.0, 1.0, 0});
 	private static final GridBagConstraints gbc_entryGroupListLabel = new GridBagConstraintsExtended(5, 5, 0, 0, 0, 0);
 	private static final GridBagConstraints gbc_entryGroupListPane = new GridBagConstraintsExtended(5, 5, 0, 0, 0, 1);
@@ -71,16 +71,15 @@ public class GUIEditor extends AbstractFrame {
 	private static final GridBagConstraints gbc_saveButton = new GridBagConstraintsExtended(5, 5, 5, 0, 1, 3);
 	private static final GridBagConstraints gbc_removeID = new GridBagConstraintsExtended(5, 5, 5, 0, 3, 3);
 	private static final GridBagConstraints gbc_addID = new GridBagConstraintsExtended(5, 5, 5, 5, 4, 3);
-	
+
 	private File file;
 	private DatStructure datStructure;
 	private List<EntryGroup> entryGroups;
 	private EntryGroup currentEntryGroup;
 	private Entry currentEntry = null;
-	private boolean saved = false;
 	private Component rightClicked = null;
-	
 
+	
 	private JPanel contentPane = new JPanel();
 	private JLabel entryGroupListLabel = new JLabel("Group");
 	private JLabel entryListLabel = new JLabel("Entries");
@@ -99,28 +98,28 @@ public class GUIEditor extends AbstractFrame {
 	private SearchEntry entrySearch;
 	private JButton addID = new JButton("Add ID");
 	private JButton removeID = new JButton("Remove ID");
-
+	
 	private List<EntryPanel> entryPanels;
 	private int numSavedFields;
 	private int row = 0;
 	private int col = 0;
-	
+
 	private final JPopupMenu fieldMenu = new JPopupMenu();
 	private final JMenuItem fieldMenuSearchValues = new JMenuItem("Show all values used for this field");
 	private final JMenuItem fieldMenuSearchFields = new JMenuItem("Show all fields with the same value");
 	private final JMenuItem fieldMenuSearchUnusedFields = new JMenuItem("Mark all unused/dual value fields");
-
+	
 	private final JPopupMenu entryListMenu = new JPopupMenu();
 	private final JMenuItem entryListMenuAdd = new JMenuItem("Add entry");
 	private final JMenuItem entryListMenuRemove = new JMenuItem("Remove entry");
 	private final JMenuItem entryListMenuMoveTo = new JMenuItem("Move to group...");
-
+	
 	{
 		setBounds(AbstractGUI.getBounds(this, 0.85, 0.85));
 		setIconImage(GUIMain.IMAGE_ICON.getImage());
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setContentPane(contentPane);
-
+		
 		contentPane.setLayout(gbl_contentPane);
 		contentPane.add(entryGroupListLabel, gbc_entryGroupListLabel);
 		contentPane.add(entryListLabel, gbc_entryListLabel);
@@ -134,12 +133,12 @@ public class GUIEditor extends AbstractFrame {
 		contentPane.add(save, gbc_saveButton);
 		contentPane.add(addID, gbc_addID);
 		contentPane.add(removeID, gbc_removeID);
-
+		
 		entryGroupListLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		entryGroupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		entryGroupList.addListSelectionListener(this::dataSetListSelectionListener);
 		entryGroupSearchField.addKeyListener(new SearchEntryGroupListener());
-
+		
 		entryListLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		entryList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		entryList.addListSelectionListener(this::dataListSelectionListener);
@@ -151,7 +150,7 @@ public class GUIEditor extends AbstractFrame {
 		entryListMenuRemove.addActionListener(e -> entryListMenuRemove());
 		entryListMenuMoveTo.addActionListener(e -> entryListMoveTo());
 		entrySearchField.addKeyListener(new SearchDataListener());
-
+		
 		fieldsLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		fieldsPane.getVerticalScrollBar().setUnitIncrement(10);
 		fieldsPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -161,19 +160,19 @@ public class GUIEditor extends AbstractFrame {
 		fieldMenuSearchValues.addActionListener(e -> fieldMenuSearchValues());
 		fieldMenuSearchFields.addActionListener(e -> fieldMenuSearchField());
 		fieldMenuSearchUnusedFields.addActionListener(e -> findUnusedFields());
-
+		
 		save.addActionListener(e -> saveEntry());
 		reset.addActionListener(e -> loadEntry(currentEntry));
 		addID.addActionListener(e -> addField());
 		removeID.addActionListener(e -> removeField());
 	}
-	
+
 	public class DialogKeyListener extends KeyAdapter {
 		private final JDialog dialog;
 		public DialogKeyListener(JDialog dialog){
 			this.dialog = dialog;
 		}
-		
+
 		@Override
 		public void keyPressed (KeyEvent e) {
 			System.out.println("Key pressed: " + e.getKeyChar() + " " + e.getKeyCode());
@@ -182,49 +181,49 @@ public class GUIEditor extends AbstractFrame {
 			}
 		}
 	}
-	
-
-
-
 
 	
+	
+	
+	
 
 	
 
-
 	
+	
+
 	public GUIEditor (File file, DatStructure datStructure, List<EntryGroup> entryGroups) {
 		super("Editor - " + datStructure.fileName);
 		this.file = file;
 		this.datStructure = datStructure;
 		this.entryGroups = entryGroups;
-		
+
 		int nEntries = datStructure.entries.length;
 		entryGroupSearch = new SearchEntryGroup(entryGroups);
 		entryPanels = new ArrayList<>(datStructure.indexCountExtra < 0 ? nEntries : nEntries+20);
-		
+
 		int nRows = (nEntries+3)/4;
 		int[] rowsHeights = new int[nRows];
 		double[] rowsWeights = new double[nRows];
 		Arrays.fill(rowsHeights, 0);
 		Arrays.fill(rowsWeights, 1);
 		panelFields.setLayout(new GridBagLayoutExtended(columnWidths, rowsHeights, columnWeights, rowsWeights));
-		
+
 		entryGroupList.setVector(entryGroups);
 		if (entryGroups.size() > 0){
 			entryListMenuMoveTo.setVisible(entryGroups.size() > 1);
 			entryGroupList.setSelectedIndex(0, true);
 		}
-		
+
 		setTitle("EE - DB Editor: " + datStructure.fileName);
 		setVisible(true);
 	}
-
-
-
+	
+	
 	
 
-
+	
+	
 	public void addEntryPanel(EntryPanel entryPanel){
 		panelFields.add(entryPanel, new GridBagConstraintsExtended(GridBagConstraints.HORIZONTAL, 5, 5, 5, (col==3?5:0), col, row));
 		if (col < 3){
@@ -234,7 +233,7 @@ public class GUIEditor extends AbstractFrame {
 			col = 0;
 		}
 	}
-	
+
 	private void buildFields(Entry entries){
 		int numBaseFields = datStructure.entries.length;
 		int numPlacedFields = entryPanels.size();
@@ -242,7 +241,7 @@ public class GUIEditor extends AbstractFrame {
 		EntryStruct entry;
 		row = 0;
 		col = 0;
-
+		
 		panelFields.removeAll();
 		for (int i = 0; i < numBaseFields; i++){
 			if (i >= numPlacedFields){
@@ -265,7 +264,7 @@ public class GUIEditor extends AbstractFrame {
 		for (int i = numPlacedFields; i > numSavedFields; i--){
 			entryPanels.remove(i-1);
 		}
-
+		
 		if (datStructure.extraEntry != null){
 			addID.setVisible(true);
 			if (numSavedFields > numBaseFields){
@@ -276,7 +275,7 @@ public class GUIEditor extends AbstractFrame {
 			removeID.setVisible(false);
 		}
 	}
-
+	
 	public void addField(){
 		EntryPanel entryPanel = new EntryPanel(datStructure.extraEntry, entryPanels.size());
 		entryPanels.add(entryPanel);
@@ -287,7 +286,7 @@ public class GUIEditor extends AbstractFrame {
 		entryPanel.setVal(value+1);
 		panelFields.updateUI();
 	}
-	
+
 	public void removeField(){
 		int index = entryPanels.size()-1;
 		if (index >= datStructure.entries.length){
@@ -309,38 +308,21 @@ public class GUIEditor extends AbstractFrame {
 			panelFields.updateUI();
 		}
 	}
+
+
 	
 	
-
-
-
-
+	
+	
 	@Override
 	public void onCloseEvent (WindowEvent e) {
-		if (saved) {
-			switch (JOptionPane.showConfirmDialog(this, "Do you want to save?", "Save before closing", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE)){
-				case 0:
-					DBManager manager = new DBManager(datStructure, file);
-					try {
-						manager.save(entryGroups);
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-				case 1:
-					dispose();
-					break;
-				default:
-			}
-		} else {
-			dispose();
-		}
-		
+		dispose();
 	}
-
-
-
-
-
+	
+	
+	
+	
+	
 	public void loadEntry(Entry entry){
 		System.out.println("Load entry: " + entry);
 		int n = entry.values.size();
@@ -348,7 +330,7 @@ public class GUIEditor extends AbstractFrame {
 			entryPanels.get(i).setVal(entry.values.get(i));
 		}
 	}
-
+	
 	public void saveEntry(){
 		int numBaseFields = datStructure.entries.length;
 		List<Object> values = currentEntry.values;
@@ -357,7 +339,7 @@ public class GUIEditor extends AbstractFrame {
 				values.set(i, entryPanels.get(i).getVal());
 			}
 		}
-		
+
 		if (datStructure.extraEntry != null){
 			numSavedFields = values.size();
 			int numPlacedFields = entryPanels.size();
@@ -374,7 +356,6 @@ public class GUIEditor extends AbstractFrame {
 			}
 			values.set(datStructure.indexCountExtra, entryPanels.get(datStructure.indexCountExtra).getVal());
 		}
-		saved = true;
 		System.out.println("Save entry: " + currentEntry);
 		DBManager manager = new DBManager(datStructure, file);
 		try {
@@ -383,13 +364,13 @@ public class GUIEditor extends AbstractFrame {
 			e1.printStackTrace();
 		}
 	}
-
-
-
+	
+	
 	
 
-
 	
+	
+
 	public class SearchEntryGroupListener implements KeyListener {
 		@Override
 		public void keyPressed (KeyEvent e) {
@@ -406,14 +387,14 @@ public class GUIEditor extends AbstractFrame {
 				}
 			}
 		}
-
+		
 		@Override
 		public void keyReleased (KeyEvent e) {}
-
+		
 		@Override
 		public void keyTyped (KeyEvent e) {}
 	}
-	
+
 	public class SearchDataListener extends KeyAdapter {
 		@Override public void keyPressed (KeyEvent e) {
 			Object find = null;
@@ -430,8 +411,8 @@ public class GUIEditor extends AbstractFrame {
 			}
 		}
 	}
-	
-	
+
+
 	public void dataSetListSelectionListener (ListSelectionEvent e){
 		if (e == null || !e.getValueIsAdjusting()){
 			EntryGroup selected = entryGroupList.getSelectedElement();
@@ -445,7 +426,7 @@ public class GUIEditor extends AbstractFrame {
 			}
 		}
 	}
-	
+
 	public void dataListSelectionListener (ListSelectionEvent e){
 		if (e == null || !e.getValueIsAdjusting()){
 			Entry selected = entryList.getSelectedElement();
@@ -456,9 +437,9 @@ public class GUIEditor extends AbstractFrame {
 			}
 		}
 	}
+
 	
-
-
+	
 	public class JShowPopupMenu extends MouseAdapter {
 		public Component component;
 		public JPopupMenu popupMenu;
@@ -466,7 +447,7 @@ public class GUIEditor extends AbstractFrame {
 			this.component = component;
 			this.popupMenu = popupMenu;
 		}
-
+		
 		@Override
 		public void mousePressed(MouseEvent e) {
 			rightClicked = (Component) e.getSource();
@@ -483,7 +464,7 @@ public class GUIEditor extends AbstractFrame {
 		public void mouseReleased(MouseEvent e) {
 			showMenu(e);
 		}
-		
+
 		public void showMenu(MouseEvent e){
 			if (component instanceof JListEx){
 				if (!datStructure.supportNumAlteration){
@@ -495,11 +476,11 @@ public class GUIEditor extends AbstractFrame {
 			}
 		}
 	}
-
-
+	
 	
 
-
+	
+	
 	private void entryListMenuAdd (){
 		EntryGroup lastEntryGroup = entryGroups.get(entryGroups.size()-1);
 		Entry lastEntry = lastEntryGroup.entries.get(lastEntryGroup.entries.size() - 1);
@@ -508,7 +489,7 @@ public class GUIEditor extends AbstractFrame {
 		entryList.add(newEntry);
 		entrySearch = new SearchEntry(currentEntryGroup.entries);
 	}
-
+	
 	private void entryListMenuRemove () {
 		if (currentEntry != null){
 			if (JOptionPane.showConfirmDialog(GUIEditor.this, "You're going to delete " + currentEntry + "\nAre you sure?", "Delete entry", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, GUIMain.IMAGE_ICON) == 0) {
@@ -518,7 +499,7 @@ public class GUIEditor extends AbstractFrame {
 			}
 		}
 	}
-	
+
 	public void entryListMoveTo (){
 		final EntryGroup sourceGroup = currentEntryGroup;
 		if (sourceGroup == null) {
@@ -565,9 +546,9 @@ public class GUIEditor extends AbstractFrame {
 		dlgConfirm.requestFocus();
 		dialog.setVisible(true);
 	}
-
-
 	
+	
+
 	public class EntryValueMap{
 		public final Map<Object, EntryValue> map;
 		public final Map<Object, EntryValue> mapClean;
@@ -588,7 +569,7 @@ public class GUIEditor extends AbstractFrame {
 				} else {
 					valueEntryMap.get(value).entries.add(entry);
 				}
-				
+
 				if (filterUnused && !entry.toString().equals("<Undefined>")){
 					if (!valueEntryMapClean.containsKey(value)){
 						valueEntryMapClean.put(value, new EntryValue(entry, value));
@@ -600,7 +581,7 @@ public class GUIEditor extends AbstractFrame {
 		}
 		return new EntryValueMap (new TreeMap<>(valueEntryMap), new TreeMap<>(valueEntryMapClean));
 	}
-
+	
 	public void findUnusedFields(){
 		EntryValueMap entryValueMap;
 		for (EntryPanel entryPanel : entryPanels){
@@ -608,9 +589,9 @@ public class GUIEditor extends AbstractFrame {
 				entryValueMap = getValuesMap(entryPanel.index, false);
 				if (entryValueMap.map.size() <= 2){
 					if (entryValueMap.map.size() == 1){
-						entryPanel.label.setForeground(Color.RED);
-					} else {
 						entryPanel.label.setForeground(EntryStruct.UNCHANGE_COLOR);
+					} else {
+						entryPanel.label.setForeground(EntryStruct.UNUSED_COLOR);
 					}
 					entryPanel.label.setBackground(Color.BLACK);
 					entryPanel.label.setOpaque(true);
@@ -618,11 +599,11 @@ public class GUIEditor extends AbstractFrame {
 			}
 		}
 	}
-
+	
 	public void fieldMenuSearchValues (){
 		ValueField field = (ValueField) rightClicked;
 		EntryValueMap entryValueMap = getValuesMap(field.getIndex(), true);
-		
+
 		JDialog dialog = new JDialog(GUIEditor.this, ModalityType.APPLICATION_MODAL);
 		dialog.setTitle("For field: " + field.getEntryStruct());
 		dialog.setBounds(AbstractGUI.getBounds(dialog, 0.3, 0.6));
@@ -634,7 +615,7 @@ public class GUIEditor extends AbstractFrame {
 		JScrollPane dlgScrollPane = new JScrollPane(dlgList);
 		JCheckBox dlgHideUnused = new JCheckBox("Hide undefined entries");
 		JButton dlgClose = new JButton("Close");
-		
+
 		dlgList.addMouseListener(new DialogEntries(dlgList));
 		dlgScrollPane.setRowHeaderView(rowHeaderList);
 		dlgHideUnused.addChangeListener(e -> {
@@ -651,7 +632,7 @@ public class GUIEditor extends AbstractFrame {
 		dialog.add(dlgScrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
 		dialog.add(dlgHideUnused, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 2));
 		dialog.add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 3));
-		
+
 		DialogKeyListener dlgKeyListener = new DialogKeyListener(dialog);
 		dlgLabel.addKeyListener(dlgKeyListener);
 		dlgList.addKeyListener(dlgKeyListener);
@@ -661,10 +642,10 @@ public class GUIEditor extends AbstractFrame {
 		dlgClose.addKeyListener(dlgKeyListener);
 		dialog.getContentPane().addKeyListener(dlgKeyListener);
 		dialog.addKeyListener(dlgKeyListener);
-
+		
 		dialog.setVisible(true);
 	}
-	
+
 	public void fieldMenuSearchField(){
 		ValueField field = (ValueField) rightClicked;
 		int index = field.getIndex();
@@ -683,7 +664,7 @@ public class GUIEditor extends AbstractFrame {
 				}
 			}
 		}
-		
+
 		JDialog dialog = new JDialog(GUIEditor.this, ModalityType.APPLICATION_MODAL);
 		dialog.setTitle("For field: " + field.getEntryStruct());
 		dialog.setBounds(AbstractGUI.getBounds(dialog, 0.3, 0.6));
@@ -693,7 +674,7 @@ public class GUIEditor extends AbstractFrame {
 		JScrollPane dlgScrollPane = new JScrollPane(dlgList);
 		JCheckBox dlgHideUnused = new JCheckBox("Hide unused entries");
 		JButton dlgClose = new JButton("Close");
-		
+
 		dlgHideUnused.addChangeListener(e -> {
 			if (dlgHideUnused.isSelected()){
 				dlgList.setVector(entriesClean);
@@ -706,7 +687,7 @@ public class GUIEditor extends AbstractFrame {
 		dialog.add(dlgScrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
 		dialog.add(dlgHideUnused, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 2));
 		dialog.add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 3));
-		
+
 		DialogKeyListener dlgKeyListener = new DialogKeyListener(dialog);
 		dlgLabel.addKeyListener(dlgKeyListener);
 		dlgList.addKeyListener(dlgKeyListener);
@@ -715,20 +696,20 @@ public class GUIEditor extends AbstractFrame {
 		dlgClose.addKeyListener(dlgKeyListener);
 		dialog.getContentPane().addKeyListener(dlgKeyListener);
 		dialog.addKeyListener(dlgKeyListener);
-		
+
 		dialog.setVisible(true);
 	}
-	
-	
-	
-	
+
+
+
+
 	public class DialogEntries extends MouseAdapter {
 		private JListEx<EntryValue> parentDialogList;
-		
+
 		public DialogEntries(JListEx<EntryValue> parentDialogList){
 			this.parentDialogList = parentDialogList;
 		}
-		
+
 		@Override
 		public void mouseClicked(MouseEvent e){
 			if (e.getClickCount() == 2){
@@ -759,5 +740,5 @@ public class GUIEditor extends AbstractFrame {
 			}
 		}
 	}
-	
+
 }

@@ -30,14 +30,14 @@ public enum DatStructure {
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, new EntryStruct("AT Tank", Type.INTEGER, 4), new EntryStruct("Battleship", Type.INTEGER, 4),
-			new EntryStruct("AT Helicopter", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
+			new EntryStruct("AT Helicopter", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNKNOWN_INT4,
 			new EntryStruct("Crossbow", Type.INTEGER, 4), new EntryStruct("Carrier fighter", Type.INTEGER, 4), new EntryStruct("Gunship Helicopter", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, new EntryStruct("Tower", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, new EntryStruct("Sword", Type.INTEGER, 4), new EntryStruct("Cavalry sword", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, new EntryStruct("Bazooka", Type.INTEGER, 4), new EntryStruct("Spear", Type.INTEGER, 4), new EntryStruct("Cavalry archer", Type.INTEGER, 4),
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
-			EntryStruct.UNKNOWN_INT4, new EntryStruct("Anti-Missile Battery", Type.INTEGER, 4), new EntryStruct("Capitol ship", Type.INTEGER, 4), new EntryStruct("Space fighter", Type.INTEGER, 4),
-			new EntryStruct("Space corvette", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4, new EntryStruct("Space turret", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4
+			new EntryStruct("Fishing boat", Type.INTEGER, 4), new EntryStruct("Anti-Missile Battery", Type.INTEGER, 4), new EntryStruct("Capitol ship", Type.INTEGER, 4), new EntryStruct("Space fighter", Type.INTEGER, 4),
+			new EntryStruct("Space corvette", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4, new EntryStruct("Space turret", Type.INTEGER, 4), EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4
 			),
 
 	DB_WEAPON_TO_HIT ("dbweapontohit.dat", 0, false, 0, 1, 2, -1,
@@ -61,7 +61,7 @@ public enum DatStructure {
 
 	DB_AREA_EFFECT("dbareaeffect.dat", 0, true, 0, 1, 2, -1,
 			null, EntryStruct.NAME, EntryStruct.SEQ_NUMBER,
-			new EntryStruct("Area Effect ID", Type.INTEGER, 4, false, EntryStruct.ID_COLOR), EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
+			new EntryStruct("Area Effect ID", Type.INTEGER, 4, false, EntryStruct.ID_COLOR), new EntryStruct("Effect type", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNKNOWN_INT4,
 			new EntryStruct("Morale", Type.INTEGER, 4), new EntryStruct("Heal effect", Type.INTEGER, 4), EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4,
 			EntryStruct.UNUSED_INT4, new EntryStruct("Area size", Type.FLOAT, 4), EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT,
@@ -123,7 +123,7 @@ public enum DatStructure {
 			EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4,
 			EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4,
 			EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4,
-			EntryStruct.UNUSED_INT4, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, new EntryStruct("Gather rate multiplier", Type.FLOAT, 4),
+			EntryStruct.UNUSED_INT4, EntryStruct.UNCHANGED_FLOAT, EntryStruct.UNKNOWN_FLOAT, new EntryStruct("Gather rate multiplier", Type.FLOAT, 4),
 			EntryStruct.UNKNOWN_INT4, new EntryStruct("Language ID", Type.INTEGER, 4), EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT,
 			new EntryStruct("Wonder cost multiplier", Type.FLOAT, 4), EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNUSED_INT4,
 			EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4,
@@ -134,15 +134,15 @@ public enum DatStructure {
 	DB_MUSIC ("dbmusic.dat", 0, true, 2, 0, 1, -1,
 			null, EntryStruct.SEQ_NUMBER, new EntryStruct("Music ID", Type.INTEGER, 4), EntryStruct.NAME,
 			new EntryStruct("Another name", Type.STRING, 56), EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT,
-			EntryStruct.UNCHANGED_4, EntryStruct.UNCHANGED_1, EntryStruct.UNCHANGED_1, EntryStruct.UNCHANGED_1,
-			EntryStruct.UNCHANGED_1, EntryStruct.UNCHANGED_1, EntryStruct.UNCHANGED_1, EntryStruct.UNCHANGED_1,
-			EntryStruct.UNCHANGED_1, EntryStruct.UNCHANGED_1, EntryStruct.UNCHANGED_1, EntryStruct.UNCHANGED_1,
-			EntryStruct.UNCHANGED_1, EntryStruct.UNCHANGED_1, EntryStruct.UNCHANGED_1, EntryStruct.UNCHANGED_1, EntryStruct.UNCHANGED_1
+			EntryStruct.UNCHANGED_INT4, EntryStruct.UNCHANGED_INT1, EntryStruct.UNCHANGED_INT1, EntryStruct.UNCHANGED_INT1,
+			EntryStruct.UNCHANGED_INT1, EntryStruct.UNCHANGED_INT1, EntryStruct.UNCHANGED_INT1, EntryStruct.UNCHANGED_INT1,
+			EntryStruct.UNCHANGED_INT1, EntryStruct.UNCHANGED_INT1, EntryStruct.UNCHANGED_INT1, EntryStruct.UNCHANGED_INT1,
+			EntryStruct.UNCHANGED_INT1, EntryStruct.UNCHANGED_INT1, EntryStruct.UNCHANGED_INT1, EntryStruct.UNCHANGED_INT1, EntryStruct.UNCHANGED_INT1
 			),
 	
 	DB_UIHOTKEY ("dbuihotkey.dat", 0, true, 2, 0, 1, -1,
 			null, EntryStruct.SEQ_NUMBER, new EntryStruct("Hotkey ID", Type.INTEGER, 4, false, EntryStruct.ID_COLOR),
-			EntryStruct.NAME, EntryStruct.UNCHANGED_4, EntryStruct.UNCHANGED_4, EntryStruct.UNCHANGED_4, EntryStruct.UNKNOWN_INT4
+			EntryStruct.NAME, EntryStruct.UNCHANGED_INT4, EntryStruct.UNCHANGED_INT4, EntryStruct.UNCHANGED_INT4, EntryStruct.UNKNOWN_INT4
 			),
 	
 	;

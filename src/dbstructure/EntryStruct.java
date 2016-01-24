@@ -5,6 +5,7 @@ import java.awt.Color;
 public class EntryStruct{
 	
 	public static final Color ID_COLOR = Color.BLUE;
+	public static final Color UNUSED_COLOR = new Color(220, 175, 0);
 	public static final Color UNCHANGE_COLOR = new Color(64, 192, 64);
 	
 	public static final char NOCHAR = 65484;
@@ -23,11 +24,12 @@ public class EntryStruct{
 	public static final EntryStruct NAME = new EntryStruct("Name", Type.STRING, 100);
 	public static final EntryStruct SEQ_NUMBER = new EntryStruct("Sequence number", Type.INTEGER, 4, false, EntryStruct.ID_COLOR);
 	
-	public static final EntryStruct UNCHANGED_1 = new EntryStruct("Never changes", Type.UKNONWN, 1, true, UNCHANGE_COLOR);
-	public static final EntryStruct UNCHANGED_4 = new EntryStruct("Never changes", Type.UKNONWN, 4, true, UNCHANGE_COLOR);
-	public static final EntryStruct UNUSED_INT1 = new EntryStruct("Never used", Type.UKNONWN, 1, true, Color.ORANGE);
-	public static final EntryStruct UNUSED_INT4 = new EntryStruct("Never used", Type.UKNONWN, 4, true, Color.ORANGE);
-	public static final EntryStruct UNUSED_FLOAT = new EntryStruct("Never used", Type.UKNONWN, 4, true, Color.ORANGE);
+	public static final EntryStruct UNCHANGED_INT1 = new EntryStruct("Never changes", Type.UKNONWN, 1, true, UNCHANGE_COLOR);
+	public static final EntryStruct UNCHANGED_INT4 = new EntryStruct("Never changes", Type.UKNONWN, 4, true, UNCHANGE_COLOR);
+	public static final EntryStruct UNCHANGED_FLOAT = new EntryStruct("Never changes", Type.FLOAT, 4, true, UNCHANGE_COLOR);
+	public static final EntryStruct UNUSED_INT1 = new EntryStruct("Never used", Type.UKNONWN, 1, true, UNUSED_COLOR);
+	public static final EntryStruct UNUSED_INT4 = new EntryStruct("Never used", Type.UKNONWN, 4, true, UNUSED_COLOR);
+	public static final EntryStruct UNUSED_FLOAT = new EntryStruct("Never used", Type.FLOAT, 4, true, UNUSED_COLOR);
 	public static final EntryStruct UNKNOWN_INT1 = new EntryStruct(null, Type.UKNONWN, 1, true, Color.RED);
 	public static final EntryStruct UNKNOWN_INT4 = new EntryStruct(null, Type.UKNONWN, 4, true, Color.RED);
 	public static final EntryStruct UNKNOWN_FLOAT = new EntryStruct(null, Type.FLOAT, 4, true, Color.RED);
