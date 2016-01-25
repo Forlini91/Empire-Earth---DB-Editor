@@ -24,13 +24,13 @@ public class EntryStruct{
 	public static final EntryStruct NAME = new EntryStruct("Name", Type.STRING, 100);
 	public static final EntryStruct SEQ_NUMBER = new EntryStruct("Sequence number", Type.INTEGER, 4, false, EntryStruct.ID_COLOR);
 	
-	public static final EntryStruct UNCHANGED_INT1 = new EntryStruct("Never changes", Type.UKNONWN, 1, true, UNCHANGE_COLOR);
+	public static final EntryStruct UNCHANGED_INT1 = new EntryStruct("Never changes", Type.FLAG, 1, true, UNCHANGE_COLOR);
 	public static final EntryStruct UNCHANGED_INT4 = new EntryStruct("Never changes", Type.UKNONWN, 4, true, UNCHANGE_COLOR);
 	public static final EntryStruct UNCHANGED_FLOAT = new EntryStruct("Never changes", Type.FLOAT, 4, true, UNCHANGE_COLOR);
-	public static final EntryStruct UNUSED_INT1 = new EntryStruct("Never used", Type.UKNONWN, 1, true, UNUSED_COLOR);
+	public static final EntryStruct UNUSED_INT1 = new EntryStruct("Never used", Type.FLAG, 1, true, UNUSED_COLOR);
 	public static final EntryStruct UNUSED_INT4 = new EntryStruct("Never used", Type.UKNONWN, 4, true, UNUSED_COLOR);
 	public static final EntryStruct UNUSED_FLOAT = new EntryStruct("Never used", Type.FLOAT, 4, true, UNUSED_COLOR);
-	public static final EntryStruct UNKNOWN_INT1 = new EntryStruct(null, Type.UKNONWN, 1, true, Color.RED);
+	public static final EntryStruct UNKNOWN_INT1 = new EntryStruct(null, Type.FLAG, 1, true, Color.RED);
 	public static final EntryStruct UNKNOWN_INT4 = new EntryStruct(null, Type.UKNONWN, 4, true, Color.RED);
 	public static final EntryStruct UNKNOWN_FLOAT = new EntryStruct(null, Type.FLOAT, 4, true, Color.RED);
 	
@@ -42,6 +42,14 @@ public class EntryStruct{
 	public final boolean editable;
 	public final Object defaultValue;
 	public final Color color;
+	
+	public EntryStruct (String name){
+		this(name, Type.FLAG, 1);
+	}
+	
+	public EntryStruct (String name, Color color){
+		this(name, Type.FLAG, 1, true, color);
+	}
 	
 	public EntryStruct (String name, Type type, int size) {
 		this.name = name;
