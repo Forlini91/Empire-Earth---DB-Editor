@@ -16,6 +16,8 @@ import javax.swing.JOptionPane;
 
 import dbmanager.DBManager;
 import dbstructure.EntryGroup;
+import gui.elements.AbstractFrame;
+import gui.elements.AbstractGUI;
 
 
 public class GUIMain extends AbstractFrame {

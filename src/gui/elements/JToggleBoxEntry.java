@@ -7,12 +7,12 @@ import javax.swing.JToggleButton;
 import dbstructure.EntryStruct;
 
 @SuppressWarnings ("serial")
-public class JToggleButtonEx extends JToggleButton implements ValueField {
+public class JToggleBoxEntry extends JToggleButton implements AbstractEntryField {
 
 	private EntryStruct entryStruct;
 	private int index;
 
-	public JToggleButtonEx(EntryStruct entryStruct, int index){
+	public JToggleBoxEntry(EntryStruct entryStruct, int index){
 		this.entryStruct = entryStruct;
 		this.index = index;
 		if (entryStruct.name != null){
@@ -22,7 +22,11 @@ public class JToggleButtonEx extends JToggleButton implements ValueField {
 			setText(index + " Unknown");
 			setForeground(Color.RED);
 		}
+	}
 
+	@Override
+	public void resetColor () {
+		setForeground(null);
 	}
 
 	@Override
@@ -53,7 +57,7 @@ public class JToggleButtonEx extends JToggleButton implements ValueField {
 		} else if (val == 1){
 			setSelected(true);
 		} else {
-			throw new IllegalStateException("Questo valore non è boolean: " + value);
+			throw new IllegalStateException("Entry " + index + ' ' + entryStruct + " is defined as boolean and can't accept value: " + value);
 		}
 	}
 

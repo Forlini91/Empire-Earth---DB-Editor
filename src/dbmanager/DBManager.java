@@ -28,6 +28,18 @@ public class DBManager {
 
 	public DatStructure datStructure;
 	public File file;
+	
+	static {
+		System.out.println("Check entries definitions:");
+		int count;
+		for (DatStructure datStructure : DatStructure.values()){
+			count = 0;
+			for (EntryStruct entryStruct : datStructure.entries){
+				count += entryStruct.size;
+			}
+			System.out.println('\t' + datStructure.fileName + ':' + ' ' + count);
+		}
+	}
 
 
 
@@ -76,7 +88,7 @@ public class DBManager {
 		List<EntryGroup> entryGroups = new ArrayList<>();
 		try (Reader reader = new Reader(file)) {
 			try {
-				while(reader.getRemaining() > 0) {
+				while (reader.getRemaining() > 0) {
 					entryGroups.add(new EntryGroup(datStructure, readMode(reader)));
 				}
 			} catch (OutOfMemoryError e){
@@ -101,13 +113,16 @@ public class DBManager {
 				for (int j = 0; j < numFields; j++){
 					entryStruct = datStructure.entries[j];
 					switch(entryStruct.type){
-						case STRING: read = reader.readChars(entryStruct.size); break;
-						case FLOAT: read = reader.readFloat(entryStruct.size); break;
-						default: read = reader.readInt(entryStruct.size); break;
+						case STRING:
+							read = reader.readChars(entryStruct.size); break;
+						case FLOAT:
+							read = reader.readFloat(entryStruct.size); break;
+						default:
+							read = reader.readInt(entryStruct.size); break;
 					}
 					values.add(read);
-					//					sb = new StringBuilder().append('\t').append('\t').append('(').append(field.type).append(' ').append(field.size).append(')');
-					//					sb.append(' ').append(field.name != null ? field.name : "Unknown").append(':').append(' ').append(read);
+					//					sb = new StringBuilder().append('\t').append('\t').append('(').append(entryStruct.type).append(' ').append(entryStruct.size).append(')');
+					//					sb.append(' ').append(entryStruct.name).append(':').append(' ').append(read);
 					//					System.out.println(sb);
 				}
 				if (datStructure.indexCountExtra >= 0 && datStructure.extraEntry != null){
@@ -159,9 +174,12 @@ public class DBManager {
 						}
 						try{
 							switch (entryStruct.type){
-								case STRING: saver.saveChars((String) entry.values.get(j), entryStruct.size); break;
-								case FLOAT: saver.saveFloat((float) entry.values.get(j), entryStruct.size); break;
-								default: saver.saveInt((int) entry.values.get(j), entryStruct.size); break;
+								case STRING:
+									saver.saveChars((String) entry.values.get(j), entryStruct.size); break;
+								case FLOAT:
+									saver.saveFloat((float) entry.values.get(j), entryStruct.size); break;
+								default:
+									saver.saveInt((int) entry.values.get(j), entryStruct.size); break;
 							}
 						} catch (ClassCastException e){
 							System.out.println(e.getMessage());

@@ -8,13 +8,13 @@ import dbstructure.EntryStruct;
 
 
 @SuppressWarnings ("serial")
-public class JComboBoxEx<E extends Element> extends JComboBox <E> implements ValueField {
-	
+public class JComboBoxEntry<E extends Element> extends JComboBox <E> implements AbstractEntryField {
+
 	private EntryStruct entryStruct;
 	private int index;
 	private E defaultSelection = null;
 	private Class<E> enumClass;
-
+	
 	public void setData(EntryStruct entryStruct, int index, Class<E> enumClass, E defaultSelection, boolean editable){
 		this.entryStruct = entryStruct;
 		this.index = index;
@@ -23,27 +23,32 @@ public class JComboBoxEx<E extends Element> extends JComboBox <E> implements Val
 		this.defaultSelection = defaultSelection;
 		setEditable(editable);
 	}
-	
+
+	@Override
+	public void resetColor () {
+		setForeground(null);
+	}
+
 	@Override
 	public EntryStruct getEntryStruct () {
 		return entryStruct;
 	}
-	
+
 	@Override
 	public int getIndex(){
 		return index;
 	}
-	
+
 	@Override
 	public boolean isFieldCompiled(){
 		return (getSelectedItem() != defaultSelection);
 	}
-	
+
 	@Override
 	public Object getVal(){
 		return getSelectedItem();
 	}
-	
+
 	@Override
 	public void setVal(Object value){
 		for (E obj : enumClass.getEnumConstants()){
@@ -54,5 +59,5 @@ public class JComboBoxEx<E extends Element> extends JComboBox <E> implements Val
 		}
 		throw new IllegalArgumentException("You can't use this value");
 	}
-
+	
 }

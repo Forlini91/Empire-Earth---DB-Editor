@@ -1,5 +1,8 @@
 package dbstructure;
 
 public enum Type {
-	UKNONWN, FLAG, INTEGER, FLOAT, STRING
+	BOOLEAN,
+	INTEGER,
+	FLOAT,
+	STRING
 }

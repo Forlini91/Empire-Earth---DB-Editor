@@ -19,15 +19,15 @@ public enum UnitCommands implements Element {
 	;
 	
 	
-	public final byte[] value;
+	//	public final int value;
 	
-	UnitCommands(byte...value){
-		this.value = value;
-	}
+	//	UnitCommands(int value){
+	//		this.value = value;
+	//	}
 	
 	@Override
-	public byte[] getValue(){
-		return value;
+	public Integer getValue(){
+		return 0;	//value;
 	}
 	
 	

@@ -12,8 +12,9 @@ import dbstructure.Type;
 
 
 @SuppressWarnings ("serial")
-public class JTextFieldEx extends JTextField implements ValueField {
+public class JTextFieldEntry extends JTextField implements AbstractEntryField {
 	
+	private static final Color brown = new Color(127, 51, 0);
 	private static final Color unfocused = new Color(160, 160, 160);
 	private static final String DON_T_LEAVE_ME_EMPTY = "Don't leave me empty!";
 
@@ -21,10 +22,18 @@ public class JTextFieldEx extends JTextField implements ValueField {
 	private final int index;
 	private final String hint;
 	private boolean showingHint = false;
+	private final Color defaultColor;
 
-	public JTextFieldEx(EntryStruct entryStruct, int index, String hint){
+	public JTextFieldEntry(EntryStruct entryStruct, int index, String hint){
 		this.entryStruct = entryStruct;
 		this.index = index;
+		if (entryStruct.color == Color.RED){
+			defaultColor = brown;
+		} else {
+			defaultColor = entryStruct.color;
+		}
+		setForeground(defaultColor);
+
 		if (hint == null){
 			this.hint = DON_T_LEAVE_ME_EMPTY;
 		} else {
@@ -45,6 +54,11 @@ public class JTextFieldEx extends JTextField implements ValueField {
 	}
 	
 	@Override
+	public void resetColor () {
+		setForeground(defaultColor);
+	}
+	
+	@Override
 	public EntryStruct getEntryStruct () {
 		return entryStruct;
 	}
@@ -62,15 +76,18 @@ public class JTextFieldEx extends JTextField implements ValueField {
 	@Override
 	public Object getVal(){
 		switch(entryStruct.type){
-			case STRING: return getText();
-			case FLOAT: return Float.valueOf(getText());
-			default: return Integer.valueOf(getText());
+			case STRING:
+				return getText();
+			case FLOAT:
+				return Float.valueOf(getText());
+			default:
+				return Integer.valueOf(getText());
 		}
 	}
 
 	@Override
 	public void setVal (Object value) {
-		if (entryStruct.type == Type.STRING){
+		if (entryStruct.type.ordinal() >= 6){
 			setText(((String) value).trim());
 		} else {
 			setText(String.valueOf(value));
@@ -81,14 +98,14 @@ public class JTextFieldEx extends JTextField implements ValueField {
 		@Override
 		public void focusGained(FocusEvent e) {
 			if(getText().isEmpty()) {
-				JTextFieldEx.super.setText(null);
-				setForeground(null);
+				JTextFieldEntry.super.setText(null);
+				setForeground(defaultColor);
 				showingHint = false;
 			}
 		}
 		@Override
 		public void focusLost(FocusEvent e) {
-			String text = JTextFieldEx.super.getText();
+			String text = JTextFieldEntry.super.getText();
 			if(text.isEmpty()){
 				setText(null);
 			} else {
@@ -105,7 +122,7 @@ public class JTextFieldEx extends JTextField implements ValueField {
 			showingHint = true;
 		} else {
 			super.setText(text);
-			setForeground(null);
+			setForeground(defaultColor);
 			showingHint = false;
 		}
 		setCaretPosition(0);
@@ -121,7 +138,7 @@ public class JTextFieldEx extends JTextField implements ValueField {
 		if (entryStruct != null){
 			if (entryStruct.type == Type.STRING){
 				if (text.length() > entryStruct.size) {
-					JTextFieldEx.super.setText(text.substring(0, 100));
+					JTextFieldEntry.super.setText(text.substring(0, 100));
 					Toolkit.getDefaultToolkit().beep();
 				}
 			} else {
@@ -130,12 +147,12 @@ public class JTextFieldEx extends JTextField implements ValueField {
 						Float.valueOf(text);
 					} else {
 						int value = Integer.valueOf(text);
-						if (entryStruct.type == Type.FLAG){
+						if (entryStruct.type == Type.BOOLEAN){
 							if (value < 0) {
-								JTextFieldEx.super.setText("0");
+								JTextFieldEntry.super.setText("0");
 								Toolkit.getDefaultToolkit().beep();
 							} else if (value > 1) {
-								JTextFieldEx.super.setText("1");
+								JTextFieldEntry.super.setText("1");
 								Toolkit.getDefaultToolkit().beep();
 							}
 						}
