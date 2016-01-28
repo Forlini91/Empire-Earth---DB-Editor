@@ -15,13 +15,14 @@ public class EntrySearcher extends Searcher<Entry> {
 
 	@Override
 	public List<Entry> buildResults(String text, JListEntry<Entry> list){
-		int val = Integer.MIN_VALUE;
 		try{
-			val = Integer.parseInt(text);
+			int val = Integer.parseInt(text);
+			return list.getList().parallelStream().filter(entry -> {
+				return entry.ID == val;
+			}).collect(Collectors.toList());
 		} catch (NumberFormatException e){}
-		final int ID = val;
-		return list.getVector().parallelStream().filter(entry -> {
-			return entry.ID == ID || entry.toString().toLowerCase().contains(text);
+		return list.getList().parallelStream().filter(entry -> {
+			return entry.isDefined() && entry.toString().toLowerCase().contains(text);
 		}).collect(Collectors.toList());
 	}
 	

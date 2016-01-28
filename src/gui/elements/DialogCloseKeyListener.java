@@ -18,7 +18,6 @@ public class DialogCloseKeyListener extends KeyAdapter {
 	
 	@Override
 	public void keyPressed (KeyEvent e) {
-		System.out.println("Key pressed: " + e.getKeyChar() + " " + e.getKeyCode());
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
 			dialog.dispose();
 		}

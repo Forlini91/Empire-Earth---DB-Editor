@@ -6,22 +6,22 @@ import java.util.List;
 import gui.elements.JListEntry;
 
 public abstract class Searcher<T> {
-
-	private JListEntry<T> list;
-
-	private List<T> searchResults = null;
 	
+	private JListEntry<T> list;
+	
+	private List<T> searchResults = null;
+
 	private String lastSearch = null;
-
+	
 	private int searchIndex = 0;
-
-
-
+	
+	
+	
 	public Searcher (JListEntry<T> list){
 		this.list = list;
 	}
-
-
+	
+	
 	public void findNext(){
 		if (searchResults.size() > 0) {
 			if (searchIndex >= searchResults.size() - 1){
@@ -31,11 +31,11 @@ public abstract class Searcher<T> {
 			}
 			T value = searchResults.get(searchIndex);
 			if (value != null){
-				list.setSelectedElement(value, true);
+				list.setSelectedElement(value);
 			}
 		}
 	}
-
+	
 	public void findPrevious(){
 		if (searchResults.size() > 0) {
 			if (searchIndex <= 0){
@@ -45,16 +45,16 @@ public abstract class Searcher<T> {
 			}
 			T value = searchResults.get(searchIndex);
 			if (value != null){
-				list.setSelectedElement(value, true);
+				list.setSelectedElement(value);
 			}
 		}
 	}
-
+	
 	public void clearResult(){
 		lastSearch = null;
 		searchIndex = -1;
 	}
-	
+
 	public void find (String text){
 		if (!text.equalsIgnoreCase(lastSearch)){
 			clearResult();
@@ -66,9 +66,9 @@ public abstract class Searcher<T> {
 			}
 		}
 	}
-	
+
 	abstract List<T> buildResults(String text, JListEntry<T> list);
-	
+
 }
 
 

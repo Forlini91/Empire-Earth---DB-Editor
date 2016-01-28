@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Entry implements Comparable<Entry>, Cloneable, Iterable <Object> {
+public class Entry implements Identity, Comparable<Entry>, Iterable <Object> {
 
 	
 	public final DatStructure datStructure;
@@ -17,8 +17,8 @@ public class Entry implements Comparable<Entry>, Cloneable, Iterable <Object> {
 		this.datStructure = datStructure;
 		this.values = values;
 		if (values.size() > 0){
-			sequenceNumber = datStructure.indexSequence < 0 ? -1 : (int) values.get(datStructure.indexSequence);
-			ID = datStructure.indexID < 0 ? -1 :(int) values.get(datStructure.indexID);
+			sequenceNumber = datStructure.indexSequence < 0 ? 0 : (int) values.get(datStructure.indexSequence);
+			ID = datStructure.indexID < 0 ? 0 :(int) values.get(datStructure.indexID);
 		}
 	}
 	
@@ -39,30 +39,46 @@ public class Entry implements Comparable<Entry>, Cloneable, Iterable <Object> {
 					values.add(0);
 			}
 		}
-		values.set(datStructure.indexSequence, sequenceNumber);
-		values.set(datStructure.indexID, ID);
+		if (datStructure.indexSequence >= 0){
+			values.set(datStructure.indexSequence, sequenceNumber);
+		}
+		if (datStructure.indexID >= 0){
+			values.set(datStructure.indexID, ID);
+		}
 		return values;
 	}
-
-
-
-	@Override
-	public String toString(){
+	
+	public String getName(){
 		if (datStructure.indexName < 0){
 			return "<No name>";
+		} else if (isDefined()){
+			return ((String) values.get(datStructure.indexName)).trim();
 		} else {
-			String name = ((String) values.get(datStructure.indexName)).trim();
-			if (name.length() < 2 || name.charAt(1) == EntryStruct.NOCHAR){
-				return "<Undefined>";
-			} else {
-				return name;
-			}
+			return "<Undefined>";
 		}
+	}
+
+	@Override
+	public int getID () {
+		return ID;
 	}
 	
 	@Override
-	public Entry clone () {
-		return new Entry(datStructure, values);
+	public int getSequenceNumber() {
+		return sequenceNumber;
+	}
+	
+	public boolean isDefined(){
+		return ID >= 0 && sequenceNumber >= 0;
+	}
+
+	@Override
+	public String toString(){
+		if (isDefined()){
+			return "(" + ID + ") " + getName();
+		} else {
+			return "<Undefined>";
+		}
 	}
 	
 	@Override

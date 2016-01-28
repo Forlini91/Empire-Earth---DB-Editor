@@ -37,7 +37,7 @@ public abstract class AbstractFrame extends JFrame implements AbstractGUI {
 			super.windowClosing(e);
 			onCloseEvent(e);
 			loaded = false;
-			previousMenu();
+			//previousMenu();
 		}
 		@Override
 		public void windowActivated(WindowEvent e) {
@@ -154,10 +154,10 @@ public abstract class AbstractFrame extends JFrame implements AbstractGUI {
 		}
 		if (savePrevious) {
 			menu.setPreviousMenu(this);
-			System.out.println(menu + " set previous: " + this);
+			//System.out.println(menu + " set previous: " + this);
 		} else if (deletePrevious) {
 			menu.setPreviousMenu(null);
-			System.out.println(menu + " set previous: null");
+			//System.out.println(menu + " set previous: null");
 		}
 		if (closeThis) {
 			setVisible(false);
@@ -174,10 +174,10 @@ public abstract class AbstractFrame extends JFrame implements AbstractGUI {
 	@Override
 	public void previousMenu(){
 		if (previousMenu == null) {
-			System.out.println(getClass().getSimpleName() + " > load previous > " + null);
+			//System.out.println(getClass().getSimpleName() + " > load previous > " + null);
 			return;
 		}
-		System.out.println(getClass().getSimpleName() + " > load previous > " + previousMenu.getClass().getSimpleName());
+		//System.out.println(getClass().getSimpleName() + " > load previous > " + previousMenu.getClass().getSimpleName());
 		goToMenu(previousMenu, false, true, false, false);
 	}
 	

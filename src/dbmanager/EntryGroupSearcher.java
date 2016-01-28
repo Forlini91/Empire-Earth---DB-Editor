@@ -14,7 +14,7 @@ public class EntryGroupSearcher extends Searcher<EntryGroup> {
 
 	@Override
 	public List<EntryGroup> buildResults(String text, JListEntry<EntryGroup> list){
-		return list.getVector().parallelStream().filter(entryGroup -> {
+		return list.getList().parallelStream().filter(entryGroup -> {
 			return entryGroup.name.toLowerCase().contains(text);
 		}).collect(Collectors.toList());
 	}

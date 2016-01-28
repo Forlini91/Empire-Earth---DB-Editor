@@ -1,76 +1,132 @@
 package gui.elements;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.Vector;
 
+import javax.swing.JCheckBox;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
+import dbstructure.Identity;
+
 public class JListEntry<E> extends JList<E> {
 	
-	private Vector<E> elements;
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 6271105907903664525L;
+
+	private List<E> list;
+	private List<E> listClean;
+	public JCheckBox hideUnusedBox;
 	
+
+
 	public JListEntry(){
-		this(new Vector<E>(), false);
+		this(new ArrayList<>(0));
 	}
 	
-	public JListEntry (E[] data){
-		this(new Vector<E>(Arrays.asList(data)), false);
+	public JListEntry (E[] array){
+		this(Arrays.asList(array));
 	}
+
+
 	
-	public JListEntry (Collection<E> data){
-		this(data, false);
-	}
-	
-	public JListEntry (E[] data, boolean sorted){
-		this(new Vector<E>(Arrays.asList(data)), sorted);
-	}
-	
-	public JListEntry (Collection<E> data, boolean sorted){
+	public JListEntry (List<E> list){
 		super();
-		setVector(data, sorted);
+		this.list = list;
+		listClean = buildListClean();
+		hideUnusedBox = new JCheckBox("Hide undefined fields", true);
+		hideUnusedBox.addChangeListener(e -> refresh());
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setVisibleRowCount(10);
+		refresh();
+	}
+	
+	public JListEntry (List<E> list, boolean hideUnused){
+		super();
+		this.list = list;
+		listClean = buildListClean();
+		hideUnusedBox = new JCheckBox("Hide undefined fields", hideUnused);
+		hideUnusedBox.addChangeListener(e -> refresh());
+		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		setVisibleRowCount(10);
+		refresh();
+	}
+	
+	public JListEntry (List<E> list, List<E> listClean){
+		super();
+		this.list = list;
+		this.listClean = listClean;
+		hideUnusedBox = new JCheckBox("Hide undefined fields", true);
+		hideUnusedBox.addChangeListener(e -> refresh());
+		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		setVisibleRowCount(10);
+		refresh();
+	}
+	
+	public JListEntry (List<E> list, List<E> listClean, boolean hideUnused){
+		super();
+		this.list = list;
+		this.listClean = listClean;
+		hideUnusedBox = new JCheckBox("Hide undefined fields", hideUnused);
+		hideUnusedBox.addChangeListener(e -> refresh());
+		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		setVisibleRowCount(10);
+		refresh();
+	}
+	
+	public JListEntry (List<E> list, List<E> listClean, JCheckBox hideUnusedBox){
+		super();
+		this.list = list;
+		this.listClean = listClean;
+		this.hideUnusedBox = hideUnusedBox;
+		hideUnusedBox.addChangeListener(e -> refresh());
+		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		setVisibleRowCount(10);
+		refresh();
+	}
+	
+	
+	
+
+	public List<E> getList(){
+		return list;
 	}
 	
 
-	public Vector<E> getVector(){
-		return elements;
-	}
-	
-
-	public void setVector(E[] newElements){
-		setVector(newElements, false);
-	}
-	
-
-	public void setVector(Collection<E> newElements){
-		setVector(newElements, false);
-	}
-	
-
-	public void setVector(E[] newElements, boolean sorted){
-		elements = new Vector<E>(Arrays.asList(newElements));
-		if (sorted) {
-			sort();
-		}
+	public void setList(E[] newList){
+		list = Arrays.asList(newList);
+		listClean = buildListClean();
 		refresh();
 	}
 	
 
-	public void setVector(Collection<E> newElements, boolean sorted){
-		elements = new Vector<E>(newElements);
-		if (sorted) {
-			sort();
-		}
+	public void setList(List<E> newList){
+		list = newList;
+		listClean = buildListClean();
+		refresh();
+	}
+	
+	public void setList(E[] newList, E[] newListClean){
+		list = Arrays.asList(newList);
+		listClean = Arrays.asList(newListClean);
+		refresh();
+	}
+	
+
+	public void setList(List<E> newList, List<E> newListClean){
+		list = newList;
+		listClean = newListClean;
 		refresh();
 	}
 	
 
 	public int getLength(){
-		return elements.size();
+		if (hideUnusedBox.isSelected()) {
+			return listClean.size();
+		} else {
+			return list.size();
+		}
 	}
 	
 
@@ -80,151 +136,56 @@ public class JListEntry<E> extends JList<E> {
 	
 
 	public void setSelectedElement(E element){
-		setSelectedValue(element, false);
+		setSelectedValue(element, true);
 	}
 	
-
-	public void setSelectedElement(E element, boolean showElement){
-		setSelectedValue(element, showElement);
-	}
-	
-
-	public void setSelectedIndex(int index, boolean showElement){
-		setSelectedValue(elements.get(index), showElement);
+	public void setSelectedElement(int index){
+		if (hideUnusedBox.isSelected()) {
+			setSelectedValue(listClean.get(index), true);
+		} else {
+			setSelectedValue(list.get(index), true);
+		}
 	}
 	
 
 	public E get(int index){
-		return elements.get(index);
+		if (hideUnusedBox.isSelected()) {
+			return listClean.get(index);
+		} else {
+			return list.get(index);
+		}
 	}
 	
 
 	public int indexOf(E element){
-		return elements.indexOf(element);
-	}
-	
-
-	public int add(E element){
-		return add(element, -1, false);
-	}
-	
-
-	public int add(E element, int index){
-		return add(element, index, false);
-	}
-	
-
-	public int add(E element, boolean sorted){
-		return add(element, -1, sorted);
-	}
-	
-
-	public int add(E element, int index, boolean sorted){
-		if (index < 0) {
-			elements.add(element);
+		if (hideUnusedBox.isSelected()) {
+			return listClean.indexOf(element);
 		} else {
-			elements.add(index, element);
+			return list.indexOf(element);
 		}
-		if (sorted) {
-			sort();
-		}
-		refresh();
-		setSelectedValue(element, true);
-		if (index < 0) {
-			return getSelectedIndex();
+	}
+
+	public void refresh(){
+		if (hideUnusedBox.isSelected()) {
+			setListData(new Vector<>(listClean));
 		} else {
-			return index;
+			setListData(new Vector<>(list));
 		}
 	}
 	
 
-	public int drop(E element){
-		int index = indexOf(element);
-		if (index == -1) {
-			return -1;
-		}
-		drop(index);
-		return index;
-	}
 	
-
-	public E drop(int index) throws ArrayIndexOutOfBoundsException {
-		E element = elements.remove(index);
-		refresh();
-		if (index < elements.size()){
-			setSelectedIndex(index);
-		}
-		else{
-			setSelectedIndex(elements.size()-1);
-		}
-		return element;
-	}
-	
-
-	public void addAll(JListEntry<E> otherList){
-		addAll(otherList.getVector(), false);
-	}
-	
-
-	public void addAll(JListEntry<E> otherList, boolean sorted){
-		addAll(otherList.getVector(), sorted);
-	}
-	
-
-	public void addAll(Vector<E> otherElements){
-		addAll(otherElements, false);
-	}
-	
-
-	public void addAll(Vector<E> otherElements, boolean sorted){
-		elements.addAll(otherElements);
-		if (sorted) {
-			sort();
-		}
-		refresh();
-	}
-	
-
-	public void dropAll(int...indexes){
-		for (int index : indexes){
-			if (index >= getLength()){
-				return;
+	public List<E> buildListClean(){
+		int n = list.size();
+		List<E> newListClean = new ArrayList<>();
+		Identity ident;
+		for (int i = 0; i < n; i++){
+			ident = (Identity) list.get(i);
+			if (ident.getID() >= 0 && ident.getSequenceNumber() >= 0){
+				newListClean.add(list.get(i));
 			}
-			elements.remove(index);
 		}
-		refresh();
-	}
-	
-
-	public void dropAll(Vector<E> otherElements){
-		elements.retainAll(otherElements);
-		refresh();
-	}
-	
-	public Vector<E> sort(){
-		return sort(false);
-	}
-
-	public Vector<E> sort(boolean refresh){
-		if (refresh) {
-			return refresh(sort(elements));
-		}
-		return sort(elements);
-	}
-	
-	public Vector<E> sort(Vector<E> elements){
-		elements.sort(null);
-		return elements;
-	}
-
-	public Vector<E> refresh(){
-		setListData(elements);
-		return elements;
-	}
-	
-	public Vector<E> refresh(Vector<E> elements){
-		setListData(elements);
-		return elements;
+		return newListClean;
 	}
 	
 }

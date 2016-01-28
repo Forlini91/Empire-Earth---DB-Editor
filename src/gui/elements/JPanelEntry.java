@@ -15,21 +15,23 @@ public class JPanelEntry extends JPanel {
 
 	public final int index;
 	public final EntryStruct entryStruct;
-	public final JLabel label;
-	public final AbstractEntryField field;
+	public JLabel label;
+	public AbstractEntryField field;
 
 	public JPanelEntry (EntryStruct entryStruct, int index){
 		this.index = index;
 		this.entryStruct = entryStruct;
-		setLayout(new GridLayout(0, 1, 0, 0));
-		setPreferredSize(new Dimension(150, 50));
+
 		label = new JLabelEntry(entryStruct, index);
+		label.setPreferredSize(new Dimension(100, 25));
 		switch(entryStruct.type){
 			case BOOLEAN:
 				field = new JToggleBoxEntry(entryStruct, index); break;
 			default:
 				field = new JTextFieldEntry(entryStruct, index, null);
 		}
+		field.setPreferredSize(new Dimension(100, 25));
+		setLayout(new GridLayout(2, 0, 0, 0));
 		add(label);
 		add((Component) field);
 	}
@@ -41,5 +43,4 @@ public class JPanelEntry extends JPanel {
 	public Object getVal(){
 		return field.getVal();
 	}
-	
 }

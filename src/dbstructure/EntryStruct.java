@@ -5,6 +5,7 @@ import java.awt.Color;
 public class EntryStruct{
 	
 	public static final Color ID_COLOR = Color.BLUE;
+	public static final Color ID_GREEN = new Color(50, 200, 50);
 	
 	public static final char NOCHAR = 65484;
 	public static final char b00 = 0x00;
@@ -19,10 +20,22 @@ public class EntryStruct{
 	});
 	public static final String STRING_NONAME = "<No name>";
 	
-	public static final EntryStruct NAME = new EntryStruct("Name", Type.STRING, 100, Knowledge.KNOWN, EntryStruct.ID_COLOR);
-	public static final EntryStruct SEQ_NUMBER = new EntryStruct("Sequence number", Type.INTEGER, 4, Knowledge.KNOWN, EntryStruct.ID_COLOR, false);
-	public static final EntryStruct ID = new EntryStruct("ID", Type.INTEGER, 4, Knowledge.KNOWN, EntryStruct.ID_COLOR, false);
-	public static final EntryStruct OBJECT_TECH = new EntryStruct ("Can build tech", Type.INTEGER, 4, Knowledge.KNOWN);
+	public static final EntryStruct NAME = new EntryStruct("Name", Type.STRING, 100, Knowledge.KNOWN, ID_COLOR);
+	public static final EntryStruct SEQ_NUMBER = new EntryStruct("Sequence number", Type.INTEGER, 4, Knowledge.KNOWN, ID_COLOR, false);
+	public static final EntryStruct ID = new EntryStruct("ID", Type.INTEGER, 4, Knowledge.KNOWN, ID_COLOR, false);
+
+	public static final EntryStruct ID_AREA_EFFECT = new EntryStruct("Area Effect ID", Type.ID_AREA_EFFECT, 4, Knowledge.KNOWN, ID_GREEN);
+	public static final EntryStruct ID_BUTTON = new EntryStruct("Button ID", Type.ID_BUTTON, 4, Knowledge.KNOWN, ID_GREEN);
+	public static final EntryStruct ID_FAMILY = new EntryStruct("Family ID", Type.ID_FAMILY, 4, Knowledge.KNOWN, ID_GREEN);
+	//	public static final EntryStruct ID_GRAPHIC = new EntryStruct("Graphic ID", Type.ID_GRAPHIC, 4, Knowledge.KNOWN, ID_GREEN);
+	public static final EntryStruct ID_OBJECT = new EntryStruct("Object ID", Type.ID_OBJECT, 4, Knowledge.KNOWN, ID_GREEN);
+	public static final EntryStruct ID_TECH = new EntryStruct("Tech ID", Type.ID_TECH, 4, Knowledge.KNOWN, ID_GREEN);
+	public static final EntryStruct ID_HOTKEY = new EntryStruct("Hotkey ID", Type.ID_UIHOTKEY, 4, Knowledge.KNOWN, ID_GREEN);
+	public static final EntryStruct ID_UPGRADE = new EntryStruct("Updrade ID", Type.ID_UPGRADE, 4, Knowledge.KNOWN, ID_GREEN);
+	public static final EntryStruct ID_WEAPON_TO_HIT = new EntryStruct("Weapon to hit ID", Type.ID_WEAPON_TO_HIT, 4, Knowledge.KNOWN, ID_GREEN);
+	
+	public static final EntryStruct TECH_FROM_OBJECT = new EntryStruct("Build from object", Type.ID_OBJECT, 4, Knowledge.KNOWN);
+	public static final EntryStruct OBJECT_BUILD_TECH = new EntryStruct ("Can build tech", Type.ID_TECH, 4, Knowledge.KNOWN);
 	
 	public static final EntryStruct UNCHANGED_BOOL = new EntryStruct("Never changes", Type.BOOLEAN, 1, Knowledge.NEVER_CHANGE, Color.GRAY);
 	public static final EntryStruct UNCHANGED_INT1 = new EntryStruct("Never changes", Type.INTEGER, 1, Knowledge.NEVER_CHANGE, Color.GRAY);
