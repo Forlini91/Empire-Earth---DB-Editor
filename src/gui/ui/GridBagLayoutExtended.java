@@ -1,4 +1,4 @@
-package gui.elements;
+package gui.ui;
 
 import java.awt.GridBagLayout;
 import java.util.Arrays;

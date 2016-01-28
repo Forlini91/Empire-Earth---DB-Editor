@@ -47,15 +47,17 @@ import dbstructure.EntryGroup;
 import dbstructure.EntryStruct;
 import dbstructure.EntryValueMap;
 import dbstructure.Knowledge;
-import gui.elements.AbstractEntryField;
-import gui.elements.AbstractFrame;
-import gui.elements.AbstractGUI;
-import gui.elements.DialogCloseKeyListener;
-import gui.elements.GridBagConstraintsExtended;
-import gui.elements.GridBagLayoutExtended;
-import gui.elements.JListEntry;
-import gui.elements.JPanelEntry;
-import gui.elements.JSearchFieldEntry;
+import gui.components.AbstractEntryField;
+import gui.components.AbstractFrame;
+import gui.components.AbstractGUI;
+import gui.components.DialogCloseKeyListener;
+import gui.components.JListEntry;
+import gui.components.JPanelEntry;
+import gui.components.JSearchFieldEntry;
+import gui.ui.EEScrollBarUI;
+import gui.ui.EESliderUI;
+import gui.ui.GridBagConstraintsExtended;
+import gui.ui.GridBagLayoutExtended;
 
 
 public class GUIEditor extends AbstractFrame {
@@ -63,7 +65,7 @@ public class GUIEditor extends AbstractFrame {
 	private static final long serialVersionUID = -3426470254615698936L;
 	
 	private final LayoutManager gbl_contentPane = new GridBagLayoutExtended(new int[]{160, 200, 100, 200, 200, 100}, new int[]{30, 400, 30, 30}, new double[]{0, 0, 0.5, 0, 0, 0.5}, new double[]{0.0, 1.0, 0});
-	private final GridLayout gridLayout = new GridLayout(0, 4, 8, 8);
+	private final GridLayout gridLayout = new GridLayout(0, 4, 0, 0);
 	private static final GridBagConstraints gbc_entryGroupListLabel = new GridBagConstraintsExtended(4, 4, 0, 0, 0, 0);
 	private static final GridBagConstraints gbc_entryGroupListPane = new GridBagConstraintsExtended(4, 4, 0, 0, 0, 1);
 	private static final GridBagConstraints gbc_entryGroupSearchField = new GridBagConstraintsExtended(4, 4, 0, 0, 0, 2);
@@ -98,7 +100,7 @@ public class GUIEditor extends AbstractFrame {
 	private JScrollPane entryGroupListPane = new JScrollPane(entryGroupList);
 	private JScrollPane entryListPane = new JScrollPane(entryList);
 	private JPanel panelFields = new JPanel();
-	private JScrollPane fieldsPane = new JScrollPane(panelFields);
+	private JScrollPane scrollPaneFields = new JScrollPane(panelFields);
 	private JSearchFieldEntry<EntryGroup> entryGroupSearchField = new JSearchFieldEntry<>(new EntryGroupSearcher(entryGroupList));
 	private JSearchFieldEntry<Entry> entrySearchField = new JSearchFieldEntry<>(new EntrySearcher(entryList));
 	private JButton reset = new JButton("Reset entry");
@@ -129,13 +131,19 @@ public class GUIEditor extends AbstractFrame {
 		setIconImage(GUIMain.IMAGE_ICON.getImage());
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setContentPane(contentPane);
-		setJMenuBar(menuBar);
 		
+
 		JMenu menuBarNumColumns = new JMenu("Num columns");
+		JPanel menuBarNumColumnsPanel = new JPanel();
 		JLabel numColumnsLabel = new JLabel("Columns: 4");
 		JSlider numColumnsSlider = new JSlider();
+		menuBarNumColumnsPanel.setLayout(new GridLayout(2, 1, 0, 0));
+		menuBarNumColumnsPanel.add(numColumnsLabel);
+		menuBarNumColumnsPanel.add(numColumnsSlider);
+		menuBarNumColumns.add(menuBarNumColumnsPanel);
+		menuBar.add(menuBarNumColumns);
+		numColumnsSlider.setUI(new EESliderUI(numColumnsSlider, Core.uiColorElement));
 		numColumnsLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		numColumnsLabel.setPreferredSize(new Dimension(250, numColumnsLabel.getPreferredSize().height));
 		numColumnsSlider.setMinimum(4);
 		numColumnsSlider.setMaximum(32);
 		numColumnsSlider.setValue(4);
@@ -148,9 +156,15 @@ public class GUIEditor extends AbstractFrame {
 			numColumnsLabel.setText("Columns: " + numColumnsSlider.getValue());
 			panelFields.invalidate();
 		});
-		menuBarNumColumns.add(numColumnsLabel);
-		menuBarNumColumns.add(numColumnsSlider);
-		menuBar.add(menuBarNumColumns);
+		menuBarNumColumns.setBackground(Core.uiColorElement);
+		menuBarNumColumns.setForeground(Color.WHITE);
+		menuBarNumColumns.setOpaque(true);
+		menuBarNumColumnsPanel.setBackground(Core.uiColorBackground);
+		numColumnsLabel.setOpaque(false);
+		numColumnsSlider.setOpaque(false);
+		menuBar.setBackground(Core.uiColorBackground);
+		menuBar.setOpaque(true);
+		setJMenuBar(menuBar);
 
 		contentPane.setLayout(gbl_contentPane);
 		contentPane.add(entryGroupListLabel, gbc_entryGroupListLabel);
@@ -158,7 +172,7 @@ public class GUIEditor extends AbstractFrame {
 		contentPane.add(fieldsLabel, gbc_fieldsLabel);
 		contentPane.add(entryGroupListPane, gbc_entryGroupListPane);
 		contentPane.add(entryListPane, gbc_entryListPane);
-		contentPane.add(fieldsPane, gbc_fieldsPane);
+		contentPane.add(scrollPaneFields, gbc_fieldsPane);
 		contentPane.add(entryGroupSearchField, gbc_entryGroupSearchField);
 		contentPane.add(entrySearchField, gbc_entrySearchField);
 		contentPane.add(reset, gbc_resetButton);
@@ -166,6 +180,10 @@ public class GUIEditor extends AbstractFrame {
 		contentPane.add(entryList.hideUnusedBox, gbc_hideUnused);
 		contentPane.add(addID, gbc_addID);
 		contentPane.add(removeID, gbc_removeID);
+		contentPane.setBackground(Core.uiColorBackground);
+		scrollPaneFields.getVerticalScrollBar().setUI(new EEScrollBarUI());
+		scrollPaneFields.getHorizontalScrollBar().setUI(new EEScrollBarUI());
+		panelFields.setBackground(Core.uiColorBackground);
 
 		entryGroupListLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		entryGroupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -181,6 +199,8 @@ public class GUIEditor extends AbstractFrame {
 				}
 			}
 		});
+		entryGroupListPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
+		entryGroupListPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
 		
 		entryListLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		entryList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -195,6 +215,9 @@ public class GUIEditor extends AbstractFrame {
 			}
 		});
 		entryList.addMouseListener(new JShowPopupMenuList(entryList, entryListMenu));
+		entryListPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
+		entryListPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
+
 		entryListMenu.add(entryListMenuAdd);
 		entryListMenu.add(entryListMenuRemove);
 		entryListMenu.add(entryListMenuMoveTo);
@@ -216,7 +239,7 @@ public class GUIEditor extends AbstractFrame {
 		entryListMenuMoveTo.addActionListener(e -> entryListMoveTo());
 
 		fieldsLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		fieldsPane.getVerticalScrollBar().setUnitIncrement(10);
+		scrollPaneFields.getVerticalScrollBar().setUnitIncrement(10);
 		//		fieldsPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		fieldMenu.add(fieldMenuSearchValues);
 		fieldMenu.add(fieldMenuSearchFields);
@@ -229,13 +252,21 @@ public class GUIEditor extends AbstractFrame {
 		fieldMenuUnmarkUnusedFields.setVisible(false);
 		panelFields.setLayout(gridLayout);
 
-		save.addActionListener(e -> saveEntry());
+		reset.setBackground(Core.uiColorElement);
+		reset.setForeground(Color.WHITE);
 		reset.addActionListener(e -> {
 			buildFields(currentEntry);
 			loadEntry(currentEntry);
 		});
+		save.setBackground(Core.uiColorElement);
+		save.addActionListener(e -> saveEntry());
+		save.setForeground(Color.WHITE);
+		addID.setBackground(Core.uiColorElement);
 		addID.addActionListener(e -> addField());
+		addID.setForeground(Color.WHITE);
+		removeID.setBackground(Core.uiColorElement);
 		removeID.addActionListener(e -> removeField());
+		removeID.setForeground(Color.WHITE);
 	}
 	
 
@@ -605,19 +636,16 @@ public class GUIEditor extends AbstractFrame {
 		JListEntry<Entry> dlgList = new JListEntry<>(entriesClean);
 		JScrollPane dlgScrollPane = new JScrollPane(dlgList);
 		JSearchFieldEntry<Entry> dlgSearch = new JSearchFieldEntry<>(new EntrySearcher(dlgList));
-		JCheckBox dlgHideUnused = new JCheckBox("Hide unused entries");
+		JCheckBox dlgHideUnused = dlgList.hideUnusedBox;
 		JButton dlgClose = new JButton("Close");
-		
-		dlgHideUnused.setSelected(true);
-		dlgHideUnused.addChangeListener(e -> {
-			if (dlgHideUnused.isSelected()){
-				dlgList.setList(entriesClean);
-			} else {
-				dlgList.setList(entries);
-			}
-			dlgSearch.search.clearResult();
-		});
-		dlgClose.addActionListener(al -> dialog.dispose());
+		dialog.getContentPane().setBackground(Core.uiColorBackground);
+		dlgLabel.setOpaque(false);
+		dlgScrollPane.setOpaque(false);
+		dlgScrollPane.getViewport().setOpaque(false);
+		dlgScrollPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
+		dlgScrollPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
+		dlgClose.setBackground(Core.uiColorElement);
+		dlgClose.setForeground(Color.WHITE);
 		
 		DialogCloseKeyListener dlgKeyListener = new DialogCloseKeyListener(dialog);
 		dlgLabel.addKeyListener(dlgKeyListener);
@@ -628,6 +656,7 @@ public class GUIEditor extends AbstractFrame {
 		dlgClose.addKeyListener(dlgKeyListener);
 		dialog.getContentPane().addKeyListener(dlgKeyListener);
 		dialog.addKeyListener(dlgKeyListener);
+		dlgClose.addActionListener(al -> dialog.dispose());
 		
 		dialog.setTitle("For field: " + field.getEntryStruct());
 		dialog.setBounds(AbstractGUI.getBounds(dialog, 0.6, 0.8));
@@ -658,19 +687,14 @@ public class GUIEditor extends AbstractFrame {
 		JListEntry<Object> rowHeaderList = new JListEntry<>(new ArrayList<>(entryValueMap.map.keySet()), new ArrayList<>(entryValueMap.mapClean.keySet()), dlgList.hideUnusedBox);
 		JScrollPane dlgScrollPane = new JScrollPane(dlgList);
 		JButton dlgClose = new JButton("Close");
-		
-		dlgList.addMouseListener(new MouseAdapter(){
-			@Override
-			public void mouseClicked (MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					int index = dlgList.getSelectedIndex();
-					showSearchValuesResultsList(dlgList.get(index), rowHeaderList.get(index));
-				}
-			}
-		});
-		rowHeaderList.setBackground(Color.LIGHT_GRAY);
-		dlgScrollPane.setRowHeaderView(rowHeaderList);
-		dlgClose.addActionListener(al -> dialog.dispose());
+		dialog.getContentPane().setBackground(Core.uiColorBackground);
+		dlgLabel.setOpaque(false);
+		dlgScrollPane.setOpaque(false);
+		dlgScrollPane.getViewport().setOpaque(false);
+		dlgScrollPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
+		dlgScrollPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
+		dlgClose.setBackground(Core.uiColorElement);
+		dlgClose.setForeground(Color.WHITE);
 		
 		DialogCloseKeyListener dlgKeyListener = new DialogCloseKeyListener(dialog);
 		dlgLabel.addKeyListener(dlgKeyListener);
@@ -681,6 +705,7 @@ public class GUIEditor extends AbstractFrame {
 		dlgClose.addKeyListener(dlgKeyListener);
 		dialog.getContentPane().addKeyListener(dlgKeyListener);
 		dialog.addKeyListener(dlgKeyListener);
+		dlgClose.addActionListener(al -> dialog.dispose());
 
 		dialog.setTitle("For field: " + field.getEntryStruct());
 		dialog.setBounds(AbstractGUI.getBounds(dialog, 0.6, 0.8));
@@ -710,6 +735,14 @@ public class GUIEditor extends AbstractFrame {
 			JScrollPane dlgScrollPane = new JScrollPane(dlgList);
 			JSearchFieldEntry<Entry> dlgSearch = new JSearchFieldEntry<>(new EntrySearcher(dlgList));
 			JButton dlgClose = new JButton("Close");
+			dialog.getContentPane().setBackground(Core.uiColorBackground);
+			dlgLabel.setOpaque(false);
+			dlgScrollPane.setOpaque(false);
+			dlgScrollPane.getViewport().setOpaque(false);
+			dlgScrollPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
+			dlgScrollPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
+			dlgClose.setBackground(Core.uiColorElement);
+			dlgClose.setForeground(Color.WHITE);
 
 			DialogCloseKeyListener dlgKeyListener = new DialogCloseKeyListener(dialog);
 			dlgLabel.addKeyListener(dlgKeyListener);
@@ -774,6 +807,7 @@ public class GUIEditor extends AbstractFrame {
 		JPanelEntry entryPanel;
 		while(it.hasNext()){
 			entryPanel = it.next();
+			entryPanel.label.setOpaque(false);
 			entryPanel.label.setBackground(null);
 			entryPanel.label.setForeground(entryPanel.entryStruct.color);
 			entryPanel.field.resetColor();

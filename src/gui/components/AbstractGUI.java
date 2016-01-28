@@ -1,4 +1,4 @@
-package gui.elements;
+package gui.components;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -38,7 +38,7 @@ public interface AbstractGUI {
 	static Rectangle getBounds(Component component, double widthPercent, double heightPercent){
 		GraphicsConfiguration gc = component.getGraphicsConfiguration();
 		Rectangle rBounds = gc.getBounds();
-		Dimension dimension = new Dimension((int) (rBounds.width*widthPercent), (int) (rBounds.height*heightPercent));
+		Dimension dimension = new Dimension((int) (widthPercent <= 1 ? (rBounds.width*widthPercent) : widthPercent), (int) (heightPercent <= 1 ? (rBounds.height*heightPercent) : heightPercent));
 		Point point = new Point((rBounds.width / 2) - (dimension.width / 2), (rBounds.height / 2) - (dimension.height / 2) - 25);
 		return new Rectangle(point, dimension);
 	}

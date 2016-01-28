@@ -2,7 +2,7 @@ package dbstructure;
 
 public enum DatStructure {
 
-	DB_AREA_EFFECT("Area effect", "dbareaeffect.dat", 0, true, 0, 1, 2, -1, null,
+	DB_AREA_EFFECT("Area effects", "dbareaeffect.dat", 0, true, 0, 1, 2, -1, null,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID, new EntryStruct("Effect type", Type.INTEGER, 4),
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNUSED_INT4, EntryStruct.UNKNOWN_INT4, new EntryStruct("Morale", Type.INTEGER, 4), new EntryStruct("Heal effect", Type.INTEGER, 4),
@@ -11,12 +11,12 @@ public enum DatStructure {
 			EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4
 			),
 	
-	DB_BUTTONS ("Button", "dbbuttons.dat", 0, true, 0, 2, 3, -1, null,
+	DB_BUTTONS ("Buttons", "dbbuttons.dat", 0, true, 0, 2, 3, -1, null,
 			EntryStruct.NAME, new EntryStruct("Texture", Type.STRING, 100), EntryStruct.SEQ_NUMBER, EntryStruct.ID,
 			new EntryStruct("<only used by espionage center>", Type.INTEGER, 4), new EntryStruct("<only used by farm and espionage center>", Type.INTEGER, 4), new EntryStruct("Position", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4
 			),
 	
-	DB_CALAMITY ("Calamity", "dbcalamity.dat", 0, true, 0, 7, 8, -1, null,
+	DB_CALAMITY ("Calamities", "dbcalamity.dat", 0, true, 0, 7, 8, -1, null,
 			EntryStruct.NAME, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT,
 			EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNUSED_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.SEQ_NUMBER,
 			EntryStruct.ID, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
@@ -28,7 +28,7 @@ public enum DatStructure {
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4
 			),
 
-	DB_CIVILIZATION ("Civilization", "dbcivilization.dat", 0, false, 0, 1, 2, -1, null,
+	DB_CIVILIZATION ("Civilizations", "dbcivilization.dat", 0, false, 0, 1, 2, -1, null,
 			EntryStruct.NAME, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, new EntryStruct("Language ID", Type.INTEGER, 4),
 			EntryStruct.ID, new EntryStruct("Cost increment", Type.INTEGER, 4), EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT,
 			EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT,
@@ -63,7 +63,7 @@ public enum DatStructure {
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4
 			),
 	
-	DB_FAMILY ("Family", "dbfamily.dat", 0, true, 0, 1, 2, -1, null,
+	DB_FAMILY ("Families", "dbfamily.dat", 0, true, 0, 1, 2, -1, null,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID, EntryStruct.UNKNOWN_INT4,
 			new EntryStruct("Frigate", Type.INTEGER, 4), new EntryStruct("Machine gun", Type.INTEGER, 4), new EntryStruct("Galley", Type.INTEGER, 4), new EntryStruct("Tank", Type.INTEGER, 4),
 			new EntryStruct("AT Gun", Type.INTEGER, 4), new EntryStruct("Catapult, Bombard", Type.INTEGER, 4), new EntryStruct("AA Tower, Stinger, Flat halftrack", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4,
@@ -84,7 +84,7 @@ public enum DatStructure {
 			new EntryStruct("Space turret", Type.INTEGER, 4), EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4
 			),
 	
-	DB_GAME_VARIANT ("Game variant", "dbgamevariant.dat", 0, true, 0, 1, 2, -1, null,
+	DB_GAME_VARIANT ("Game variants", "dbgamevariant.dat", 0, true, 0, 1, 2, -1, null,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID, EntryStruct.UNKNOWN_FLOAT,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_FLOAT,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4,
@@ -99,7 +99,7 @@ public enum DatStructure {
 			EntryStruct.UNUSED_INT4
 			),
 	
-	DB_MUSIC ("Music", "dbmusic.dat", 0, true, 2, 0, 1, -1, null,
+	DB_MUSIC ("Musics", "dbmusic.dat", 0, true, 2, 0, 1, -1, null,
 			EntryStruct.SEQ_NUMBER, EntryStruct.ID, EntryStruct.NAME, new EntryStruct("Another name", Type.STRING, 56),
 			EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNCHANGED_INT4,
 			EntryStruct.UNCHANGED_BOOL, EntryStruct.UNCHANGED_BOOL, EntryStruct.UNCHANGED_BOOL, EntryStruct.UNCHANGED_BOOL,
@@ -108,7 +108,7 @@ public enum DatStructure {
 			EntryStruct.UNCHANGED_BOOL, EntryStruct.UNCHANGED_BOOL, EntryStruct.UNCHANGED_BOOL, EntryStruct.UNUSED_INT1
 			),
 
-	DB_OBJECT ("Object", "dbobjects.dat", 0, true, 0, 1, 5, -1, null,
+	DB_OBJECT ("Objects", "dbobjects.dat", 0, true, 0, 1, 5, -1, null,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID_FAMILY, EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.ID, new EntryStruct("Health", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4,
 			new EntryStruct("Min range", Type.FLOAT, 4), new EntryStruct("Max range", Type.FLOAT, 4), new EntryStruct("Line of sight", Type.FLOAT, 4), new EntryStruct("Attack speed", Type.FLOAT, 4),
@@ -243,7 +243,7 @@ public enum DatStructure {
 			new EntryStruct("Starting iron", Type.INTEGER, 4)
 			),
 
-	DB_TECH_TREE("Tech", "dbtechtree.dat", 1, true, 0, 1, 2, 46, EntryStruct.TECH_FROM_OBJECT,
+	DB_TECH_TREE("Technologies", "dbtechtree.dat", 1, true, 0, 1, 2, 46, EntryStruct.TECH_FROM_OBJECT,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID, new EntryStruct("Starting epoch", Type.INTEGER, 4),
 			new EntryStruct("Ending epoch", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, new EntryStruct("Wood cost", Type.INTEGER, 4),
 			new EntryStruct("Stone cost", Type.INTEGER, 4), new EntryStruct("<Only Impassable tile object and Invisible capital>", Type.INTEGER, 4), new EntryStruct("Gold cost", Type.INTEGER, 4), EntryStruct.UNUSED_INT4,
@@ -259,12 +259,12 @@ public enum DatStructure {
 			EntryStruct.UNKNOWN_INT4, EntryStruct.TECH_FROM_OBJECT, new EntryStruct("Num of tech builders", Type.INTEGER, 4, false)
 			),
 	
-	DB_UIHOTKEY ("Hotkey", "dbuihotkey.dat", 0, true, 2, 0, 1, -1, null,
+	DB_UIHOTKEY ("Hotkeys", "dbuihotkey.dat", 0, true, 2, 0, 1, -1, null,
 			EntryStruct.SEQ_NUMBER, EntryStruct.ID, EntryStruct.NAME, EntryStruct.UNCHANGED_INT4,
 			EntryStruct.UNCHANGED_INT4, EntryStruct.UNCHANGED_INT4, EntryStruct.UNKNOWN_INT4
 			),
 	
-	DB_UPGRADE ("Upgrade", "dbupgrade.dat", 0, true, 0, 31, 32, -1, null,
+	DB_UPGRADE ("Upgrades", "dbupgrade.dat", 0, true, 0, 31, 32, -1, null,
 			EntryStruct.NAME, new EntryStruct("Attack mult", Type.FLOAT, 4), new EntryStruct("Health mult", Type.FLOAT, 4), new EntryStruct("Speed mult", Type.FLOAT, 4),
 			new EntryStruct("Range mult", Type.FLOAT, 4), new EntryStruct("Shock armor mult", Type.FLOAT, 4), new EntryStruct("Arrow armor mult", Type.FLOAT, 4), new EntryStruct("Pierce armor mult", Type.FLOAT, 4),
 			new EntryStruct("Gun armor mult", Type.FLOAT, 4), new EntryStruct("Laser armor mult", Type.FLOAT, 4), new EntryStruct("Missile armor mult", Type.FLOAT, 4), new EntryStruct("Fuel/Power mult", Type.FLOAT, 4),
@@ -276,7 +276,7 @@ public enum DatStructure {
 			EntryStruct.ID, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4
 			),
 
-	DB_UNITSET ("Unit set", "dbunitset.dat", 0, true, 0, 1, 2, -1, null,
+	DB_UNITSET ("Unit sets", "dbunitset.dat", 0, true, 0, 1, 2, -1, null,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID, EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
@@ -285,7 +285,7 @@ public enum DatStructure {
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4
 			),
 
-	DB_WEAPON_TO_HIT ("Weapon to hit", "dbweapontohit.dat", 0, false, 0, 1, 2, -1, null,
+	DB_WEAPON_TO_HIT ("Weapons to hit", "dbweapontohit.dat", 0, false, 0, 1, 2, -1, null,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID, new EntryStruct("Shock mult", Type.INTEGER, 4),
 			new EntryStruct("Gun mult", Type.INTEGER, 4), new EntryStruct("Arrow mult", Type.INTEGER, 4), new EntryStruct("Pierce mult", Type.INTEGER, 4), new EntryStruct("Laser mult", Type.INTEGER, 4),
 			new EntryStruct("Missile mult", Type.INTEGER, 4)

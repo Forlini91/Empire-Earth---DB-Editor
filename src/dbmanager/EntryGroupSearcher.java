@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import dbstructure.EntryGroup;
-import gui.elements.JListEntry;
+import gui.components.JListEntry;
 
 public class EntryGroupSearcher extends Searcher<EntryGroup> {
 	

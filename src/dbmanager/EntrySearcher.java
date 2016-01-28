@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import dbstructure.Entry;
-import gui.elements.JListEntry;
+import gui.components.JListEntry;
 
 public class EntrySearcher extends Searcher<Entry> {
 

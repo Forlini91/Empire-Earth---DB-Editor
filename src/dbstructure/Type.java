@@ -15,14 +15,15 @@ public enum Type {
 	ID_FAMILY (() -> DatStructure.DB_FAMILY),
 	//ID_GRAPHIC (() -> DatStructure.DB_GRAPHIC),
 	ID_GAME_VARIANT (() -> DatStructure.DB_GAME_VARIANT),
+	//ID_LANGUAGE (null), // IF I FOUND A WAY TO READ THAT DLL...
 	ID_MUSIC (() -> DatStructure.DB_MUSIC),
 	ID_OBJECT (() -> DatStructure.DB_OBJECT),
 	ID_STARTING_RESOURCHES (() -> DatStructure.DB_STARTING_RESOURCHES),
 	ID_TECH (() -> DatStructure.DB_TECH_TREE),
-	ID_UIHOTKEY (() -> DatStructure.DB_UIHOTKEY),
+	ID_HOTKEY (() -> DatStructure.DB_UIHOTKEY),
+	ID_UNIT_SET (() -> DatStructure.DB_UNITSET),
 	ID_UPGRADE (() -> DatStructure.DB_UPGRADE),
 	ID_WEAPON_TO_HIT (() -> DatStructure.DB_WEAPON_TO_HIT),
-	ID_LANGUAGE (null)
 
 	;
 

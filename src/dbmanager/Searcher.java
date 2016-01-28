@@ -3,7 +3,7 @@ package dbmanager;
 import java.util.ArrayList;
 import java.util.List;
 
-import gui.elements.JListEntry;
+import gui.components.JListEntry;
 
 public abstract class Searcher<T> {
 	

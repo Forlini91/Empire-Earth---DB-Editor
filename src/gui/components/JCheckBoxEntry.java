@@ -1,27 +1,28 @@
-package gui.elements;
+package gui.components;
 
 import java.awt.Color;
 
-import javax.swing.JToggleButton;
+import javax.swing.JCheckBox;
 
 import dbstructure.EntryStruct;
 
 @SuppressWarnings ("serial")
-public class JToggleBoxEntry extends JToggleButton implements AbstractEntryField {
+public class JCheckBoxEntry extends JCheckBox implements AbstractEntryField {
 
 	private EntryStruct entryStruct;
 	private int index;
 
-	public JToggleBoxEntry(EntryStruct entryStruct, int index){
+	public JCheckBoxEntry(EntryStruct entryStruct, int index){
 		this.entryStruct = entryStruct;
 		this.index = index;
 		if (entryStruct.name != null){
-			setText(index + " " + entryStruct.name);
-			setToolTipText(entryStruct.name);
+			setText(entryStruct.name);
+			setToolTipText(index + " " + entryStruct.name);
 		} else {
 			setText(index + " Unknown");
 			setForeground(Color.RED);
 		}
+		setHorizontalTextPosition(LEFT);
 	}
 
 	@Override
@@ -57,7 +58,7 @@ public class JToggleBoxEntry extends JToggleButton implements AbstractEntryField
 		} else if (val == 1){
 			setSelected(true);
 		} else {
-			throw new IllegalStateException("Entry " + index + ' ' + entryStruct + " is defined as boolean and can't accept value: " + value);
+			throw new IllegalStateException("Questo valore non è boolean: " + value);
 		}
 	}
 

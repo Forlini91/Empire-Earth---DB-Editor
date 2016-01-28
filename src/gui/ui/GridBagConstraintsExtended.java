@@ -1,4 +1,4 @@
-package gui.elements;
+package gui.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;

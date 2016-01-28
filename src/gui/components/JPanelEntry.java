@@ -1,4 +1,4 @@
-package gui.elements;
+package gui.components;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 import dbstructure.EntryStruct;
 
@@ -34,6 +35,9 @@ public class JPanelEntry extends JPanel {
 		setLayout(new GridLayout(2, 0, 0, 0));
 		add(label);
 		add((Component) field);
+		setBorder(new EmptyBorder(4, 4, 4, 4));
+		setOpaque(false);
+		label.setOpaque(false);
 	}
 
 	public void setVal(Object val){

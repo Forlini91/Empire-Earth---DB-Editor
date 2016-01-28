@@ -1,4 +1,4 @@
-package gui.elements;
+package gui.components;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +36,7 @@ public class JListEntry<E> extends JList<E> {
 		this.list = list;
 		listClean = buildListClean();
 		hideUnusedBox = new JCheckBox("Hide undefined fields", true);
+		hideUnusedBox.setOpaque(false);
 		hideUnusedBox.addChangeListener(e -> refresh());
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setVisibleRowCount(10);
@@ -47,6 +48,7 @@ public class JListEntry<E> extends JList<E> {
 		this.list = list;
 		listClean = buildListClean();
 		hideUnusedBox = new JCheckBox("Hide undefined fields", hideUnused);
+		hideUnusedBox.setOpaque(false);
 		hideUnusedBox.addChangeListener(e -> refresh());
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setVisibleRowCount(10);
@@ -58,6 +60,7 @@ public class JListEntry<E> extends JList<E> {
 		this.list = list;
 		this.listClean = listClean;
 		hideUnusedBox = new JCheckBox("Hide undefined fields", true);
+		hideUnusedBox.setOpaque(false);
 		hideUnusedBox.addChangeListener(e -> refresh());
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setVisibleRowCount(10);
@@ -69,6 +72,7 @@ public class JListEntry<E> extends JList<E> {
 		this.list = list;
 		this.listClean = listClean;
 		hideUnusedBox = new JCheckBox("Hide undefined fields", hideUnused);
+		hideUnusedBox.setOpaque(false);
 		hideUnusedBox.addChangeListener(e -> refresh());
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setVisibleRowCount(10);
