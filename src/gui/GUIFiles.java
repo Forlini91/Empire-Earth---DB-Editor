@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import javax.swing.JToggleButton;
 import dbmanager.Core;
 import gui.GUIMain.FileDat;
 import gui.components.AbstractGUI;
+import gui.components.JButtonRed;
 import gui.ui.EEScrollBarUI;
 import gui.ui.GridBagConstraintsExtended;
 import gui.ui.GridBagLayoutExtended;
@@ -38,10 +38,10 @@ public class GUIFiles extends JDialog {
 		setContentPane(contentPane);
 		setBounds(AbstractGUI.getBounds(this, 0.4, 0.6));
 		JLabel label = new JLabel("Select which files to load");
-		JButton selectAllButton = new JButton("Select all");
-		JButton deselectAllButton = new JButton("Deselect all");
-		JButton okButton = new JButton("OK");
-		JButton cancelButton = new JButton("Cancel");
+		JButton selectAllButton = new JButtonRed("Select all");
+		JButton deselectAllButton = new JButtonRed("Deselect all");
+		JButton okButton = new JButtonRed("OK");
+		JButton cancelButton = new JButtonRed("Cancel");
 		getRootPane().setDefaultButton(okButton);
 
 		contentPane.setLayout(gridBagLayout);
@@ -60,8 +60,6 @@ public class GUIFiles extends JDialog {
 		scrollPane.getColumnHeader().setOpaque(false);
 		scrollPanePanel.setOpaque(false);
 		label.setOpaque(false);
-		selectAllButton.setBackground(Core.uiColorElement);
-		selectAllButton.setForeground(Color.WHITE);
 		selectAllButton.addActionListener(e -> {
 			for (JFileContainer checkBoxFile : checkBoxFiles){
 				if (checkBoxFile.isEnabled()) {
@@ -69,8 +67,6 @@ public class GUIFiles extends JDialog {
 				}
 			}
 		});
-		deselectAllButton.setBackground(Core.uiColorElement);
-		deselectAllButton.setForeground(Color.WHITE);
 		deselectAllButton.addActionListener(e -> {
 			for (JFileContainer checkBoxFile : checkBoxFiles){
 				if (checkBoxFile.isEnabled()) {
@@ -78,14 +74,10 @@ public class GUIFiles extends JDialog {
 				}
 			}
 		});
-		okButton.setBackground(Core.uiColorElement);
-		okButton.setForeground(Color.WHITE);
 		okButton.addActionListener(e -> {
 			confirm = true;
 			dispose();
 		});
-		cancelButton.setBackground(Core.uiColorElement);
-		cancelButton.setForeground(Color.WHITE);
 		cancelButton.addActionListener(e -> {
 			dispose();
 		});

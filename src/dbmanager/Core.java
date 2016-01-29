@@ -19,6 +19,8 @@ public class Core {
 
 	public static final Color uiColorBackground = new Color(249, 241, 224);
 	public static final Color uiColorElement = new Color (150, 15, 15);
+	public static final Color uiColorElement2 = uiColorElement.brighter();
+	public static final Color uiColorElement3 = uiColorElement2.brighter();
 
 
 	public static final Map<DatStructure, List<EntryGroup>> dbData = new HashMap<>();
@@ -54,11 +56,16 @@ public class Core {
 	}
 
 	public static Identity[] findEntryByID(DatStructure datStructure, int ID){
+		Entry entry;
 		for (EntryGroup entryGroup : dbData.get(datStructure)){
-			for (Entry entry : entryGroup){
-				if (entry.getID() == ID){
-					return new Identity[]{entryGroup, entry};
-				}
+			//			for (Entry entry : entryGroup){
+			//				if (entry.getID() == ID){
+			//					return new Identity[]{entryGroup, entry};
+			//				}
+			//			}
+			entry = entryGroup.map.get(ID);
+			if (entry != null){
+				return new Identity[]{entryGroup, entry};
 			}
 		}
 		return null;

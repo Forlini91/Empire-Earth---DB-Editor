@@ -94,24 +94,25 @@ public class DBManager {
 	
 	
 	
-	public void save(List<EntryGroup> entryGroups) throws IOException {
+	public void save(List<EntryGroup> entryGroups, Runnable update) throws IOException {
 		File backup = new File(file.getAbsolutePath() + ".bak");
 		Files.deleteIfExists(backup.toPath());
 		Files.copy(file.toPath(), backup.toPath());
 		
 		int numBaseFields = datStructure.entries.length;
-		int numEntries;
-		int numFields;
 		Entry entry;
 		EntryStruct entryStruct;
+		int numEntries;
+		int numFields;
 		try (Saver saver = new Saver(file)) {
 			for (EntryGroup entryGroup : entryGroups){
 				numEntries = entryGroup.entries.size();
 				saver.saveInt(numEntries - datStructure.alterNumEntries, 4);
 				System.out.println("Save file: " + file.getName() + "  >  Group: " + entryGroup + "  >  Num entries: " + numEntries);
-				
+
 				//				StringBuilder sb;
 				for (int i = 0; i < numEntries; i++){
+					update.run();
 					entry = entryGroup.entries.get(i);
 					numFields = entry.values.size();
 					for (int j = 0; j < numFields; j++){

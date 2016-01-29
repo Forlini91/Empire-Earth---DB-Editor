@@ -1,7 +1,7 @@
 package dbstructure;
 
 public enum DatStructure {
-
+	
 	DB_AREA_EFFECT("Area effects", "dbareaeffect.dat", 0, true, 0, 1, 2, -1, null,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID, new EntryStruct("Effect type", Type.INTEGER, 4),
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
@@ -10,12 +10,12 @@ public enum DatStructure {
 			EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT,
 			EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4
 			),
-	
+
 	DB_BUTTONS ("Buttons", "dbbuttons.dat", 0, true, 0, 2, 3, -1, null,
 			EntryStruct.NAME, new EntryStruct("Texture", Type.STRING, 100), EntryStruct.SEQ_NUMBER, EntryStruct.ID,
 			new EntryStruct("<only used by espionage center>", Type.INTEGER, 4), new EntryStruct("<only used by farm and espionage center>", Type.INTEGER, 4), new EntryStruct("Position", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4
 			),
-	
+
 	DB_CALAMITY ("Calamities", "dbcalamity.dat", 0, true, 0, 7, 8, -1, null,
 			EntryStruct.NAME, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT,
 			EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNUSED_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.SEQ_NUMBER,
@@ -27,8 +27,8 @@ public enum DatStructure {
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4
 			),
-
-	DB_CIVILIZATION ("Civilizations", "dbcivilization.dat", 0, false, 0, 1, 2, -1, null,
+	
+	DB_CIVILIZATION ("Civilizations", "dbcivilization.dat", 0, false, 0, -1, -1 , -1, null,
 			EntryStruct.NAME, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, new EntryStruct("Language ID", Type.INTEGER, 4),
 			EntryStruct.ID, new EntryStruct("Cost increment", Type.INTEGER, 4), EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT,
 			EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT,
@@ -62,7 +62,7 @@ public enum DatStructure {
 			EntryStruct.UNUSED_FLOAT, EntryStruct.UNUSED_FLOAT, EntryStruct.UNUSED_FLOAT, EntryStruct.UNUSED_FLOAT,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4
 			),
-	
+
 	DB_FAMILY ("Families", "dbfamily.dat", 0, true, 0, 1, 2, -1, null,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID, EntryStruct.UNKNOWN_INT4,
 			new EntryStruct("Frigate", Type.INTEGER, 4), new EntryStruct("Machine gun", Type.INTEGER, 4), new EntryStruct("Galley", Type.INTEGER, 4), new EntryStruct("Tank", Type.INTEGER, 4),
@@ -83,7 +83,7 @@ public enum DatStructure {
 			new EntryStruct("Capitol ship", Type.INTEGER, 4), new EntryStruct("Space fighter", Type.INTEGER, 4), new EntryStruct("Space corvette", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4,
 			new EntryStruct("Space turret", Type.INTEGER, 4), EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4
 			),
-	
+
 	DB_GAME_VARIANT ("Game variants", "dbgamevariant.dat", 0, true, 0, 1, 2, -1, null,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID, EntryStruct.UNKNOWN_FLOAT,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_FLOAT,
@@ -98,7 +98,7 @@ public enum DatStructure {
 			EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, EntryStruct.UNUSED_INT4, new EntryStruct("Available in random maps", Type.INTEGER, 4),
 			EntryStruct.UNUSED_INT4
 			),
-	
+
 	DB_MUSIC ("Musics", "dbmusic.dat", 0, true, 2, 0, 1, -1, null,
 			EntryStruct.SEQ_NUMBER, EntryStruct.ID, EntryStruct.NAME, new EntryStruct("Another name", Type.STRING, 56),
 			EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNKNOWN_FLOAT, EntryStruct.UNCHANGED_INT4,
@@ -107,7 +107,7 @@ public enum DatStructure {
 			EntryStruct.UNCHANGED_BOOL, EntryStruct.UNCHANGED_BOOL, EntryStruct.UNCHANGED_BOOL, EntryStruct.UNCHANGED_BOOL,
 			EntryStruct.UNCHANGED_BOOL, EntryStruct.UNCHANGED_BOOL, EntryStruct.UNCHANGED_BOOL, EntryStruct.UNUSED_INT1
 			),
-
+	
 	DB_OBJECT ("Objects", "dbobjects.dat", 0, true, 0, 1, 5, -1, null,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID_FAMILY, EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.ID, new EntryStruct("Health", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4,
@@ -236,13 +236,13 @@ public enum DatStructure {
 			EntryStruct.OBJECT_BUILD_TECH, EntryStruct.OBJECT_BUILD_TECH, EntryStruct.OBJECT_BUILD_TECH, EntryStruct.OBJECT_BUILD_TECH,
 			EntryStruct.OBJECT_BUILD_TECH, EntryStruct.UNKNOWN_INT4
 			),
-	
+
 	DB_STARTING_RESOURCHES ("Starting resourches", "dbstartingresources.dat", 0, true, 0, 1, 2, -1, null,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID, new EntryStruct("Language ID", Type.INTEGER, 4),
 			new EntryStruct("Starting food", Type.INTEGER, 4), new EntryStruct("Starting wood", Type.INTEGER, 4), new EntryStruct("Starting stone", Type.INTEGER, 4), new EntryStruct("Starting gold", Type.INTEGER, 4),
 			new EntryStruct("Starting iron", Type.INTEGER, 4)
 			),
-
+	
 	DB_TECH_TREE("Technologies", "dbtechtree.dat", 1, true, 0, 1, 2, 46, EntryStruct.TECH_FROM_OBJECT,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID, new EntryStruct("Starting epoch", Type.INTEGER, 4),
 			new EntryStruct("Ending epoch", Type.INTEGER, 4), EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, new EntryStruct("Wood cost", Type.INTEGER, 4),
@@ -258,12 +258,12 @@ public enum DatStructure {
 			EntryStruct.UNKNOWN_BOOL, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.TECH_FROM_OBJECT, new EntryStruct("Num of tech builders", Type.INTEGER, 4, false)
 			),
-	
+
 	DB_UIHOTKEY ("Hotkeys", "dbuihotkey.dat", 0, true, 2, 0, 1, -1, null,
 			EntryStruct.SEQ_NUMBER, EntryStruct.ID, EntryStruct.NAME, EntryStruct.UNCHANGED_INT4,
 			EntryStruct.UNCHANGED_INT4, EntryStruct.UNCHANGED_INT4, EntryStruct.UNKNOWN_INT4
 			),
-	
+
 	DB_UPGRADE ("Upgrades", "dbupgrade.dat", 0, true, 0, 31, 32, -1, null,
 			EntryStruct.NAME, new EntryStruct("Attack mult", Type.FLOAT, 4), new EntryStruct("Health mult", Type.FLOAT, 4), new EntryStruct("Speed mult", Type.FLOAT, 4),
 			new EntryStruct("Range mult", Type.FLOAT, 4), new EntryStruct("Shock armor mult", Type.FLOAT, 4), new EntryStruct("Arrow armor mult", Type.FLOAT, 4), new EntryStruct("Pierce armor mult", Type.FLOAT, 4),
@@ -275,7 +275,7 @@ public enum DatStructure {
 			new EntryStruct("Area cost mult", Type.FLOAT, 4), EntryStruct.UNUSED_INT4, new EntryStruct("Max upgrades per stat", Type.INTEGER, 4), EntryStruct.SEQ_NUMBER,
 			EntryStruct.ID, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4
 			),
-
+	
 	DB_UNITSET ("Unit sets", "dbunitset.dat", 0, true, 0, 1, 2, -1, null,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID, EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
@@ -284,16 +284,16 @@ public enum DatStructure {
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4,
 			EntryStruct.UNKNOWN_INT4, EntryStruct.UNKNOWN_INT4
 			),
-
+	
 	DB_WEAPON_TO_HIT ("Weapons to hit", "dbweapontohit.dat", 0, false, 0, 1, 2, -1, null,
 			EntryStruct.NAME, EntryStruct.SEQ_NUMBER, EntryStruct.ID, new EntryStruct("Shock mult", Type.INTEGER, 4),
 			new EntryStruct("Gun mult", Type.INTEGER, 4), new EntryStruct("Arrow mult", Type.INTEGER, 4), new EntryStruct("Pierce mult", Type.INTEGER, 4), new EntryStruct("Laser mult", Type.INTEGER, 4),
 			new EntryStruct("Missile mult", Type.INTEGER, 4)
 			),
-	
+
 	;
-
-
+	
+	
 	public String name;
 	public String fileName;
 	public int alterNumEntries;		//dbtechtree declare 1 less entry, because Epochs are not counted...
@@ -304,7 +304,7 @@ public enum DatStructure {
 	public int indexCountExtra;		//index of the entry in the array, which define the number of extra entries
 	public EntryStruct extraEntry;	//if not null, the entry can have extra fields of this type
 	public EntryStruct[] entries;	//array of fields
-	
+
 	DatStructure(String name, String fileName, int alterNumEntries, boolean supportNumAlteration, int indexName, int indexSequence, int indexID, int indexCountExtra, EntryStruct extraEntry, EntryStruct...entries){
 		this.name = name;
 		this.fileName = fileName;
@@ -317,9 +317,9 @@ public enum DatStructure {
 		this.indexID = indexID;
 		this.indexCountExtra = indexCountExtra;
 	}
-
-
-
+	
+	
 	
 
+	
 }

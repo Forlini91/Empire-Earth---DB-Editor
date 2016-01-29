@@ -34,6 +34,8 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, M
 	private final Color defaultColor;
 	private JTextFieldEntryUI textUI = new JTextFieldEntryUI();
 
+	private String lastText = null;
+
 	DatStructure datStructure = null;
 	public EntryGroup pointToGroup = null;
 	public Entry pointToEntry = null;
@@ -112,7 +114,6 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, M
 	@Override
 	public void focusLost(FocusEvent e) {
 		checkResult(getText());
-		//repaint();
 	}
 	
 	
@@ -229,20 +230,28 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, M
 	
 	
 	
-	
 	@Override
 	public void insertUpdate (DocumentEvent e) {
-		scanEntry();
+		if (!getText().equals(lastText)){
+			scanEntry();
+			lastText = getText();
+		}
 	}
 	
 	@Override
 	public void removeUpdate (DocumentEvent e) {
-		scanEntry();
+		if (!getText().equals(lastText)){
+			scanEntry();
+			lastText = getText();
+		}
 	}
 	
 	@Override
 	public void changedUpdate (DocumentEvent e) {
-		scanEntry();
+		if (!getText().equals(lastText)){
+			scanEntry();
+			lastText = getText();
+		}
 	}
 
 }

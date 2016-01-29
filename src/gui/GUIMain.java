@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.io.File;
@@ -27,6 +26,7 @@ import dbstructure.DatStructure;
 import dbstructure.EntryGroup;
 import gui.components.AbstractFrame;
 import gui.components.AbstractGUI;
+import gui.components.JButtonRed;
 import gui.ui.EEScrollBarUI;
 import gui.ui.GridBagConstraintsExtended;
 import gui.ui.GridBagLayoutExtended;
@@ -53,13 +53,8 @@ public class GUIMain extends AbstractFrame {
 		JPanel labelContainer = new JPanel();
 		labelContainer.add(scrollPaneLabel);
 		labelContainer.setOpaque(false);
-		JButton dbLoad = new JButton("Load dat file");
-		JButton dbInfo = new JButton("About");
-
-		dbLoad.setBackground(Core.uiColorElement);
-		dbInfo.setBackground(Core.uiColorElement);
-		dbLoad.setForeground(Color.WHITE);
-		dbInfo.setForeground(Color.WHITE);
+		JButton dbLoad = new JButtonRed("Load dat file");
+		JButton dbInfo = new JButtonRed("About");
 		dbLoad.addActionListener(evt -> loadFiles());
 		dbInfo.addActionListener(evt -> JOptionPane.showMessageDialog(this, S_ABOUT, "About", JOptionPane.INFORMATION_MESSAGE, IMAGE_LOGO_2));
 
@@ -121,7 +116,7 @@ public class GUIMain extends AbstractFrame {
 
 	public void loadFiles(){
 		File selectedFolder = null;
-		List<FileDat> files;
+		List<FileDat> allFiles;
 		List<Boolean> loaded;
 		do{
 			selectedFolder = selectFile(selectedFolder);
@@ -129,13 +124,13 @@ public class GUIMain extends AbstractFrame {
 				return;
 			}
 			String selectedFilePath = selectedFolder.getPath();
-			files = new ArrayList<>(DatStructure.values().length);
-			loaded = new ArrayList<>(files.size());
+			allFiles = new ArrayList<>(DatStructure.values().length);
+			loaded = new ArrayList<>(allFiles.size());
 			boolean canLoadOne = false;
 			for(DatStructure datStructure : DatStructure.values()){
 				FileDat f = new FileDat(selectedFilePath + '\\' + datStructure.fileName, datStructure);
 				if (f.exists()){
-					files.add(f);
+					allFiles.add(f);
 					if (Core.dbData.containsKey(datStructure)){
 						loaded.add(true);
 					} else {
@@ -144,7 +139,7 @@ public class GUIMain extends AbstractFrame {
 					}
 				}
 			}
-			if (files.isEmpty()){
+			if (allFiles.isEmpty()){
 				JOptionPane.showMessageDialog(this, "There's no dat file in this directory!", "Error", JOptionPane.ERROR_MESSAGE);
 			} else if (!canLoadOne){
 				JOptionPane.showMessageDialog(this, "All files in this directory are already loaded!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -153,52 +148,57 @@ public class GUIMain extends AbstractFrame {
 			}
 		} while (true);
 
-		GUIFiles guiFiles = new GUIFiles(this, files, loaded, firstLoad);
-		files = guiFiles.getFilesToLoad();
+		GUIFiles guiFiles = new GUIFiles(this, allFiles, loaded, firstLoad);
+		List<FileDat> files = guiFiles.getFilesToLoad();
 		if (files == null || files.isEmpty()){
 			return;
 		}
 
-		ConcurrentHashMap <DatStructure, List <EntryGroup>> dataLoad = new ConcurrentHashMap<>();
-		AtomicInteger counter = new AtomicInteger(0);
-		for (FileDat file : files){
-			counter.incrementAndGet();
-			Thread t = new Thread(() -> {
-				try {
-					DBManager dbManager = new DBManager(file.datStructure, file);
-					List<EntryGroup> entryGroups = dbManager.read();
-					dataLoad.put(file.datStructure, entryGroups);
-				} catch (Exception e) {
-					System.err.println(e.getMessage());
-				} finally {
-					counter.decrementAndGet();
-				}
-			});
-			t.start();
-		}
-
-		int wait = 50;
-		while (counter.get() != 0 && wait-- > 0){
-			try {
-				Thread.sleep(100);
-			} catch (Exception e) {
-				return;
+		GUIProgressDialog progressDialog = new GUIProgressDialog("Loading...", files.size());
+		new Thread(() -> {
+			ConcurrentHashMap <DatStructure, List <EntryGroup>> dataLoad = new ConcurrentHashMap<>();
+			AtomicInteger counter = new AtomicInteger(0);
+			for (FileDat file : files){
+				counter.incrementAndGet();
+				Thread t = new Thread(() -> {
+					try {
+						DBManager dbManager = new DBManager(file.datStructure, file);
+						List<EntryGroup> entryGroups = dbManager.read();
+						dataLoad.put(file.datStructure, entryGroups);
+						progressDialog.updateSync();
+					} catch (Exception e) {
+						System.err.println(e.getMessage());
+					} finally {
+						counter.decrementAndGet();
+					}
+				});
+				t.start();
 			}
-		}
-		if (counter.get() != 0){
-			JOptionPane.showMessageDialog(this, "An error occurred during the loading of the files", "Error", JOptionPane.ERROR_MESSAGE);
-		} else {
-			firstLoad = false;
-			Core.dbData.putAll(dataLoad);
-		}
-		int gridRows = Math.max(10, files.size());
-		scrollPanePanel.setLayout(new GridLayout(gridRows, 1, 10, 10));
-		for (FileDat fileDat : files){
-			scrollPanePanel.add(new JButtonDat(fileDat));
-		}
-		scrollPane.setVisible(true);
-		scrollPanePanel.revalidate();
-		setBounds(AbstractGUI.getBounds(this, 960, 0.65));
+			
+			int wait = 50;
+			while (counter.get() != 0 && wait-- > 0){
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+					return;
+				}
+			}
+			progressDialog.dispose();
+			if (counter.get() != 0){
+				JOptionPane.showMessageDialog(this, "An error occurred during the loading of the files", "Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				firstLoad = false;
+				Core.dbData.putAll(dataLoad);
+			}
+			int gridRows = Math.max(10, files.size());
+			scrollPanePanel.setLayout(new GridLayout(gridRows, 1, 10, 10));
+			for (FileDat fileDat : files){
+				scrollPanePanel.add(new JButtonDat(fileDat));
+			}
+			scrollPane.setVisible(true);
+			scrollPanePanel.revalidate();
+			setBounds(AbstractGUI.getBounds(this, 960, 0.65));
+		}).start();
 	}
 	
 	public void openFile(FileDat file){
@@ -227,12 +227,10 @@ public class GUIMain extends AbstractFrame {
 		}
 	}
 	
-	public class JButtonDat extends JButton {
+	public class JButtonDat extends JButtonRed {
 		private static final long serialVersionUID = 1732488546384886505L;
 		private JButtonDat(FileDat fileDat){
-			setText(fileDat.datStructure.name);
-			setBackground(Core.uiColorElement);
-			setForeground(Color.WHITE);
+			super (fileDat.datStructure.name);
 			addActionListener(e -> {
 				openFile(fileDat);
 			});

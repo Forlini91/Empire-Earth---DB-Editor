@@ -11,18 +11,18 @@ import javax.swing.border.EmptyBorder;
 import dbstructure.EntryStruct;
 
 public class JPanelEntry extends JPanel {
-
+	
 	private static final long serialVersionUID = 990173999618803006L;
-
+	
 	public final int index;
 	public final EntryStruct entryStruct;
 	public JLabel label;
 	public AbstractEntryField field;
-
+	
 	public JPanelEntry (EntryStruct entryStruct, int index){
 		this.index = index;
 		this.entryStruct = entryStruct;
-
+		
 		label = new JLabelEntry(entryStruct, index);
 		label.setPreferredSize(new Dimension(100, 25));
 		switch(entryStruct.type){
@@ -43,7 +43,7 @@ public class JPanelEntry extends JPanel {
 	public void setVal(Object val){
 		field.setVal(val);
 	}
-
+	
 	public Object getVal(){
 		return field.getVal();
 	}
