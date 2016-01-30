@@ -4,20 +4,21 @@ import java.awt.Color;
 
 import javax.swing.JToggleButton;
 
-import dbstructure.EntryStruct;
+import datstructure.FieldStruct;
 
-@SuppressWarnings ("serial")
 public class JToggleBoxEntry extends JToggleButton implements AbstractEntryField {
 
-	private EntryStruct entryStruct;
+	private static final long serialVersionUID = 2945166199101734683L;
+
+	private FieldStruct fieldStruct;
 	private int index;
 
-	public JToggleBoxEntry(EntryStruct entryStruct, int index){
-		this.entryStruct = entryStruct;
+	public JToggleBoxEntry(FieldStruct fieldStruct, int index){
+		this.fieldStruct = fieldStruct;
 		this.index = index;
-		if (entryStruct.name != null){
-			setText(index + " " + entryStruct.name);
-			setToolTipText(entryStruct.name);
+		if (fieldStruct.name != null){
+			setText(index + " " + fieldStruct.name);
+			setToolTipText(fieldStruct.name);
 		} else {
 			setText(index + " Unknown");
 			setForeground(Color.RED);
@@ -30,8 +31,8 @@ public class JToggleBoxEntry extends JToggleButton implements AbstractEntryField
 	}
 
 	@Override
-	public EntryStruct getEntryStruct () {
-		return entryStruct;
+	public FieldStruct getEntryStruct () {
+		return fieldStruct;
 	}
 	
 	@Override
@@ -57,7 +58,7 @@ public class JToggleBoxEntry extends JToggleButton implements AbstractEntryField
 		} else if (val == 1){
 			setSelected(true);
 		} else {
-			throw new IllegalStateException("Entry " + index + ' ' + entryStruct + " is defined as boolean and can't accept value: " + value);
+			throw new IllegalStateException("Entry " + index + ' ' + fieldStruct + " is defined as boolean and can't accept value: " + value);
 		}
 	}
 

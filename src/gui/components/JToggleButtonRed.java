@@ -3,27 +3,29 @@ package gui.components;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import javax.swing.JButton;
+import javax.swing.JToggleButton;
+import javax.swing.border.BevelBorder;
 
 import datmanager.Core;
 
-public class JButtonRed extends JButton {
-	
-	private static final long serialVersionUID = -7170626623468679349L;
+public class JToggleButtonRed extends JToggleButton {
+
+	private static final long serialVersionUID = -4858968926244969621L;
 	
 	{
 		setBackground(Core.UI_COLOR_ELEMENT);
 		setForeground(Color.WHITE);
+		setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 	}
-
-	public JButtonRed(String name){
+	
+	public JToggleButtonRed(String name){
 		super(name);
 		super.setContentAreaFilled(false);
 	}
-
+	
 	@Override
 	protected void paintComponent(Graphics g) {
-		if (getModel().isPressed()) {
+		if (getModel().isSelected()) {
 			g.setColor(Core.UI_COLOR_ELEMENT3);
 		} else if (getModel().isRollover()) {
 			g.setColor(Core.UI_COLOR_ELEMENT2);
@@ -33,5 +35,5 @@ public class JButtonRed extends JButton {
 		g.fillRect(0, 0, getWidth(), getHeight());
 		super.paintComponent(g);
 	}
-	
+
 }

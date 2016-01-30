@@ -12,20 +12,21 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
-import dbmanager.Core;
-import gui.GUIMain.FileDat;
-import gui.components.AbstractGUI;
+import datmanager.Core;
+import datmanager.DatFile;
 import gui.components.JButtonRed;
+import gui.components.JToggleButtonRed;
 import gui.ui.EEScrollBarUI;
 import gui.ui.GridBagConstraintsExtended;
 import gui.ui.GridBagLayoutExtended;
 
 
-public class GUIFiles extends JDialog {
+public class DialogSelectFiles extends JDialog {
 
-	private static final long serialVersionUID = 6953966147035750602L;
+	private static final long serialVersionUID = 4743010835668668611L;
 	private final JPanel contentPane = new JPanel();
 	private GridBagLayoutExtended gridBagLayout = new GridBagLayoutExtended(new int[]{200, 200}, new int[]{400, 25, 35, 35}, new double[]{0.5, 0.5}, new double[]{1.0, 0, 0, 0});
 	private JPanel scrollPanePanel = new JPanel();
@@ -36,8 +37,9 @@ public class GUIFiles extends JDialog {
 	
 	{
 		setContentPane(contentPane);
-		setBounds(AbstractGUI.getBounds(this, 0.4, 0.6));
+		setBounds(Core.getBounds(this, 0.4, 0.6));
 		JLabel label = new JLabel("Select which files to load");
+		label.setHorizontalAlignment(SwingConstants.CENTER);
 		JButton selectAllButton = new JButtonRed("Select all");
 		JButton deselectAllButton = new JButtonRed("Deselect all");
 		JButton okButton = new JButtonRed("OK");
@@ -45,7 +47,7 @@ public class GUIFiles extends JDialog {
 		getRootPane().setDefaultButton(okButton);
 
 		contentPane.setLayout(gridBagLayout);
-		contentPane.setBackground(Core.uiColorBackground);
+		contentPane.setBackground(Core.UI_COLOR_BACKGROUND);
 		contentPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		contentPane.add(scrollPane, new GridBagConstraintsExtended(0, 0, 20, 0, 0, 0, 2, 1));
 		contentPane.add(selectAllButton, new GridBagConstraintsExtended(0, 0, 0, 2, 0, 1));
@@ -59,6 +61,7 @@ public class GUIFiles extends JDialog {
 		scrollPane.getViewport().setOpaque(false);
 		scrollPane.getColumnHeader().setOpaque(false);
 		scrollPanePanel.setOpaque(false);
+		scrollPanePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		label.setOpaque(false);
 		selectAllButton.addActionListener(e -> {
 			for (JFileContainer checkBoxFile : checkBoxFiles){
@@ -83,7 +86,7 @@ public class GUIFiles extends JDialog {
 		});
 	}
 
-	public GUIFiles (JFrame parent, List<FileDat> files, List<Boolean> loaded, boolean firstLoad) {
+	public DialogSelectFiles (JFrame parent, List<DatFile> files, List<Boolean> loaded, boolean firstLoad) {
 		super(parent, ModalityType.APPLICATION_MODAL);
 		setTitle("Load files");
 		checkBoxFiles = new JFileContainer[files.size()];
@@ -95,12 +98,12 @@ public class GUIFiles extends JDialog {
 		}
 	}
 
-	public List<FileDat> getFilesToLoad(){
+	public List<DatFile> getFilesToLoad(){
 		setVisible(true);
 		if (!confirm){
 			return null;
 		}
-		List<FileDat> files = new ArrayList<>(checkBoxFiles.length);
+		List<DatFile> files = new ArrayList<>(checkBoxFiles.length);
 		for (JFileContainer checkBoxFile : checkBoxFiles){
 			if (checkBoxFile.isEnabled() && checkBoxFile.isSelected()){
 				files.add(checkBoxFile.file);
@@ -109,12 +112,12 @@ public class GUIFiles extends JDialog {
 		return files;
 	}
 	
-	private static class JFileContainer extends JToggleButton {
-		private static final long serialVersionUID = 1L;
-		private FileDat file;
-		private JFileContainer (FileDat file, boolean loaded, boolean firstLoad) {
+	private static class JFileContainer extends JToggleButtonRed {
+		private static final long serialVersionUID = 7255738274808055053L;
+		private DatFile file;
+		private JFileContainer (DatFile file, boolean loaded, boolean firstLoad) {
+			super(file.getName());
 			this.file = file;
-			setText(file.getName());
 			if (loaded){
 				setSelected(true);
 				setEnabled(false);

@@ -2,16 +2,16 @@ package gui.components;
 
 import javax.swing.JLabel;
 
-import dbstructure.EntryStruct;
+import datstructure.FieldStruct;
 
 public class JLabelEntry extends JLabel {
-
-	private static final long serialVersionUID = 5486028957542202352L;
-
-	public JLabelEntry(EntryStruct entryStruct, int index){
-		setText(index + " (" + entryStruct.size + ") " + entryStruct.name);
-		setToolTipText(getText());
-		setForeground(entryStruct.color);
-	}
 	
+	private static final long serialVersionUID = 8120384566122030551L;
+	
+	public JLabelEntry(FieldStruct fieldStruct, int index){
+		setText(index + " (" + fieldStruct.size + ") " + fieldStruct.name);
+		setToolTipText(getText());
+		setForeground(fieldStruct.color);
+	}
+
 }

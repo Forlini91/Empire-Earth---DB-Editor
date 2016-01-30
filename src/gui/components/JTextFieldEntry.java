@@ -14,80 +14,82 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicTextFieldUI;
 
-import dbmanager.Core;
-import dbstructure.DatStructure;
-import dbstructure.Entry;
-import dbstructure.EntryGroup;
-import dbstructure.EntryStruct;
-import dbstructure.Identity;
-import dbstructure.Type;
-import gui.GUIEditor;
+import datmanager.Core;
+import datmanager.DatFile;
+import datstructure.DatStructure;
+import datstructure.Entry;
+import datstructure.EntryGroup;
+import datstructure.FieldStruct;
+import datstructure.Type;
+import gui.FrameEditor;
 
 
-@SuppressWarnings ("serial")
 public class JTextFieldEntry extends JTextField implements AbstractEntryField, MouseListener, FocusListener, DocumentListener {
-	
-	private static final Color BROWN = new Color(127, 51, 0);
 
-	private EntryStruct entryStruct;
+	private static final long serialVersionUID = -7134081240220832439L;
+	private static final Color BROWN = new Color(127, 51, 0);
+	
+	private FieldStruct fieldStruct;
 	private final int index;
 	private final Color defaultColor;
 	private JTextFieldEntryUI textUI = new JTextFieldEntryUI();
-
+	
 	private String lastText = null;
-
-	DatStructure datStructure = null;
+	
+	private final DatStructure datStructure;
 	public EntryGroup pointToGroup = null;
 	public Entry pointToEntry = null;
-
-	public JTextFieldEntry(EntryStruct entryStruct, int index, String hint){
-		this.entryStruct = entryStruct;
+	
+	public JTextFieldEntry(FieldStruct fieldStruct, int index, String hint){
+		this.fieldStruct = fieldStruct;
 		this.index = index;
-		if (entryStruct.color == Color.RED){
+		if (fieldStruct.color == Color.RED){
 			defaultColor = BROWN;
 		} else {
-			defaultColor = entryStruct.color;
+			defaultColor = fieldStruct.color;
 		}
-		if (entryStruct.type.datStructure != null){
-			datStructure = entryStruct.type.datStructure.get();
+		if (fieldStruct.type.datStructure != null){
+			datStructure = fieldStruct.type.datStructure.get();
+		} else {
+			datStructure = null;
 		}
-
+		
 		setUI(textUI);
 		setColumns(10);
-		setEditable(entryStruct.editable);
+		setEditable(fieldStruct.editable);
 		setForeground(defaultColor);
 		setCaretPosition(0);
-
+		
 		addFocusListener(this);
 		addMouseListener(this);
 		if (datStructure != null){
 			getDocument().addDocumentListener(this);
 		}
 	}
-
+	
 	@Override
 	public void resetColor () {
 		setForeground(defaultColor);
 	}
-	
-	@Override
-	public EntryStruct getEntryStruct () {
-		return entryStruct;
-	}
 
+	@Override
+	public FieldStruct getEntryStruct () {
+		return fieldStruct;
+	}
+	
 	@Override
 	public int getIndex(){
 		return index;
 	}
-	
+
 	@Override
 	public boolean isFieldCompiled(){
 		return !getText().isEmpty();
 	}
-	
+
 	@Override
 	public Object getVal(){
-		switch(entryStruct.type){
+		switch(fieldStruct.type){
 			case STRING:
 				return getText();
 			case FLOAT:
@@ -96,42 +98,42 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, M
 				return Integer.valueOf(getText());
 		}
 	}
-
+	
 	@Override
 	public void setVal (Object value) {
-		if (entryStruct.type == Type.STRING){
+		if (fieldStruct.type == Type.STRING){
 			setText(((String) value).trim());
 		} else {
 			setText(String.valueOf(value));
 		}
 	}
-
+	
 	@Override
 	public void focusGained(FocusEvent e) {
 		repaint();
 	}
-	
+
 	@Override
 	public void focusLost(FocusEvent e) {
 		checkResult(getText());
 	}
-	
-	
 
+
+	
 	private void checkResult(String text){
-		if (entryStruct != null){
-			if (entryStruct.type == Type.STRING){
-				if (text.length() > entryStruct.size) {
+		if (fieldStruct != null){
+			if (fieldStruct.type == Type.STRING){
+				if (text.length() > fieldStruct.size) {
 					JTextFieldEntry.super.setText(text.substring(0, 100));
 					Toolkit.getDefaultToolkit().beep();
 				}
 			} else {
 				try {
-					if (entryStruct.type == Type.FLOAT) {
+					if (fieldStruct.type == Type.FLOAT) {
 						Float.valueOf(text);
 					} else {
 						int value = Integer.valueOf(text);
-						if (entryStruct.type == Type.BOOLEAN){
+						if (fieldStruct.type == Type.BOOLEAN){
 							if (value < 0) {
 								JTextFieldEntry.super.setText("0");
 								Toolkit.getDefaultToolkit().beep();
@@ -148,21 +150,21 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, M
 			}
 		}
 	}
-
-
+	
+	
 	public void scanEntry(){
 		if (!getText().isEmpty()){
-			List <EntryGroup> dbManager = Core.dbData.get(datStructure);
+			List <EntryGroup> dbManager = Core.DATA.get(datStructure);
 			if (dbManager != null){
 				try{
-					Identity[] identities = Core.findEntryByID(datStructure, Integer.valueOf(getText()));
-					if (identities != null){
-						EntryGroup findGroup = (EntryGroup) identities[0];
-						Entry findEntry = (Entry) identities[1];
+					Object[] results = Core.findEntryByID(datStructure, Integer.valueOf(getText()));
+					if (results != null){
+						EntryGroup findGroup = (EntryGroup) results[0];
+						Entry findEntry = (Entry) results[1];
 						if (findGroup != pointToGroup || findEntry != pointToEntry){
 							pointToGroup = findGroup;
 							pointToEntry = findEntry;
-							//System.out.println("Field " + entryStruct.toString() + "   >   Matches " + findGroup + " > " + findEntry);
+							//System.out.println("Field " + fieldStruct.toString() + "   >   Matches " + findGroup + " > " + findEntry);
 						}
 						return;
 					}
@@ -172,16 +174,15 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, M
 		pointToGroup = null;
 		pointToEntry = null;
 	}
-	
 
+	
 	@Override
 	public void mouseClicked (MouseEvent e) {
 		if (e.isControlDown() && pointToEntry != null){
-			GUIEditor editor = Core.dbEditors.get(datStructure);
-			if (editor != null){
-				System.out.println("Go to: " + editor.file.getName() + " > " + pointToGroup + " > " + pointToEntry);
-				editor.setVisible(true);
-				editor.goToEntry(pointToGroup, pointToEntry);
+			DatFile datFile = Core.DAT_FILES.get(datStructure);
+			if (datFile != null){
+				FrameEditor frameEditor = Core.openFile(this, datFile);
+				frameEditor.goToEntry(pointToGroup, pointToEntry);
 			}
 		}
 	}
@@ -189,11 +190,11 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, M
 	@Override public void mouseReleased (MouseEvent e) {}
 	@Override public void mouseEntered (MouseEvent e) {}
 	@Override public void mouseExited (MouseEvent e) {}
-
-
-
-
-
+	
+	
+	
+	
+	
 	public class JTextFieldEntryUI extends BasicTextFieldUI {
 		@Override
 		protected void paintSafely(Graphics g) {
@@ -208,7 +209,7 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, M
 				}
 			}
 		}
-		
+
 		public String printText(){
 			if (datStructure == null){
 				if (getText().isEmpty()){
@@ -224,7 +225,7 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, M
 				return pointToEntry.getName();
 			}
 		}
-
+		
 	}
 	
 	
@@ -253,5 +254,5 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, M
 			lastText = getText();
 		}
 	}
-
+	
 }

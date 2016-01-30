@@ -3,193 +3,75 @@ package gui.components;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.JCheckBox;
-import javax.swing.JList;
-import javax.swing.ListSelectionModel;
 
-import dbstructure.Identity;
+import datstructure.Entry;
 
-public class JListEntry<E> extends JList<E> {
-	
-	private static final long serialVersionUID = 6271105907903664525L;
+public class JListEntry extends JListDouble<Entry> {
 
-	private List<E> list;
-	private List<E> listClean;
-	public JCheckBox hideUnusedBox;
+	private static final long serialVersionUID = -1460528354644591567L;
 	
 
-
-	public JListEntry(){
-		this(new ArrayList<>(0));
-	}
-	
-	public JListEntry (E[] array){
-		this(Arrays.asList(array));
+	public JListEntry(String checkBoxText){
+		this(new ArrayList<>(0), checkBoxText);
 	}
 
+	public JListEntry (Entry[] array, String checkBoxText){
+		this(Arrays.asList(array), checkBoxText, true);
+	}
+	
+	public JListEntry (List<Entry> list, String checkBoxText){
+		this(list, buildListClean(list), checkBoxText, true);
+	}
 
-	
-	public JListEntry (List<E> list){
-		super();
-		this.list = list;
-		listClean = buildListClean();
-		hideUnusedBox = new JCheckBox("Hide undefined fields", true);
-		hideUnusedBox.setOpaque(false);
-		hideUnusedBox.addChangeListener(e -> refresh());
-		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		setVisibleRowCount(10);
-		refresh();
+	public JListEntry (List<Entry> list, String checkBoxText, boolean hideUnused){
+		this(list, buildListClean(list), checkBoxText, hideUnused);
 	}
-	
-	public JListEntry (List<E> list, boolean hideUnused){
-		super();
-		this.list = list;
-		listClean = buildListClean();
-		hideUnusedBox = new JCheckBox("Hide undefined fields", hideUnused);
-		hideUnusedBox.setOpaque(false);
-		hideUnusedBox.addChangeListener(e -> refresh());
-		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		setVisibleRowCount(10);
-		refresh();
-	}
-	
-	public JListEntry (List<E> list, List<E> listClean){
-		super();
-		this.list = list;
-		this.listClean = listClean;
-		hideUnusedBox = new JCheckBox("Hide undefined fields", true);
-		hideUnusedBox.setOpaque(false);
-		hideUnusedBox.addChangeListener(e -> refresh());
-		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		setVisibleRowCount(10);
-		refresh();
-	}
-	
-	public JListEntry (List<E> list, List<E> listClean, boolean hideUnused){
-		super();
-		this.list = list;
-		this.listClean = listClean;
-		hideUnusedBox = new JCheckBox("Hide undefined fields", hideUnused);
-		hideUnusedBox.setOpaque(false);
-		hideUnusedBox.addChangeListener(e -> refresh());
-		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		setVisibleRowCount(10);
-		refresh();
-	}
-	
-	public JListEntry (List<E> list, List<E> listClean, JCheckBox hideUnusedBox){
-		super();
-		this.list = list;
-		this.listClean = listClean;
-		this.hideUnusedBox = hideUnusedBox;
-		hideUnusedBox.addChangeListener(e -> refresh());
-		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		setVisibleRowCount(10);
-		refresh();
-	}
-	
-	
-	
 
-	public List<E> getList(){
-		return list;
+	public JListEntry (List<Entry> list, List<Entry> listClean, String checkBoxText){
+		this(list, listClean, checkBoxText, true);
 	}
-	
 
-	public void setList(E[] newList){
+	public JListEntry (List<Entry> list, List<Entry> listClean, String checkBoxText, boolean hideUnused){
+		this(list, listClean, new JCheckBoxExtended(checkBoxText, hideUnused));
+	}
+
+	public JListEntry (List<Entry> list, List<Entry> listClean, JCheckBox hideUnusedBox){
+		super(list, listClean, hideUnusedBox);
+	}
+
+
+	@Override
+	public void setList(Entry[] newList){
 		list = Arrays.asList(newList);
-		listClean = buildListClean();
+		listClean = buildListClean(list);
 		refresh();
 	}
-	
 
-	public void setList(List<E> newList){
+	@Override
+	public void setList(List<Entry> newList){
 		list = newList;
-		listClean = buildListClean();
-		refresh();
-	}
-	
-	public void setList(E[] newList, E[] newListClean){
-		list = Arrays.asList(newList);
-		listClean = Arrays.asList(newListClean);
+		listClean = buildListClean(list);
 		refresh();
 	}
 	
 
-	public void setList(List<E> newList, List<E> newListClean){
-		list = newList;
-		listClean = newListClean;
-		refresh();
-	}
-	
-
-	public int getLength(){
-		if (hideUnusedBox.isSelected()) {
-			return listClean.size();
-		} else {
-			return list.size();
-		}
-	}
-	
-
-	public E getSelectedElement(){
-		return getSelectedValue();
-	}
-	
-
-	public void setSelectedElement(E element){
-		setSelectedValue(element, true);
-	}
-	
-	public void setSelectedElement(int index){
-		if (hideUnusedBox.isSelected()) {
-			setSelectedValue(listClean.get(index), true);
-		} else {
-			setSelectedValue(list.get(index), true);
-		}
-	}
-	
-
-	public E get(int index){
-		if (hideUnusedBox.isSelected()) {
-			return listClean.get(index);
-		} else {
-			return list.get(index);
-		}
-	}
-	
-
-	public int indexOf(E element){
-		if (hideUnusedBox.isSelected()) {
-			return listClean.indexOf(element);
-		} else {
-			return list.indexOf(element);
-		}
-	}
-
-	public void refresh(){
-		if (hideUnusedBox.isSelected()) {
-			setListData(new Vector<>(listClean));
-		} else {
-			setListData(new Vector<>(list));
-		}
-	}
-	
-
-	
-	public List<E> buildListClean(){
+	/**
+	 * Build and return a "clean" list: a list without undefined fields.
+	 * @return	The clean list
+	 */
+	public static List<Entry> buildListClean(List<Entry> list){
 		int n = list.size();
-		List<E> newListClean = new ArrayList<>();
-		Identity ident;
+		List<Entry> newListClean = new ArrayList<>();
+		Entry entry;
 		for (int i = 0; i < n; i++){
-			ident = (Identity) list.get(i);
-			if (ident.getID() >= 0 && ident.getSequenceNumber() >= 0){
+			entry = list.get(i);
+			if (entry.isDefined()){
 				newListClean.add(list.get(i));
 			}
 		}
 		return newListClean;
 	}
-	
+
 }

@@ -1,8 +1,13 @@
 package constants;
 
 
+/**
+ * All possible commands for a unit, with the given code
+ * @author MarcoForlini
+ *
+ */
 public enum UnitCommands implements Element {
-	
+
 	Stop (),
 	Explore (),
 	Patrol (),
@@ -17,18 +22,22 @@ public enum UnitCommands implements Element {
 	BomberSpawn (),
 	NuclearBomberSpawn (),
 	;
+	
+	
+	public final int value;
 
-
-	//	public final int value;
-
-	//	UnitCommands(int value){
-	//		this.value = value;
-	//	}
-
+	UnitCommands(){		//Will be removed when all values will be discovered
+		value = 0;
+	}
+	
+	UnitCommands(int value){
+		this.value = value;
+	}
+	
 	@Override
 	public Integer getValue(){
-		return 0;	//value;
+		return value;
 	}
-
-
+	
+	
 }

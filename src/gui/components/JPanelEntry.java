@@ -8,28 +8,28 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import dbstructure.EntryStruct;
+import datstructure.FieldStruct;
 
 public class JPanelEntry extends JPanel {
-	
-	private static final long serialVersionUID = 990173999618803006L;
-	
+
+	private static final long serialVersionUID = -8432430218424230659L;
+
 	public final int index;
-	public final EntryStruct entryStruct;
+	public final FieldStruct fieldStruct;
 	public JLabel label;
 	public AbstractEntryField field;
-	
-	public JPanelEntry (EntryStruct entryStruct, int index){
+
+	public JPanelEntry (FieldStruct fieldStruct, int index){
 		this.index = index;
-		this.entryStruct = entryStruct;
-		
-		label = new JLabelEntry(entryStruct, index);
+		this.fieldStruct = fieldStruct;
+
+		label = new JLabelEntry(fieldStruct, index);
 		label.setPreferredSize(new Dimension(100, 25));
-		switch(entryStruct.type){
+		switch(fieldStruct.type){
 			case BOOLEAN:
-				field = new JToggleBoxEntry(entryStruct, index); break;
+				field = new JToggleBoxEntry(fieldStruct, index); break;
 			default:
-				field = new JTextFieldEntry(entryStruct, index, null);
+				field = new JTextFieldEntry(fieldStruct, index, null);
 		}
 		field.setPreferredSize(new Dimension(100, 25));
 		setLayout(new GridLayout(2, 0, 0, 0));
@@ -39,11 +39,11 @@ public class JPanelEntry extends JPanel {
 		setOpaque(false);
 		label.setOpaque(false);
 	}
-
+	
 	public void setVal(Object val){
 		field.setVal(val);
 	}
-	
+
 	public Object getVal(){
 		return field.getVal();
 	}

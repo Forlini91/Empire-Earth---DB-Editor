@@ -1,4 +1,4 @@
-package dbstructure;
+package datstructure;
 
 /**
  * This enum define our knowledge about a field

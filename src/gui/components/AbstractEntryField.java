@@ -2,12 +2,12 @@ package gui.components;
 
 import java.awt.Dimension;
 
-import dbstructure.EntryStruct;
+import datstructure.FieldStruct;
 
 
 public interface AbstractEntryField {
 	
-	EntryStruct getEntryStruct();
+	FieldStruct getEntryStruct();
 	
 	int getIndex();
 	
