@@ -197,7 +197,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 				if (selected != null){
 					currentEntry = selected;
 					panelFields.setVisible(false);
-					if (currentEntry.datStructure.extraEntry != null || entryPanels.size() <= 0){
+					if (currentEntry.datStructure.getExtraEntry() != null || entryPanels.size() <= 0){
 						buildFields(currentEntry);
 					}
 					loadEntry(currentEntry);
@@ -206,7 +206,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			}
 		});
 		entryList.addMouseListener(new PopupMenuListHandler(entryListMenu, entryList, ()->{
-			return datContent.datStructure.supportNumEntriesAlteration;
+			return datContent.datStructure.isSupportNumEntriesAlteration();
 		}));
 		entryList.switchList.setHorizontalAlignment(SwingConstants.RIGHT);
 		entryList.switchList.setHorizontalTextPosition(SwingConstants.LEFT);
@@ -257,7 +257,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		panelFields.setOpaque(false);
 		reset.addActionListener(e -> {
 			panelFields.setVisible(false);
-			if (currentEntry.datStructure.extraEntry != null || entryPanels.size() <= 0) {
+			if (currentEntry.datStructure.getExtraEntry() != null || entryPanels.size() <= 0) {
 				buildFields(currentEntry);
 			}
 			loadEntry(currentEntry);
@@ -283,11 +283,11 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		setVisible(false);
 		this.datContent = datContent;
 
-		int nFields = datContent.datStructure.entries.length;
+		int nFields = datContent.datStructure.getEntries().length;
 		if (nFields < GRID_MIN_ENTRY_SLOTS) {
 			gridLayout.setRows(GRID_MIN_ENTRY_SLOTS/4);
 		}
-		entryPanels = new ArrayList<>(datContent.datStructure.indexCountExtra < 0 ? nFields : nFields+20);
+		entryPanels = new ArrayList<>(datContent.datStructure.getIndexCountExtra() < 0 ? nFields : nFields+20);
 
 		entryGroupList.setList(datContent.entryGroups);
 		if (datContent.entryGroups.size() > 0){
@@ -295,7 +295,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			entryGroupList.setSelectedIndex(0);
 		}
 		
-		setTitle("EE - DB Editor: " + datContent.datStructure.fileName);
+		setTitle("EE - DB Editor: " + datContent.datStructure.getFileName());
 		setAutoRequestFocus(true);
 		addWindowListener(this);
 		addWindowFocusListener(this);
@@ -342,7 +342,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	
 	
 	private void buildFields(Entry entries){
-		int numBaseFields = datContent.datStructure.entries.length;
+		int numBaseFields = datContent.datStructure.getEntries().length;
 		int numPlacedFields = entryPanels.size();
 		numSavedFields = entries.values.size();
 		FieldStruct entry;
@@ -350,7 +350,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		panelFields.removeAll();
 		for (int i = 0; i < numBaseFields; i++){
 			if (i >= numPlacedFields){
-				entry = datContent.datStructure.entries[i];
+				entry = datContent.datStructure.getEntries()[i];
 				JPanelEntry entryPanel = new JPanelEntry(entry, i);
 				entryPanels.add(entryPanel);
 				Component component = (Component) entryPanel.field;
@@ -361,7 +361,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			panelFields.add(entryPanels.get(i));
 		}
 		numPlacedFields = entryPanels.size();
-		entry = datContent.datStructure.extraEntry;
+		entry = datContent.datStructure.getExtraEntry();
 		for (int i = numBaseFields; i < numSavedFields; i++){
 			if (i >= numPlacedFields){
 				entryPanels.add(new JPanelEntry(entry, i));
@@ -375,7 +375,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			panelFields.add(new JPanel());
 		}
 		
-		if (datContent.datStructure.extraEntry != null){
+		if (datContent.datStructure.getExtraEntry() != null){
 			addID.setVisible(true);
 			if (numSavedFields > numBaseFields){
 				removeID.setVisible(true);
@@ -387,11 +387,11 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	}
 	
 	public void addField(){
-		JPanelEntry entryPanel = new JPanelEntry(datContent.datStructure.extraEntry, entryPanels.size());
+		JPanelEntry entryPanel = new JPanelEntry(datContent.datStructure.getExtraEntry(), entryPanels.size());
 		entryPanels.add(entryPanel);
 		panelFields.add(entryPanel);
 		removeID.setEnabled(true);
-		entryPanel = entryPanels.get(datContent.datStructure.indexCountExtra);
+		entryPanel = entryPanels.get(datContent.datStructure.getIndexCountExtra());
 		int value = (int) entryPanel.getVal();
 		entryPanel.setVal(value+1);
 		panelFields.updateUI();
@@ -399,14 +399,14 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	
 	public void removeField(){
 		int index = entryPanels.size()-1;
-		if (index >= datContent.datStructure.entries.length){
+		if (index >= datContent.datStructure.getEntries().length){
 			JPanelEntry entryPanel = entryPanels.remove(index);
 			panelFields.remove(index);
 			index--;
-			if (index == datContent.datStructure.entries.length-1){
+			if (index == datContent.datStructure.getEntries().length-1){
 				removeID.setEnabled(false);
 			}
-			entryPanel = entryPanels.get(datContent.datStructure.indexCountExtra);
+			entryPanel = entryPanels.get(datContent.datStructure.getIndexCountExtra());
 			int value = (int) entryPanel.getVal();
 			entryPanel.setVal(value-1);
 			panelFields.updateUI();
@@ -424,15 +424,15 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	}
 	
 	public void saveEntry(){
-		int numBaseFields = datContent.datStructure.entries.length;
+		int numBaseFields = datContent.datStructure.getEntries().length;
 		List<Object> values = currentEntry.values;
 		for (int i = 0; i < numBaseFields; i++){
-			if (datContent.datStructure.entries[i].editable){
+			if (datContent.datStructure.getEntries()[i].isEditable()){
 				values.set(i, entryPanels.get(i).getVal());
 			}
 		}
 
-		if (datContent.datStructure.extraEntry != null){
+		if (datContent.datStructure.getExtraEntry() != null){
 			numSavedFields = values.size();
 			int numPlacedFields = entryPanels.size();
 			for (int i = numBaseFields; i < numPlacedFields; i++){
@@ -446,7 +446,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			for (int i = numPlacedFields; i < numSavedFields; i++){
 				values.remove(i);
 			}
-			values.set(datContent.datStructure.indexCountExtra, entryPanels.get(datContent.datStructure.indexCountExtra).getVal());
+			values.set(datContent.datStructure.getIndexCountExtra(), entryPanels.get(datContent.datStructure.getIndexCountExtra()).getVal());
 		}
 		saved = true;
 		System.out.println("Save entry: " + currentEntry);
@@ -506,7 +506,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		int size;
 		for (JPanelEntry entryPanel : entryPanels){
 			fieldStruct = entryPanel.fieldStruct;
-			if (fieldStruct.knowledge != Knowledge.KNOWN) {
+			if (fieldStruct.getKnowledge() != Knowledge.KNOWN) {
 				entryValueMap = EntryValueMap.getValuesMap(datContent.entryGroups, entryPanel.index, true);
 				size = entryValueMap.mapClean.size();
 				if (size <= 2 || size == entryValueMap.counter) {
@@ -514,7 +514,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 					entryPanel.label.setBackground(Color.BLACK);
 					entryPanel.label.setOpaque(true);
 					if (size == 1){
-						if (fieldStruct.knowledge != Knowledge.NEVER_CHANGE && fieldStruct.knowledge != Knowledge.NEVER_USED) {
+						if (fieldStruct.getKnowledge() != Knowledge.NEVER_CHANGE && fieldStruct.getKnowledge() != Knowledge.NEVER_USED) {
 							entryPanel.label.setForeground(Color.RED);
 						}
 					} else if (size == 2){
@@ -541,7 +541,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			entryPanel = it.next();
 			entryPanel.label.setOpaque(false);
 			entryPanel.label.setBackground(null);
-			entryPanel.label.setForeground(entryPanel.fieldStruct.color);
+			entryPanel.label.setForeground(entryPanel.fieldStruct.getColor());
 			entryPanel.field.resetColor();
 			it.remove();
 		}

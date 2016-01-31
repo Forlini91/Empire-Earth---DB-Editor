@@ -11,21 +11,21 @@ import javax.swing.border.EmptyBorder;
 import datstructure.FieldStruct;
 
 public class JPanelEntry extends JPanel {
-
+	
 	private static final long serialVersionUID = -8432430218424230659L;
-
+	
 	public final int index;
 	public final FieldStruct fieldStruct;
 	public JLabel label;
 	public AbstractEntryField field;
-
+	
 	public JPanelEntry (FieldStruct fieldStruct, int index){
 		this.index = index;
 		this.fieldStruct = fieldStruct;
-
+		
 		label = new JLabelEntry(fieldStruct, index);
 		label.setPreferredSize(new Dimension(100, 25));
-		switch(fieldStruct.type){
+		switch(fieldStruct.getType()){
 			case BOOLEAN:
 				field = new JToggleBoxEntry(fieldStruct, index);
 				break;
@@ -43,11 +43,11 @@ public class JPanelEntry extends JPanel {
 		setOpaque(false);
 		label.setOpaque(false);
 	}
-	
+
 	public void setVal(Object val){
 		field.setVal(val);
 	}
-
+	
 	public Object getVal(){
 		return field.getVal();
 	}

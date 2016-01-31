@@ -11,62 +11,62 @@ import datstructure.Type;
 
 
 public class JTextFieldEntry extends JTextField implements AbstractEntryField, FocusListener {
-	
+
 	private static final long serialVersionUID = -7134081240220832439L;
 	private static final Color BROWN = new Color(127, 51, 0);
-
+	
 	private FieldStruct fieldStruct;
 	private final int index;
 	private final Color defaultColor;
 	//	private JTextFieldEntryUI textUI = new JTextFieldEntryUI();
-
+	
 	//	private String lastText = null;
-
+	
 	//	private final DatStructure linkToStruct;
 	//	public EntryGroup pointToGroup = null;
 	//	public Entry pointToEntry = null;
-
+	
 	public JTextFieldEntry(FieldStruct fieldStruct, int index){
 		this.fieldStruct = fieldStruct;
 		this.index = index;
-		if (fieldStruct.color == Color.RED){
+		if (fieldStruct.getColor() == Color.RED){
 			defaultColor = BROWN;
 		} else {
-			defaultColor = fieldStruct.color;
+			defaultColor = fieldStruct.getColor();
 		}
 		//		linkToStruct = fieldStruct.linkToStruct;
-
+		
 		//		setUI(textUI);
 		setColumns(10);
-		setEditable(fieldStruct.editable);
+		setEditable(fieldStruct.isEditable());
 		setForeground(defaultColor);
 		setCaretPosition(0);
-
+		
 		addFocusListener(this);
 		//		addMouseListener(this);
 		//		if (linkToStruct != null){
 		//			getDocument().addDocumentListener(this);
 		//		}
 	}
-
+	
 	@Override
 	public void resetColor () {
 		setForeground(defaultColor);
 	}
-	
+
 	@Override
 	public FieldStruct getEntryStruct () {
 		return fieldStruct;
 	}
-
+	
 	@Override
 	public int getIndex(){
 		return index;
 	}
-	
+
 	@Override
 	public Object getVal(){
-		switch(fieldStruct.type){
+		switch(fieldStruct.getType()){
 			case STRING:
 				return getText();
 			case FLOAT:
@@ -75,29 +75,29 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 				return Integer.valueOf(getText());
 		}
 	}
-
+	
 	@Override
 	public void setVal (Object value) {
-		if (fieldStruct.type == Type.STRING){
+		if (fieldStruct.getType() == Type.STRING){
 			setText(((String) value).trim());
 		} else {
 			setText(String.valueOf(value));
 		}
 	}
-
+	
 	@Override
 	public void focusGained(FocusEvent e) {
 		repaint();
 	}
-	
+
 	@Override
 	public void focusLost(FocusEvent e) {
 		//		checkResult(getText());
 		System.out.println(fieldStruct + " = " + getVal());
 	}
-	
-	
 
+
+	
 	//	private void checkResult(String text){
 	//		if (fieldStruct != null){
 	//			if (fieldStruct.type == Type.STRING){
@@ -128,8 +128,8 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 	//			}
 	//		}
 	//	}
-
-
+	
+	
 	//	public void scanEntry(){
 	//		if (!getText().isEmpty()){
 	//			DatContent dbManager = Core.DATA.get(linkToStruct);
@@ -160,8 +160,8 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 	//		pointToGroup = null;
 	//		pointToEntry = null;
 	//	}
-	
 
+	
 	//	@Override
 	//	public void mouseClicked (MouseEvent e) {
 	//		if (e.isControlDown() && pointToEntry != null){
@@ -176,11 +176,11 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 	//	@Override public void mouseReleased (MouseEvent e) {}
 	//	@Override public void mouseEntered (MouseEvent e) {}
 	//	@Override public void mouseExited (MouseEvent e) {}
-
-
-
-
-
+	
+	
+	
+	
+	
 	//	public class JTextFieldEntryUI extends BasicTextFieldUI {
 	//		@Override
 	//		protected void paintSafely(Graphics g) {
@@ -213,10 +213,10 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 	//		}
 	//
 	//	}
-
-
-
-
+	
+	
+	
+	
 	//	@Override
 	//	public void insertUpdate (DocumentEvent e) {
 	//		if (!getText().equals(lastText)){
@@ -240,5 +240,5 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 	//			lastText = getText();
 	//		}
 	//	}
-
+	
 }

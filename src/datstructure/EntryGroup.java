@@ -48,7 +48,7 @@ public class EntryGroup implements Iterable <Entry> {
 		if (entries.size() > 0){
 			name = entries.get(0).toString();
 		}
-		if (datStructure.indexID >= 0){
+		if (datStructure.getIndexID() >= 0){
 			map = entries.parallelStream().filter(entry -> entry.isDefined()).collect(Collectors.toMap(t -> t.ID, t -> t));
 		} else {
 			map = new HashMap<>();

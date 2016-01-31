@@ -127,10 +127,10 @@ public class FrameMain extends JFrame {
 				return;
 			}
 			String selectedDirectoryPath = selectedDirectory.getPath();
-			allFiles = new ArrayList<>(DatStructure.values().length);
+			allFiles = new ArrayList<>(Core.values.length);
 			loaded = new ArrayList<>(allFiles.size());
-			for(DatStructure datStructure : DatStructure.values()){
-				DatFile datFile = new DatFile(selectedDirectoryPath + '\\' + datStructure.fileName, datStructure);
+			for(DatStructure datStructure : Core.values){
+				DatFile datFile = new DatFile(selectedDirectoryPath + '\\' + datStructure.getFileName(), datStructure);
 				if (datFile.exists()){
 					allFiles.add(datFile);
 					if (Core.DATA.containsKey(datStructure)){

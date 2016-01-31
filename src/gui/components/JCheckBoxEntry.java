@@ -5,6 +5,7 @@ import java.awt.Color;
 import javax.swing.JCheckBox;
 
 import datstructure.FieldStruct;
+import datstructure.FieldStructAOC;
 
 public class JCheckBoxEntry extends JCheckBox implements AbstractEntryField {
 
@@ -13,7 +14,7 @@ public class JCheckBoxEntry extends JCheckBox implements AbstractEntryField {
 	private FieldStruct fieldStruct;
 	private int index;
 
-	public JCheckBoxEntry(FieldStruct fieldStruct, int index){
+	public JCheckBoxEntry(FieldStructAOC fieldStruct, int index){
 		this.fieldStruct = fieldStruct;
 		this.index = index;
 		if (fieldStruct.name != null){

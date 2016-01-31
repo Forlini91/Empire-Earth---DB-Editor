@@ -39,7 +39,7 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 	public JComboBoxEntry(FieldStruct fieldStruct, int index){
 		this.fieldStruct = fieldStruct;
 		this.index = index;
-		DatStructure datStructure = fieldStruct.linkToStruct;
+		DatStructure datStructure = fieldStruct.getLinkToStruct();
 		if (datStructure != null){
 			DatContent datContent = Core.DATA.get(datStructure);
 			if (datContent != null){
@@ -47,7 +47,7 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 				setModel(new DefaultComboBoxModel<>(new Vector<>(allEntries)));
 			}
 		}
-		linkToStruct = fieldStruct.linkToStruct;
+		linkToStruct = fieldStruct.getLinkToStruct();
 		setEditable(true);
 		addMouseListener(this);
 		editor.addKeyListener(this);
@@ -90,7 +90,8 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 	public void setVal(Object value){
 		DatContent content = Core.DATA.get(linkToStruct);
 		if (content == null){
-			System.out.println("CRASH: " + linkToStruct + " -> " + Core.DATA.entrySet());
+			System.out.println("CRASH: " + linkToStruct + " -> " + Core.DATA.entrySet() + "  ->  " + value);
+			return;
 		}
 		for (EntryGroup entryGroup : content){
 			Entry entry = entryGroup.map.get(value);

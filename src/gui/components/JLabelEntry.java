@@ -9,9 +9,9 @@ public class JLabelEntry extends JLabel {
 	private static final long serialVersionUID = 8120384566122030551L;
 	
 	public JLabelEntry(FieldStruct fieldStruct, int index){
-		setText(index + " (" + fieldStruct.size + ") " + fieldStruct.name);
+		setText(index + " (" + fieldStruct.getSize() + ") " + fieldStruct.getName());
 		setToolTipText(getText());
-		setForeground(fieldStruct.color);
+		setForeground(fieldStruct.getColor());
 	}
 
 }

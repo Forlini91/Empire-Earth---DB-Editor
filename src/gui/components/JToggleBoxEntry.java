@@ -16,9 +16,9 @@ public class JToggleBoxEntry extends JToggleButton implements AbstractEntryField
 	public JToggleBoxEntry(FieldStruct fieldStruct, int index){
 		this.fieldStruct = fieldStruct;
 		this.index = index;
-		if (fieldStruct.name != null){
-			setText(index + " " + fieldStruct.name);
-			setToolTipText(fieldStruct.name);
+		if (fieldStruct.getName() != null){
+			setText(index + " " + fieldStruct.getName());
+			setToolTipText(fieldStruct.getName());
 		} else {
 			setText(index + " Unknown");
 			setForeground(Color.RED);

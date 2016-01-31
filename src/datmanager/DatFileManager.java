@@ -34,9 +34,9 @@ public class DatFileManager {
 		File backup = new File(datFile.getAbsolutePath() + ".orig");
 		if (!backup.exists()){
 			Files.copy(datFile.toPath(), backup.toPath());
-		} else {
-			Files.deleteIfExists(datFile.toPath());
-			Files.copy(backup.toPath(), datFile.toPath());
+			//		} else {
+			//			Files.deleteIfExists(datFile.toPath());
+			//			Files.copy(backup.toPath(), datFile.toPath());
 		}
 	}
 	
@@ -60,7 +60,7 @@ public class DatFileManager {
 			}
 		}
 		if (entryGroups.size() == 1){
-			entryGroups.get(0).name = datStructure.fileName;
+			entryGroups.get(0).name = datStructure.getFileName();
 		}
 		return new DatContent(datFile, entryGroups);
 	}
@@ -75,43 +75,43 @@ public class DatFileManager {
 	 * @throws IOException	If a problem occurs while reading
 	 */
 	public EntryGroup readGroup(DatReader reader, BiConsumer<Float, Integer> update, int threadIndex) throws IOException {
-		int numEntries = reader.readInt(4) + datStructure.adjustNumEntries;
-		int numFields = datStructure.entries.length;
+		int numEntries = reader.readInt(4) + datStructure.getAdjustNumEntries();
+		int numFields = datStructure.getEntries().length;
 		System.out.println("Loading: " + datFile.getName() + "  >  Num entries: " + numEntries);
 		List<Entry> entries = new ArrayList<Entry>(numEntries);
 		Entry entry;
 		FieldStruct fieldStruct;
 		Object read;
-		//			StringBuilder sb;
+		//		StringBuilder sb;
 		for (int i = 0; i < numEntries; i++) {	//<= because dbTechTree works differently...
 			List<Object> values = new ArrayList<Object>(numFields);
 			for (int j = 0; j < numFields; j++){
-				fieldStruct = datStructure.entries[j];
-				switch(fieldStruct.type){
+				fieldStruct = datStructure.getEntries()[j];
+				switch(fieldStruct.getType()){
 					case STRING:
-						read = reader.readChars(fieldStruct.size); break;
+						read = reader.readChars(fieldStruct.getSize()); break;
 					case FLOAT:
-						read = reader.readFloat(fieldStruct.size); break;
+						read = reader.readFloat(fieldStruct.getSize()); break;
 					default:
-						read = reader.readInt(fieldStruct.size); break;
+						read = reader.readInt(fieldStruct.getSize()); break;
 				}
 				values.add(read);
-				//					sb = new StringBuilder().append('\t').append('\t').append('(').append(fieldStruct.type).append(' ').append(fieldStruct.size).append(')');
-				//					sb.append(' ').append(fieldStruct.name).append(':').append(' ').append(read);
-				//					System.out.println(sb);
+				//				sb = new StringBuilder().append('\t').append('\t').append('(').append(fieldStruct.getType()).append(' ').append(fieldStruct.getSize()).append(')');
+				//				sb.append(' ').append(fieldStruct.getName()).append(':').append(' ').append(read);
+				//				System.out.println(sb);
 			}
-			if (datStructure.indexCountExtra >= 0 && datStructure.extraEntry != null){
-				int numExtra = (int) values.get(datStructure.indexCountExtra);
-				fieldStruct = datStructure.extraEntry;
+			if (datStructure.getIndexCountExtra() >= 0 && datStructure.getExtraEntry() != null){
+				int numExtra = (int) values.get(datStructure.getIndexCountExtra());
+				fieldStruct = datStructure.getExtraEntry();
 				for (int j = 0; j < numExtra; j++){
-					read = reader.readInt(fieldStruct.size);
+					read = reader.readInt(fieldStruct.getSize());
 					values.add(read);
 				}
 			}
 			entry = new Entry(datStructure, values);
 			entries.add(entry);
 			update.accept((float) (1 - (double) reader.getRemaining() / fileSize), threadIndex);
-			//				System.out.println("Element: " + i + " | " + entry);
+			System.out.println("Element: " + i + " | " + entry);
 		}
 		return new EntryGroup(datStructure, entries);
 	}
@@ -128,7 +128,7 @@ public class DatFileManager {
 		Files.deleteIfExists(backup.toPath());
 		Files.copy(datFile.toPath(), backup.toPath());
 		
-		int numBaseFields = datStructure.entries.length;
+		int numBaseFields = datStructure.getEntries().length;
 		Entry entry;
 		FieldStruct fieldStruct;
 		int numEntries;
@@ -136,7 +136,7 @@ public class DatFileManager {
 		try (DatWriter writer = new DatWriter(datFile)) {
 			for (EntryGroup entryGroup : datContent){
 				numEntries = entryGroup.entries.size();
-				writer.writeInt(numEntries - datStructure.adjustNumEntries, 4);
+				writer.writeInt(numEntries - datStructure.getAdjustNumEntries(), 4);
 				System.out.println("Save file: " + datFile.getName() + "  >  Group: " + entryGroup + "  >  Num entries: " + numEntries);
 
 				//				StringBuilder sb;
@@ -146,20 +146,20 @@ public class DatFileManager {
 					numFields = entry.values.size();
 					for (int j = 0; j < numFields; j++){
 						if (j < numBaseFields) {
-							fieldStruct = datStructure.entries[j];
+							fieldStruct = datStructure.getEntries()[j];
 						} else {
-							fieldStruct = datStructure.extraEntry;
+							fieldStruct = datStructure.getExtraEntry();
 						}
-						switch (fieldStruct.type){
+						switch (fieldStruct.getType()){
 							case STRING:
 								if (entry.values.get(j).equals(Entry.NAME_NONE)){
 									System.out.println("NO NAME!!!");
 								}
-								writer.writeChars((String) entry.values.get(j), fieldStruct.size); break;
+								writer.writeChars((String) entry.values.get(j), fieldStruct.getSize()); break;
 							case FLOAT:
-								writer.writeFloat((float) entry.values.get(j), fieldStruct.size); break;
+								writer.writeFloat((float) entry.values.get(j), fieldStruct.getSize()); break;
 							default:
-								writer.writeInt((int) entry.values.get(j), fieldStruct.size); break;
+								writer.writeInt((int) entry.values.get(j), fieldStruct.getSize()); break;
 						}
 						//						sb = new StringBuilder().append('\t').append('\t').append('(').append(field.type).append(' ').append(field.size).append(')');
 						//						sb.append(' ').append(field.name != null ? field.name : "Unknown").append(':').append(' ').append(entry.values.get(j));
