@@ -47,6 +47,8 @@ public class Core {
 	private static final int LOAD_MAX_WAIT = 15000;
 	/** The DatStructure which will be used */
 	public static DatStructure[] values;
+
+	public static boolean AOC = false;
 	
 	public static final Map<DatStructure, DatContent> DATA = new HashMap<>();
 	public static final Map<DatContent, FrameEditor> FRAME_EDITORS = new HashMap<>();
@@ -54,13 +56,16 @@ public class Core {
 	
 	
 	public static void main (String[] args) {
-		if (JOptionPane.showConfirmDialog(null, "Are you using the Art of Conquest expansion?", "Vanilla or AOC", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0){
-			values = DatStructureAOC.values();
-		} else {
-			values = DatStructureVanilla.values();
-		}
 		EventQueue.invokeLater(() -> {
-			new FrameMain();
+			if (JOptionPane.showConfirmDialog(null, "Are you using the Art of Conquest expansion?", "Vanilla or AOC", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0){
+				AOC = true;
+				values = DatStructureAOC.values();
+				new FrameMain();
+			} else {
+				AOC = false;
+				values = DatStructureVanilla.values();
+				new FrameMain();
+			}
 		});
 	}
 	

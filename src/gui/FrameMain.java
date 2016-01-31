@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.Container;
 import java.awt.GridLayout;
 import java.io.File;
 import java.util.ArrayList;
@@ -34,18 +33,21 @@ public class FrameMain extends JFrame {
 
 	private static final long serialVersionUID = 1973882004055163035L;
 	/** Text used in the ABOUT dialog */
-	public static final String S_ABOUT = "EE - DB Editor\nVersion: 1.1\nCreated by Forlins & the EE Heaven community   \nGNU General Public License v3   ";
+	public static final String S_ABOUT = "EE - DB Editor\nVersion: 1.11\nCreated by Forlins & the EE Heaven community   \nGNU General Public License v3   ";
 	/** Icon used in the top-left corner in all frames/dialog */
-	public static final ImageIcon IMAGE_ICON = new ImageIcon(FrameMain.class.getResource("EE_Icon.png"));
+	public static final ImageIcon IMAGE_ICON = new ImageIcon(FrameMain.class.getResource("EE_Icon" + (Core.AOC ? "_AOC" : "") + ".png"));
 	/** EE logo used in the frame {@code FrameMain} */
-	public static final ImageIcon IMAGE_LOGO = new ImageIcon(FrameMain.class.getResource("EE_Logo_1.png"));
+	public static final ImageIcon IMAGE_LOGO = new ImageIcon(FrameMain.class.getResource("EE_Logo" + (Core.AOC ? "_AOC" : "") + ".png"));;
 	/** EE-Heaven logo used in the ABOUT dialog */
-	public static final ImageIcon IMAGE_EE_HEAVEN_LOGO = new ImageIcon(FrameMain.class.getResource("EE_Logo_2.png"));
+	public static final ImageIcon IMAGE_EE_HEAVEN_LOGO = new ImageIcon(FrameMain.class.getResource("EE_Heaven.png"));
 	/** After the first load, the load dialog won't enable anymore all files by default */
 	public boolean firstLoad = true;
-
+	
+	private JPanel contentPane = new JPanel();
 	private final JPanel scrollPanePanel = new JPanel();
 	private final JScrollPane scrollPane = new JScrollPaneRed(scrollPanePanel);
+
+	
 
 	/** Initialize */
 	{
@@ -73,25 +75,24 @@ public class FrameMain extends JFrame {
 		scrollPanePanel.setOpaque(false);
 		scrollPaneLabel.setOpaque(false);
 		
-		Container contentPane = getContentPane();
-		contentPane.setLayout(new GridBagLayoutExtended(new int[]{650, 0}, new int[]{247, 50, 50}, new double[]{0, 1.0}, new double[]{1.0, 0.0, 0.0}));
+		
 		contentPane.setBackground(Core.UI_COLOR_BACKGROUND);
+		contentPane.setLayout(new GridBagLayoutExtended(new int[]{680, 0}, new int[]{280, 50, 50}, new double[]{0, 1.0}, new double[]{1.0, 0.0, 0.0}));
 		contentPane.add(image, new GridBagConstraintsExtended(5, 25, 5, 25, 0, 0));
 		contentPane.add(dbLoad, new GridBagConstraintsExtended(10, 25, 5, 25, 0, 1));
-		contentPane.add(dbInfo, new GridBagConstraintsExtended(10, 25, 10, 25, 0, 2));
-		contentPane.add(scrollPane, new GridBagConstraintsExtended(15, 25, 15, 25, 1, 0, 0, 3));
+		contentPane.add(dbInfo, new GridBagConstraintsExtended(5, 25, 10, 25, 0, 2));
 		
-		setBounds(Core.getBounds(this, 650, 0.5));
+		setContentPane(contentPane);
+		setBounds(Core.getBounds(this, 680, 400));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setAutoRequestFocus(false);
 		setIconImage(IMAGE_ICON.getImage());
-		setTitle("Empire Earth - DB Editor");
 	}
 
 
 	public FrameMain () {
-		super("Main");
+		super("Empire Earth - " + (Core.AOC ? "Art of Conquest -" : "") + "DB Editor");
 		setVisible(true);
 	}
 
@@ -154,14 +155,17 @@ public class FrameMain extends JFrame {
 		}
 
 		Core.loadFiles(this, files, (data) -> {
-			firstLoad = false;
 			Core.DATA.putAll(data);
-			int gridRows = Math.max(10, files.size());
+			int gridRows = Math.max(10, Core.DATA.size());
 			scrollPanePanel.setLayout(new GridLayout(gridRows, 1, 10, 10));
 			ArrayList<DatContent> datContents = new ArrayList<>(data.values());
 			datContents.sort(null);
 			for (DatContent datContent : datContents){
 				scrollPanePanel.add(new JButtonDat(this, datContent));
+			}
+			if (firstLoad) {
+				contentPane.add(scrollPane, new GridBagConstraintsExtended(15, 25, 15, 25, 1, 0, 0, 3));
+				firstLoad = false;
 			}
 			scrollPane.setVisible(true);
 			scrollPanePanel.revalidate();

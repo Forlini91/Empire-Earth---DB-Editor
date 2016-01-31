@@ -279,7 +279,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	
 
 	public FrameEditor (DatContent datContent) {
-		super("Editor - " + datContent.datFile.getName());
+		super("Empire Earth - " + (Core.AOC ? "Art of Conquest - " : "") + datContent.datFile.getName());
 		setVisible(false);
 		this.datContent = datContent;
 
@@ -295,7 +295,6 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			entryGroupList.setSelectedIndex(0);
 		}
 		
-		setTitle("EE - DB Editor: " + datContent.datStructure.getFileName());
 		setAutoRequestFocus(true);
 		addWindowListener(this);
 		addWindowFocusListener(this);
