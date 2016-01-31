@@ -33,7 +33,7 @@ import javax.swing.WindowConstants;
 import com.sun.glass.events.KeyEvent;
 
 import datmanager.Core;
-import datmanager.DatFile;
+import datstructure.DatContent;
 import datstructure.Entry;
 import datstructure.EntryGroup;
 import datstructure.EntryValueMap;
@@ -71,8 +71,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	private static final GridBagConstraints gbc_addID = new GridBagConstraintsExtended(4, 4, 4, 4, 4, 2);
 	private static final int GRID_MIN_ENTRY_SLOTS = 24;
 	
-	private DatFile datFile;
-	private List<EntryGroup> entryGroups;
+	private DatContent datContent;
 	private List<JPanelEntry> entryPanels;
 	private EntryGroup currentEntryGroup;
 	private Entry currentEntry = null;
@@ -122,7 +121,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 		JButton menuBarFile = new JButtonRed("Save to file");
 		menuBarFile.addActionListener(e -> {
-			Core.saveFile(FrameEditor.this, datFile, entryGroups);
+			Core.saveFile(FrameEditor.this, datContent);
 			saved = false;
 		});
 		menuBarFile.setMnemonic(KeyEvent.VK_S);
@@ -207,7 +206,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			}
 		});
 		entryList.addMouseListener(new PopupMenuListHandler(entryListMenu, entryList, ()->{
-			return datFile.datStructure.supportNumEntriesAlteration;
+			return datContent.datStructure.supportNumEntriesAlteration;
 		}));
 		entryList.switchList.setHorizontalAlignment(SwingConstants.RIGHT);
 		entryList.switchList.setHorizontalTextPosition(SwingConstants.LEFT);
@@ -218,9 +217,9 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		entryListMenu.add(entryListMenuRemove);
 		entryListMenu.add(entryListMenuMoveTo);
 		entryListMenuAdd.addActionListener(e -> {
-			EntryGroup lastEntryGroup = entryGroups.get(entryGroups.size()-1);
+			EntryGroup lastEntryGroup = datContent.entryGroups.get(datContent.entryGroups.size()-1);
 			Entry lastEntry = lastEntryGroup.entries.get(lastEntryGroup.entries.size() - 1);
-			Entry newEntry = new Entry(datFile.datStructure, lastEntry.sequenceNumber+1, lastEntry.ID+1);
+			Entry newEntry = new Entry(datContent.datStructure, lastEntry.sequenceNumber+1, lastEntry.ID+1);
 			currentEntryGroup.entries.add(newEntry);
 			entryList.setList(currentEntryGroup.entries);
 		});
@@ -234,7 +233,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		});
 		entryListMenuMoveTo.addActionListener(e -> {
 			if (currentEntryGroup != null && !entryList.isSelectionEmpty()) {
-				new DialogMoveEntryToGroup(this, entryGroups, entryList, currentEntryGroup, entryList.getSelectedElement());
+				new DialogMoveEntryToGroup(this, datContent.entryGroups, entryList, currentEntryGroup, entryList.getSelectedElement());
 			}
 		});
 
@@ -244,7 +243,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		fieldMenu.add(fieldMenuUnmarkUnusedFields);
 		fieldMenuSearchValues.addActionListener(e -> {
 			AbstractEntryField field = (AbstractEntryField) rightClicked;
-			EntryValueMap entryValueMap = EntryValueMap.getValuesMap(entryGroups, field.getIndex(), true);
+			EntryValueMap entryValueMap = EntryValueMap.getValuesMap(datContent.entryGroups, field.getIndex(), true);
 			new DialogSearchValuesResults(this, entryValueMap, field);
 		});
 		fieldMenuSearchFields.addActionListener(e -> showSearchFieldResults());
@@ -277,25 +276,24 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 
 	
-	public FrameEditor (DatFile datFile, List<EntryGroup> entryGroups) {
-		super("Editor - " + datFile.getName());
+	public FrameEditor (DatContent datContent) {
+		super("Editor - " + datContent.datFile.getName());
 		setVisible(false);
-		this.datFile = datFile;
-		this.entryGroups  = entryGroups;
+		this.datContent = datContent;
 		
-		int nFields = datFile.datStructure.entries.length;
+		int nFields = datContent.datStructure.entries.length;
 		if (nFields < GRID_MIN_ENTRY_SLOTS) {
 			gridLayout.setRows(GRID_MIN_ENTRY_SLOTS/4);
 		}
-		entryPanels = new ArrayList<>(datFile.datStructure.indexCountExtra < 0 ? nFields : nFields+20);
+		entryPanels = new ArrayList<>(datContent.datStructure.indexCountExtra < 0 ? nFields : nFields+20);
 		
-		entryGroupList.setList(entryGroups);
-		if (entryGroups.size() > 0){
-			entryListMenuMoveTo.setVisible(entryGroups.size() > 1);
+		entryGroupList.setList(datContent.entryGroups);
+		if (datContent.entryGroups.size() > 0){
+			entryListMenuMoveTo.setVisible(datContent.entryGroups.size() > 1);
 			entryGroupList.setSelectedIndex(0);
 		}
 
-		setTitle("EE - DB Editor: " + datFile.datStructure.fileName);
+		setTitle("EE - DB Editor: " + datContent.datStructure.fileName);
 		setAutoRequestFocus(true);
 		addWindowListener(this);
 		addWindowFocusListener(this);
@@ -312,7 +310,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		if (saved){
 			switch (JOptionPane.showConfirmDialog(this, "Some entries have been altered. Do you want to save them to the file?", "Save to file?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE)){
 				case 0:
-					Core.saveFile(this, datFile, entryGroups);
+					Core.saveFile(this, datContent);
 				case 1:
 					close();
 			}
@@ -341,7 +339,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 
 	private void buildFields(Entry entries){
-		int numBaseFields = datFile.datStructure.entries.length;
+		int numBaseFields = datContent.datStructure.entries.length;
 		int numPlacedFields = entryPanels.size();
 		numSavedFields = entries.values.size();
 		FieldStruct entry;
@@ -349,7 +347,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		panelFields.removeAll();
 		for (int i = 0; i < numBaseFields; i++){
 			if (i >= numPlacedFields){
-				entry = datFile.datStructure.entries[i];
+				entry = datContent.datStructure.entries[i];
 				JPanelEntry entryPanel = new JPanelEntry(entry, i);
 				entryPanels.add(entryPanel);
 				Component component = (Component) entryPanel.field;
@@ -360,7 +358,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			panelFields.add(entryPanels.get(i));
 		}
 		numPlacedFields = entryPanels.size();
-		entry = datFile.datStructure.extraEntry;
+		entry = datContent.datStructure.extraEntry;
 		for (int i = numBaseFields; i < numSavedFields; i++){
 			if (i >= numPlacedFields){
 				entryPanels.add(new JPanelEntry(entry, i));
@@ -374,7 +372,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			panelFields.add(new JPanel());
 		}
 
-		if (datFile.datStructure.extraEntry != null){
+		if (datContent.datStructure.extraEntry != null){
 			addID.setVisible(true);
 			if (numSavedFields > numBaseFields){
 				removeID.setVisible(true);
@@ -386,11 +384,11 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	}
 
 	public void addField(){
-		JPanelEntry entryPanel = new JPanelEntry(datFile.datStructure.extraEntry, entryPanels.size());
+		JPanelEntry entryPanel = new JPanelEntry(datContent.datStructure.extraEntry, entryPanels.size());
 		entryPanels.add(entryPanel);
 		panelFields.add(entryPanel);
 		removeID.setEnabled(true);
-		entryPanel = entryPanels.get(datFile.datStructure.indexCountExtra);
+		entryPanel = entryPanels.get(datContent.datStructure.indexCountExtra);
 		int value = (int) entryPanel.getVal();
 		entryPanel.setVal(value+1);
 		panelFields.updateUI();
@@ -398,14 +396,14 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 	public void removeField(){
 		int index = entryPanels.size()-1;
-		if (index >= datFile.datStructure.entries.length){
+		if (index >= datContent.datStructure.entries.length){
 			JPanelEntry entryPanel = entryPanels.remove(index);
 			panelFields.remove(index);
 			index--;
-			if (index == datFile.datStructure.entries.length-1){
+			if (index == datContent.datStructure.entries.length-1){
 				removeID.setEnabled(false);
 			}
-			entryPanel = entryPanels.get(datFile.datStructure.indexCountExtra);
+			entryPanel = entryPanels.get(datContent.datStructure.indexCountExtra);
 			int value = (int) entryPanel.getVal();
 			entryPanel.setVal(value-1);
 			panelFields.updateUI();
@@ -423,15 +421,15 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	}
 
 	public void saveEntry(){
-		int numBaseFields = datFile.datStructure.entries.length;
+		int numBaseFields = datContent.datStructure.entries.length;
 		List<Object> values = currentEntry.values;
 		for (int i = 0; i < numBaseFields; i++){
-			if (datFile.datStructure.entries[i].editable){
+			if (datContent.datStructure.entries[i].editable){
 				values.set(i, entryPanels.get(i).getVal());
 			}
 		}
 		
-		if (datFile.datStructure.extraEntry != null){
+		if (datContent.datStructure.extraEntry != null){
 			numSavedFields = values.size();
 			int numPlacedFields = entryPanels.size();
 			for (int i = numBaseFields; i < numPlacedFields; i++){
@@ -445,14 +443,14 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			for (int i = numPlacedFields; i < numSavedFields; i++){
 				values.remove(i);
 			}
-			values.set(datFile.datStructure.indexCountExtra, entryPanels.get(datFile.datStructure.indexCountExtra).getVal());
+			values.set(datContent.datStructure.indexCountExtra, entryPanels.get(datContent.datStructure.indexCountExtra).getVal());
 		}
 		saved = true;
 		System.out.println("Save entry: " + currentEntry);
 	}
 
 	public void goToEntry(EntryGroup entryGroup, Entry entry){
-		System.out.println("Go to: " + datFile.getName() + " > " + entryGroup + " > " + entry);
+		System.out.println("Go to: " + datContent.datFile.getName() + " > " + entryGroup + " > " + entry);
 		if (!isVisible()){
 			setVisible(true);
 		}
@@ -476,7 +474,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		List<Entry> entries = new ArrayList<>();
 		List<Entry> entriesClean = new ArrayList<>();
 
-		for (EntryGroup entryGroup : entryGroups){
+		for (EntryGroup entryGroup : datContent){
 			for (Entry entry : entryGroup){
 				entryValue = entry.values.get(index);
 				if (value.equals(entryValue)){
@@ -506,7 +504,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		for (JPanelEntry entryPanel : entryPanels){
 			fieldStruct = entryPanel.fieldStruct;
 			if (fieldStruct.knowledge != Knowledge.KNOWN) {
-				entryValueMap = EntryValueMap.getValuesMap(entryGroups, entryPanel.index, true);
+				entryValueMap = EntryValueMap.getValuesMap(datContent.entryGroups, entryPanel.index, true);
 				size = entryValueMap.mapClean.size();
 				if (size <= 2 || size == entryValueMap.counter) {
 					marked.add(entryPanel);

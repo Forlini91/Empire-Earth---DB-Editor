@@ -7,7 +7,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.List;
 
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -15,7 +14,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicTextFieldUI;
 
 import datmanager.Core;
-import datmanager.DatFile;
+import datstructure.DatContent;
 import datstructure.DatStructure;
 import datstructure.Entry;
 import datstructure.EntryGroup;
@@ -49,7 +48,7 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, M
 			defaultColor = fieldStruct.color;
 		}
 		if (fieldStruct.type.datStructure != null){
-			datStructure = fieldStruct.type.datStructure.get();
+			datStructure = fieldStruct.type.datStructure;
 		} else {
 			datStructure = null;
 		}
@@ -154,10 +153,18 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, M
 	
 	public void scanEntry(){
 		if (!getText().isEmpty()){
-			List <EntryGroup> dbManager = Core.DATA.get(datStructure);
+			DatContent dbManager = Core.DATA.get(datStructure);
 			if (dbManager != null){
 				try{
-					Object[] results = Core.findEntryByID(datStructure, Integer.valueOf(getText()));
+					Object[] results = null;
+					Entry entry;
+					for (EntryGroup entryGroup : Core.DATA.get(datStructure).entryGroups){
+						entry = entryGroup.map.get(Integer.valueOf(getText()));
+						if (entry != null){
+							results = new Object[]{entryGroup, entry};
+							break;
+						}
+					}
 					if (results != null){
 						EntryGroup findGroup = (EntryGroup) results[0];
 						Entry findEntry = (Entry) results[1];
@@ -179,9 +186,9 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, M
 	@Override
 	public void mouseClicked (MouseEvent e) {
 		if (e.isControlDown() && pointToEntry != null){
-			DatFile datFile = Core.DAT_FILES.get(datStructure);
-			if (datFile != null){
-				FrameEditor frameEditor = Core.openFile(this, datFile);
+			DatContent datContent = Core.DATA.get(datStructure);
+			if (datContent != null){
+				FrameEditor frameEditor = Core.openFile(this, datContent);
 				frameEditor.goToEntry(pointToGroup, pointToEntry);
 			}
 		}

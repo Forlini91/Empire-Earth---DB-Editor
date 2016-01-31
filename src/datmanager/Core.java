@@ -13,10 +13,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
 
+import datstructure.DatContent;
 import datstructure.DatStructure;
 import datstructure.Entry;
 import datstructure.EntryGroup;
@@ -31,7 +32,7 @@ import gui.FrameMain;
  *
  */
 public class Core {
-	
+
 	/** Background used in all frames, windows and dialogs */
 	public static final Color UI_COLOR_BACKGROUND = new Color(249, 241, 224);
 	/** Color used in all buttons */
@@ -42,13 +43,12 @@ public class Core {
 	public static final Color UI_COLOR_ELEMENT3 = UI_COLOR_ELEMENT2.brighter();
 	/** Max time (milliseconds) it will wait for loading to complete. If time exceed this value, the load is considered failed. */
 	private static final int LOAD_MAX_WAIT = 15000;
-	
-	public static final Map<DatStructure, DatFile> DAT_FILES = new HashMap<>();
-	public static final Map<DatStructure, List<EntryGroup>> DATA = new HashMap<>();
-	public static final Map<DatFile, FrameEditor> FRAME_EDITORS = new HashMap<>();
-	
-	
-	
+
+	public static final Map<DatStructure, DatContent> DATA = new HashMap<>();
+	public static final Map<DatContent, FrameEditor> FRAME_EDITORS = new HashMap<>();
+
+
+
 	public static void main (String[] args) {
 		System.out.println("Check entries definitions:");
 		int count;
@@ -63,7 +63,7 @@ public class Core {
 			new FrameMain();
 		});
 	}
-	
+
 	/**
 	 * Attempt to find an entry by ID.
 	 * @param datStructure	The dat structure which should contains the entry
@@ -72,7 +72,7 @@ public class Core {
 	 */
 	public static Object[] findEntryByID(DatStructure datStructure, int ID){
 		Entry entry;
-		for (EntryGroup entryGroup : DATA.get(datStructure)){
+		for (EntryGroup entryGroup : DATA.get(datStructure).entryGroups){
 			entry = entryGroup.map.get(ID);
 			if (entry != null){
 				return new Object[]{entryGroup, entry};
@@ -80,9 +80,9 @@ public class Core {
 		}
 		return null;
 	}
-	
-	
 
+
+	
 	/**
 	 * Load the given file and disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -90,12 +90,12 @@ public class Core {
 	 * @param onLoaded	The code to run if loading succeed
 	 * @param onFail	The code to run if loading fail
 	 */
-	public static void loadFile(Window parent, DatFile datFile, BiConsumer<List<EntryGroup>, Map<DatStructure, DatFile>> onLoaded, Runnable onFail){
-		loadFiles(parent, Arrays.asList(datFile), (data, datFile2) -> {
-			onLoaded.accept(data.get(datFile.datStructure), datFile2);
+	public static void loadFile(Window parent, DatFile datFile, Consumer<DatContent> onLoaded, Runnable onFail){
+		loadFiles(parent, Arrays.asList(datFile), (data) -> {
+			onLoaded.accept(data.get(datFile.datStructure));
 		}, onFail);
 	}
-	
+
 	/**
 	 * Load the given list of files and disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -103,15 +103,14 @@ public class Core {
 	 * @param onLoaded	The code to run if loading succeed
 	 * @param onFail	The code to run if loading fails
 	 */
-	public static void loadFiles(Window parent, List<DatFile> files, BiConsumer<Map<DatStructure, List<EntryGroup>>, Map<DatStructure, DatFile>> onLoaded, Runnable onFail){
+	public static void loadFiles(Window parent, List<DatFile> files, Consumer<Map<DatStructure, DatContent>> onLoaded, Runnable onFail){
 		if (parent != null){
 			parent.setEnabled(false);
 		}
 		new Thread(() -> {
 			Object lockObj = new Object();
 			DialogProgressBar progressDialog = new DialogProgressBar("Loading...", files.size(), true);
-			Map <DatStructure, List <EntryGroup>> dataLoad = new HashMap<>();
-			Map <DatStructure, DatFile> datFiles = new HashMap <>();
+			Map <DatStructure, DatContent> dataLoad = new HashMap<>();
 			for (int i = 0; i < files.size(); i++){
 				int index = i;
 				Thread t = new Thread(() -> {
@@ -119,8 +118,7 @@ public class Core {
 					try {
 						DatFileManager dbManager = new DatFileManager(datFile);
 						List<EntryGroup> entryGroups = dbManager.read(progressDialog::updatePercPart, index);
-						dataLoad.put(datFile.datStructure, entryGroups);
-						datFiles.put(datFile.datStructure, datFile);
+						dataLoad.put(datFile.datStructure, new DatContent(datFile, entryGroups));
 					} catch (Exception e) {
 						System.err.println(e.getMessage());
 						JOptionPane.showMessageDialog(parent, "An error occurred during the loading of " + datFile, "Error", JOptionPane.ERROR_MESSAGE);
@@ -134,7 +132,7 @@ public class Core {
 				});
 				t.start();
 			}
-			
+
 			try {
 				synchronized(lockObj){
 					if (dataLoad.size() < files.size()){
@@ -145,9 +143,9 @@ public class Core {
 				return;
 			}
 			progressDialog.dispose();
-
+			
 			if (dataLoad.size() >= files.size()) {
-				onLoaded.accept(dataLoad, datFiles);
+				onLoaded.accept(dataLoad);
 			} else {
 				onFail.run();
 			}
@@ -156,30 +154,30 @@ public class Core {
 			}
 		}).start();
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Save the given list of EntryGroup to the given file. Disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
 	 * @param datFile	The file to load
 	 * @param entryGroups	The list of EntryGroup to save
 	 */
-	public static void saveFile(Window parent, DatFile datFile, List<EntryGroup> entryGroups){
-		System.out.println("Save file: " + datFile);
+	public static void saveFile(Window parent, DatContent datContent){
+		System.out.println("Save file: " + datContent.datFile);
 		if (parent != null){
 			parent.setEnabled(false);
 		}
 		new Thread(() -> {
 			int count = 0;
-			for(EntryGroup entryGroup : entryGroups){
+			for(EntryGroup entryGroup : datContent.entryGroups){
 				count += entryGroup.entries.size();
 			}
 			DialogProgressBar progressBar = new DialogProgressBar("Saving...", count, false);
 			new Thread(() -> {
 				try {
-					DatFileManager dbManager = new DatFileManager(datFile);
-					dbManager.save(entryGroups, progressBar::update);
+					DatFileManager dbManager = new DatFileManager(datContent.datFile);
+					dbManager.save(datContent.entryGroups, progressBar::update);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				} finally {
@@ -191,23 +189,22 @@ public class Core {
 			}).start();
 		}).start();
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Try to open the given file or show an error message to the calling component.
 	 * The file must be already loaded.
 	 * @param parent	The parent component.
 	 * @param file		The file to open.
 	 */
-	public static FrameEditor openFile(Component parent, DatFile file){
-		System.out.println("Open: " + file.getName());
-		List<EntryGroup> entryGroups = DATA.get(file.datStructure);
-		if (entryGroups != null){
-			FrameEditor frameEditor = FRAME_EDITORS.get(file);
+	public static FrameEditor openFile(Component parent, DatContent datContent){
+		if (datContent != null){
+			System.out.println("Open: " + datContent.datFile.getName());
+			FrameEditor frameEditor = FRAME_EDITORS.get(datContent);
 			if (frameEditor == null){
-				frameEditor = new FrameEditor(file, entryGroups);
-				FRAME_EDITORS.put(file, frameEditor);
+				frameEditor = new FrameEditor(datContent);
+				FRAME_EDITORS.put(datContent, frameEditor);
 			}
 			frameEditor.setVisible(true);
 			return frameEditor;
@@ -216,8 +213,8 @@ public class Core {
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Calculate the bounds of the given component
 	 * @param component		The component
@@ -232,9 +229,9 @@ public class Core {
 		Point point = new Point((rBounds.width / 2) - (dimension.width / 2), (rBounds.height / 2) - (dimension.height / 2) - 25);
 		return new Rectangle(point, dimension);
 	}
-
-
+	
+	
 	/** No need to instantiate this */
 	private Core(){}
-	
+
 }
