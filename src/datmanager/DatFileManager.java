@@ -8,40 +8,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import datstructure.DatContent;
 import datstructure.DatStructure;
 import datstructure.Entry;
 import datstructure.EntryGroup;
 import datstructure.FieldStruct;
 
 public class DatFileManager {
-	
-	/** The structure of the file. */
-	private DatStructure datStructure;
+
 	/** The file to read. */
 	private DatFile datFile;
+	/** The structure of the file. */
+	private DatStructure datStructure;
 	/** The size of the file. */
 	private long fileSize;
-
+	
 	/**
 	 * Create a new DatFileManager to read or write the given datFile.
 	 * @param datFile	The file to load with the relative structure
+	 * @throws IOException
 	 */
-	public DatFileManager(DatFile datFile) {
-		datStructure = datFile.datStructure;
+	public DatFileManager(DatFile datFile, DatStructure datStructure) throws IOException {
 		this.datFile = datFile;
+		this.datStructure = datStructure;
 		File backup = new File(datFile.getAbsolutePath() + ".orig");
-		try {
-			if (!backup.exists()){
-				Files.copy(datFile.toPath(), backup.toPath());
-			} else {
-				Files.deleteIfExists(datFile.toPath());
-				Files.copy(backup.toPath(), datFile.toPath());
-			}
-		} catch (IOException e){
-			e.printStackTrace();
+		if (!backup.exists()){
+			Files.copy(datFile.toPath(), backup.toPath());
+		} else {
+			Files.deleteIfExists(datFile.toPath());
+			Files.copy(backup.toPath(), datFile.toPath());
 		}
 	}
-
+	
 	/**
 	 * Read the whole file, perform regular updates of the progress on the GUI and return the content read.
 	 * Support multi-thread loadings: you can load many files at once and display a single progress bar for them all.
@@ -50,7 +48,7 @@ public class DatFileManager {
 	 * @return	The list of EntryGroup read from the file, if any
 	 * @throws IOException	If a problem occurs while reading
 	 */
-	public List<EntryGroup> read(BiConsumer<Float, Integer> update, int threadIndex) throws IOException {
+	public DatContent read(BiConsumer<Float, Integer> update, int threadIndex) throws IOException {
 		if (!datFile.exists()){
 			throw new FileNotFoundException(datFile.toString());
 		}
@@ -58,15 +56,15 @@ public class DatFileManager {
 		try (DatReader reader = new DatReader(datFile)) {
 			fileSize = reader.getRemaining();
 			while (reader.getRemaining() > 0) {
-				entryGroups.add(new EntryGroup(datStructure, readGroup(reader, update, threadIndex)));
+				entryGroups.add(readGroup(reader, update, threadIndex));
 			}
 		}
 		if (entryGroups.size() == 1){
 			entryGroups.get(0).name = datStructure.fileName;
 		}
-		return entryGroups;
+		return new DatContent(datFile, entryGroups);
 	}
-	
+
 	/**
 	 * Read a single EntryGroup from the file, perform regular updates on of the progress on the GUI and return the list of entries.
 	 * Support multi-thread loadings: you can load many files at once and display a single progress bar for them all.
@@ -76,7 +74,7 @@ public class DatFileManager {
 	 * @return	The list of Entry read from the file, if any
 	 * @throws IOException	If a problem occurs while reading
 	 */
-	public List<Entry> readGroup(DatReader reader, BiConsumer<Float, Integer> update, int threadIndex) throws IOException {
+	public EntryGroup readGroup(DatReader reader, BiConsumer<Float, Integer> update, int threadIndex) throws IOException {
 		int numEntries = reader.readInt(4) + datStructure.adjustNumEntries;
 		int numFields = datStructure.entries.length;
 		System.out.println("Loading: " + datFile.getName() + "  >  Num entries: " + numEntries);
@@ -115,32 +113,32 @@ public class DatFileManager {
 			update.accept((float) (1 - (double) reader.getRemaining() / fileSize), threadIndex);
 			//				System.out.println("Element: " + i + " | " + entry);
 		}
-		return entries;
+		return new EntryGroup(datStructure, entries);
 	}
-
-
+	
+	
 	/**
 	 * Save the given list of EntryGroup to the file and perform regular updates of the progress on the GUI.
 	 * @param entryGroups	The list of EntryGroup to save
 	 * @param update		The method to call to update the state on the GUI
 	 * @throws IOException	If a problem occurs while saving
 	 */
-	public void save(List<EntryGroup> entryGroups, Runnable update) throws IOException {
+	public void save(DatContent datContent, Runnable update) throws IOException {
 		File backup = new File(datFile.getAbsolutePath() + ".bak");
 		Files.deleteIfExists(backup.toPath());
 		Files.copy(datFile.toPath(), backup.toPath());
-
+		
 		int numBaseFields = datStructure.entries.length;
 		Entry entry;
 		FieldStruct fieldStruct;
 		int numEntries;
 		int numFields;
 		try (DatWriter writer = new DatWriter(datFile)) {
-			for (EntryGroup entryGroup : entryGroups){
+			for (EntryGroup entryGroup : datContent){
 				numEntries = entryGroup.entries.size();
 				writer.writeInt(numEntries - datStructure.adjustNumEntries, 4);
 				System.out.println("Save file: " + datFile.getName() + "  >  Group: " + entryGroup + "  >  Num entries: " + numEntries);
-				
+
 				//				StringBuilder sb;
 				for (int i = 0; i < numEntries; i++){
 					update.run();
@@ -154,6 +152,9 @@ public class DatFileManager {
 						}
 						switch (fieldStruct.type){
 							case STRING:
+								if (entry.values.get(j).equals(Entry.NAME_NONE)){
+									System.out.println("NO NAME!!!");
+								}
 								writer.writeChars((String) entry.values.get(j), fieldStruct.size); break;
 							case FLOAT:
 								writer.writeFloat((float) entry.values.get(j), fieldStruct.size); break;
@@ -169,5 +170,5 @@ public class DatFileManager {
 			}
 		}
 	}
-
+	
 }

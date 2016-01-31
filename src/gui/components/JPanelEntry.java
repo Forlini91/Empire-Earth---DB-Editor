@@ -27,9 +27,13 @@ public class JPanelEntry extends JPanel {
 		label.setPreferredSize(new Dimension(100, 25));
 		switch(fieldStruct.type){
 			case BOOLEAN:
-				field = new JToggleBoxEntry(fieldStruct, index); break;
+				field = new JToggleBoxEntry(fieldStruct, index);
+				break;
+			case ID:
+				field = new JComboBoxEntry(fieldStruct, index);
+				break;
 			default:
-				field = new JTextFieldEntry(fieldStruct, index, null);
+				field = new JTextFieldEntry(fieldStruct, index);
 		}
 		field.setPreferredSize(new Dimension(100, 25));
 		setLayout(new GridLayout(2, 0, 0, 0));

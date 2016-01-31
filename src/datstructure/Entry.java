@@ -15,10 +15,26 @@ import java.util.List;
  */
 public class Entry implements Comparable<Entry>, Iterable <Object> {
 
+	/** Byte used for empty values/string */
+	public static final char b00 = 0x00;
+
+	/** Byte used for empty strings */
+	public static final char bCC = 65484;
+
+	/** Sequence of chars used by empty strings (100 chars) */
+	public static final String STRING_UNDEFINED = new String(new char[]{
+			b00, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
+			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
+			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
+			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
+			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
+	});
+
 	/** Used by fields without name. */
-	private static final String NAME_NONE = "<No name>";
+	public static final String NAME_NONE = "<No name>";
 	/** Used by undefined fields. */
-	private static final String NAME_UNDEFINED = "<Undefined>";
+	public static final String NAME_UNDEFINED = "<Undefined>";
+	
 
 	/** The structure of this entry. */
 	public final DatStructure datStructure;
@@ -53,20 +69,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		int n = datStructure.entries.length;
 		List<Object> values = new ArrayList<Object>(n);
 		for (int i = 0; i < n; i++){
-			switch(datStructure.entries[i].type){
-				case STRING:
-					values.add(NAME_NONE); break;
-				case FLOAT:
-					values.add(0f); break;
-				default:
-					values.add(0);
-			}
-		}
-		if (datStructure.indexSequence >= 0){
-			values.set(datStructure.indexSequence, sequenceNumber);
-		}
-		if (datStructure.indexID >= 0){
-			values.set(datStructure.indexID, ID);
+			values.add(datStructure.defaultValues[i]);
 		}
 		return values;
 	}

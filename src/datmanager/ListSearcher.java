@@ -23,14 +23,16 @@ public class ListSearcher<T> {
 	/** The function to update the GUI when calling {@code findNext} or {@code findPrevious} */
 	private Consumer<T> updateFunction = null;
 	
+
+
 	/** The list with all search results */
-	private List<T> searchResults = null;
+	private List<T> results = null;
 	
-	/** The last searched string */
-	private String lastSearch = null;
+	/** The current searched string */
+	private String currentSearch = null;
 
 	/** The current index of the search */
-	private int searchIndex = 0;
+	public int searchIndex = 0;
 
 	
 	/**
@@ -51,70 +53,92 @@ public class ListSearcher<T> {
 		this.numberMatchFunction = numberMatchFunction;
 	}
 
-
-	/**
-	 * Search for the next element and select it in the list
-	 */
-	public void findNext(){
-		if (searchResults != null && searchResults.size() > 0) {
-			if (searchIndex >= searchResults.size() - 1){
-				searchIndex = 0;
-			} else {
-				searchIndex++;
-			}
-			T value = searchResults.get(searchIndex);
-			if (value != null){
-				updateFunction.accept(value);
-			}
-		}
-	}
-
-	/**
-	 * Search for the previous element and select it in the list
-	 */
-	public void findPrevious(){
-		if (searchResults != null && searchResults.size() > 0) {
-			if (searchIndex <= 0){
-				searchIndex = searchResults.size() - 1;
-			} else {
-				searchIndex--;
-			}
-			T value = searchResults.get(searchIndex);
-			if (value != null){
-				updateFunction.accept(value);
-			}
-		}
-	}
-
-	/**
-	 * Destroy the search results
-	 */
-	public void clearResult(){
-		searchResults = null;
-		lastSearch = null;
-		searchIndex = -1;
-	}
+	
 	
 	/**
 	 * Initialize the search, by finding all elements which match the passed string
 	 * @param text	The text to search
 	 */
-	public void find (List<T> list, Consumer<T> updateFunction, String text){
+	public List<T> find (List<T> list, Consumer<T> updateFunction, String text){
 		this.updateFunction = updateFunction;
-		if (!text.equalsIgnoreCase(lastSearch)){
-			clearResult();
-			lastSearch = text;
-			if (!text.isEmpty()){
-				try {
-					int val = Integer.valueOf(text);
-					searchResults = list.parallelStream().filter(t -> numberMatchFunction.test(val, t)).collect(Collectors.toList());
-				} catch (NumberFormatException e){
-					searchResults = list.parallelStream().filter(t -> stringMatchFunction.test(text, t)).collect(Collectors.toList());
+		if (text != null && text.length() > 0) {
+			if (!text.equalsIgnoreCase(currentSearch)){
+				clearResult();
+				currentSearch = text;
+				if (!text.isEmpty()){
+					try {
+						int val = Integer.valueOf(text);
+						results = list.parallelStream().filter(t -> numberMatchFunction.test(val, t)).collect(Collectors.toList());
+					} catch (NumberFormatException e){
+						results = list.parallelStream().filter(t -> stringMatchFunction.test(text, t)).collect(Collectors.toList());
+					}
+				} else {
+					results = new ArrayList<>();
 				}
-			} else {
-				searchResults = new ArrayList<>();
 			}
+		} else {
+			clearResult();
 		}
+		return results;
+	}
+
+	/**
+	 * Search for the next element and select it in the list.
+	 * Must be called after the method <code>find</code>.
+	 */
+	public T findNext(){
+		if (results != null && results.size() > 0) {
+			if (searchIndex < 0 || searchIndex >= results.size() - 1){
+				searchIndex = 0;
+			} else {
+				searchIndex++;
+			}
+			T value = results.get(searchIndex);
+			if (updateFunction != null && value != null){
+				updateFunction.accept(value);
+			}
+			return value;
+		}
+		return null;
+	}
+
+	/**
+	 * Search for the previous element and select it in the list
+	 * Must be called after the method <code>find</code>.
+	 */
+	public T findPrevious(){
+		if (results != null && results.size() > 0) {
+			if (searchIndex <= 0 || searchIndex > results.size() - 1){
+				searchIndex = results.size() - 1;
+			} else {
+				searchIndex--;
+			}
+			T value = results.get(searchIndex);
+			if (updateFunction != null && value != null){
+				updateFunction.accept(value);
+			}
+			return value;
+		}
+		return null;
+	}
+
+
+
+	public String getCurrentSearch(){
+		return currentSearch;
+	}
+	
+	public List<T> getResults(){
+		return results;
+	}
+	
+	/**
+	 * Destroy the search results
+	 */
+	public void clearResult(){
+		results = null;
+		currentSearch = null;
+		searchIndex = -1;
 	}
 	
 }

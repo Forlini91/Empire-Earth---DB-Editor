@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -25,16 +26,16 @@ import gui.ui.GridBagLayoutExtended;
 
 
 public class DialogSelectFiles extends JDialog {
-
+	
 	private static final long serialVersionUID = 4743010835668668611L;
 	private final JPanel contentPane = new JPanel();
 	private GridBagLayoutExtended gridBagLayout = new GridBagLayoutExtended(new int[]{200, 200}, new int[]{400, 25, 35, 35}, new double[]{0.5, 0.5}, new double[]{1.0, 0, 0, 0});
 	private JPanel scrollPanePanel = new JPanel();
 	private JScrollPane scrollPane = new JScrollPane(scrollPanePanel);
-	
+
 	private JFileContainer[] checkBoxFiles;
 	private boolean confirm = false;
-	
+
 	{
 		setContentPane(contentPane);
 		setBounds(Core.getBounds(this, 0.4, 0.6));
@@ -45,7 +46,7 @@ public class DialogSelectFiles extends JDialog {
 		JButton okButton = new JButtonRed("OK");
 		JButton cancelButton = new JButtonRed("Cancel");
 		getRootPane().setDefaultButton(okButton);
-
+		
 		contentPane.setLayout(gridBagLayout);
 		contentPane.setBackground(Core.UI_COLOR_BACKGROUND);
 		contentPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -85,7 +86,7 @@ public class DialogSelectFiles extends JDialog {
 			dispose();
 		});
 	}
-
+	
 	public DialogSelectFiles (JFrame parent, List<DatFile> files, List<Boolean> loaded, boolean firstLoad) {
 		super(parent, ModalityType.APPLICATION_MODAL);
 		setTitle("Load files");
@@ -97,7 +98,7 @@ public class DialogSelectFiles extends JDialog {
 			scrollPanePanel.add(checkBoxFiles[i]);
 		}
 	}
-
+	
 	public List<DatFile> getFilesToLoad(){
 		setVisible(true);
 		if (!confirm){
@@ -106,21 +107,21 @@ public class DialogSelectFiles extends JDialog {
 		List<DatFile> files = new ArrayList<>(checkBoxFiles.length);
 		for (JFileContainer checkBoxFile : checkBoxFiles){
 			if (checkBoxFile.isEnabled() && checkBoxFile.isSelected()){
-				files.add(checkBoxFile.file);
+				files.add(checkBoxFile.datFile);
 			}
 		}
 		return files;
 	}
-	
-	private static class JFileContainer extends JToggleButtonRed {
+
+	public static class JFileContainer extends JToggleButtonRed {
 		private static final long serialVersionUID = 7255738274808055053L;
-		private DatFile file;
-		private JFileContainer (DatFile file, boolean loaded, boolean firstLoad) {
-			super(file.getName());
-			this.file = file;
+		DatFile datFile;
+		private JFileContainer (DatFile datFile, boolean loaded, boolean firstLoad) {
+			super(datFile.getName());
+			this.datFile = datFile;
 			if (loaded){
-				setSelected(true);
-				setEnabled(false);
+				setSelected(false);
+				setBackground(Color.BLUE);
 			} else {
 				setSelected(firstLoad);
 			}
@@ -128,5 +129,5 @@ public class DialogSelectFiles extends JDialog {
 			setOpaque(false);
 		}
 	}
-
+	
 }

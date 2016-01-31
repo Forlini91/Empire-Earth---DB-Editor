@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,6 @@ import datstructure.DatContent;
 import datstructure.DatStructure;
 import datstructure.Entry;
 import datstructure.EntryGroup;
-import datstructure.FieldStruct;
 import gui.DialogProgressBar;
 import gui.FrameEditor;
 import gui.FrameMain;
@@ -50,15 +50,6 @@ public class Core {
 
 
 	public static void main (String[] args) {
-		System.out.println("Check entries definitions:");
-		int count;
-		for (DatStructure datStructure : DatStructure.values()){
-			count = 0;
-			for (FieldStruct fieldStruct : datStructure.entries){
-				count += fieldStruct.size;
-			}
-			System.out.println('\t' + datStructure.fileName + ':' + ' ' + count);
-		}
 		EventQueue.invokeLater(() -> {
 			new FrameMain();
 		});
@@ -91,7 +82,7 @@ public class Core {
 	 * @param onFail	The code to run if loading fail
 	 */
 	public static void loadFile(Window parent, DatFile datFile, Consumer<DatContent> onLoaded, Runnable onFail){
-		loadFiles(parent, Arrays.asList(datFile), (data) -> {
+		loadFiles(parent, new ArrayList<>(Arrays.asList(datFile)), (data) -> {
 			onLoaded.accept(data.get(datFile.datStructure));
 		}, onFail);
 	}
@@ -116,16 +107,17 @@ public class Core {
 				Thread t = new Thread(() -> {
 					DatFile datFile = files.get(index);
 					try {
-						DatFileManager dbManager = new DatFileManager(datFile);
-						List<EntryGroup> entryGroups = dbManager.read(progressDialog::updatePercPart, index);
-						dataLoad.put(datFile.datStructure, new DatContent(datFile, entryGroups));
+						DatFileManager dbManager = new DatFileManager(datFile, datFile.datStructure);
+						DatContent datContent = dbManager.read(progressDialog::updatePercPart, index);
+						dataLoad.put(datFile.datStructure, datContent);
 					} catch (Exception e) {
+						files.remove(datFile);
 						System.err.println(e.getMessage());
 						JOptionPane.showMessageDialog(parent, "An error occurred during the loading of " + datFile, "Error", JOptionPane.ERROR_MESSAGE);
 					} finally {
 						synchronized(lockObj){
 							if (dataLoad.size() >= files.size()) {
-								lockObj.notify();
+								lockObj.notifyAll();
 							}
 						}
 					}
@@ -176,8 +168,8 @@ public class Core {
 			DialogProgressBar progressBar = new DialogProgressBar("Saving...", count, false);
 			new Thread(() -> {
 				try {
-					DatFileManager dbManager = new DatFileManager(datContent.datFile);
-					dbManager.save(datContent.entryGroups, progressBar::update);
+					DatFileManager dbManager = new DatFileManager(datContent.datFile, datContent.datStructure);
+					dbManager.save(datContent, progressBar::update);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				} finally {

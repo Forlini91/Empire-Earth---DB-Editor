@@ -34,7 +34,7 @@ public class FrameMain extends JFrame {
 
 	private static final long serialVersionUID = 1973882004055163035L;
 	/** Text used in the ABOUT dialog */
-	public static final String S_ABOUT = "EE - DB Editor\nVersion: 1.0\nCreated by Forlins & the EE Heaven community   \nGNU General Public License v3   ";
+	public static final String S_ABOUT = "EE - DB Editor\nVersion: 1.1\nCreated by Forlins & the EE Heaven community   \nGNU General Public License v3   ";
 	/** Icon used in the top-left corner in all frames/dialog */
 	public static final ImageIcon IMAGE_ICON = new ImageIcon(FrameMain.class.getResource("EE_Icon.png"));
 	/** EE logo used in the frame {@code FrameMain} */
@@ -129,7 +129,6 @@ public class FrameMain extends JFrame {
 			String selectedDirectoryPath = selectedDirectory.getPath();
 			allFiles = new ArrayList<>(DatStructure.values().length);
 			loaded = new ArrayList<>(allFiles.size());
-			boolean canLoadOne = false;
 			for(DatStructure datStructure : DatStructure.values()){
 				DatFile datFile = new DatFile(selectedDirectoryPath + '\\' + datStructure.fileName, datStructure);
 				if (datFile.exists()){
@@ -138,14 +137,11 @@ public class FrameMain extends JFrame {
 						loaded.add(true);
 					} else {
 						loaded.add(false);
-						canLoadOne = true;
 					}
 				}
 			}
 			if (allFiles.isEmpty()){
 				JOptionPane.showMessageDialog(this, "There's no dat file in this directory!", "Error", JOptionPane.ERROR_MESSAGE);
-			} else if (!canLoadOne){
-				JOptionPane.showMessageDialog(this, "All files in this directory are already loaded!", "Error", JOptionPane.ERROR_MESSAGE);
 			} else {
 				break;
 			}
