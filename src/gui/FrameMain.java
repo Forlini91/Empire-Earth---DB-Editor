@@ -33,7 +33,7 @@ public class FrameMain extends JFrame {
 
 	private static final long serialVersionUID = 1973882004055163035L;
 	/** Text used in the ABOUT dialog */
-	public static final String S_ABOUT = "EE - DB Editor\nVersion: 1.11\nCreated by Forlins & the EE Heaven community   \nGNU General Public License v3   ";
+	public static final String S_ABOUT = "EE - DB Editor\nVersion: 1.2\nCreated by Forlins & the EE Heaven community   \nGNU General Public License v3   ";
 	/** Icon used in the top-left corner in all frames/dialog */
 	public static final ImageIcon IMAGE_ICON = new ImageIcon(FrameMain.class.getResource("EE_Icon" + (Core.AOC ? "_AOC" : "") + ".png"));
 	/** EE logo used in the frame {@code FrameMain} */
@@ -157,7 +157,7 @@ public class FrameMain extends JFrame {
 		Core.loadFiles(this, files, (data) -> {
 			Core.DATA.putAll(data);
 			int gridRows = Math.max(10, Core.DATA.size());
-			scrollPanePanel.setLayout(new GridLayout(gridRows, 1, 10, 10));
+			scrollPanePanel.setLayout(new GridLayout((int) Math.ceil(gridRows/2f), 2, 10, 10));
 			ArrayList<DatContent> datContents = new ArrayList<>(data.values());
 			datContents.sort(null);
 			for (DatContent datContent : datContents){
@@ -169,7 +169,7 @@ public class FrameMain extends JFrame {
 			}
 			scrollPane.setVisible(true);
 			scrollPanePanel.revalidate();
-			setBounds(Core.getBounds(this, 960, 0.65));
+			setBounds(Core.getBounds(this, 1200, 0.65));
 		}, ()->{});
 	}
 

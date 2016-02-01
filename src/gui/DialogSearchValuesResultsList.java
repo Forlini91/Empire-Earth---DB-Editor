@@ -27,9 +27,9 @@ import gui.ui.GridBagLayoutExtended;
  * @see #DialogSearchValuesResults(Window, EntryValueMap, AbstractEntryField)
  */
 public class DialogSearchValuesResultsList extends JDialog {
-	
-	private static final long serialVersionUID = 7589015334494498605L;
 
+	private static final long serialVersionUID = 7589015334494498605L;
+	
 	public DialogSearchValuesResultsList(Window parent, List<Entry> list, Object value){
 		super(parent, ModalityType.APPLICATION_MODAL);
 		JLabel dlgLabel = new JLabel("All entries with this value:");
@@ -43,7 +43,7 @@ public class DialogSearchValuesResultsList extends JDialog {
 		dlgScrollPane.getViewport().setOpaque(false);
 		dlgScrollPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
 		dlgScrollPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
-
+		
 		DialogCloseKeyListener dlgKeyListener = new DialogCloseKeyListener(this);
 		dlgLabel.addKeyListener(dlgKeyListener);
 		dlgList.addKeyListener(dlgKeyListener);
@@ -53,7 +53,7 @@ public class DialogSearchValuesResultsList extends JDialog {
 		getContentPane().addKeyListener(dlgKeyListener);
 		addKeyListener(dlgKeyListener);
 		dlgClose.addActionListener(e2 -> dispose());
-
+		
 		setTitle("For value: " + value);
 		setBounds(Core.getBounds(this, 0.45, 0.6));
 		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{30, 400, 30, 50}, new double[]{1.0}, new double[]{0, 1.0, 0, 0}));
@@ -63,5 +63,5 @@ public class DialogSearchValuesResultsList extends JDialog {
 		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 3));
 		setVisible(true);
 	}
-
+	
 }

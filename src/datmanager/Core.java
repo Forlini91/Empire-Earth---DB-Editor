@@ -34,7 +34,7 @@ import gui.FrameMain;
  *
  */
 public class Core {
-	
+
 	/** Background used in all frames, windows and dialogs */
 	public static final Color UI_COLOR_BACKGROUND = new Color(249, 241, 224);
 	/** Color used in all buttons */
@@ -47,14 +47,14 @@ public class Core {
 	private static final int LOAD_MAX_WAIT = 15000;
 	/** The DatStructure which will be used */
 	public static DatStructure[] values;
-
-	public static boolean AOC = false;
 	
+	public static boolean AOC = false;
+
 	public static final Map<DatStructure, DatContent> DATA = new HashMap<>();
 	public static final Map<DatContent, FrameEditor> FRAME_EDITORS = new HashMap<>();
-	
-	
-	
+
+
+
 	public static void main (String[] args) {
 		EventQueue.invokeLater(() -> {
 			if (JOptionPane.showConfirmDialog(null, "Are you using the Art of Conquest expansion?", "Vanilla or AOC", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0){
@@ -68,7 +68,7 @@ public class Core {
 			}
 		});
 	}
-	
+
 	/**
 	 * Attempt to find an entry by ID.
 	 * @param datStructure	The dat structure which should contains the entry
@@ -85,9 +85,9 @@ public class Core {
 		}
 		return null;
 	}
-	
-	
 
+
+	
 	/**
 	 * Load the given file and disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -100,7 +100,7 @@ public class Core {
 			onLoaded.accept(data.get(datFile.datStructure));
 		}, onFail);
 	}
-	
+
 	/**
 	 * Load the given list of files and disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -125,9 +125,9 @@ public class Core {
 						DatContent datContent = dbManager.read(progressDialog::updatePercPart, index);
 						dataLoad.put(datFile.datStructure, datContent);
 					} catch (Exception e) {
+						JOptionPane.showMessageDialog(parent, "An error occurred during the loading of " + datFile, "Error", JOptionPane.ERROR_MESSAGE);
 						files.remove(datFile);
 						e.printStackTrace();
-						JOptionPane.showMessageDialog(parent, "An error occurred during the loading of " + datFile, "Error", JOptionPane.ERROR_MESSAGE);
 					} finally {
 						synchronized(lockObj){
 							if (dataLoad.size() >= files.size()) {
@@ -138,7 +138,7 @@ public class Core {
 				});
 				t.start();
 			}
-			
+
 			try {
 				synchronized(lockObj){
 					if (dataLoad.size() < files.size()){
@@ -149,7 +149,7 @@ public class Core {
 				return;
 			}
 			progressDialog.dispose();
-
+			
 			if (dataLoad.size() >= files.size()) {
 				onLoaded.accept(dataLoad);
 			} else {
@@ -160,9 +160,9 @@ public class Core {
 			}
 		}).start();
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Save the given list of EntryGroup to the given file. Disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -195,9 +195,9 @@ public class Core {
 			}).start();
 		}).start();
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Try to open the given file or show an error message to the calling component.
 	 * The file must be already loaded.
@@ -219,8 +219,8 @@ public class Core {
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Calculate the bounds of the given component
 	 * @param component		The component
@@ -235,9 +235,9 @@ public class Core {
 		Point point = new Point((rBounds.width / 2) - (dimension.width / 2), (rBounds.height / 2) - (dimension.height / 2) - 25);
 		return new Rectangle(point, dimension);
 	}
-
-
+	
+	
 	/** No need to instantiate this */
 	private Core(){}
-	
+
 }

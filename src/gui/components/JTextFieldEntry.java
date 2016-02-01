@@ -72,7 +72,11 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 			case FLOAT:
 				return Float.valueOf(getText());
 			default:
-				return Integer.valueOf(getText());
+				if (getText().isEmpty()){
+					return 0;
+				} else {
+					return Integer.valueOf(getText());
+				}
 		}
 	}
 	

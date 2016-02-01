@@ -62,6 +62,9 @@ public class DatFileManager {
 		if (entryGroups.size() == 1){
 			entryGroups.get(0).name = datStructure.getFileName();
 		}
+		for (EntryGroup entryGroup : entryGroups){
+			System.out.println("Load file: " + datFile.getName() + "  >  Group: " + entryGroup + "  >  Num entries: " + entryGroup.entries.size());
+		}
 		return new DatContent(datFile, entryGroups);
 	}
 
@@ -77,23 +80,29 @@ public class DatFileManager {
 	public EntryGroup readGroup(DatReader reader, BiConsumer<Float, Integer> update, int threadIndex) throws IOException {
 		int numEntries = reader.readInt(4) + datStructure.getAdjustNumEntries();
 		int numFields = datStructure.getEntries().length;
-		System.out.println("Loading: " + datFile.getName() + "  >  Num entries: " + numEntries);
 		List<Entry> entries = new ArrayList<Entry>(numEntries);
 		Entry entry;
 		FieldStruct fieldStruct;
 		Object read;
+		int size;
 		//		StringBuilder sb;
 		for (int i = 0; i < numEntries; i++) {	//<= because dbTechTree works differently...
 			List<Object> values = new ArrayList<Object>(numFields);
 			for (int j = 0; j < numFields; j++){
 				fieldStruct = datStructure.getEntries()[j];
+				size = fieldStruct.getSize();
 				switch(fieldStruct.getType()){
 					case STRING:
-						read = reader.readChars(fieldStruct.getSize()); break;
+						if (fieldStruct.getIndexStringLengthExtra() >= 0){
+							size += (int) values.get(fieldStruct.getIndexStringLengthExtra());
+							//							System.out.println("Load extra size: " + fieldStruct.getSize() + "  ->  " + size);
+						}
+						read = reader.readChars(size);
+						break;
 					case FLOAT:
-						read = reader.readFloat(fieldStruct.getSize()); break;
+						read = reader.readFloat(size); break;
 					default:
-						read = reader.readInt(fieldStruct.getSize()); break;
+						read = reader.readInt(size); break;
 				}
 				values.add(read);
 				//				sb = new StringBuilder().append('\t').append('\t').append('(').append(fieldStruct.getType()).append(' ').append(fieldStruct.getSize()).append(')');
@@ -111,7 +120,7 @@ public class DatFileManager {
 			entry = new Entry(datStructure, values);
 			entries.add(entry);
 			update.accept((float) (1 - (double) reader.getRemaining() / fileSize), threadIndex);
-			System.out.println("Element: " + i + " | " + entry);
+			//			System.out.println("Element: " + i + " | " + entry);
 		}
 		return new EntryGroup(datStructure, entries);
 	}
@@ -133,6 +142,7 @@ public class DatFileManager {
 		FieldStruct fieldStruct;
 		int numEntries;
 		int numFields;
+		int size;
 		try (DatWriter writer = new DatWriter(datFile)) {
 			for (EntryGroup entryGroup : datContent){
 				numEntries = entryGroup.entries.size();
@@ -150,16 +160,19 @@ public class DatFileManager {
 						} else {
 							fieldStruct = datStructure.getExtraEntry();
 						}
+						size = fieldStruct.getSize();
 						switch (fieldStruct.getType()){
 							case STRING:
-								if (entry.values.get(j).equals(Entry.NAME_NONE)){
-									System.out.println("NO NAME!!!");
+								if (fieldStruct.getIndexStringLengthExtra() >= 0){
+									size += (int) entry.values.get(fieldStruct.getIndexStringLengthExtra());
+									//									System.out.println("Save extra size: " + fieldStruct.getSize() + "  ->  " + size);
 								}
-								writer.writeChars((String) entry.values.get(j), fieldStruct.getSize()); break;
+								writer.writeChars((String) entry.values.get(j), size);
+								break;
 							case FLOAT:
-								writer.writeFloat((float) entry.values.get(j), fieldStruct.getSize()); break;
+								writer.writeFloat((float) entry.values.get(j), size); break;
 							default:
-								writer.writeInt((int) entry.values.get(j), fieldStruct.getSize()); break;
+								writer.writeInt((int) entry.values.get(j), size); break;
 						}
 						//						sb = new StringBuilder().append('\t').append('\t').append('(').append(field.type).append(' ').append(field.size).append(')');
 						//						sb.append(' ').append(field.name != null ? field.name : "Unknown").append(':').append(' ').append(entry.values.get(j));
@@ -171,4 +184,6 @@ public class DatFileManager {
 		}
 	}
 	
+
+
 }

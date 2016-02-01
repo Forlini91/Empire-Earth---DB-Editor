@@ -51,7 +51,7 @@ public class DialogSearchFieldResults extends JDialog {
 		addKeyListener(dlgKeyListener);
 		dlgClose.addActionListener(al -> dispose());
 
-		setTitle("For field: " + field.getEntryStruct());
+		setTitle("For field: " + field.getIndex() + " - " + field.getEntryStruct());
 		setBounds(Core.getBounds(this, 0.6, 0.8));
 		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{400, 30, 25, 50}, new double[]{1.0}, new double[]{1.0, 0, 0, 0}));
 		add(dlgScrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 0));
