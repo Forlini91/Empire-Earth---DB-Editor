@@ -109,7 +109,16 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @return	true if defined, false otherwise
 	 */
 	public boolean isDefined(){
-		return ID >= 0 && sequenceNumber >= 0;
+		if (ID >= 0 && sequenceNumber >= 0){
+			if (datStructure.getIndexName() >= 0){
+				String name = (String) values.get(datStructure.getIndexName());
+				return !STRING_UNDEFINED.equals(name);
+			} else {
+				return true;
+			}
+		}
+		return false;
+		
 	}
 	
 	@Override

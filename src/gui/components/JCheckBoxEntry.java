@@ -3,15 +3,19 @@ package gui.components;
 import java.awt.Color;
 
 import javax.swing.JCheckBox;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import datstructure.FieldStruct;
 
-public class JCheckBoxEntry extends JCheckBox implements AbstractEntryField {
+public class JCheckBoxEntry extends JCheckBox implements AbstractEntryField, ChangeListener {
 	
 	private static final long serialVersionUID = -7297266293793163972L;
 
 	private FieldStruct fieldStruct;
 	private int index;
+	private Object defaultVal = null;
+	private boolean altered = false;
 	
 	public JCheckBoxEntry(FieldStruct fieldStruct, int index){
 		this.fieldStruct = fieldStruct;
@@ -24,6 +28,7 @@ public class JCheckBoxEntry extends JCheckBox implements AbstractEntryField {
 			setForeground(Color.RED);
 		}
 		setHorizontalTextPosition(LEFT);
+		addChangeListener(this);
 	}
 	
 	@Override
@@ -48,14 +53,35 @@ public class JCheckBoxEntry extends JCheckBox implements AbstractEntryField {
 
 	@Override
 	public void setVal (Object value) {
-		int val = (int) value;
-		if (val == 0){
-			setSelected(false);
-		} else if (val == 1){
-			setSelected(true);
+		defaultVal = value;
+		if (value instanceof Integer){
+			int val = (int) value;
+			if (val == 0){
+				setSelected(false);
+			} else if (val == 1){
+				setSelected(true);
+			} else {
+				throw new IllegalArgumentException("This value is not boolean: " + value);
+			}
 		} else {
-			throw new IllegalStateException("Questo valore non è boolean: " + value);
+			throw new IllegalArgumentException("This value is not boolean: " + value);
 		}
+		altered = false;
+	}
+	
+	@Override
+	public boolean isAltered () {
+		return altered;
+	}
+	
+	@Override
+	public Object getDefaultVal () {
+		return defaultVal;
+	}
+
+	@Override
+	public void stateChanged (ChangeEvent e) {
+		altered = true;
 	}
 	
 }

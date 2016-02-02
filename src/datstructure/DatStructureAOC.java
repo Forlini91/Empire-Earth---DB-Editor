@@ -19,6 +19,7 @@ public enum DatStructureAOC implements DatStructure {
 	DB_FAMILY				("Families", "dbfamily.dat", 0, false, 0, 1, 2, -1),
 	DB_GAME_VARIANT			("Game variants", "dbgamevariant.dat", 0, false, 0, 1, 2, -1),
 	DB_GFX_EFFECTS			("GFX Effects", "dbgfxeffects.dat", 0, true, 0, 1, 2, -1),
+	DB_GRAPHICS				("Graphics", "dbgraphics.dat", 0, true, 66, 67, 68, -1),
 	DB_MUSIC				("Musics", "dbmusic.dat", 0, true, 2, 0, 1, -1),
 	DB_OBJECTS				("Objects", "dbobjects.dat", 0, true, 0, 1, 5, -1),
 	DB_PREMADE_CIVS			("Premade civilizations", "dbpremadecivs.dat", 0, false, 2, 0, 1, -1),
@@ -45,8 +46,10 @@ public enum DatStructureAOC implements DatStructure {
 	public static final FieldStruct ID_CIVILIZATION = new FieldStruct("Civilization ID", DB_CIVILIZATION);
 	/** Unique field: A 4 bytes integer which point to a family's ID. */
 	public static final FieldStruct ID_FAMILY = new FieldStruct("Family ID", DB_FAMILY);
+	/** Unique field: A 4 bytes integer which point to a graphic's ID. */
+	public static final FieldStruct ID_GRAPHIC = new FieldStruct("Graphic ID", DB_GRAPHICS);
 	/** Unique field: A 4 bytes integer which point to an object's ID. */
-	public static final FieldStruct ID_OBJECT = new FieldStruct("Object ID", DB_OBJECTS);
+	public static final FieldStruct ID_OBJECT = new FieldStruct("Object ID", DB_OBJECTS, 0);
 	/** Unique field: A 4 bytes integer which point to a sound ID. */
 	public static final FieldStruct ID_SOUND = new FieldStruct("Sound ID", DB_SOUNDS);
 	/** Unique field: A 4 bytes integer which point to a tech's ID. */
@@ -56,11 +59,11 @@ public enum DatStructureAOC implements DatStructure {
 	/** Unique field: A 4 bytes integer which point to an unit set's ID. */
 	public static final FieldStruct ID_UNIT_SET = new FieldStruct("Unit set ID", DB_UNIT_SET);
 	/** Unique field: A 4 bytes integer which point to an upgrade's ID. */
-	public static final FieldStruct ID_UPGRADE = new FieldStruct("Updrade ID", DB_UPGRADE);
+	public static final FieldStruct ID_UPGRADE = new FieldStruct("Updrade ID", DB_UPGRADE, 0);
 	/** Unique field: A 4 bytes integer which point to a weapon to hit's ID. */
 	public static final FieldStruct ID_WEAPON_TO_HIT = new FieldStruct("Weapon to hit ID", DB_WEAPON_TO_HIT);
 	/** Unique field: A 4 bytes integer which point to an object's ID. */
-	public static final FieldStruct ID_TECH_FROM_OBJECT = new FieldStruct("Build from object", DB_OBJECTS);
+	public static final FieldStruct ID_TECH_FROM_OBJECT = new FieldStruct("Build from object", DB_OBJECTS, 0);
 	/** Unique field: A 4 bytes integer which point to a tech's ID. */
 	public static final FieldStruct ID_OBJECT_BUILD_TECH = new FieldStruct ("Can build tech", DB_TECH_TREE);
 	/** Unique field: A 4 bytes integer which point to a button's ID. */
@@ -263,6 +266,97 @@ public enum DatStructureAOC implements DatStructure {
 				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0,
 				-858993664, 0
 		};
+
+
+		DB_GRAPHICS.extraEntry = null;
+		DB_GRAPHICS.entries = new FieldStruct[]{
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Name 1", 0, 0), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Model path", 0, 2),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 4), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 6),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 8), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 10),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 12), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 14),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 16), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 18),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 20), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 22),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 24), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 26)   ,
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 28), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 30),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 32), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 34),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 36), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 38),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 40), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 42),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 44), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 46),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 48), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 50),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 52), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 54),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 56), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 58),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 60), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 62),
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 64), FieldStruct.NAME, FieldStruct.SEQ_NUMBER,
+				FieldStruct.ID, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
+				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4
+		};
+		DB_GRAPHICS.defaultValues = new Object[]{
+				0, "", 0, "", 0, "", 0, "",
+				0, "", 0, "", 0, "", 0, "",
+				0, "", 0, "", 0, "", 0, "",
+				0, "", 0, "", 0, "", 0, "",
+				0, "", 0, "", 0, "", 0, "",
+				0, "", 0, "", 0, "", 0, "",
+				0, "", 0, "", 0, "", 0, "",
+				0, "", 0, "", 0, "", 0, "",
+				0, "", Entry.STRING_UNDEFINED, 0, 0, -858993664, 0, 0,
+				-858993664, 0, 0, 0, -858993664, 0, 0, 0,
+				-1, -1, -859045888, 0, 0, 0, -858993664, 0,
+				0, 0, -1, -1, -859045888, 0, 0, 0,
+				-858993664, 0, 0, 0, -1, -1, -859045888, 0,
+				0, 0, -858993664, 0, 0, 0, -1, -1,
+				-859045888, 0, 0, 0, -858993664, 0, -859045888, 0,
+				0, 0, -858993664, 0, -859045888, 0, 0, 0,
+				-858993664, 0, 0, 0, -1, -1, -859045888, 0,
+				0, 0, -858993664, 0, 0, 0, -1, -1,
+				-859045888, 0, 0, 0, -858993664, 0, 0, 0,
+				-1, -1, -859045888, 0, 0, 0, -858993664, 0,
+				0, 0, -1, -1, -859045888, 0, 0, 0,
+				-859045888, 0, 0, 0, -1, -1, -859045888, 0,
+				0, 0, -858993664, 0, 0, 0, -1, -1,
+				-859045888, 0, 0, 0, -858993664, 0, 0, 0,
+				-1, -1, -859045888, 0, 0, 0, -858993664, 0,
+				0, 0, -1, -1, -858993664, 0, -858993664, 0,
+				0, -1, 0, 0, -1, -1, -858993664, 1f,
+				0, 0f, 0, 0, -858993664
+		};
 		
 
 
@@ -291,9 +385,9 @@ public enum DatStructureAOC implements DatStructure {
 				new FieldStruct("Moving turning speed", Type.FLOAT, 4), FieldStruct.UNKNOWN_FLOAT, new FieldStruct("<PROBABLY> Is air unit", Type.INTEGER, 4), new FieldStruct("Flight time", Type.INTEGER, 4),
 				FieldStruct.UNKNOWN_INT4, new FieldStruct("Attack angle", Type.FLOAT, 4), FieldStruct.UNKNOWN_INT4, ID_WEAPON_TO_HIT,
 				new FieldStruct("Attack", Type.INTEGER, 4), new FieldStruct("Shock armor", Type.INTEGER, 4), new FieldStruct("Arrow armor", Type.INTEGER, 4), new FieldStruct("Pierce armor", Type.INTEGER, 4),
-				new FieldStruct("Gun armor", Type.INTEGER, 4), new FieldStruct("Laser armor", Type.INTEGER, 4), new FieldStruct("Missile armor", Type.INTEGER, 4), new FieldStruct("Projectile ID", Type.INTEGER, 4),
+				new FieldStruct("Gun armor", Type.INTEGER, 4), new FieldStruct("Laser armor", Type.INTEGER, 4), new FieldStruct("Missile armor", Type.INTEGER, 4), new FieldStruct("Projectile ID", DB_OBJECTS),
 				new FieldStruct("Family attack multiplier index", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4, new FieldStruct("Graphic size", Type.FLOAT, 4), new FieldStruct("Unit type", Type.STRING, 52),
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, ID_BUTTON, new FieldStruct("Graphic ID", Type.INTEGER, 4),
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, ID_BUTTON, ID_GRAPHIC,
 				new FieldStruct("Build rate", Type.FLOAT, 4), new FieldStruct("Iron gather rate", Type.FLOAT, 4), new FieldStruct("Farm gather rate", Type.FLOAT, 4), new FieldStruct("Gold gather rate", Type.FLOAT, 4),
 				new FieldStruct("Stone gather rate", Type.FLOAT, 4), new FieldStruct("Wood gather rate", Type.FLOAT, 4), new FieldStruct("Hunt gather rate", Type.FLOAT, 4), new FieldStruct("Forage gather rate", Type.FLOAT, 4),
 				ID_SOUND, ID_SOUND, ID_SOUND, ID_SOUND,
@@ -336,13 +430,13 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Carry capacity", Type.FLOAT, 4), FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNUSED_INT1, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				new FieldStruct("Debris on death", DB_OBJECTS), FieldStruct.UNKNOWN_INT4, new FieldStruct("Min stealth radius", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4,
+				new FieldStruct("Debris on death", DB_OBJECTS, 0), FieldStruct.UNKNOWN_INT4, new FieldStruct("Min stealth radius", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4,
 				new FieldStruct("Max citizens garrison", Type.INTEGER, 4), new FieldStruct("Initial citizens garrison", Type.INTEGER, 4), new FieldStruct("Object upgrade to", DB_TECH_TREE), new FieldStruct ("Plane refuel location", Type.INTEGER, 4),
 				new FieldStruct("<Seems related to ships...>", Type.INTEGER, 4), new FieldStruct("Wonder bonus", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Friendly damage mult", Type.FLOAT, 4), new FieldStruct("Garrison citizens bonus", Type.FLOAT, 4), FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("Num buildable techs", Type.INTEGER, 4),
 				ID_TECH, new FieldStruct("Units can walk above this"), new FieldStruct("Stealth"), FieldStruct.UNKNOWN_BOOL1,
-				new FieldStruct("<only used by units with fuel>", Type.INTEGER, 1), FieldStruct.UNKNOWN_INT4, new FieldStruct("Spawn on death", DB_OBJECTS), new FieldStruct("Power", Type.INTEGER, 4),
+				new FieldStruct("<only used by units with fuel>", Type.INTEGER, 1), FieldStruct.UNKNOWN_INT4, new FieldStruct("Spawn on death", DB_OBJECTS, 0), new FieldStruct("Power", Type.INTEGER, 4),
 				new FieldStruct("Power recover rate", Type.INTEGER, 4), new FieldStruct("Default stance", DB_UNIT_BEHAVIOR), FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT,
 				new FieldStruct("<It seems heal power, but the roman legionnaire...>", Type.FLOAT, 4, Knowledge.UNKNOWN), FieldStruct.UNKNOWN_FLOAT, new FieldStruct("<PROBABLY> Load range", Type.FLOAT, 4), new FieldStruct("<PROBABLY> Unload range", Type.FLOAT, 4),
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNKNOWN_BOOL1, new FieldStruct("Can attack area"),
@@ -352,7 +446,7 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
-				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("<Only used by Piramid>", Type.INTEGER, 4),
+				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("<Only used by Pyramid>", Type.INTEGER, 4),
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
@@ -517,18 +611,18 @@ public enum DatStructureAOC implements DatStructure {
 		DB_TECH_TREE.extraEntry = ID_TECH_FROM_OBJECT;
 		DB_TECH_TREE.entries = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Starting epoch", Type.INTEGER, 4),
-				new FieldStruct("Ending epoch", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("Wood cost", Type.INTEGER, 4),
+				new FieldStruct("Ending epoch", Type.INTEGER, 4), new FieldStruct("(Only techs) sequence number", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4, new FieldStruct("Wood cost", Type.INTEGER, 4),
 				new FieldStruct("Stone cost", Type.INTEGER, 4), new FieldStruct("<Only Impassable tile object and Invisible capital>", Type.INTEGER, 4), new FieldStruct("Gold cost", Type.INTEGER, 4), FieldStruct.UNUSED_INT4,
 				new FieldStruct("Iron cost", Type.INTEGER, 4), new FieldStruct("Food cost", Type.INTEGER, 4),
 				new FieldStruct("Build time", Type.INTEGER, 4), new FieldStruct("Unlocked by tech", DB_TECH_TREE),
 				new FieldStruct("Unlocked by power", DB_TECH_TREE), new FieldStruct("<-1 in Epoch Space, 0 everywhere else>", Type.INTEGER, 4), new FieldStruct("<-1 in Epoch Space, 0 everywhere else>", Type.INTEGER, 4), ID_OBJECT,
-				ID_BUTTON, FieldStruct.UNKNOWN_INT4, FieldStruct.ID_LANGUAGE, FieldStruct.UNKNOWN_INT4,
-				new FieldStruct("<4 in all Epochs, 0 everywhere else>", Type.INTEGER, 4), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Type of tech", Type.INTEGER, 4),
+				ID_BUTTON, new FieldStruct("Is object?", Type.INTEGER, 4), FieldStruct.ID_LANGUAGE, new FieldStruct("Type of tech", Type.INTEGER, 4),
+				new FieldStruct("<4 in all Epochs, 0 everywhere else>", Type.INTEGER, 4), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4,
 				ID_UI_HOTKEY, new FieldStruct("<Only Monoteism and Mech Minotaur use this>", Type.INTEGER, 4, Knowledge.UNKNOWN), new FieldStruct("<Only Monoteism and Mech Minotaur use this>", Type.INTEGER, 4, Knowledge.UNKNOWN), FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_BOOL1, new FieldStruct("Only in scenario"), new FieldStruct("<All powers and power techs use 0>"),
-				new FieldStruct("<All powers and power techs use 0>"), FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, ID_TECH_FROM_OBJECT, new FieldStruct("Num of tech builders", Type.INTEGER, 4, false)
+				new FieldStruct("<All powers and power techs use 0>"), FieldStruct.UNUSED_INT4, new FieldStruct("Epoch number", Type.INTEGER, 4), new FieldStruct("<2> if it's an epoch", Type.INTEGER, 4),
+				new FieldStruct("(Epochs) ID starts from...", Type.INTEGER, 4), ID_TECH_FROM_OBJECT, new FieldStruct("Num of tech builders", Type.INTEGER, 4, false)
 		};
 		DB_TECH_TREE.defaultValues = new Object[]{
 				Entry.STRING_UNDEFINED, -1, 0, 0, 15, -1, -1, 0,

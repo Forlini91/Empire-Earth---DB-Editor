@@ -3,17 +3,22 @@ package gui.components;
 import java.awt.Color;
 
 import javax.swing.JToggleButton;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import datstructure.FieldStruct;
+import gui.FrameEditor;
 
-public class JToggleBoxEntry extends JToggleButton implements AbstractEntryField {
-	
+public class JToggleBoxEntry extends JToggleButton implements AbstractEntryField, ChangeListener {
+
 	private static final long serialVersionUID = 2945166199101734683L;
-	
+
 	private FieldStruct fieldStruct;
 	private int index;
-	
-	public JToggleBoxEntry(FieldStruct fieldStruct, int index){
+	private Object defaultVal = null;
+	private boolean altered = false;
+
+	public JToggleBoxEntry(FrameEditor frameEditor, FieldStruct fieldStruct, int index){
 		this.fieldStruct = fieldStruct;
 		this.index = index;
 		if (fieldStruct.getName() != null){
@@ -23,38 +28,60 @@ public class JToggleBoxEntry extends JToggleButton implements AbstractEntryField
 			setText(index + " Unknown");
 			setForeground(Color.RED);
 		}
+		addChangeListener(this);
 	}
-	
+
 	@Override
 	public void resetColor () {
 		setForeground(null);
 	}
-	
+
 	@Override
 	public FieldStruct getEntryStruct () {
 		return fieldStruct;
 	}
-
+	
 	@Override
 	public int getIndex(){
 		return index;
 	}
-
+	
 	@Override
 	public Object getVal(){
 		return (isSelected() ? 1 : 0);
 	}
-
+	
 	@Override
 	public void setVal (Object value) {
-		int val = (int) value;
-		if (val == 0){
-			setSelected(false);
-		} else if (val == 1){
-			setSelected(true);
+		defaultVal = value;
+		if (value instanceof Integer){
+			int val = (int) value;
+			if (val == 0){
+				setSelected(false);
+			} else if (val == 1){
+				setSelected(true);
+			} else {
+				throw new IllegalArgumentException("This value is not boolean: " + value);
+			}
 		} else {
-			throw new IllegalStateException("Entry " + index + ' ' + fieldStruct + " is defined as boolean and can't accept value: " + value);
+			throw new IllegalArgumentException("This value is not boolean: " + value);
 		}
+		altered = false;
+	}
+
+	@Override
+	public boolean isAltered () {
+		return altered;
 	}
 	
+	@Override
+	public Object getDefaultVal () {
+		return defaultVal;
+	}
+
+	@Override
+	public void stateChanged (ChangeEvent e) {
+		altered = true;
+	}
+
 }

@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import datstructure.Entry;
+
 /**
  * A class which can convert the integer, float and string values to array of bytes and save them in a *.dat file.
  * @author MarcoForlini
@@ -28,8 +30,12 @@ public class DatWriter implements AutoCloseable, Closeable {
 		writer.write(buffer);
 	}
 	
-	public void writeChars(String chars, int numBytes) throws IOException{
-		byte[] buffer = ByteManager.charsToBytes(chars.toCharArray(), numBytes);
+	public void writeString(String string, int numBytes) throws IOException{
+		char[] chars = string.toCharArray();
+		byte[] buffer = ByteManager.charsToBytes(chars, numBytes);
+		if (buffer[0] != 0 && string.equals(Entry.STRING_UNDEFINED)){
+			System.out.println("Fermati!!");
+		}
 		writer.write(buffer);
 	}
 

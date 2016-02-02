@@ -1,5 +1,7 @@
 package gui.components;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -24,7 +26,7 @@ import datstructure.FieldStruct;
 import gui.FrameEditor;
 
 
-public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryField, MouseListener, KeyListener {
+public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryField, MouseListener, KeyListener, ItemListener {
 
 	private static final long serialVersionUID = -5787229930995728192L;
 	private static final BiPredicate<String, Entry> NAME_MATCHER = (text, entry) -> entry.isDefined() && entry.toString().toLowerCase().contains(text);
@@ -36,8 +38,10 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 	private int index;
 	private List<Entry> allEntries = null;
 	private DatStructure linkToStruct;
+	private Object defaultVal = null;
+	private boolean altered = false;
 	
-	public JComboBoxEntry(FieldStruct fieldStruct, int index){
+	public JComboBoxEntry(FrameEditor frameEditor, FieldStruct fieldStruct, int index){
 		this.fieldStruct = fieldStruct;
 		this.index = index;
 		DatStructure datStructure = fieldStruct.getLinkToStruct();
@@ -51,6 +55,7 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 		linkToStruct = fieldStruct.getLinkToStruct();
 		setEditable(true);
 		addMouseListener(this);
+		addItemListener(this);
 		editor.addKeyListener(this);
 	}
 
@@ -80,18 +85,21 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 	@Override
 	public Object getVal(){
 		Object obj = getSelectedItem();
+		//		System.out.println("Getting: " + fieldStruct + " = " + obj + '(' + fieldStruct.defaultValue + '/' + defaultVal + ')');
 		if (obj != null && obj instanceof Entry){
 			return ((Entry) obj).ID;
+		} else if (defaultVal != null){
+			return defaultVal;
 		} else {
-			return -1;
+			return fieldStruct.defaultValue;
 		}
 	}
 
 	@Override
 	public void setVal(Object value){
+		defaultVal = value;
 		DatContent content = Core.DATA.get(linkToStruct);
 		if (content == null){
-			System.out.println("CRASH: " + linkToStruct + " -> " + Core.DATA.entrySet() + "  ->  " + value);
 			return;
 		}
 		for (EntryGroup entryGroup : content){
@@ -102,6 +110,17 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 			}
 		}
 		setSelectedItem(null);
+		altered = false;
+	}
+
+	@Override
+	public boolean isAltered () {
+		return altered;
+	}
+
+	@Override
+	public Object getDefaultVal () {
+		return defaultVal;
 	}
 	
 	
@@ -111,6 +130,7 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 		SwingUtilities.invokeLater(() -> {
 			String text = editor.getText();
 			if (text == null || text.isEmpty()){
+				System.out.println("Select: null");
 				setSelectedItem(null);
 			} else {
 				showPopup();
@@ -138,7 +158,7 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 			if (datContent != null){
 				for (EntryGroup entryGroup : datContent){
 					if (entryGroup.map.containsKey(selectedEntry.ID)){
-						FrameEditor frameEditor = Core.openFile(this, datContent);
+						FrameEditor frameEditor = Core.openFile(this, datContent, e.isShiftDown());
 						frameEditor.goToEntry(entryGroup, selectedEntry);
 						break;
 					}
@@ -153,5 +173,10 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 	@Override public void mouseReleased (MouseEvent e) {}
 	@Override public void mouseEntered (MouseEvent e) {}
 	@Override public void mouseExited (MouseEvent e) {}
+	
+	@Override
+	public void itemStateChanged (ItemEvent e) {
+		altered = true;
+	}
 
 }

@@ -22,7 +22,6 @@ import datstructure.DatContent;
 import datstructure.DatStructure;
 import datstructure.DatStructureAOC;
 import datstructure.DatStructureVanilla;
-import datstructure.Entry;
 import datstructure.EntryGroup;
 import gui.DialogProgressBar;
 import gui.FrameEditor;
@@ -34,7 +33,7 @@ import gui.FrameMain;
  *
  */
 public class Core {
-	
+
 	/** Background used in all frames, windows and dialogs */
 	public static final Color UI_COLOR_BACKGROUND = new Color(249, 241, 224);
 	/** Color used in all buttons */
@@ -47,14 +46,14 @@ public class Core {
 	private static final int LOAD_MAX_WAIT = 15000;
 	/** The DatStructure which will be used */
 	public static DatStructure[] values;
-
-	public static boolean AOC = false;
 	
+	public static boolean AOC = false;
+
 	public static final Map<DatStructure, DatContent> DATA = new HashMap<>();
 	public static final Map<DatContent, FrameEditor> FRAME_EDITORS = new HashMap<>();
-	
-	
-	
+
+
+
 	public static void main (String[] args) {
 		EventQueue.invokeLater(() -> {
 			if (JOptionPane.showConfirmDialog(null, "Are you using the Art of Conquest expansion?", "Vanilla or AOC", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0){
@@ -68,26 +67,9 @@ public class Core {
 			}
 		});
 	}
-	
-	/**
-	 * Attempt to find an entry by ID.
-	 * @param datStructure	The dat structure which should contains the entry
-	 * @param ID	The ID to search
-	 * @return	An array {EntryGroup, Entry} if succeed, null if no entry exists with that ID in the given datStructure
-	 */
-	public static Object[] findEntryByID(DatStructure datStructure, int ID){
-		Entry entry;
-		for (EntryGroup entryGroup : DATA.get(datStructure).entryGroups){
-			entry = entryGroup.map.get(ID);
-			if (entry != null){
-				return new Object[]{entryGroup, entry};
-			}
-		}
-		return null;
-	}
-	
-	
 
+
+	
 	/**
 	 * Load the given file and disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -100,7 +82,7 @@ public class Core {
 			onLoaded.accept(data.get(datFile.datStructure));
 		}, onFail);
 	}
-	
+
 	/**
 	 * Load the given list of files and disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -138,7 +120,7 @@ public class Core {
 				});
 				t.start();
 			}
-			
+
 			try {
 				synchronized(lockObj){
 					if (dataLoad.size() < files.size()){
@@ -149,7 +131,7 @@ public class Core {
 				return;
 			}
 			progressDialog.dispose();
-
+			
 			if (dataLoad.size() >= files.size()) {
 				onLoaded.accept(dataLoad);
 			} else {
@@ -160,9 +142,9 @@ public class Core {
 			}
 		}).start();
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Save the given list of EntryGroup to the given file. Disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -184,8 +166,8 @@ public class Core {
 				try {
 					DatFileManager dbManager = new DatFileManager(datContent.datFile, datContent.datStructure);
 					dbManager.save(datContent, progressBar::update);
-				} catch (IOException e1) {
-					e1.printStackTrace();
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(parent, "An error occurred during the saving of " + datContent.datFile + '\n' + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				} finally {
 					progressBar.dispose();
 					if (parent != null) {
@@ -195,22 +177,26 @@ public class Core {
 			}).start();
 		}).start();
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Try to open the given file or show an error message to the calling component.
 	 * The file must be already loaded.
 	 * @param parent	The parent component.
+	 * @param newWindow TODO
 	 * @param file		The file to open.
 	 */
-	public static FrameEditor openFile(Component parent, DatContent datContent){
+	public static FrameEditor openFile(Component parent, DatContent datContent, boolean newWindow){
 		if (datContent != null){
 			System.out.println("Open: " + datContent.datFile.getName());
 			FrameEditor frameEditor = FRAME_EDITORS.get(datContent);
-			if (frameEditor == null){
+			if (frameEditor == null || newWindow){
+				boolean both = (frameEditor == null && newWindow);
 				frameEditor = new FrameEditor(datContent);
-				FRAME_EDITORS.put(datContent, frameEditor);
+				if (both || !newWindow) {
+					FRAME_EDITORS.put(datContent, frameEditor);
+				}
 			}
 			frameEditor.setVisible(true);
 			return frameEditor;
@@ -219,8 +205,8 @@ public class Core {
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Calculate the bounds of the given component
 	 * @param component		The component
@@ -235,9 +221,9 @@ public class Core {
 		Point point = new Point((rBounds.width / 2) - (dimension.width / 2), (rBounds.height / 2) - (dimension.height / 2) - 25);
 		return new Rectangle(point, dimension);
 	}
-
-
+	
+	
 	/** No need to instantiate this */
 	private Core(){}
-	
+
 }

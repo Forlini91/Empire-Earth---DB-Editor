@@ -34,7 +34,7 @@ public class DatReader implements AutoCloseable, Closeable {
 		return ByteManager.bytesToFloat(buffer);
 	}
 	
-	public String readChars(int numBytes) throws IOException {
+	public String readString(int numBytes) throws IOException {
 		byte[] buffer = new byte[numBytes];
 		reader.read(buffer);
 		return String.valueOf(ByteManager.bytesToChars(buffer));
