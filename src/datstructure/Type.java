@@ -15,7 +15,9 @@ public enum Type {
 	/** A string value */
 	STRING,
 	/** An ID value, which link to an Entry in another file Dat */
-	ID
+	ID,
+	/** A restricted set of values */
+	ENUM
 	;
-	
+
 }

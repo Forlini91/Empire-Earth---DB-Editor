@@ -26,16 +26,16 @@ import gui.ui.GridBagLayoutExtended;
 
 
 public class DialogSelectFiles extends JDialog {
-
+	
 	private static final long serialVersionUID = 4743010835668668611L;
 	private final JPanel contentPane = new JPanel();
 	private GridBagLayoutExtended gridBagLayout = new GridBagLayoutExtended(new int[]{240, 240}, new int[]{400, 25, 35, 35}, new double[]{0.5, 0.5}, new double[]{1.0, 0, 0, 0});
 	private JPanel scrollPanePanel = new JPanel();
 	private JScrollPane scrollPane = new JScrollPane(scrollPanePanel);
-	
+
 	private JFileContainer[] checkBoxFiles;
 	private boolean confirm = false;
-	
+
 	{
 		setContentPane(contentPane);
 		setBounds(Core.getBounds(this, 0.6, 0.6));
@@ -46,7 +46,7 @@ public class DialogSelectFiles extends JDialog {
 		JButton okButton = new JButtonRed("OK");
 		JButton cancelButton = new JButtonRed("Cancel");
 		getRootPane().setDefaultButton(okButton);
-
+		
 		contentPane.setLayout(gridBagLayout);
 		contentPane.setBackground(Core.UI_COLOR_BACKGROUND);
 		contentPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -86,9 +86,9 @@ public class DialogSelectFiles extends JDialog {
 			dispose();
 		});
 	}
-
+	
 	public DialogSelectFiles (JFrame parent, List<DatFile> files, List<Boolean> loaded, boolean firstLoad) {
-		super(parent, ModalityType.APPLICATION_MODAL);
+		super(parent, ModalityType.DOCUMENT_MODAL);
 		setTitle("Load files");
 		checkBoxFiles = new JFileContainer[files.size()];
 		int i;
@@ -98,7 +98,7 @@ public class DialogSelectFiles extends JDialog {
 			scrollPanePanel.add(checkBoxFiles[i]);
 		}
 	}
-
+	
 	public List<DatFile> getFilesToLoad(){
 		setVisible(true);
 		if (!confirm){
@@ -112,7 +112,7 @@ public class DialogSelectFiles extends JDialog {
 		}
 		return files;
 	}
-	
+
 	public static class JFileContainer extends JToggleButtonRed {
 		private static final long serialVersionUID = 7255738274808055053L;
 		DatFile datFile;
@@ -129,5 +129,5 @@ public class DialogSelectFiles extends JDialog {
 			setOpaque(false);
 		}
 	}
-
+	
 }

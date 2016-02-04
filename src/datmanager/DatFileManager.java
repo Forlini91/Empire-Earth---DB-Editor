@@ -15,14 +15,14 @@ import datstructure.EntryGroup;
 import datstructure.FieldStruct;
 
 public class DatFileManager {
-	
+
 	/** The file to read. */
 	private DatFile datFile;
 	/** The structure of the file. */
 	private DatStructure datStructure;
 	/** The size of the file. */
 	private long fileSize;
-
+	
 	/**
 	 * Create a new DatFileManager to read or write the given datFile.
 	 * @param datFile	The file to load with the relative structure
@@ -32,7 +32,7 @@ public class DatFileManager {
 		this.datFile = datFile;
 		this.datStructure = datStructure;
 	}
-
+	
 	/**
 	 * Read the whole file, perform regular updates of the progress on the GUI and return the content read.
 	 * Support multi-thread loadings: you can load many files at once and display a single progress bar for them all.
@@ -60,7 +60,7 @@ public class DatFileManager {
 		}
 		return new DatContent(datFile, entryGroups);
 	}
-	
+
 	/**
 	 * Read a single EntryGroup from the file, perform regular updates on of the progress on the GUI and return the list of entries.
 	 * Support multi-thread loadings: you can load many files at once and display a single progress bar for them all.
@@ -71,21 +71,32 @@ public class DatFileManager {
 	 * @throws IOException	If a problem occurs while reading
 	 */
 	public EntryGroup readGroup(DatReader reader, BiConsumer<Float, Integer> update, int threadIndex) throws IOException {
-		int numEntries = reader.readInt(4) + datStructure.getAdjustNumEntries();
+		boolean defineNumEntries = datStructure.defineNumEntries();
+		int numEntries;
+		if (defineNumEntries){
+			numEntries = reader.readInt(4) + datStructure.getAdjustNumEntries();
+		} else {
+			numEntries = -1;
+		}
 		int numFields = datStructure.getEntries().length;
-		List<Entry> entries = new ArrayList<Entry>(numEntries);
+		List<Entry> entries;
+		if (defineNumEntries) {
+			entries = new ArrayList<>(numEntries);
+		} else {
+			entries = new ArrayList<>();
+		}
 		Entry entry;
 		FieldStruct fieldStruct;
 		Object read;
 		int size;
 		//		StringBuilder sb;
-		for (int i = 0; i < numEntries; i++) {	//<= because dbTechTree works differently...
+		for (int i = 0; (defineNumEntries && i < numEntries) || (!defineNumEntries && reader.getRemaining() > 0); i++) {	//<= because dbTechTree works differently...
 			List<Object> values = new ArrayList<Object>(numFields);
-
+			
 			for (int j = 0; j < numFields; j++){
 				fieldStruct = datStructure.getEntries()[j];
 				size = fieldStruct.getSize();
-
+				
 				switch(fieldStruct.getType()){
 					case STRING:
 						if (fieldStruct.getIndexStringLengthExtra() >= 0){
@@ -115,15 +126,15 @@ public class DatFileManager {
 					values.add(read);
 				}
 			}
-			entry = new Entry(datStructure, values);
+			entry = new Entry(datStructure, values, i);
 			entries.add(entry);
 			update.accept((float) (1 - (double) reader.getRemaining() / fileSize), threadIndex);
 			//			System.out.println("Element: " + i + " | " + entry);
 		}
 		return new EntryGroup(datStructure, entries);
 	}
-
-
+	
+	
 	/**
 	 * Save the given list of EntryGroup to the file and perform regular updates of the progress on the GUI.
 	 * @param entryGroups	The list of EntryGroup to save
@@ -138,20 +149,23 @@ public class DatFileManager {
 		File backup = new File(datFile.getAbsolutePath() + ".bak");
 		Files.deleteIfExists(backup.toPath());
 		Files.copy(datFile.toPath(), backup.toPath());
-
-
+		
+		
 		int numBaseFields = datStructure.getEntries().length;
 		Entry entry;
 		FieldStruct fieldStruct;
 		int numEntries;
 		int numFields;
 		int size;
+		boolean defineNumEntries = datStructure.defineNumEntries();
 		try (DatWriter writer = new DatWriter(datFile)) {
 			for (EntryGroup entryGroup : datContent){
 				numEntries = entryGroup.entries.size();
-				writer.writeInt(numEntries - datStructure.getAdjustNumEntries(), 4);
+				if (defineNumEntries){
+					writer.writeInt(numEntries - datStructure.getAdjustNumEntries(), 4);
+				}
 				System.out.println("Save file: " + datFile.getName() + "  >  Group: " + entryGroup + "  >  Num entries: " + numEntries);
-				
+
 				//				StringBuilder sb;
 				for (int i = 0; i < numEntries; i++){
 					update.run();
@@ -187,7 +201,7 @@ public class DatFileManager {
 			}
 		}
 	}
+	
 
-	
-	
+
 }

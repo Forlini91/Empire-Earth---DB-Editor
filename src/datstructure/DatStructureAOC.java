@@ -1,5 +1,10 @@
 package datstructure;
 
+import java.util.function.Function;
+
+import constants.AttributeCode;
+import constants.EffectCode;
+
 /**
  * This enumeration define all dat files structures, which will be used by the program to parse all the values in the files.
  * If a file structure is wrong, the loading will either fail or corrupted results will show in the editor window.
@@ -8,32 +13,49 @@ package datstructure;
  */
 public enum DatStructureAOC implements DatStructure {
 	
-	DB_AI_UNIT_TARGETING	("AI Unit Targeting", "dbaiunittargeting.dat", 0, false, 0, 1, 2, -1),
-	DB_AMBIENT_SOUNDS		("Ambient sounds", "dbambientsounds.dat", 0, true, 0, 1, 2, -1),
-	DB_AREA_EFFECT			("Area effects", "dbareaeffect.dat", 0, true, 0, 1, 2, -1),
-	DB_BUTTONS				("Buttons", "dbbuttons.dat", 0, true, 0, 2, 3, -1),
-	DB_CALAMITY				("Calamities", "dbcalamity.dat", 0, false, 0, 7, 8, -1),
-	DB_CIVILIZATION			("Civilizations", "dbcivilization.dat", 0, false, 0, -1, -1 , -1),
-	DB_CIV_POWER			("Powers", "dbcivpowers.dat", 0, false, 0, 1, 2, -1),
-	DB_CLIFF_TERRAN			("Cliff terrain", "dbcliffterrain.dat", 0, false, 0, 1, 2, -1),
-	DB_FAMILY				("Families", "dbfamily.dat", 0, false, 0, 1, 2, -1),
-	DB_GAME_VARIANT			("Game variants", "dbgamevariant.dat", 0, false, 0, 1, 2, -1),
-	DB_GFX_EFFECTS			("GFX Effects", "dbgfxeffects.dat", 0, true, 0, 1, 2, -1),
-	DB_GRAPHICS				("Graphics", "dbgraphics.dat", 0, true, 66, 67, 68, -1),
-	DB_MUSIC				("Musics", "dbmusic.dat", 0, true, 2, 0, 1, -1),
-	DB_OBJECTS				("Objects", "dbobjects.dat", 0, true, 0, 1, 5, -1),
-	DB_PREMADE_CIVS			("Premade civilizations", "dbpremadecivs.dat", 0, false, 2, 0, 1, -1),
-	DB_SOUNDS				("Sounds", "dbsounds.dat", 0, true, 1, 2, 3, -1),
-	DB_STARTING_RESOURCHES	("Starting resourches", "dbstartingresources.dat", 0, true, 0, 1, 2, -1),
-	DB_TECH_TREE			("Technologies", "dbtechtree.dat", 1, true, 0, 1, 2, 46),
-	DB_TERRAIN				("Terrain", "dbterrain.dat", 0, true, 1, 2, 3, -1),
-	DB_TERRAIN_TYPE			("Terrain type", "dbterraintype.dat", 0, false, 0, 1, 2, -1),
-	DB_UI_FONT				("UI Fonts", "dbuifonts.dat", 0, false, 0, 1, 2, -1),
-	DB_UI_HOTKEY			("UI Hotkeys", "dbuihotkey.dat", 0, false, 2, 0, 1, -1),
-	DB_UNIT_BEHAVIOR		("Unit behavior", "dbunitbehavior.dat", 0, false, 0, 1, 2, -1),
-	DB_UNIT_SET				("Unit sets", "dbunitset.dat", 0, false, 0, 1, 2, -1),
-	DB_UPGRADE				("Upgrades", "dbupgrade.dat", 0, true, 0, 31, 32, -1),
-	DB_WEAPON_TO_HIT		("Weapons to hit", "dbweapontohit.dat", 0, false, 0, 1, 2, -1),
+	DB_AI_UNIT_TARGETING	("AI Unit Targeting", "dbaiunittargeting.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_AMBIENT_SOUNDS		("Ambient sounds", "dbambientsounds.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_AREA_EFFECT			("Area effects", "dbareaeffect.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_BUTTONS				("Buttons", "dbbuttons.dat", true, 0, 0, 0, 2, 3, -1),
+	DB_CALAMITY				("Calamities", "dbcalamity.dat", true, 0, 0, 0, 7, 8, -1),
+	DB_CIVILIZATION			("Civilizations", "dbcivilization.dat", true, 0, 0, 0, -1 , -1, -1),
+	DB_CIV_POWER			("Powers", "dbcivpowers.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_CLIFF_TERRAN			("Cliff terrain", "dbcliffterrain.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_EFFECTS				("Effects", "dbeffects.dat", false, 0, 1, -1, 0, 1, -1, (entry) -> {
+		EffectCode effectCode = EffectCode.parseValue((int) entry.values.get(8));
+		switch (effectCode){
+			case C02_ALTER_ATTRIBUTE:
+				return effectCode.name + ": " + entry.values.get(11) + ' ' + (AttributeCode.parseValue((int) entry.values.get(11))).name;
+			case C06_SET_GRAPHIC:
+				return effectCode.name + ": " + entry.values.get(9);
+			case C08_ENABLE_TECH:
+			case C09_DISABLE_TECH:
+				return effectCode.name + ": " + entry.values.get(10);
+			case C19_REPLACE_OBJECTS:
+				return effectCode.name + ": " + entry.values.get(5) + " > " + entry.values.get(6);
+			default:
+				return effectCode.toString();
+		}
+	}),
+	DB_EVENTS				("Events", "dbevents.dat", false, 0, 0, 0, 1, -1, 2),
+	DB_FAMILY				("Families", "dbfamily.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_GAME_VARIANT			("Game variants", "dbgamevariant.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_GFX_EFFECTS			("GFX Effects", "dbgfxeffects.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_GRAPHICS				("Graphics", "dbgraphics.dat", true, 0, 0, 66, 67, 68, -1),
+	DB_MUSIC				("Musics", "dbmusic.dat", true, 0, 0, 2, 0, 1, -1),
+	DB_OBJECTS				("Objects", "dbobjects.dat", true, 0, 0, 0, 1, 5, -1),
+	DB_PREMADE_CIVS			("Premade civilizations", "dbpremadecivs.dat", true, 0, 0, 2, 0, 1, -1),
+	DB_SOUNDS				("Sounds", "dbsounds.dat", true, 0, 0, 1, 2, 3, -1),
+	DB_STARTING_RESOURCHES	("Starting resourches", "dbstartingresources.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_TECH_TREE			("Technologies", "dbtechtree.dat", true, 1, 0, 0, 1, 2, 46),
+	DB_TERRAIN				("Terrain", "dbterrain.dat", true, 0, 0, 1, 2, 3, -1),
+	DB_TERRAIN_TYPE			("Terrain type", "dbterraintype.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_UI_FONT				("UI Fonts", "dbuifonts.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_UI_HOTKEY			("UI Hotkeys", "dbuihotkey.dat", true, 0, 0, 2, 0, 1, -1),
+	DB_UNIT_BEHAVIOR		("Unit behavior", "dbunitbehavior.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_UNIT_SET				("Unit sets", "dbunitset.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_UPGRADE				("Upgrades", "dbupgrade.dat", true, 0, 0, 0, 31, 32, -1),
+	DB_WEAPON_TO_HIT		("Weapons to hit", "dbweapontohit.dat", true, 0, 0, 0, 1, 2, -1),
 	;
 	
 	
@@ -95,7 +117,7 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_FLOAT
 		};
 		DB_AMBIENT_SOUNDS.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED, 0, -1, 0, 0, 0, 0, 0,
+				Entry.STRING_UNDEFINED_AOC, 0, -1, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, -858993664
 		};
@@ -112,7 +134,7 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4
 		};
 		DB_AREA_EFFECT.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0f, 0f, 0f, 0f, 0f, 0, 0, -858993664
+				Entry.STRING_UNDEFINED_AOC, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0f, 0f, 0f, 0f, 0f, 0, 0, -858993664
 		};
 
 
@@ -123,7 +145,7 @@ public enum DatStructureAOC implements DatStructure {
 				new FieldStruct("<only used by espionage center>", Type.INTEGER, 4), new FieldStruct("<only used by farm and espionage center>", Type.INTEGER, 4), new FieldStruct("Position", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4
 		};
 		DB_BUTTONS.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED, Entry.STRING_UNDEFINED, 0, -1, 0, 0, 0, -1
+				Entry.STRING_UNDEFINED_AOC, Entry.STRING_UNDEFINED_AOC, 0, -1, 0, 0, 0, -1
 		};
 		
 
@@ -202,6 +224,33 @@ public enum DatStructureAOC implements DatStructure {
 		DB_CLIFF_TERRAN.defaultValues = null;
 
 
+		
+		DB_EFFECTS.extraEntry = null;
+		DB_EFFECTS.entries = new FieldStruct[]{
+				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
+				FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Upgrade these objects...", DB_OBJECTS), new FieldStruct("... to these objects", DB_OBJECTS), FieldStruct.UNKNOWN_INT4,
+				new FieldStruct("Effect code", EffectCode.values()), new FieldStruct("New graphic", DB_GRAPHICS), ID_TECH, new FieldStruct("Attribute value", AttributeCode.values()),
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("New area effect", DB_AREA_EFFECT), FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
+				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4
+		};
+		DB_EFFECTS.defaultValues = new Object[]{
+				-1, DB_EFFECTS.minID, 0f, 0f, 0f, 0, 0, 0,
+				-1, -1, -1, 0, 0, 15, 0, 0,
+				0, 0, 0, 0, 0, 0,
+		};
+		
+		
+
+		DB_EVENTS.extraEntry = new FieldStruct("Effect", DB_EFFECTS); //FieldStruct.UNKNOWN_INT4;
+		DB_EVENTS.entries = new FieldStruct[]{
+				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, new FieldStruct("Num effects", Type.INTEGER, 4, false),
+		};
+		DB_EVENTS.defaultValues = new Object[]{
+				Entry.STRING_UNDEFINED_AOC, -1, 0
+		};
+
+
 
 		DB_FAMILY.extraEntry = null;
 		DB_FAMILY.entries = new FieldStruct[]{
@@ -260,7 +309,7 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4
 		};
 		DB_GFX_EFFECTS.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED, 0, -1, -1, -1, -1, 1f, 1f,
+				Entry.STRING_UNDEFINED_AOC, 0, -1, -1, -1, -1, 1f, 1f,
 				0f, 0, 0, 0, 0, 0, 0, -1,
 				-1, -1, 0, 0f, 0f, 0f, 0f, 0f,
 				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0,
@@ -336,7 +385,7 @@ public enum DatStructureAOC implements DatStructure {
 				0, "", 0, "", 0, "", 0, "",
 				0, "", 0, "", 0, "", 0, "",
 				0, "", 0, "", 0, "", 0, "",
-				0, "", Entry.STRING_UNDEFINED, 0, 0, -858993664, 0, 0,
+				0, "", Entry.STRING_UNDEFINED_AOC, 0, 0, -858993664, 0, 0,
 				-858993664, 0, 0, 0, -858993664, 0, 0, 0,
 				-1, -1, -859045888, 0, 0, 0, -858993664, 0,
 				0, 0, -1, -1, -859045888, 0, 0, 0,
@@ -370,7 +419,7 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNUSED_INT1
 		};
 		DB_MUSIC.defaultValues = new Object[]{
-				-1, -1, Entry.STRING_UNDEFINED, Entry.STRING_UNDEFINED.substring(0, 56), 0f, 0f, 0f, 0,
+				-1, -1, Entry.STRING_UNDEFINED_AOC, Entry.STRING_UNDEFINED_AOC.substring(0, 56), 0f, 0f, 0f, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 204
 		};
 		
@@ -506,11 +555,11 @@ public enum DatStructureAOC implements DatStructure {
 				ID_OBJECT_BUILD_TECH, FieldStruct.UNKNOWN_INT4
 		};
 		DB_OBJECTS.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED, 0, -1, -1, 0, -1, 0, 0,
+				Entry.STRING_UNDEFINED_AOC, 0, -1, -1, 0, -1, 0, 0,
 				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
 				0f, 0f, -858993664, 0, 0, 0f, -858993664, -1,
 				0, 0, 0, 0, 0, 0, 0, -1,
-				-1, -858993664, 0f, Entry.STRING_UNDEFINED.substring(0, 52), -1, 0, -1, -1,
+				-1, -858993664, 0f, Entry.STRING_UNDEFINED_AOC.substring(0, 52), -1, 0, -1, -1,
 				0f, 0f, -1.07374176E8, 0f, 0f, 0f, 0f, 0f,
 				-1, -1, -1, -1, -1, -1, 0, -1,
 				-1, -1, -1, -1, -1, -1, -1, -1,
@@ -590,7 +639,7 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4
 		};
 		DB_SOUNDS.defaultValues = new Object[]{
-				0, Entry.STRING_UNDEFINED, 0, -1, 0, 0, 0, -858993664,
+				0, Entry.STRING_UNDEFINED_AOC, 0, -1, 0, 0, 0, -858993664,
 				0, 0
 		};
 
@@ -611,7 +660,7 @@ public enum DatStructureAOC implements DatStructure {
 		DB_TECH_TREE.extraEntry = ID_TECH_FROM_OBJECT;
 		DB_TECH_TREE.entries = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Starting epoch", Type.INTEGER, 4),
-				new FieldStruct("Ending epoch", Type.INTEGER, 4), new FieldStruct("(Only techs) sequence number", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4, new FieldStruct("Wood cost", Type.INTEGER, 4),
+				new FieldStruct("Ending epoch", Type.INTEGER, 4), new FieldStruct("Event ID", DB_EVENTS), FieldStruct.UNKNOWN_INT4, new FieldStruct("Wood cost", Type.INTEGER, 4),
 				new FieldStruct("Stone cost", Type.INTEGER, 4), new FieldStruct("<Only Impassable tile object and Invisible capital>", Type.INTEGER, 4), new FieldStruct("Gold cost", Type.INTEGER, 4), FieldStruct.UNUSED_INT4,
 				new FieldStruct("Iron cost", Type.INTEGER, 4), new FieldStruct("Food cost", Type.INTEGER, 4),
 				new FieldStruct("Build time", Type.INTEGER, 4), new FieldStruct("Unlocked by tech", DB_TECH_TREE),
@@ -621,11 +670,11 @@ public enum DatStructureAOC implements DatStructure {
 				ID_UI_HOTKEY, new FieldStruct("<Only Monoteism and Mech Minotaur use this>", Type.INTEGER, 4, Knowledge.UNKNOWN), new FieldStruct("<Only Monoteism and Mech Minotaur use this>", Type.INTEGER, 4, Knowledge.UNKNOWN), FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_BOOL1, new FieldStruct("Only in scenario"), new FieldStruct("<All powers and power techs use 0>"),
-				new FieldStruct("<All powers and power techs use 0>"), FieldStruct.UNUSED_INT4, new FieldStruct("Epoch number", Type.INTEGER, 4), new FieldStruct("<2> if it's an epoch", Type.INTEGER, 4),
+				new FieldStruct("<All powers and power techs use 0>"), FieldStruct.UNUSED_INT4, new FieldStruct("Epoch number", Type.INTEGER, 4), new FieldStruct("Buildings to advance epoch", Type.INTEGER, 4),
 				new FieldStruct("(Epochs) ID starts from...", Type.INTEGER, 4), ID_TECH_FROM_OBJECT, new FieldStruct("Num of tech builders", Type.INTEGER, 4, false)
 		};
 		DB_TECH_TREE.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED, -1, 0, 0, 15, -1, -1, 0,
+				Entry.STRING_UNDEFINED_AOC, -1, 0, 0, 15, -1, -1, 0,
 				0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, -1, -1, -859045888, 0, 0,
 				0, 0, 0, 0, -1, -858993460, -858993460, -858993460,
@@ -646,7 +695,7 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_INT4
 		};
 		DB_TERRAIN.defaultValues = new Object[]{
-				0, Entry.STRING_UNDEFINED, 0, -1, 0, 0, 0, 0,
+				0, Entry.STRING_UNDEFINED_AOC, 0, -1, 0, 0, 0, 0,
 				0, 0, -872415232, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, -858993460, -858993460, -858993460,
 				0, 0f, 0f, 0
@@ -718,7 +767,7 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.ID, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4
 		};
 		DB_UPGRADE.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
+				Entry.STRING_UNDEFINED_AOC, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
 				0f, 0f, 0f, 0f, 0, 0f, 0, 0f,
 				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
 				0f, 0f, 0, 0f, 0f, 0, 0, 0,
@@ -763,16 +812,18 @@ public enum DatStructureAOC implements DatStructure {
 	/** Name of the file. It must match exactly the dat filename. */
 	public String fileName;
 	
+	/** Define the number of elements at the beginning? */
+	public boolean defineNumEntries;
+	
 	/** The game define a counter "num entries" at the beginning of each group in the file.
 	 *  This field alter the counter when reading and writing, to adjust the real number of entries in the file.
 	 * For now, only dbtechtree.dat require this, due to its particular structure.
 	 * In dbtechtree there is more than one group, and each counter says N, but there are actually N+1 entries (because there's also the "Epoch" entry, which is not counted). */
 	public int adjustNumEntries;
 	
-	/** If true, you can add/remove entries in the file.
-	 * Some files have a fixed number of entries you can't or shouldn't change. */
-	public boolean supportNumEntriesAlteration;
-	
+	/** Min ID for defined objects */
+	public int minID;
+
 	/** Index of the field which hold the entry name. It's -1 if entries have no name. */
 	public int indexName;
 	
@@ -799,19 +850,38 @@ public enum DatStructureAOC implements DatStructure {
 	/** Default values used by Unknown/New entries. */
 	public Object[] defaultValues;
 
+	/** Optional function to calculate the name */
+	private Function<Entry, String> nameBuilder;
+	
 
 
-	DatStructureAOC(String name, String fileName, int alterNumEntries, boolean supportNumAlteration, int indexName, int indexSequence, int indexID, int indexCountExtra){
+
+
+	DatStructureAOC(String name, String fileName, boolean defineNumEntries, int adjustNumEntries, int minID, int indexName, int indexSequence, int indexID, int indexCountExtra){
 		this.name = name;
 		this.fileName = fileName;
-		adjustNumEntries = alterNumEntries;
-		supportNumEntriesAlteration = supportNumAlteration;
+		this.defineNumEntries = defineNumEntries;
+		this.adjustNumEntries = adjustNumEntries;
+		this.minID = minID;
 		this.indexName = indexName;
 		this.indexSequence = indexSequence;
 		this.indexID = indexID;
 		this.indexCountExtra = indexCountExtra;
+		nameBuilder = null;
 	}
 
+	DatStructureAOC(String name, String fileName, boolean defineNumEntries, int adjustNumEntries, int minID, int indexName, int indexSequence, int indexID, int indexCountExtra, Function<Entry, String> nameBuilder){
+		this.name = name;
+		this.fileName = fileName;
+		this.defineNumEntries = defineNumEntries;
+		this.adjustNumEntries = adjustNumEntries;
+		this.minID = minID;
+		this.indexName = indexName;
+		this.indexSequence = indexSequence;
+		this.indexID = indexID;
+		this.indexCountExtra = indexCountExtra;
+		this.nameBuilder = nameBuilder;
+	}
 
 
 	
@@ -826,13 +896,18 @@ public enum DatStructureAOC implements DatStructure {
 	}
 	
 	@Override
+	public boolean defineNumEntries(){
+		return defineNumEntries;
+	}
+	
+	@Override
 	public int getAdjustNumEntries () {
 		return adjustNumEntries;
 	}
 	
 	@Override
-	public boolean isSupportNumEntriesAlteration () {
-		return supportNumEntriesAlteration;
+	public int getMinID(){
+		return minID;
 	}
 	
 	@Override
@@ -868,6 +943,11 @@ public enum DatStructureAOC implements DatStructure {
 	@Override
 	public Object[] getDefaultValues () {
 		return defaultValues;
+	}
+
+	@Override
+	public Function<Entry, String> getNameBuilder(){
+		return nameBuilder;
 	}
 	
 	

@@ -27,11 +27,11 @@ import gui.FrameEditor;
 
 
 public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryField, MouseListener, KeyListener, ItemListener {
-
+	
 	private static final long serialVersionUID = -5787229930995728192L;
 	private static final BiPredicate<String, Entry> NAME_MATCHER = (text, entry) -> entry.isDefined() && entry.toString().toLowerCase().contains(text);
 	private static final BiPredicate<Integer, Entry> ID_MATCHER = (val, entry) -> entry.ID == val;
-	
+
 	private ListSearcher <Entry> searcher = new ListSearcher<>(NAME_MATCHER, ID_MATCHER);
 	private JTextComponent editor = ((JTextComponent) getEditor().getEditorComponent());
 	private FieldStruct fieldStruct;
@@ -40,7 +40,7 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 	private DatStructure linkToStruct;
 	private Object defaultVal = null;
 	private boolean altered = false;
-	
+
 	public JComboBoxEntry(FrameEditor frameEditor, FieldStruct fieldStruct, int index){
 		this.fieldStruct = fieldStruct;
 		this.index = index;
@@ -58,7 +58,7 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 		addItemListener(this);
 		editor.addKeyListener(this);
 	}
-
+	
 	@Override
 	public synchronized void addMouseListener (MouseListener l) {
 		super.addMouseListener(l);
@@ -66,22 +66,22 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 			editor.addMouseListener(l);
 		}
 	}
-
+	
 	@Override
 	public void resetColor () {
 		setForeground(null);
 	}
-
+	
 	@Override
 	public FieldStruct getEntryStruct () {
 		return fieldStruct;
 	}
-
+	
 	@Override
 	public int getIndex(){
 		return index;
 	}
-
+	
 	@Override
 	public Object getVal(){
 		Object obj = getSelectedItem();
@@ -94,7 +94,7 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 			return fieldStruct.defaultValue;
 		}
 	}
-
+	
 	@Override
 	public void setVal(Object value){
 		defaultVal = value;
@@ -106,25 +106,26 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 			Entry entry = entryGroup.map.get(value);
 			if (entry != null){
 				setSelectedItem(entry);
+				altered = false;
 				return;
 			}
 		}
 		setSelectedItem(null);
 		altered = false;
 	}
-
+	
 	@Override
 	public boolean isAltered () {
 		return altered;
 	}
-
+	
 	@Override
 	public Object getDefaultVal () {
 		return defaultVal;
 	}
-	
-	
 
+
+	
 	@Override
 	public void keyTyped (KeyEvent e) {
 		SwingUtilities.invokeLater(() -> {
@@ -145,10 +146,10 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 			}
 		});
 	}
-
+	
 	@Override public void keyPressed (KeyEvent e) {}
 	@Override public void keyReleased (KeyEvent e) {}
-
+	
 	@Override
 	public void mouseClicked (MouseEvent e) {
 		Object selectedItem = getSelectedItem();
@@ -168,15 +169,15 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 			showPopup();
 		}
 	}
-
+	
 	@Override public void mousePressed (MouseEvent e) {}
 	@Override public void mouseReleased (MouseEvent e) {}
 	@Override public void mouseEntered (MouseEvent e) {}
 	@Override public void mouseExited (MouseEvent e) {}
-	
+
 	@Override
 	public void itemStateChanged (ItemEvent e) {
 		altered = true;
 	}
-
+	
 }

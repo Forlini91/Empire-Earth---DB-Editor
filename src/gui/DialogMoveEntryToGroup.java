@@ -25,11 +25,11 @@ import gui.ui.GridBagLayoutExtended;
  *
  */
 public class DialogMoveEntryToGroup extends JDialog {
-	
+
 	private static final long serialVersionUID = -4853886086958587136L;
-	
+
 	public DialogMoveEntryToGroup (JFrame parent, List<EntryGroup> entryGroups, AbstractJListExtended <Entry> entryList, EntryGroup sourceGroup, Entry entry){
-		super(parent, ModalityType.APPLICATION_MODAL);
+		super(parent, ModalityType.DOCUMENT_MODAL);
 		List<EntryGroup> dialogListGroups = new ArrayList<>(entryGroups);
 		dialogListGroups.remove(sourceGroup);
 		JListExtended<EntryGroup> dialogList = new JListExtended<>(dialogListGroups);
@@ -47,7 +47,7 @@ public class DialogMoveEntryToGroup extends JDialog {
 			dispose();
 		});
 		dlgCancel.addActionListener(al -> dispose());
-		
+
 		DialogCloseKeyListener keyListener = new DialogCloseKeyListener(this);
 		dialogList.addKeyListener(keyListener);
 		scrollPane.addKeyListener(keyListener);
@@ -55,7 +55,7 @@ public class DialogMoveEntryToGroup extends JDialog {
 		dlgCancel.addKeyListener(keyListener);
 		getContentPane().addKeyListener(keyListener);
 		addKeyListener(keyListener);
-		
+
 		setTitle("Move entry to another group");
 		setBounds(Core.getBounds(this, 0.3, 0.6));
 		getContentPane().setBackground(Core.UI_COLOR_BACKGROUND);
@@ -63,8 +63,8 @@ public class DialogMoveEntryToGroup extends JDialog {
 		add(scrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 0));
 		add(dlgConfirm, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
 		add(dlgCancel, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 2));
-		
+
 		setVisible(true);
 	}
-
+	
 }

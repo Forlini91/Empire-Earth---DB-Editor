@@ -20,14 +20,25 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	
 	/** Byte used for empty strings */
 	public static final char bCC = 65484;
+
+	/** Byte used for empty strings */
+	public static final char bFF = 65535;
 	
 	/** Sequence of chars used by empty strings (100 chars) */
-	public static final String STRING_UNDEFINED = new String(new char[]{
+	public static final String STRING_UNDEFINED_AOC = new String(new char[]{
 			b00, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
 			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
 			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
 			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
 			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
+	});
+	
+	public static final String STRING_UNDEFINED_VANILLA = new String(new char[]{
+			b00, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
+			bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
+			bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
+			bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
+			bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
 	});
 	
 	/** Used by fields without name. */
@@ -45,17 +56,21 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	/** The entry's ID. This is a redundant value which can be found in values[indexID]. */
 	public int ID;
 
-	public Entry(DatStructure datStructure, List<Object> values){
+	public Entry(DatStructure datStructure, List<Object> values, int sequenceID){
 		this.datStructure = datStructure;
 		this.values = values;
 		if (values.size() > 0){
 			sequenceNumber = datStructure.getIndexSequence() < 0 ? 0 : (int) values.get(datStructure.getIndexSequence());
-			ID = datStructure.getIndexID() < 0 ? 0 :(int) values.get(datStructure.getIndexID());
+			if (datStructure.defineNumEntries()){
+				ID = datStructure.getIndexID() < 0 ? 0 :(int) values.get(datStructure.getIndexID());
+			} else {
+				ID = sequenceID;
+			}
 		}
 	}
 
-	public Entry(DatStructure datStructure, int sequenceNumber, int ID){
-		this(datStructure, getDefaultValues(datStructure, sequenceNumber, ID));
+	public Entry(DatStructure datStructure, int ID){
+		this(datStructure, getDefaultValues(datStructure, ID), ID);
 	}
 	
 	/**
@@ -65,11 +80,14 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @param ID	The new entry's ID
 	 * @return	A list with all default values for every field defined in the structure.
 	 */
-	private static List<Object> getDefaultValues(DatStructure datStructure, int sequenceNumber, int ID){
+	private static List<Object> getDefaultValues(DatStructure datStructure, int ID){
 		int n = datStructure.getEntries().length;
 		List<Object> values = new ArrayList<Object>(n);
 		for (int i = 0; i < n; i++){
 			values.add(datStructure.getDefaultValues()[i]);
+		}
+		if (datStructure.defineNumEntries() && datStructure.getIndexID() >= 0){
+			values.set(datStructure.getIndexID(), ID);
 		}
 		return values;
 	}
@@ -109,10 +127,10 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @return	true if defined, false otherwise
 	 */
 	public boolean isDefined(){
-		if (ID >= 0 && sequenceNumber >= 0){
+		if (ID >= datStructure.getMinID() && sequenceNumber >= 0){
 			if (datStructure.getIndexName() >= 0){
 				String name = (String) values.get(datStructure.getIndexName());
-				return !STRING_UNDEFINED.equals(name);
+				return !STRING_UNDEFINED_AOC.equals(name) && !STRING_UNDEFINED_VANILLA.equals(name);
 			} else {
 				return true;
 			}
@@ -124,7 +142,11 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	@Override
 	public String toString(){
 		if (isDefined()){
-			return "(" + ID + ") " + getName();
+			if (datStructure.getNameBuilder() != null){
+				return "(" + ID + ") " + datStructure.getNameBuilder().apply(this);
+			} else {
+				return "(" + ID + ") " + getName();
+			}
 		} else {
 			return NAME_UNDEFINED;
 		}

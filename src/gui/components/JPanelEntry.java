@@ -12,18 +12,18 @@ import datstructure.FieldStruct;
 import gui.FrameEditor;
 
 public class JPanelEntry extends JPanel {
-
+	
 	private static final long serialVersionUID = -8432430218424230659L;
-
+	
 	public final int index;
 	public final FieldStruct fieldStruct;
 	public JLabel label;
 	public AbstractEntryField field;
-
+	
 	public JPanelEntry (FrameEditor frameEditor, FieldStruct fieldStruct, int index){
 		this.index = index;
 		this.fieldStruct = fieldStruct;
-
+		
 		label = new JLabelEntry(fieldStruct, index);
 		label.setPreferredSize(new Dimension(100, 25));
 		switch(fieldStruct.getType()){
@@ -32,6 +32,9 @@ public class JPanelEntry extends JPanel {
 				break;
 			case ID:
 				field = new JComboBoxEntry(frameEditor, fieldStruct, index);
+				break;
+			case ENUM:
+				field = new JComboBoxEnum(frameEditor, fieldStruct, index);
 				break;
 			default:
 				field = new JTextFieldEntry(frameEditor, fieldStruct, index);
@@ -44,11 +47,11 @@ public class JPanelEntry extends JPanel {
 		setOpaque(false);
 		label.setOpaque(false);
 	}
-	
+
 	public void setVal(Object val){
 		field.setVal(val);
 	}
-
+	
 	public Object getVal(){
 		if (field.isAltered()){
 			//			System.out.println(field.getEntryStruct() + ": save value " + field.getVal());
@@ -57,5 +60,5 @@ public class JPanelEntry extends JPanel {
 			return field.getDefaultVal();
 		}
 	}
-
+	
 }

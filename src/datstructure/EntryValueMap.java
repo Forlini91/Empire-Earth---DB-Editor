@@ -36,22 +36,24 @@ public class EntryValueMap{
 		for (EntryGroup entryGroup : entryGroups){
 			for (Entry entry : entryGroup){
 				counter++;
-				value = entry.values.get(index);
-				if (!valueEntryMap.containsKey(value)){
-					entries = new ArrayList<>();
-					entries.add(entry);
-					valueEntryMap.put(value, entries);
-				} else {
-					valueEntryMap.get(value).add(entry);
-				}
-				
-				if (filterUndefined && entry.ID >= 0 && entry.sequenceNumber >= 0){
-					if (!valueEntryMapClean.containsKey(value)){
+				if (index < entry.values.size()){
+					value = entry.values.get(index);
+					if (!valueEntryMap.containsKey(value)){
 						entries = new ArrayList<>();
 						entries.add(entry);
-						valueEntryMapClean.put(value, entries);
+						valueEntryMap.put(value, entries);
 					} else {
-						valueEntryMapClean.get(value).add(entry);
+						valueEntryMap.get(value).add(entry);
+					}
+
+					if (filterUndefined && entry.ID >= 0 && entry.sequenceNumber >= 0){
+						if (!valueEntryMapClean.containsKey(value)){
+							entries = new ArrayList<>();
+							entries.add(entry);
+							valueEntryMapClean.put(value, entries);
+						} else {
+							valueEntryMapClean.get(value).add(entry);
+						}
 					}
 				}
 			}

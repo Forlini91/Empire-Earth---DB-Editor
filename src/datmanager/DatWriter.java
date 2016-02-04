@@ -33,7 +33,7 @@ public class DatWriter implements AutoCloseable, Closeable {
 	public void writeString(String string, int numBytes) throws IOException{
 		char[] chars = string.toCharArray();
 		byte[] buffer = ByteManager.charsToBytes(chars, numBytes);
-		if (buffer[0] != 0 && string.equals(Entry.STRING_UNDEFINED)){
+		if (buffer[0] != 0 && string.equals(Entry.STRING_UNDEFINED_AOC)){
 			System.out.println("Fermati!!");
 		}
 		writer.write(buffer);

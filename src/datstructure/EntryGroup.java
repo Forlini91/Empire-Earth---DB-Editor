@@ -29,46 +29,46 @@ import java.util.stream.Collectors;
  *
  */
 public class EntryGroup implements Iterable <Entry> {
-
+	
 	/** The structure of the entries in this group. A redundant value for quick access purposes. */
 	public DatStructure datStructure;
-
+	
 	/** The list of entries in this group. */
 	public List<Entry> entries;
-	
+
 	/** A map of all IDs of the entries. A redundant value for quick access purposes. */
 	public Map<Integer, Entry> map;
-	
+
 	/** The name of this group. This is the name of the first entry in the group, but only if there are more groups. */
 	public String name;
-	
+
 	public EntryGroup (DatStructure datStructure, List<Entry> entries) {
 		this.datStructure = datStructure;
 		this.entries = entries;
 		if (entries.size() > 0){
 			name = entries.get(0).toString();
 		}
-		if (datStructure.getIndexID() >= 0){
+		if (datStructure.getIndexID() >= 0 || !datStructure.defineNumEntries()){
 			map = entries.parallelStream().filter(entry -> entry.isDefined()).collect(Collectors.toMap(t -> t.ID, t -> t));
 		} else {
 			map = new HashMap<>();
 		}
 	}
-
+	
 	public EntryGroup (DatStructure datStructure, String name, int ID){
 		this.datStructure = datStructure;
 		this.name = name;
 		entries = new ArrayList<>();
 	}
-	
+
 	@Override
 	public Iterator <Entry> iterator () {
 		return entries.iterator();
 	}
-	
+
 	@Override
 	public String toString(){
 		return name;
 	}
-	
+
 }

@@ -25,12 +25,12 @@ import gui.ui.GridBagLayoutExtended;
  *
  */
 public class DialogSearchFieldResults extends JDialog {
-
+	
 	private static final long serialVersionUID = 2493133528817012871L;
-
+	
 	public DialogSearchFieldResults (Frame owner, List<Entry> entries, List<Entry> entriesClean, AbstractEntryField field) {
-		super(owner, ModalityType.APPLICATION_MODAL);
-
+		super(owner, ModalityType.DOCUMENT_MODAL);
+		
 		JListDouble<Entry> dlgList = new JListDouble<>(entries, entriesClean, "Hide undefined fields");
 		JScrollPane dlgScrollPane = new JScrollPaneRed(dlgList, "All entries with the same value");
 		JSearchFieldEntry dlgSearch = new JSearchFieldEntry(dlgList);
@@ -40,7 +40,7 @@ public class DialogSearchFieldResults extends JDialog {
 		dlgScrollPane.getViewport().setOpaque(false);
 		dlgScrollPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
 		dlgScrollPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
-
+		
 		DialogCloseKeyListener dlgKeyListener = new DialogCloseKeyListener(this);
 		dlgList.addKeyListener(dlgKeyListener);
 		dlgScrollPane.addKeyListener(dlgKeyListener);
@@ -50,7 +50,7 @@ public class DialogSearchFieldResults extends JDialog {
 		getContentPane().addKeyListener(dlgKeyListener);
 		addKeyListener(dlgKeyListener);
 		dlgClose.addActionListener(al -> dispose());
-
+		
 		setTitle("For field: " + field.getIndex() + " - " + field.getEntryStruct());
 		setBounds(Core.getBounds(this, 0.6, 0.8));
 		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{400, 30, 25, 50}, new double[]{1.0}, new double[]{1.0, 0, 0, 0}));
@@ -58,10 +58,10 @@ public class DialogSearchFieldResults extends JDialog {
 		add(dlgSearch, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
 		add(dlgList.switchList, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 2));
 		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 3));
-		
+
 		setVisible(true);
 	}
+	
 
-	
-	
+
 }

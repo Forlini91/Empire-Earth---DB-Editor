@@ -32,12 +32,12 @@ import gui.ui.GridBagLayoutExtended;
  * @see #DialogSearchValuesResultsList
  */
 public class DialogSearchValuesResults extends JDialog {
-	
+
 	private static final long serialVersionUID = 4717671766146876755L;
-	
+
 	public DialogSearchValuesResults (Window parent, EntryValueMap entryValueMap, AbstractEntryField field) {
-		super(parent, ModalityType.APPLICATION_MODAL);
-		
+		super(parent, ModalityType.DOCUMENT_MODAL);
+
 		JLabel dlgLabel = new JLabel("All values and entries which use them (double click for full list):");
 		JListDouble<List<Entry>> dlgList = new JListDouble<>(new ArrayList<>(entryValueMap.map.values()), new ArrayList<>(entryValueMap.mapClean.values()), "Hide unused fields");
 		JListDouble<Object> rowHeaderList = new JListDouble<>(new ArrayList<>(entryValueMap.map.keySet()), new ArrayList<>(entryValueMap.mapClean.keySet()), dlgList.switchList);
@@ -51,7 +51,7 @@ public class DialogSearchValuesResults extends JDialog {
 		DefaultListCellRenderer x = (DefaultListCellRenderer) rowHeaderList.getCellRenderer();
 		x.setBackground(Core.UI_COLOR_ELEMENT);
 		rowHeaderList.setForeground(Color.WHITE);
-
+		
 		dlgLabel.setOpaque(false);
 		dlgScrollPane.setOpaque(false);
 		dlgScrollPane.getViewport().setOpaque(false);
@@ -91,7 +91,7 @@ public class DialogSearchValuesResults extends JDialog {
 				}
 			}
 		});
-		
+
 		DialogCloseKeyListener dlgKeyListener = new DialogCloseKeyListener(this);
 		dlgLabel.addKeyListener(dlgKeyListener);
 		dlgList.addKeyListener(dlgKeyListener);
@@ -102,7 +102,7 @@ public class DialogSearchValuesResults extends JDialog {
 		getContentPane().addKeyListener(dlgKeyListener);
 		addKeyListener(dlgKeyListener);
 		dlgClose.addActionListener(al -> dispose());
-
+		
 		setTitle("For field: " + field.getIndex() + " - " + field.getEntryStruct());
 		setBounds(Core.getBounds(this, 0.6, 0.8));
 		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{30, 400, 25, 50}, new double[]{1.0}, new double[]{0, 1.0, 0, 0}));
@@ -112,5 +112,5 @@ public class DialogSearchValuesResults extends JDialog {
 		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 3));
 		setVisible(true);
 	}
-
+	
 }

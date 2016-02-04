@@ -1,5 +1,6 @@
 package datstructure;
 
+import java.util.function.Function;
 
 public interface DatStructure {
 	
@@ -7,9 +8,11 @@ public interface DatStructure {
 	
 	String getFileName ();
 	
+	boolean defineNumEntries ();
+	
 	int getAdjustNumEntries ();
 	
-	boolean isSupportNumEntriesAlteration ();
+	int getMinID ();
 	
 	int getIndexName ();
 	
@@ -26,5 +29,9 @@ public interface DatStructure {
 	Object[] getDefaultValues ();
 	
 	int compareTo(DatStructure datStructure);
+
+	Function <Entry, String> getNameBuilder ();
+	
+
 	
 }

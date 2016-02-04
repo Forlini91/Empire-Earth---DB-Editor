@@ -19,14 +19,14 @@ import datmanager.Core;
  *
  */
 public class DialogProgressBar extends JWindow {
-	
-	private static final long serialVersionUID = 4973946165556391770L;
 
+	private static final long serialVersionUID = 4973946165556391770L;
+	
 	private JProgressBar progressBar = new JProgressBar();
 	private int cur = 0;
 	private int max;
 	private float[] fractions;
-
+	
 	/**
 	 * Create a progress bar dialog. It will have a label with the given text and a progress bar with the given max.
 	 * @param text	Text of the label to display above the progress bar
@@ -41,18 +41,18 @@ public class DialogProgressBar extends JWindow {
 		contentPane.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		contentPane.setBackground(Core.UI_COLOR_BACKGROUND);
-		
+
 		progressBar.setBorder(new EmptyBorder(4, 8, 8, 8));
 		progressBar.setStringPainted(true);
 		progressBar.setForeground(Core.UI_COLOR_ELEMENT.brighter());
 		progressBar.setBackground(Core.UI_COLOR_BACKGROUND);
-		
+
 		JLabel lblTitle = new JLabel(text);
 		lblTitle.setLabelFor(progressBar);
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		contentPane.add(lblTitle, BorderLayout.NORTH);
 		contentPane.add(progressBar, BorderLayout.CENTER);
-
+		
 		if (multiThread){
 			fractions = new float[max];
 			progressBar.setString(null);
@@ -61,10 +61,10 @@ public class DialogProgressBar extends JWindow {
 			this.max = max;
 		}
 		progressBar.setMaximum(this.max);
-		
+
 		setVisible(true);
 	}
-
+	
 	/**
 	 * Increase the current by 1. This method is synchronized, so it can be safety used by threads.
 	 */
@@ -73,7 +73,7 @@ public class DialogProgressBar extends JWindow {
 		progressBar.setValue(cur);
 		progressBar.setString(cur + " / " + max);
 	}
-	
+
 	/**
 	 * Increase the current by 1.
 	 */
@@ -82,7 +82,7 @@ public class DialogProgressBar extends JWindow {
 		progressBar.setValue(cur);
 		progressBar.setString(cur + " / " + max);
 	}
-	
+
 	/**
 	 * Set the new cur value
 	 * @param cur The new cur value
@@ -92,7 +92,7 @@ public class DialogProgressBar extends JWindow {
 		progressBar.setValue(cur);
 		progressBar.setString(cur + " / " + max);
 	}
-	
+
 	/**
 	 * Set the new fraction value
 	 * @param fraction	The new fraction value
@@ -102,7 +102,7 @@ public class DialogProgressBar extends JWindow {
 		progressBar.setValue(cur);
 		progressBar.setString(null);
 	}
-	
+
 	/**
 	 * Set the new fraction value for the given thread
 	 * @param fraction	The new fraction value
@@ -121,5 +121,5 @@ public class DialogProgressBar extends JWindow {
 		cur = (int) (total / fractions.length);
 		progressBar.setValue(cur);
 	}
-
+	
 }
