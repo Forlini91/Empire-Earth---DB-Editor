@@ -17,7 +17,9 @@ public enum Type {
 	/** An ID value, which link to an Entry in another file Dat */
 	ID,
 	/** A restricted set of values */
-	ENUM
+	ENUM,
+	/** A restricted range of integers */
+	RANGE
 	;
 
 }

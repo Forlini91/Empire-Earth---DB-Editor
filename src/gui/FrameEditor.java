@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
-import java.awt.LayoutManager;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
@@ -56,23 +55,23 @@ import gui.ui.GridLayoutExtended;
 
 
 public class FrameEditor extends JFrame implements WindowListener, WindowFocusListener {
-	
-	
+
+
 	private static final long serialVersionUID = -3426470254615698936L;
-	
-	private final LayoutManager gbl_contentPane = new GridBagLayoutExtended(new int[]{160, 200, 100, 200, 200, 100}, new int[]{400, 30, 30}, new double[]{0, 0, 0.5, 0, 0, 0.5}, new double[]{1.0, 0.0, 0});
+
+	private final GridBagLayoutExtended gbl_contentPane = new GridBagLayoutExtended(new int[]{160, 200, 100, 200, 200, 100}, new int[]{400, 30, 30}, new double[]{0, 0, 0.5, 0, 0, 0.5}, new double[]{1.0, 0.0, 0});
 	private final GridLayout gridLayout = new GridLayoutExtended(false, false, 0, 4, 0, 0);
-	private static final GridBagConstraints gbc_entryGroupListPane = new GridBagConstraintsExtended(4, 4, 0, 0, 0, 0);
-	private static final GridBagConstraints gbc_entryListPane = new GridBagConstraintsExtended(4, 4, 0, 0, 1, 0);
-	private static final GridBagConstraints gbc_entrySearchField = new GridBagConstraintsExtended(4, 4, 0, 0, 1, 1);
-	private static final GridBagConstraints gbc_scrollPaneFields  = new GridBagConstraintsExtended(4, 4, 0, 4, 2, 0, 4, 2);
-	private static final GridBagConstraints gbc_switchList = new GridBagConstraintsExtended(4, 4, 4, 0, 0, 1);
-	private static final GridBagConstraints gbc_resetButton = new GridBagConstraintsExtended(4, 4, 4, 0, 0, 2);
-	private static final GridBagConstraints gbc_saveButton = new GridBagConstraintsExtended(4, 4, 4, 0, 1, 2);
-	private static final GridBagConstraints gbc_removeID = new GridBagConstraintsExtended(4, 4, 4, 0, 3, 2);
-	private static final GridBagConstraints gbc_addID = new GridBagConstraintsExtended(4, 4, 4, 4, 4, 2);
+	private final GridBagConstraints gbc_entryGroupListPane = new GridBagConstraintsExtended(4, 4, 0, 0, 0, 0);
+	private final GridBagConstraints gbc_entryListPane = new GridBagConstraintsExtended(4, 4, 0, 0, 1, 0);
+	private final GridBagConstraints gbc_entrySearchField = new GridBagConstraintsExtended(4, 4, 0, 0, 1, 1);
+	private final GridBagConstraints gbc_scrollPaneFields  = new GridBagConstraintsExtended(4, 4, 0, 4, 2, 0, 4, 2);
+	private final GridBagConstraints gbc_switchList = new GridBagConstraintsExtended(4, 4, 4, 0, 0, 1);
+	private final GridBagConstraints gbc_resetButton = new GridBagConstraintsExtended(4, 4, 4, 0, 0, 2);
+	private final GridBagConstraints gbc_saveButton = new GridBagConstraintsExtended(4, 4, 4, 0, 1, 2);
+	private final GridBagConstraints gbc_removeID = new GridBagConstraintsExtended(4, 4, 4, 0, 3, 2);
+	private final GridBagConstraints gbc_addID = new GridBagConstraintsExtended(4, 4, 4, 4, 4, 2);
 	private static final int GRID_MIN_ENTRY_SLOTS = 24;
-	
+
 	public DatContent datContent;
 	public List<JPanelEntry> entryPanels;
 	public EntryGroup currentEntryGroup;
@@ -81,11 +80,11 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	private Set<JPanelEntry> marked = new HashSet<>(30);
 	private int numSavedFields;
 	private boolean saved = false;
-
+	
 	private JPanel contentPane = new JPanel();
 	private JListDouble<EntryGroup> entryGroupList = new JListDouble<EntryGroup>("Hide unused fields", false);
 	private JListEntry entryList = new JListEntry("Hide unused fields");
-	private JScrollPane entryGroupListPane = new JScrollPaneRed(entryGroupList, "Group");
+	private JScrollPane entryGroupListPane = new JScrollPaneRed(entryGroupList, "Epochs");
 	private JScrollPane entryListPane = new JScrollPaneRed(entryList, "Entries");
 	private JPanel panelFields = new JPanel();
 	private JScrollPane scrollPaneFields = new JScrollPaneRed(panelFields, "Fields");
@@ -95,40 +94,42 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	private JButton addID = new JButtonRed("Add ID");
 	private JButton removeID = new JButtonRed("Remove ID");
 	private JSlider numColumnsSlider;
-
+	
 	private final JPopupMenu fieldMenu = new JPopupMenu();
 	private final JMenuItem fieldMenuSearchValues = new JMenuItem("Show all values used for this field");
 	private final JMenuItem fieldMenuSearchFields = new JMenuItem("Show all fields with the same value");
 	private final JMenuItem fieldMenuMarkUnusedFields = new JMenuItem("Mark all unused/dual value fields");
 	private final JMenuItem fieldMenuUnmarkUnusedFields = new JMenuItem("Remove marks");
-
+	private final JMenuItem fieldMenuRefreshList = new JMenuItem("Refresh list");
+	
 	private final JPopupMenu entryListMenu = new JPopupMenu();
 	private final JMenuItem entryListMenuAdd = new JMenuItem("Add entry");
 	private final JMenuItem entryListMenuRemove = new JMenuItem("Remove entry");
 	private final JMenuItem entryListMenuMoveTo = new JMenuItem("Move to group...");
-	
+
 	private final JMenuBar menuBar = new JMenuBar();
-	
-	
-	
-	
+
 
 
 
 	
+	
+	
+
 	{
 		setBounds(Core.getBounds(this, 0.85, 0.85));
 		setIconImage(FrameMain.IMAGE_ICON.getImage());
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setContentPane(contentPane);
-		
 
+		
 		JButton menuBarFile = new JButtonRed("Save to file");
 		menuBarFile.addActionListener(e -> {
 			Core.saveFile(FrameEditor.this, datContent);
 			saved = false;
 		});
-		menuBarFile.setMnemonic(KeyEvent.VK_S);
+		menuBarFile.setMnemonic(KeyEvent.VK_Q);
+		menuBarFile.setToolTipText("(ALT + Q) Save this file");
 		JMenu menuBarNumColumns = new JMenu("Num columns");
 		JPanel menuBarNumColumnsPanel = new JPanel();
 		JLabel numColumnsLabel = new JLabel("Columns: 4");
@@ -149,7 +150,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		numColumnsSlider.addChangeListener(e -> {
 			gridLayout.setColumns(numColumnsSlider.getValue());
 			numColumnsLabel.setText("Columns: " + numColumnsSlider.getValue());
-			panelFields.invalidate();
+			panelFields.revalidate();
 		});
 		menuBarNumColumns.setBackground(Core.UI_COLOR_ELEMENT);
 		menuBarNumColumns.setForeground(Color.WHITE);
@@ -162,10 +163,10 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		menuBar.setBackground(Core.UI_COLOR_BACKGROUND);
 		menuBar.setOpaque(true);
 		setJMenuBar(menuBar);
-
+		
 		contentPane.setLayout(gbl_contentPane);
 		contentPane.add(entryGroupListPane, gbc_entryGroupListPane);
-		contentPane.add(entryListPane, gbc_entryListPane);
+		//		contentPane.add(entryListPane, gbc_entryListPane);
 		contentPane.add(scrollPaneFields, gbc_scrollPaneFields);
 		contentPane.add(entrySearchField, gbc_entrySearchField);
 		contentPane.add(reset, gbc_resetButton);
@@ -177,7 +178,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		scrollPaneFields.getVerticalScrollBar().setUI(new EEScrollBarUI());
 		scrollPaneFields.getHorizontalScrollBar().setUI(new EEScrollBarUI());
 		panelFields.setBackground(Core.UI_COLOR_BACKGROUND);
-
+		
 		entryGroupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		entryGroupList.addListSelectionListener(e -> {
 			if (e == null || !e.getValueIsAdjusting()){
@@ -193,7 +194,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		});
 		entryGroupListPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
 		entryGroupListPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
-		
+
 		entryList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		entryList.addListSelectionListener(e -> {
 			if (e == null || !e.getValueIsAdjusting()){
@@ -216,7 +217,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		entryList.switchList.setHorizontalTextPosition(SwingConstants.LEFT);
 		entryListPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
 		entryListPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
-
+		
 		entryListMenu.add(entryListMenuAdd);
 		entryListMenu.add(entryListMenuRemove);
 		entryListMenu.add(entryListMenuMoveTo);
@@ -247,11 +248,12 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 				new DialogMoveEntryToGroup(this, datContent.entryGroups, entryList, currentEntryGroup, entryList.getSelectedElement());
 			}
 		});
-
+		
 		fieldMenu.add(fieldMenuSearchValues);
 		fieldMenu.add(fieldMenuSearchFields);
 		fieldMenu.add(fieldMenuMarkUnusedFields);
 		fieldMenu.add(fieldMenuUnmarkUnusedFields);
+		fieldMenu.add(fieldMenuRefreshList);
 		fieldMenuSearchValues.addActionListener(e -> {
 			AbstractEntryField field = (AbstractEntryField) rightClicked;
 			EntryValueMap entryValueMap = EntryValueMap.getValuesMap(datContent.entryGroups, field.getIndex(), true);
@@ -261,7 +263,8 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		fieldMenuMarkUnusedFields.addActionListener(e -> markUnusedFields());
 		fieldMenuUnmarkUnusedFields.addActionListener(e -> unmarkUnusedFields());
 		fieldMenuUnmarkUnusedFields.setVisible(false);
-		
+		fieldMenuRefreshList.addActionListener(e -> ((AbstractEntryField) rightClicked).refreshField());
+
 		panelFields.setLayout(gridLayout);
 		panelFields.setOpaque(false);
 		reset.addActionListener(e -> {
@@ -272,55 +275,68 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			loadEntry(currentEntry);
 			panelFields.setVisible(true);
 		});
+		reset.setMnemonic(KeyEvent.VK_R);
+		save.setToolTipText("(ALT + R) Reload entry from list");
 		save.addActionListener(e -> saveEntry());
+		save.setMnemonic(KeyEvent.VK_S);
+		save.setToolTipText("(ALT + S) Save entry to list");
 		addID.addActionListener(e -> addField());
 		removeID.addActionListener(e -> removeField());
 	}
-	
-
-
-
 
 	
+	
+	
+	
 
 	
 
-
 	
+	
+
 	public FrameEditor (DatContent datContent) {
 		super("Empire Earth - " + (Core.AOC ? "Art of Conquest - " : "") + datContent.datFile.getName());
 		setVisible(false);
 		this.datContent = datContent;
-		
+
 		int nFields = datContent.datStructure.getEntries().length;
 		if (nFields < GRID_MIN_ENTRY_SLOTS) {
 			gridLayout.setRows(GRID_MIN_ENTRY_SLOTS/4);
 		} else {
 			gridLayout.setRows(0);
 		}
+		if (datContent.entryGroups.size() <= 1){
+			entryGroupListPane.setVisible(false);
+			gbl_contentPane.columnWidths[0] = 125;
+			gbl_contentPane.columnWidths[1] = 175;
+			gbc_entryListPane.gridx = 0;
+			gbc_entryListPane.gridwidth = 2;
+			entryListPane.setPreferredSize(new Dimension(300, entryListPane.getPreferredSize().height));
+		}
+		contentPane.add(entryListPane, gbc_entryListPane);
 		entryPanels = new ArrayList<>(datContent.datStructure.getIndexCountExtra() < 0 ? nFields : nFields+20);
-		
+
 		entryGroupList.setList(datContent.entryGroups);
 		if (datContent.entryGroups.size() > 0){
 			entryListMenuMoveTo.setVisible(datContent.entryGroups.size() > 1);
 			entryGroupList.setSelectedIndex(0);
 		}
-
+		
 		setAutoRequestFocus(true);
 		addWindowListener(this);
 		addWindowFocusListener(this);
 	}
-
+	
 	@Override
 	public void windowGainedFocus (WindowEvent e) {
 		panelFields.revalidate();
 		panelFields.repaint();
 	}
-	
+
 	@Override
 	public void windowClosing (WindowEvent e) {
 		if (saved){
-			switch (JOptionPane.showConfirmDialog(this, "Some entries have been altered. Do you want to save them to the file?", "Save to file?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE)){
+			switch (JOptionPane.showConfirmDialog(this, "Some entries have been altered. Do you want to save them to the file?\nChanges won't be lost anyway until you close the program, so you can open this window again and save later", "Save to file?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE)){
 				case 0:
 					Core.saveFile(this, datContent);
 				case 1:
@@ -330,13 +346,13 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			close();
 		}
 	}
-	
+
 	public void close(){
 		Core.FRAME_EDITORS.remove(datContent);
 		setVisible(false);
 		dispose();
 	}
-	
+
 	@Override public void windowOpened (WindowEvent e) {}
 	@Override public void windowClosed (WindowEvent e) {}
 	@Override public void windowIconified (WindowEvent e) {}
@@ -344,34 +360,34 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	@Override public void windowActivated (WindowEvent e) {}
 	@Override public void windowDeactivated (WindowEvent e) {}
 	@Override public void windowLostFocus (WindowEvent e) {}
-
-	
-	
-	
 	
 
 
+
+
+	
+	
 	private void buildFields(Entry entries){
 		int numBaseFields = datContent.datStructure.getEntries().length;
 		int numPlacedFields = entryPanels.size();
 		numSavedFields = entries.values.size();
-		FieldStruct fieldStruct;
-
+		
 		panelFields.removeAll();
 		for (int i = 0; i < numBaseFields; i++){
 			if (i >= numPlacedFields){
-				fieldStruct = datContent.datStructure.getEntries()[i];
+				FieldStruct fieldStruct = datContent.datStructure.getEntries()[i];
 				JPanelEntry entryPanel = new JPanelEntry(this, fieldStruct, i);
 				entryPanels.add(entryPanel);
 				Component component = (Component) entryPanel.field;
 				component.addMouseListener(new PopupMenuFieldHandler(fieldMenu, e -> {
 					rightClicked = component;
+					fieldMenuRefreshList.setVisible(fieldStruct.linkToStruct != null);
 				}));
 			}
 			panelFields.add(entryPanels.get(i));
 		}
 		numPlacedFields = entryPanels.size();
-		fieldStruct = datContent.datStructure.getExtraEntry();
+		FieldStruct fieldStruct = datContent.datStructure.getExtraEntry();
 		for (int i = numBaseFields; i < numSavedFields; i++){
 			if (i >= numPlacedFields){
 				JPanelEntry entryPanel = new JPanelEntry(this, fieldStruct, i);
@@ -379,6 +395,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 				Component component = (Component) entryPanel.field;
 				component.addMouseListener(new PopupMenuFieldHandler(fieldMenu, e -> {
 					rightClicked = component;
+					fieldMenuRefreshList.setVisible(fieldStruct.linkToStruct != null);
 				}));
 			}
 			panelFields.add(entryPanels.get(i));
@@ -387,10 +404,12 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			entryPanels.remove(i-1);
 		}
 		for (int i = entryPanels.size(); i < GRID_MIN_ENTRY_SLOTS; i++) {
-			panelFields.add(new JPanel());
+			JPanel p = new JPanel();
+			p.setOpaque(false);
+			panelFields.add(p);
 		}
-
-
+		
+		
 		if (datContent.datStructure.getExtraEntry() != null){
 			addID.setVisible(true);
 			if (numSavedFields > numBaseFields){
@@ -406,9 +425,9 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			gridLayout.setRows(0);
 		}
 		panelFields.invalidate();
-
+		
 	}
-
+	
 	public void addField(){
 		JPanelEntry entryPanel = new JPanelEntry(this, datContent.datStructure.getExtraEntry(), entryPanels.size());
 		entryPanels.add(entryPanel);
@@ -424,7 +443,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		}
 		panelFields.invalidate();
 	}
-
+	
 	public void removeField(){
 		int index = entryPanels.size()-1;
 		if (index >= datContent.datStructure.getEntries().length){
@@ -445,9 +464,9 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			panelFields.invalidate();
 		}
 	}
-
-
-
+	
+	
+	
 	public void loadEntry(Entry entry){
 		System.out.println("Load entry: " + entry);
 		int n = entry.values.size();
@@ -455,7 +474,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			entryPanels.get(i).setVal(entry.values.get(i));
 		}
 	}
-
+	
 	public void saveEntry(){
 		int numBaseFields = datContent.datStructure.getEntries().length;
 		DatStructure datStructure = datContent.datStructure;
@@ -476,7 +495,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		if (datStructure.getIndexSequence() >= 0){
 			currentEntry.sequenceNumber = (int) values.get(datStructure.getIndexSequence());
 		}
-		
+
 		if (datContent.datStructure.getExtraEntry() != null){
 			numSavedFields = values.size();
 			int numPlacedFields = entryPanels.size();
@@ -497,7 +516,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		entryList.refresh();
 		System.out.println("Save entry: " + currentEntry);
 	}
-
+	
 	public void goToEntry(EntryGroup entryGroup, Entry entry){
 		System.out.println("Go to: " + datContent.datFile.getName() + " > " + entryGroup + " > " + entry);
 		if (!isVisible()){
@@ -508,10 +527,10 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			entryList.setSelectedElement(entry);
 		}
 	}
-
-
-
-
+	
+	
+	
+	
 	/**
 	 * Show all entries which have the same value in the selected field.
 	 */
@@ -522,7 +541,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		Object entryValue;
 		List<Entry> entries = new ArrayList<>();
 		List<Entry> entriesClean = new ArrayList<>();
-
+		
 		for (EntryGroup entryGroup : datContent){
 			for (Entry entry : entryGroup){
 				if (index < entry.values.size()){
@@ -538,12 +557,12 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		}
 		new DialogSearchFieldResults(this, entries, entriesClean, field);
 	}
-
-
-
-
-
-
+	
+	
+	
+	
+	
+	
 	/**
 	 * Marks all fields which are either unused/unchanged (0/same value everywhere) or have up to 2 values (including flags/boolean).
 	 * This is very useful to identify many unknown fields.
@@ -578,7 +597,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			fieldMenuUnmarkUnusedFields.setVisible(true);
 		}
 	}
-
+	
 	/**
 	 * Remove all marks from the fields.
 	 */
@@ -596,6 +615,6 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		fieldMenuMarkUnusedFields.setVisible(true);
 		fieldMenuUnmarkUnusedFields.setVisible(false);
 	}
-
-
+	
+	
 }

@@ -36,6 +36,9 @@ public class JPanelEntry extends JPanel {
 			case ENUM:
 				field = new JComboBoxEnum(frameEditor, fieldStruct, index);
 				break;
+			case RANGE:
+				field = new JComboBoxArray(frameEditor, fieldStruct, index);
+				break;
 			default:
 				field = new JTextFieldEntry(frameEditor, fieldStruct, index);
 		}
@@ -59,6 +62,10 @@ public class JPanelEntry extends JPanel {
 		} else {
 			return field.getDefaultVal();
 		}
+	}
+
+	public void refreshField(){
+		field.refreshField();
 	}
 	
 }

@@ -44,15 +44,14 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 	public JComboBoxEntry(FrameEditor frameEditor, FieldStruct fieldStruct, int index){
 		this.fieldStruct = fieldStruct;
 		this.index = index;
-		DatStructure datStructure = fieldStruct.getLinkToStruct();
-		if (datStructure != null){
-			DatContent datContent = Core.DATA.get(datStructure);
+		linkToStruct = fieldStruct.getLinkToStruct();
+		if (linkToStruct != null){
+			DatContent datContent = Core.DATA.get(linkToStruct);
 			if (datContent != null){
 				allEntries = datContent.getAllEntries();
 				setModel(new DefaultComboBoxModel<>(new Vector<>(allEntries)));
 			}
 		}
-		linkToStruct = fieldStruct.getLinkToStruct();
 		setEditable(true);
 		addMouseListener(this);
 		addItemListener(this);
@@ -112,6 +111,19 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 		}
 		setSelectedItem(null);
 		altered = false;
+	}
+
+	@Override
+	public void refreshField () {
+		Object sel = getSelectedItem();
+		if (linkToStruct != null){
+			DatContent datContent = Core.DATA.get(linkToStruct);
+			if (datContent != null){
+				allEntries = datContent.getAllEntries();
+				setModel(new DefaultComboBoxModel<>(new Vector<>(allEntries)));
+			}
+		}
+		setSelectedItem(sel);
 	}
 	
 	@Override

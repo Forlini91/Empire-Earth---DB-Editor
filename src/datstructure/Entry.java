@@ -14,16 +14,16 @@ import java.util.List;
  *
  */
 public class Entry implements Comparable<Entry>, Iterable <Object> {
-	
+
 	/** Byte used for empty values/string */
 	public static final char b00 = 0x00;
-	
-	/** Byte used for empty strings */
-	public static final char bCC = 65484;
 
 	/** Byte used for empty strings */
-	public static final char bFF = 65535;
+	public static final char bCC = 65484;
 	
+	/** Byte used for empty strings */
+	public static final char bFF = 65535;
+
 	/** Sequence of chars used by empty strings (100 chars) */
 	public static final String STRING_UNDEFINED_AOC = new String(new char[]{
 			b00, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
@@ -32,7 +32,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
 			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
 	});
-	
+
 	public static final String STRING_UNDEFINED_VANILLA = new String(new char[]{
 			b00, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
 			bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
@@ -40,13 +40,13 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 			bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
 			bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
 	});
-	
+
 	/** Used by fields without name. */
 	public static final String NAME_NONE = "<No name>";
 	/** Used by undefined fields. */
 	public static final String NAME_UNDEFINED = "<Undefined>";
-
 	
+
 	/** The structure of this entry. */
 	public final DatStructure datStructure;
 	/** The values of this entry. They are in the same order as the fiels defined in the structure. */
@@ -55,24 +55,24 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	public int sequenceNumber;
 	/** The entry's ID. This is a redundant value which can be found in values[indexID]. */
 	public int ID;
-
+	
 	public Entry(DatStructure datStructure, List<Object> values, int sequenceID){
 		this.datStructure = datStructure;
 		this.values = values;
 		if (values.size() > 0){
 			sequenceNumber = datStructure.getIndexSequence() < 0 ? 0 : (int) values.get(datStructure.getIndexSequence());
-			if (datStructure.defineNumEntries()){
+			if (datStructure.defineNumEntries() || datStructure.getIndexID() >= 0){
 				ID = datStructure.getIndexID() < 0 ? 0 :(int) values.get(datStructure.getIndexID());
 			} else {
 				ID = sequenceID;
 			}
 		}
 	}
-
+	
 	public Entry(DatStructure datStructure, int ID){
 		this(datStructure, getDefaultValues(datStructure, ID), ID);
 	}
-	
+
 	/**
 	 * Return a list of default values for all fields. Useful when adding a new entry in the file.
 	 * @param datStructure	The new entry's structure
@@ -91,7 +91,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		}
 		return values;
 	}
-
+	
 	/**
 	 * Get a printable name of the entry.
 	 * @return	A printable name for the entry
@@ -105,7 +105,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 			return NAME_UNDEFINED;
 		}
 	}
-	
+
 	/**
 	 * Get the entry's ID.
 	 * @return the entry's ID
@@ -113,7 +113,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	public int getID () {
 		return ID;
 	}
-
+	
 	/**
 	 * Get the entry's sequence number.
 	 * @return the entry's sequence number
@@ -121,7 +121,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	public int getSequenceNumber() {
 		return sequenceNumber;
 	}
-
+	
 	/**
 	 * Check and return if the entry is defined and usable.
 	 * @return	true if defined, false otherwise
@@ -136,9 +136,9 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 			}
 		}
 		return false;
-		
+
 	}
-	
+
 	@Override
 	public String toString(){
 		if (isDefined()){
@@ -151,15 +151,15 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 			return NAME_UNDEFINED;
 		}
 	}
-
+	
 	@Override
 	public int compareTo (Entry o) {
 		return Integer.compare(sequenceNumber, o.sequenceNumber);
 	}
-	
+
 	@Override
 	public Iterator <Object> iterator () {
 		return values.iterator();
 	}
-
+	
 }

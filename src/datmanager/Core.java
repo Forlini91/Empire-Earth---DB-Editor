@@ -107,14 +107,15 @@ public class Core {
 						DatContent datContent = dbManager.read(progressDialog::updatePercPart, index);
 						dataLoad.put(datFile.datStructure, datContent);
 					} catch (Exception e) {
-						JOptionPane.showMessageDialog(parent, "An error occurred during the loading of " + datFile, "Error", JOptionPane.ERROR_MESSAGE);
-						files.remove(datFile);
-						e.printStackTrace();
-					} finally {
 						synchronized(lockObj){
-							if (dataLoad.size() >= files.size()) {
-								lockObj.notifyAll();
-							}
+							JOptionPane.showMessageDialog(parent, "An error occurred during the loading of " + datFile, "Error", JOptionPane.ERROR_MESSAGE);
+							files.remove(datFile);
+							e.printStackTrace();
+						}
+					}
+					synchronized(lockObj){
+						if (dataLoad.size() >= files.size()) {
+							lockObj.notifyAll();
 						}
 					}
 				});

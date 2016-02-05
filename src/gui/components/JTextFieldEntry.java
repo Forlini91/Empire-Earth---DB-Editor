@@ -107,6 +107,9 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 	}
 	
 	@Override
+	public void refreshField () {}
+	
+	@Override
 	public void focusGained(FocusEvent e) {
 		repaint();
 	}

@@ -1,8 +1,10 @@
 package datstructure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import datmanager.DatFile;
 
@@ -38,6 +40,18 @@ public class DatContent implements Comparable<DatContent>, Iterable<EntryGroup> 
 		List<Entry> allEntries = new ArrayList<>();
 		for (EntryGroup entryGroup : entryGroups){
 			allEntries.addAll(entryGroup.entries);
+		}
+		return allEntries;
+	}
+	
+	/**
+	 * Build and return the list of entries in this file
+	 * @return	The list of entries in this file
+	 */
+	public Map<Integer, Entry> getAllEntriesMap(){
+		Map<Integer, Entry> allEntries = new HashMap<>();
+		for (EntryGroup entryGroup : entryGroups){
+			allEntries.putAll(entryGroup.map);
 		}
 		return allEntries;
 	}

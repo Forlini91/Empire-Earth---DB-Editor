@@ -14,13 +14,13 @@ public class EntryValueMap{
 	public final Map<Object, List<Entry>> map;
 	public final Map<Object, List<Entry>> mapClean;
 	public final int counter;
-	
+
 	public EntryValueMap (Map <Object, List<Entry>> map, Map <Object, List<Entry>> mapClean, int counter) {
 		this.map = map;
 		this.mapClean = mapClean;
 		this.counter = counter;
 	}
-
+	
 	/**
 	 * Scan all fields and group entries by value
 	 * @param index	index of the field to read
@@ -45,8 +45,8 @@ public class EntryValueMap{
 					} else {
 						valueEntryMap.get(value).add(entry);
 					}
-
-					if (filterUndefined && entry.ID >= 0 && entry.sequenceNumber >= 0){
+					
+					if (filterUndefined && entry.isDefined()){
 						if (!valueEntryMapClean.containsKey(value)){
 							entries = new ArrayList<>();
 							entries.add(entry);
@@ -60,5 +60,5 @@ public class EntryValueMap{
 		}
 		return new EntryValueMap (new TreeMap<>(valueEntryMap), new TreeMap<>(valueEntryMapClean), counter);
 	}
-	
+
 }
