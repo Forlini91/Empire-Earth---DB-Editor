@@ -2,8 +2,12 @@ package datmanager;
 
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 /**
  * A class which can read a *.dat file and convert the array of bytes read to integer, float and string values.
@@ -11,39 +15,39 @@ import java.io.IOException;
  *
  */
 public class DatReader implements AutoCloseable, Closeable {
-	private FileInputStream reader;
 	private boolean closed = false;
+	private ByteBuffer reader;
 	
 	public DatReader(File file) throws IOException {
-		reader = new FileInputStream (file);
+		byte[] buffer = Files.readAllBytes(file.toPath());
+		reader = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN);
 	}
 
-	public int getRemaining() throws IOException{
-		return reader.available();
+	public int getRemaining() throws IOException {
+		return reader.remaining();
 	}
 	
-	public int readInt(int numBytes) throws IOException {
-		byte[] buffer = new byte[numBytes];
-		reader.read(buffer);
-		return ByteManager.bytesToInt(buffer);
+	public int readInt() throws IOException, BufferUnderflowException {
+		return reader.getInt();
+	}
+
+	public int readByte() throws IOException, BufferUnderflowException {
+		return reader.get();
 	}
 	
-	public float readFloat(int numBytes) throws IOException {
-		byte[] buffer = new byte[numBytes];
-		reader.read(buffer);
-		return ByteManager.bytesToFloat(buffer);
+	public float readFloat() throws IOException, BufferUnderflowException {
+		return reader.getFloat();
 	}
 	
-	public String readString(int numBytes) throws IOException {
+	public String readString(int numBytes) throws IOException, BufferUnderflowException {
 		byte[] buffer = new byte[numBytes];
-		reader.read(buffer);
-		return String.valueOf(ByteManager.bytesToChars(buffer));
+		reader.get(buffer);
+		return new String(buffer, StandardCharsets.ISO_8859_1);
 	}
 	
 	@Override
 	public void close() throws IOException {
 		if (!closed){
-			reader.close();
 			closed = true;
 		}
 	}

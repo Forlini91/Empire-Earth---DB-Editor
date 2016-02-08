@@ -19,7 +19,9 @@ public enum Type {
 	/** A restricted set of values */
 	ENUM,
 	/** A restricted range of integers */
-	RANGE
+	RANGE,
+	/** The language field */
+	LANGUAGE,
 	;
-
+	
 }

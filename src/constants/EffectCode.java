@@ -24,9 +24,15 @@ public enum EffectCode implements EnumValue {
 
 	public final String name;
 	public final int code;
+	
 	EffectCode(String name, int code){
 		this.name = name;
 		this.code = code;
+	}
+	
+	@Override
+	public String getName(){
+		return name;
 	}
 
 	@Override

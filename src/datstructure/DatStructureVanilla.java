@@ -408,7 +408,7 @@ public enum DatStructureVanilla implements DatStructure {
 				FieldStruct.UNKNOWN_INT4, new FieldStruct("Attack angle", Type.FLOAT, 4), new FieldStruct("<PROBABLY> Attack from the side", Type.INTEGER, 4), ID_WEAPON_TO_HIT,
 				new FieldStruct("Attack", Type.INTEGER, 4), new FieldStruct("Shock armor", Type.INTEGER, 4), new FieldStruct("Arrow armor", Type.INTEGER, 4), new FieldStruct("Pierce armor", Type.INTEGER, 4),
 				new FieldStruct("Gun armor", Type.INTEGER, 4), new FieldStruct("Laser armor", Type.INTEGER, 4), new FieldStruct("Missile armor", Type.INTEGER, 4), new FieldStruct("Projectile ID", DB_OBJECTS),
-				new FieldStruct("Family attack multiplier index", IntStream.range(0, 66).toArray()), FieldStruct.UNKNOWN_INT4, new FieldStruct("Graphic size", Type.FLOAT, 4), new FieldStruct("Unit type", Type.STRING, 52),
+				new FieldStruct("Family attack multiplier index", IntStream.range(0, 66).boxed().toArray(Integer[]::new)), FieldStruct.UNKNOWN_INT4, new FieldStruct("Graphic size", Type.FLOAT, 4), new FieldStruct("Unit type", Type.STRING, 52),
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, ID_BUTTON, ID_GRAPHIC,
 				new FieldStruct("Build rate", Type.FLOAT, 4), new FieldStruct("Iron gather rate", Type.FLOAT, 4), new FieldStruct("Farm gather rate", Type.FLOAT, 4), new FieldStruct("Gold gather rate", Type.FLOAT, 4),
 				new FieldStruct("Stone gather rate", Type.FLOAT, 4), new FieldStruct("Wood gather rate", Type.FLOAT, 4), new FieldStruct("Hunt gather rate", Type.FLOAT, 4), new FieldStruct("Forage gather rate", Type.FLOAT, 4),
@@ -899,6 +899,15 @@ public enum DatStructureVanilla implements DatStructure {
 	@Override
 	public Function<Entry, String> getNameBuilder(){
 		return nameBuilder;
+	}
+
+	@Override
+	public int getNumBytes(){
+		int num = 0;
+		for (FieldStruct fieldStruct : getEntries()){
+			num += fieldStruct.size;
+		}
+		return num;
 	}
 	
 	

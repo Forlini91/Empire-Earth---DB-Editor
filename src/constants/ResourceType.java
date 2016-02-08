@@ -2,7 +2,7 @@ package constants;
 
 
 public enum ResourceType implements EnumValue {
-
+	
 	C0_None ("None", 0),
 	C1_All ("All", 0),
 	C2_Food ("Food", 2),
@@ -11,20 +11,25 @@ public enum ResourceType implements EnumValue {
 	C5_Gold ("Gold", 5),
 	C6_Iron ("Iron", 6),
 	;
-	
-	
+
+
 	public final String name;
 	public final int code;
 	ResourceType(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-	
+
+	@Override
+	public String getName(){
+		return name;
+	}
+
 	@Override
 	public int getValue () {
 		return code;
 	}
-
+	
 	public static ResourceType parseValue(int code){
 		for (ResourceType effectCode : values()){
 			if (effectCode.code == code){
@@ -33,10 +38,10 @@ public enum ResourceType implements EnumValue {
 		}
 		return C0_None;
 	}
-	
+
 	@Override
 	public String toString(){
 		return "(" + code + ") " + name;
 	}
-
+	
 }

@@ -2,7 +2,7 @@ package constants;
 
 
 public enum TechType implements EnumValue {
-	
+
 	C0_Research ("Research", 0),
 	C1_Object ("Object", 1),
 	C2_Epoch ("Epoch", 2),
@@ -13,8 +13,8 @@ public enum TechType implements EnumValue {
 	C7_Upgrade ("Upgrade", 7),
 	C9_Garrison_Upgrade ("Garrison upgrade", 9),
 	;
-
-
+	
+	
 	public final String name;
 	public final int code;
 	TechType(String name, int code){
@@ -23,10 +23,15 @@ public enum TechType implements EnumValue {
 	}
 
 	@Override
+	public String getName(){
+		return name;
+	}
+	
+	@Override
 	public int getValue () {
 		return code;
 	}
-	
+
 	public static TechType parseValue(int code){
 		for (TechType effectCode : values()){
 			if (effectCode.code == code){
@@ -35,10 +40,10 @@ public enum TechType implements EnumValue {
 		}
 		return C0_Research;
 	}
-
+	
 	@Override
 	public String toString(){
 		return "(" + code + ") " + name;
 	}
-	
+
 }

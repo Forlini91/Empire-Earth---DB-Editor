@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiPredicate;
 
@@ -15,28 +14,29 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.text.JTextComponent;
 
+import datmanager.Core;
+import datmanager.LanguageEntry;
 import datmanager.ListSearcher;
 import datstructure.FieldStruct;
 import gui.FrameEditor;
 
 
-public class JComboBoxArray extends JComboBox <Integer> implements AbstractEntryField, ItemListener, MouseListener, KeyListener {
+public class JComboBoxLanguage extends JComboBox <LanguageEntry> implements AbstractEntryField, ItemListener, MouseListener, KeyListener {
 	
 	private static final long serialVersionUID = -5787229930995728192L;
 
-	private static final BiPredicate<String, Integer> NAME_MATCHER = (text, code) -> false;
-	private static final BiPredicate<Integer, Integer> ID_MATCHER = (val, code) -> code == val;
-	
-	private ListSearcher <Integer> searcher = new ListSearcher<>(NAME_MATCHER, ID_MATCHER);
+	private static final BiPredicate<String, LanguageEntry> NAME_MATCHER = (text, lang) -> lang.text.toLowerCase().contains(text);
+	private static final BiPredicate<Integer, LanguageEntry> ID_MATCHER = (val, lang) -> (""+lang.code).contains(""+val);
+
+	private ListSearcher <LanguageEntry> searcher = new ListSearcher<>(NAME_MATCHER, ID_MATCHER);
 	private JTextComponent editor = ((JTextComponent) getEditor().getEditorComponent());
 	private FieldStruct fieldStruct;
 	private int index;
 	private Object defaultVal = null;
 	private boolean altered = false;
 
-
-	public JComboBoxArray(FrameEditor frameEditor, FieldStruct fieldStruct, int index){
-		super(fieldStruct.arrValues);
+	public JComboBoxLanguage(FrameEditor frameEditor, FieldStruct fieldStruct, int index){
+		super(Core.languageVector);
 		this.fieldStruct = fieldStruct;
 		this.index = index;
 		setEditable(true);
@@ -73,22 +73,29 @@ public class JComboBoxArray extends JComboBox <Integer> implements AbstractEntry
 		Object obj = getSelectedItem();
 		//		System.out.println("Getting: " + fieldStruct + " = " + obj + '(' + fieldStruct.defaultValue + '/' + defaultVal + ')');
 		if (obj != null){
-			return obj;
+			if (obj instanceof LanguageEntry) {
+				return ((LanguageEntry) obj).code;
+			} else {
+				return obj;
+			}
 		} else {
-			return fieldStruct.arrValues[0];
+			return -1;
 		}
 	}
 	
 	@Override
 	public void setVal(Object value){
 		defaultVal = value;
-		int index = Arrays.binarySearch(fieldStruct.arrValues, (int) value);
-		if (index >= 0){
-			setSelectedIndex(index);;
-			altered = false;
-			return;
+		if (value != null && value instanceof Integer){
+			int code = (int) value;
+			LanguageEntry le = Core.LANGUAGE.get(code);
+			if (le != null){
+				setSelectedItem(le);
+				altered = false;
+				return;
+			}
 		}
-		setSelectedIndex(0);
+		setSelectedItem(value);
 		altered = false;
 	}
 
@@ -119,9 +126,9 @@ public class JComboBoxArray extends JComboBox <Integer> implements AbstractEntry
 				setSelectedItem(null);
 			} else {
 				showPopup();
-				List<Integer> results = searcher.find(fieldStruct.arrValues, null, text);
+				List<LanguageEntry> results = searcher.find(Core.languageVector, null, text);
 				if (results != null){
-					Integer enumValue = searcher.findNext();
+					LanguageEntry enumValue = searcher.findNext();
 					if (enumValue != null){
 						ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);
 						popup.getList().setSelectedValue(enumValue, true);

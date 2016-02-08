@@ -8,13 +8,20 @@ import java.awt.GraphicsConfiguration;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
@@ -51,7 +58,8 @@ public class Core {
 
 	public static final Map<DatStructure, DatContent> DATA = new HashMap<>();
 	public static final Map<DatContent, FrameEditor> FRAME_EDITORS = new HashMap<>();
-
+	public static Map<Integer, LanguageEntry> LANGUAGE = null;
+	public static Vector<LanguageEntry> languageVector;
 
 
 	public static void main (String[] args) {
@@ -66,6 +74,19 @@ public class Core {
 				new FrameMain();
 			}
 		});
+		new Thread(() -> {
+			try {
+				URL url = Core.class.getResource("Language ENG.txt");
+				File f = new File(url.toURI());
+				try(BufferedReader br = new BufferedReader(new FileReader(f))){
+					LANGUAGE = br.lines().parallel().map(LanguageEntry::new).collect(Collectors.toMap(e -> e.code, e -> e));
+				}
+				languageVector = new Vector<>(LANGUAGE.values());
+				languageVector.sort(null);
+			} catch (IOException | URISyntaxException e){
+				JOptionPane.showMessageDialog(null, "An error occurred while reading the language file:\n" + e.getMessage() + '\n' + e.getCause(), "Language file", JOptionPane.WARNING_MESSAGE);
+			}
+		}).start();
 	}
 
 

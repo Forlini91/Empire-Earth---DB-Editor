@@ -2,7 +2,7 @@ package constants;
 
 
 public enum AttributeCode implements EnumValue {
-
+	
 	NONE ("None", -1),
 	C01_CITIZENS_DOG_STATS ("Citizens & Dog - HP & Atk", 1),
 	C03_RANGE ("Range", 3),
@@ -27,20 +27,25 @@ public enum AttributeCode implements EnumValue {
 	C44_POWER_AMOUNT ("Power amount", 44),
 	C45_UNKNOWN ("Unknown", 45),
 	;
-	
-	
+
+
 	public final String name;
 	public final int code;
 	AttributeCode(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-	
+
+	@Override
+	public String getName(){
+		return name;
+	}
+
 	@Override
 	public int getValue () {
 		return code;
 	}
-
+	
 	public static AttributeCode parseValue(int code){
 		for (AttributeCode effectCode : values()){
 			if (effectCode.code == code){
@@ -49,10 +54,10 @@ public enum AttributeCode implements EnumValue {
 		}
 		return NONE;
 	}
-	
+
 	@Override
 	public String toString(){
 		return name + ": " + code;
 	}
-
+	
 }
