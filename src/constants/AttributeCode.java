@@ -3,7 +3,8 @@ package constants;
 
 public enum AttributeCode implements EnumValue {
 	
-	NONE ("None", -1),
+	C_1_NONE ("None", -1),
+	C00_NONE ("None", 0),
 	C01_CITIZENS_DOG_STATS ("Citizens & Dog - HP & Atk", 1),
 	C03_RANGE ("Range", 3),
 	C04_LOS ("LOS", 4),
@@ -52,7 +53,7 @@ public enum AttributeCode implements EnumValue {
 				return effectCode;
 			}
 		}
-		return NONE;
+		return C_1_NONE;
 	}
 
 	@Override

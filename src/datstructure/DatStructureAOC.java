@@ -4,11 +4,14 @@ import java.awt.Color;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
+import constants.AreaEffectType;
 import constants.AttributeCode;
+import constants.ControlType;
 import constants.EffectCode;
 import constants.ObjectType;
 import constants.ResourceType;
 import constants.TechType;
+import constants.WorldID;
 import datmanager.Core;
 
 /**
@@ -19,34 +22,39 @@ import datmanager.Core;
  */
 public enum DatStructureAOC implements DatStructure {
 
-	DB_AI_UNIT_TARGETING	("AI Unit Targeting", "dbaiunittargeting.dat", true, 0, 0, 0, 1, 2, -1),
-	DB_AMBIENT_SOUNDS		("Ambient sounds", "dbambientsounds.dat", true, 0, 0, 0, 1, 2, -1),
-	DB_AREA_EFFECT			("Area effects", "dbareaeffect.dat", true, 0, 0, 0, 1, 2, -1),
-	DB_BUTTONS				("Buttons", "dbbuttons.dat", true, 0, 0, 0, 2, 3, -1),
-	DB_CALAMITY				("Calamities", "dbcalamity.dat", true, 0, 0, 0, 7, 8, -1),
-	DB_CIVILIZATION			("Civilizations", "dbcivilization.dat", true, 0, 1, 2, 0, 1, -1),
-	DB_CIV_POWER			("Powers", "dbcivpowers.dat", true, 0, 0, 0, 1, 2, -1),
-	DB_CLIFF_TERRAN			("Cliff terrain", "dbcliffterrain.dat", true, 0, 0, 0, 1, 2, -1),
-	DB_EFFECTS				("Effects", "dbeffects.dat", false, 0, 1, -1, 0, 1, -1),
-	DB_EVENTS				("Events", "dbevents.dat", false, 0, 0, 0, 1, -1, 2),
-	DB_FAMILY				("Families", "dbfamily.dat", true, 0, 0, 0, 1, 2, -1),
-	DB_GAME_VARIANT			("Game variants", "dbgamevariant.dat", true, 0, 0, 0, 1, 2, -1),
-	DB_GFX_EFFECTS			("GFX Effects", "dbgfxeffects.dat", true, 0, 0, 0, 1, 2, -1),
-	DB_GRAPHICS				("Graphics", "dbgraphics.dat", true, 0, 1, 66, 67, 68, -1),
-	DB_MUSIC				("Musics", "dbmusic.dat", true, 0, 0, 2, 0, 1, -1),
-	DB_OBJECTS				("Objects", "dbobjects.dat", true, 0, 0, 0, 1, 5, -1),
-	DB_PREMADE_CIVS			("Premade civilizations", "dbpremadecivs.dat", true, 0, 0, 2, 0, 1, -1),
-	DB_SOUNDS				("Sounds", "dbsounds.dat", true, 0, 0, 1, 2, 3, -1),
-	DB_STARTING_RESOURCHES	("Starting resourches", "dbstartingresources.dat", true, 0, 0, 0, 1, 2, -1),
-	DB_TECH_TREE			("Technologies", "dbtechtree.dat", true, 1, 0, 0, 1, 2, 46),
-	DB_TERRAIN				("Terrain", "dbterrain.dat", true, 0, 0, 1, 2, 3, -1),
-	DB_TERRAIN_TYPE			("Terrain type", "dbterraintype.dat", true, 0, 0, 0, 1, 2, -1),
-	DB_UI_FONT				("UI Fonts", "dbuifonts.dat", true, 0, 0, 0, 1, 2, -1),
-	DB_UI_HOTKEY			("UI Hotkeys", "dbuihotkey.dat", true, 0, 0, 2, 0, 1, -1),
-	DB_UNIT_BEHAVIOR		("Unit behavior", "dbunitbehavior.dat", true, 0, 0, 0, 1, 2, -1),
-	DB_UNIT_SET				("Unit sets", "dbunitset.dat", true, 0, 0, 0, 1, 2, -1),
-	DB_UPGRADE				("Upgrades", "dbupgrade.dat", true, 0, 0, 0, 31, 32, -1),
-	DB_WEAPON_TO_HIT		("Weapons to hit", "dbweapontohit.dat", true, 0, 0, 0, 1, 2, -1),
+	DB_AI_UNIT_TARGETING	("AI Unit Targeting", "dbaiunittargeting.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_AMBIENT_SOUNDS		("Ambient sounds", "dbambientsounds.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_ANIMALS				("Animals", "dbanimals.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_AREA_EFFECT			("Area effects", "dbareaeffect.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_BUTTONS				("Buttons", "dbbuttons.dat", true, 0, 1, 0, 0, 2, 3, -1),
+	DB_CALAMITY				("Calamities", "dbcalamity.dat", true, 0, 1, 0, 0, 7, 8, -1),
+	DB_CIVILIZATION			("Civilizations", "dbcivilization.dat", true, 0, 1, 1, 2, 0, 1, -1),
+	DB_CIV_POWER			("Powers", "dbcivpowers.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_CLIFF_TERRAIN		("Cliff terrain", "dbcliffterrain.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_EFFECTS				("Effects", "dbeffects.dat", false, 0, 1, 1, -1, 0, 1, -1),
+	DB_EVENTS				("Events", "dbevents.dat", false, 0, 1, 1, 0, 1, -1, 2),
+	DB_FAMILY				("Families", "dbfamily.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_GAME_VARIANT			("Game variants", "dbgamevariant.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_GFX_EFFECTS			("GFX Effects", "dbgfxeffects.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_GRAPHICS				("Graphics", "dbgraphics.dat", true, 0, 1, 1, 66, 67, 68, -1),
+	DB_MUSIC				("Musics", "dbmusic.dat", true, 0, 1, 0, 2, 0, 1, -1),
+	DB_OBJECTS				("Objects", "dbobjects.dat", true, 0, 1, 0, 0, 1, 5, -1),
+	DB_PREMADE_CIVS			("Premade civilizations", "dbpremadecivs.dat", true, 0, 1, 0, 2, 0, 1, -1),
+	DB_SOUNDS				("Sounds", "dbsounds.dat", true, 0, 1, 0, 2, 3, 4, -1),
+	DB_STARTING_RESOURCHES	("Starting resourches", "dbstartingresources.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_TECH_TREE			("Technologies", "dbtechtree.dat", true, 1, 1, 0, 0, 1, 2, 46),
+	DB_TERRAIN				("Terrain", "dbterrain.dat", true, 0, 1, 0, 2, 3, 4, -1),
+	DB_TERRAIN_GRAY_TEXTURES("Terrain gray textures", "dbterraingraytextures.dat", true, 0, 1, 0, 2, 3, 4, -1),
+	DB_TERRAIN_TYPE			("Terrain type", "dbterraintype.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_UI_CONTROL_EVENTS	("UI Control events", "dbuicontrolevents.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_UI_CONTROLS			("UI Controls", "dbuicontrols.dat", true, 0, 1, 0, 0, 18, 19, -1),
+	DB_UI_FONT				("UI Fonts", "dbuifonts.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_UI_HOTKEY			("UI Hotkeys", "dbuihotkey.dat", true, 0, 1, 0, 2, 0, 1, -1),
+	DB_UNIT_BEHAVIOR		("Unit behavior", "dbunitbehavior.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_UNIT_SET				("Unit sets", "dbunitset.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_UPGRADE				("Upgrades", "dbupgrade.dat", true, 0, 1, 1, 0, 31, 32, -1),
+	DB_WEAPON_TO_HIT		("Weapons to hit", "dbweapontohit.dat", true, 0, 1, 0, 0, 1, 2, -1),
+	DB_WORLD				("World", "dbworld.dat", true, 0, 1, 1, -1, 2, 3, -1),
 	;
 
 
@@ -106,34 +114,59 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_FLOAT
 		};
-		DB_AMBIENT_SOUNDS.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED_AOC, 0, -1, 0, 0, 0, 0, 0,
+		DB_AMBIENT_SOUNDS.createEntry = new Object[]{
+				"<New ambient sound>", 0, -1, -1, 0f, 0f, 0f, 0f,
+				0f, 0f, 0f, 0f, 0, 0f
+		};
+		
+		
+		
+		DB_ANIMALS.entries = new FieldStruct[]{
+				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+		};
+		DB_ANIMALS.createEntry = new Object[]{
+				"<New animal>", 0, -1, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0,
-				0, 0, 0, 0, 0, 0, -858993664
+				0f, 0, 0, 0, 0, 0, 0, 0,
+				0, 0f, 0f, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0,
 		};
 
 
 
 		DB_AREA_EFFECT.entries = new FieldStruct[]{
-				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Effect type", Type.INTEGER, 4),
+				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Effect type", AreaEffectType.values()),
 				FieldStruct.UNKNOWN_INT4, new FieldStruct("Effect on units", DB_GFX_EFFECTS), new FieldStruct("Apply on unit set", DB_UNIT_SET), FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNUSED_INT4, ID_GRAPHIC, new FieldStruct("Max morale", Type.INTEGER, 4), new FieldStruct("Heal effect", Type.INTEGER, 4),
-				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Area size", Type.FLOAT, 4),
+				FieldStruct.UNUSED_INT4, ID_GRAPHIC, new FieldStruct("Max morale", Type.INTEGER), new FieldStruct("Heal effect", Type.INTEGER),
+				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Area size", Type.FLOAT),
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4
 		};
-		DB_AREA_EFFECT.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED_AOC, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0f, 0f, 0f, 0f, 0f, 0, 0, -858993664
+		DB_AREA_EFFECT.createEntry = new Object[]{
+				"<New area effect>", 0, -1, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0f,
+				0f, 0f, 0f, 0f, 0, 0, 0
 		};
 		
 		
 		
 		DB_BUTTONS.entries = new FieldStruct[]{
 				FieldStruct.NAME, new FieldStruct("Texture", Type.STRING, 100), FieldStruct.SEQ_NUMBER, FieldStruct.ID,
-				new FieldStruct("<only used by espionage center>", Type.INTEGER, 4), new FieldStruct("<only used by farm and espionage center>", Type.INTEGER, 4), new FieldStruct("Position", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4
+				new FieldStruct("<only used by espionage center>", Type.INTEGER), new FieldStruct("<only used by farm and espionage center>", Type.INTEGER), new FieldStruct("Position", Type.INTEGER), FieldStruct.UNKNOWN_INT4
 		};
-		DB_BUTTONS.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED_AOC, Entry.STRING_UNDEFINED_AOC, 0, -1, 0, 0, 0, -1
+		DB_BUTTONS.createEntry = new Object[]{
+				"<New button>", "textures\\zut_smileyface_00T", 0, -1, 0, 0, 0, -1
 		};
 
 		
@@ -144,35 +177,42 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.ID, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
+				ID_OBJECT, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4
+				FieldStruct.UNKNOWN_INT4, ID_SOUND, ID_SOUND, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.ID_LANGUAGE, FieldStruct.UNKNOWN_INT4
+		};
+		DB_CALAMITY.createEntry = new Object[]{
+				"<New calamity>", 0f, 0f, 0f, 0f, 0f, 0f, 0,
+				0, 0, 0, 0, 1, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 1, 0, -1, -1, 0,
+				0, 0, 0
 		};
 		
 		
-		
+
 		DB_CIVILIZATION.entries = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, FieldStruct.ID_LANGUAGE,
-				new FieldStruct("Cost increment", Type.INTEGER, 4), ID_UNIT_SET, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
-				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
-				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
-				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
-				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
-				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
-				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
+				new FieldStruct("Cost increment", Type.INTEGER), ID_UNIT_SET, new FieldStruct("Attack bonus", Type.FLOAT), new FieldStruct("Attack bonus cost", Type.FLOAT),
+				new FieldStruct("Health bonus", Type.FLOAT), new FieldStruct("Health bonus cost", Type.FLOAT), new FieldStruct("Attack speed bonus", Type.FLOAT), new FieldStruct("Attack speed bonus cost", Type.FLOAT),
+				new FieldStruct("Armor bonus", Type.FLOAT), new FieldStruct("Armor bonus cost", Type.FLOAT), new FieldStruct("Range bonus", Type.FLOAT), new FieldStruct("Range bonus cost", Type.FLOAT),
+				new FieldStruct("Speed bonus", Type.FLOAT), new FieldStruct("Speed bonus cost", Type.FLOAT), new FieldStruct("Flight time bonus", Type.FLOAT), new FieldStruct("Flight time bonus cost", Type.FLOAT),
+				new FieldStruct("Area damage bonus", Type.FLOAT), new FieldStruct("Area damage bonus cost", Type.FLOAT), new FieldStruct("Hunting & foraging bonus", Type.FLOAT), new FieldStruct("Hunting & foraging bonus cost", Type.FLOAT),
+				new FieldStruct("Wood cutting bonus", Type.FLOAT), new FieldStruct("Wood cutting bonus cost", Type.FLOAT), new FieldStruct("Gold mining bonus", Type.FLOAT), new FieldStruct("Gold mining bonus cost", Type.FLOAT),
+				new FieldStruct("Farming bonus", Type.FLOAT), new FieldStruct("Farming bonus cost", Type.FLOAT), new FieldStruct("Stone mining bonus", Type.FLOAT), new FieldStruct("Stone mining bonus cost", Type.FLOAT),
+				new FieldStruct("Iron mining bonus", Type.FLOAT), new FieldStruct("Iron mining bonus cost", Type.FLOAT), new FieldStruct("Build time reduction", Type.FLOAT), new FieldStruct("Build time reduction cost", Type.FLOAT),
+				new FieldStruct("Conversion resistance bonus", Type.FLOAT), new FieldStruct("Conversion resistance bonus cost", Type.FLOAT), new FieldStruct("Fishing bonus", Type.FLOAT), new FieldStruct("Fishing bonus cost", Type.FLOAT),
+				new FieldStruct("Repair bonus", Type.FLOAT), new FieldStruct("Repair bonus cost", Type.FLOAT), new FieldStruct("Area effect bonus", Type.FLOAT), new FieldStruct("Area effect bonus cost", Type.FLOAT),
+				new FieldStruct("Mountain combat bonus", Type.FLOAT), new FieldStruct("Mountain combat bonus cost", Type.FLOAT), new FieldStruct("Population cap bonus", Type.FLOAT), new FieldStruct("Population cap bonus cost", Type.FLOAT),
+				new FieldStruct("Area conversion bonus", Type.FLOAT), new FieldStruct("Area conversion bonus cost", Type.FLOAT), new FieldStruct("Cost reduction", Type.FLOAT), new FieldStruct("Cost reduction cost", Type.FLOAT),
+				new FieldStruct("Night-time LOS bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Night-tme LOS bonus cost", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Slavery bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Slavery bonus cost", Type.FLOAT, 4, Knowledge.NEVER_USED),
+				new FieldStruct("Capitol upgrade bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Capitol upgrade bonus cost", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Heroes bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Heroes bonus cost", Type.FLOAT, 4, Knowledge.NEVER_USED),
+				new FieldStruct("Placeholder 1 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 1 cost", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 2 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 2 cost", Type.FLOAT, 4, Knowledge.NEVER_USED),
+				new FieldStruct("Placeholder 3 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 3 cost", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 4 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 4 cost", Type.FLOAT, 4, Knowledge.NEVER_USED),
+				new FieldStruct("Placeholder 5 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 5 cost", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 6 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 6 cost", Type.FLOAT, 4, Knowledge.NEVER_USED),
+				new FieldStruct("Placeholder 7 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 7 cost", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 8 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 8 cost", Type.FLOAT, 4, Knowledge.NEVER_USED),
+				new FieldStruct("Placeholder 9 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 9 cost", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 10 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED), new FieldStruct("Placeholder 10 cost", Type.FLOAT, 4, Knowledge.NEVER_USED),
 				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
 				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
 				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
@@ -190,32 +230,35 @@ public enum DatStructureAOC implements DatStructure {
 		
 		
 		DB_CIV_POWER.entries = new FieldStruct[]{
-				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Cost", Type.FLOAT, 4),
-				ID_UNIT_SET, ID_TECH, FieldStruct.UNKNOWN_INT4, new FieldStruct("GFX Effect", DB_GFX_EFFECTS),
-				FieldStruct.UNUSED_INT4, new FieldStruct("Amount", Type.INTEGER, 4), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
+				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Cost", Type.FLOAT),
+				ID_UNIT_SET, ID_TECH, new FieldStruct("Int amount", Type.INTEGER), new FieldStruct("GFX Effect", DB_GFX_EFFECTS),
+				FieldStruct.UNUSED_INT4, new FieldStruct("Float amount", Type.FLOAT), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, ID_OBJECT
 		};
 		
 		
 		
-		DB_CLIFF_TERRAN.entries = new FieldStruct[]{
+		DB_CLIFF_TERRAIN.entries = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ID_TERRAIN,
 				ID_TERRAIN, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4
+		};
+		DB_CLIFF_TERRAIN.createEntry = new Object[]{
+				"<New cliff terrain>", 0, -1, 0, 0, 0, 1
 		};
 		
 		
 
 		DB_EFFECTS.entries = new FieldStruct[]{
-				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				new FieldStruct("Attribute alter amount", Type.FLOAT, 4), new FieldStruct("Upgrade these objects...", DB_OBJECTS), new FieldStruct("... to these objects", DB_OBJECTS), ID_UNIT_SET,
+				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Set attribute", Type.FLOAT),
+				new FieldStruct("Alter attribute", Type.FLOAT), new FieldStruct("Upgrade these objects...", DB_OBJECTS), new FieldStruct("... to these objects", DB_OBJECTS), ID_UNIT_SET,
 				new FieldStruct("Effect code", EffectCode.values()), new FieldStruct("New graphic", DB_GRAPHICS), ID_TECH, new FieldStruct("Attribute code", AttributeCode.values()),
 				ID_SOUND, ID_BUTTON, new FieldStruct("New area effect", DB_AREA_EFFECT), FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4
 		};
-		DB_EFFECTS.defaultValues = new Object[]{
-				-1, DB_EFFECTS.minID, 0f, 0f, 0f, 0, 0, 0,
-				-1, -1, -1, 0, 0, 15, 0, 0,
+		DB_EFFECTS.createEntry = new Object[]{
+				0, 0, 0f, 0f, 0f, -1, -1, -1,
+				-1, -1, -1, -1, -1, -1, -1, 0,
 				0, 0, 0, 0, 0, 0,
 		};
 		DB_EFFECTS.nameBuilder = (entry) -> {
@@ -251,31 +294,31 @@ public enum DatStructureAOC implements DatStructure {
 		DB_EVENTS.entries = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, new FieldStruct("Num effects", Type.INTEGER, 4, false),
 		};
-		DB_EVENTS.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED_AOC, -1, 0
+		DB_EVENTS.createEntry = new Object[]{
+				"<New event>", 0, -1
 		};
 		
 		
 		
 		DB_FAMILY.entries = new FieldStruct[]{
-				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Hovercraft, UFO, Rock thrower", Type.INTEGER, 4),
-				new FieldStruct("Frigate", Type.INTEGER, 4), new FieldStruct("Machine gun", Type.INTEGER, 4), new FieldStruct("Galley", Type.INTEGER, 4), new FieldStruct("Tank", Type.INTEGER, 4),
-				new FieldStruct("AT Gun", Type.INTEGER, 4), new FieldStruct("Catapult, Bombard", Type.INTEGER, 4), new FieldStruct("AA Tower, Stinger, Flat halftrack", Type.INTEGER, 4), new FieldStruct("<Unused by objects>", Type.INTEGER, 4, Knowledge.KNOWN, Color.GRAY),
-				new FieldStruct("Sea king", Type.INTEGER, 4), new FieldStruct("Field weapon", Type.INTEGER, 4), new FieldStruct("<Unused by objects>", Type.INTEGER, 4, Knowledge.KNOWN, Color.GRAY), new FieldStruct("Fighter, Cruiser", Type.INTEGER, 4),
-				new FieldStruct("Cavalry spear", Type.INTEGER, 4), new FieldStruct("Pre-atomic gun infantry", Type.INTEGER, 4), new FieldStruct("ICBM", Type.INTEGER, 4), new FieldStruct("Cavalry gun", Type.INTEGER, 4),
-				new FieldStruct("Halbedier", Type.INTEGER, 4), new FieldStruct("Submarine", Type.INTEGER, 4), new FieldStruct("Ram, Sampson", Type.INTEGER, 4), new FieldStruct("Animals", Type.INTEGER, 4),
-				new FieldStruct("Archer, Javelin", Type.INTEGER, 4), new FieldStruct("<Unused by objects>", Type.INTEGER, 4, Knowledge.KNOWN, Color.GRAY), new FieldStruct("Mech Minotaur", Type.INTEGER, 4), new FieldStruct("<Unused by objects>", Type.INTEGER, 4, Knowledge.KNOWN, Color.GRAY),
-				new FieldStruct("Elite Guard", Type.INTEGER, 4), new FieldStruct("Grigor II, Mech Hyperion", Type.INTEGER, 4), new FieldStruct("Mech Zeus", Type.INTEGER, 4), new FieldStruct("Mech Pandora", Type.INTEGER, 4),
-				new FieldStruct("Mech Ares", Type.INTEGER, 4), new FieldStruct("AT Aircraft", Type.INTEGER, 4), new FieldStruct("Bomber", Type.INTEGER, 4), new FieldStruct("Modern/Future gun infantry", Type.INTEGER, 4),
-				new FieldStruct("AT Tank", Type.INTEGER, 4), new FieldStruct("Battleship", Type.INTEGER, 4), new FieldStruct("AT Helicopter", Type.INTEGER, 4), new FieldStruct("Mech Poseidon, Mech Hades", Type.INTEGER, 4),
-				new FieldStruct("Medic, Mech Apollo", Type.INTEGER, 4), new FieldStruct("Citizen, Diplomat", Type.INTEGER, 4), new FieldStruct("Crossbow, Sniper, Mech Tempest", Type.INTEGER, 4), new FieldStruct("Carrier fighter", Type.INTEGER, 4),
-				new FieldStruct("Gunship Helicopter", Type.INTEGER, 4), new FieldStruct("Persian cavalry", Type.INTEGER, 4), new FieldStruct("Barbarian, Celtic, Gallic", Type.INTEGER, 4), new FieldStruct("Tower", Type.INTEGER, 4),
-				new FieldStruct("Flamethrower, Howitzer", Type.INTEGER, 4), new FieldStruct("Viking", Type.INTEGER, 4), new FieldStruct("Priest, Priest Tower", Type.INTEGER, 4), new FieldStruct("Sword", Type.INTEGER, 4),
-				new FieldStruct("Cavalry sword", Type.INTEGER, 4), new FieldStruct("Partisan", Type.INTEGER, 4), new FieldStruct("Atomic Submarine", Type.INTEGER, 4), new FieldStruct("Bazooka", Type.INTEGER, 4),
-				new FieldStruct("Spear", Type.INTEGER, 4), new FieldStruct("Cavalry archer", Type.INTEGER, 4), new FieldStruct("Heroes", Type.INTEGER, 4), new FieldStruct("Hand Cannoner", Type.INTEGER, 4),
-				new FieldStruct("Mortar", Type.INTEGER, 4), new FieldStruct("Red Baron", Type.INTEGER, 4), new FieldStruct("Fishing boat", Type.INTEGER, 4), new FieldStruct("Anti-Missile Battery", Type.INTEGER, 4),
-				new FieldStruct("Capitol ship", Type.INTEGER, 4), new FieldStruct("Space fighter", Type.INTEGER, 4), new FieldStruct("Space corvette", Type.INTEGER, 4), new FieldStruct("ICBM (Power)", Type.INTEGER, 4),
-				new FieldStruct("Space turret", Type.INTEGER, 4), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4
+				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Hovercraft, UFO, Rock thrower", Type.INTEGER),
+				new FieldStruct("Frigate", Type.INTEGER), new FieldStruct("Machine gun", Type.INTEGER), new FieldStruct("Galley", Type.INTEGER), new FieldStruct("Tank", Type.INTEGER),
+				new FieldStruct("AT Gun", Type.INTEGER), new FieldStruct("Catapult, Bombard", Type.INTEGER), new FieldStruct("AA Tower, Stinger, Flat halftrack", Type.INTEGER), new FieldStruct("<Unused by objects>", Type.INTEGER, 4, Knowledge.KNOWN, Color.GRAY),
+				new FieldStruct("Sea king", Type.INTEGER), new FieldStruct("Field weapon", Type.INTEGER), new FieldStruct("<Unused by objects>", Type.INTEGER, 4, Knowledge.KNOWN, Color.GRAY), new FieldStruct("Fighter, Cruiser", Type.INTEGER),
+				new FieldStruct("Cavalry spear", Type.INTEGER), new FieldStruct("Pre-atomic gun infantry", Type.INTEGER), new FieldStruct("ICBM", Type.INTEGER), new FieldStruct("Cavalry gun", Type.INTEGER),
+				new FieldStruct("Halbedier", Type.INTEGER), new FieldStruct("Submarine", Type.INTEGER), new FieldStruct("Ram, Sampson", Type.INTEGER), new FieldStruct("Animals", Type.INTEGER),
+				new FieldStruct("Archer, Javelin", Type.INTEGER), new FieldStruct("<Unused by objects>", Type.INTEGER, 4, Knowledge.KNOWN, Color.GRAY), new FieldStruct("Mech Minotaur", Type.INTEGER), new FieldStruct("<Unused by objects>", Type.INTEGER, 4, Knowledge.KNOWN, Color.GRAY),
+				new FieldStruct("Elite Guard", Type.INTEGER), new FieldStruct("Grigor II, Mech Hyperion", Type.INTEGER), new FieldStruct("Mech Zeus", Type.INTEGER), new FieldStruct("Mech Pandora", Type.INTEGER),
+				new FieldStruct("Mech Ares", Type.INTEGER), new FieldStruct("AT Aircraft", Type.INTEGER), new FieldStruct("Bomber", Type.INTEGER), new FieldStruct("Modern/Future gun infantry", Type.INTEGER),
+				new FieldStruct("AT Tank", Type.INTEGER), new FieldStruct("Battleship", Type.INTEGER), new FieldStruct("AT Helicopter", Type.INTEGER), new FieldStruct("Mech Poseidon, Mech Hades", Type.INTEGER),
+				new FieldStruct("Medic, Mech Apollo", Type.INTEGER), new FieldStruct("Citizen, Diplomat", Type.INTEGER), new FieldStruct("Crossbow, Sniper, Mech Tempest", Type.INTEGER), new FieldStruct("Carrier fighter", Type.INTEGER),
+				new FieldStruct("Gunship Helicopter", Type.INTEGER), new FieldStruct("Persian cavalry", Type.INTEGER), new FieldStruct("Barbarian, Celtic, Gallic", Type.INTEGER), new FieldStruct("Tower", Type.INTEGER),
+				new FieldStruct("Flamethrower, Howitzer", Type.INTEGER), new FieldStruct("Viking", Type.INTEGER), new FieldStruct("Priest, Priest Tower", Type.INTEGER), new FieldStruct("Sword", Type.INTEGER),
+				new FieldStruct("Cavalry sword", Type.INTEGER), new FieldStruct("Partisan", Type.INTEGER), new FieldStruct("Atomic Submarine", Type.INTEGER), new FieldStruct("Bazooka", Type.INTEGER),
+				new FieldStruct("Spear", Type.INTEGER), new FieldStruct("Cavalry archer", Type.INTEGER), new FieldStruct("Heroes", Type.INTEGER), new FieldStruct("Hand Cannoner", Type.INTEGER),
+				new FieldStruct("Mortar", Type.INTEGER), new FieldStruct("Red Baron", Type.INTEGER), new FieldStruct("Fishing boat", Type.INTEGER), new FieldStruct("Anti-Missile Battery", Type.INTEGER),
+				new FieldStruct("Capitol ship", Type.INTEGER), new FieldStruct("Space fighter", Type.INTEGER), new FieldStruct("Space corvette", Type.INTEGER), new FieldStruct("ICBM (Power)", Type.INTEGER),
+				new FieldStruct("Space turret", Type.INTEGER), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4
 		};
 		
 		
@@ -287,11 +330,11 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNCHANGED_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Gather rate multiplier", Type.FLOAT, 4), FieldStruct.UNKNOWN_INT4, FieldStruct.ID_LANGUAGE,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Wonder cost multiplier", Type.FLOAT, 4), FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Gather rate multiplier", Type.FLOAT), FieldStruct.UNKNOWN_INT4, FieldStruct.ID_LANGUAGE,
+				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Wonder cost multiplier", Type.FLOAT), FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
-				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Available in random maps", Type.INTEGER, 4),
+				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Available in random maps", Type.INTEGER),
 				FieldStruct.UNUSED_INT4
 		};
 		
@@ -308,12 +351,12 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4
 		};
-		DB_GFX_EFFECTS.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED_AOC, 0, -1, -1, -1, -1, 1f, 1f,
+		DB_GFX_EFFECTS.createEntry = new Object[]{
+				"<New graphic effect>", 0, -1, -1, -1, -1, 1f, 1f,
 				0f, 0, 0, 0, 0, 0, 0, -1,
 				-1, -1, 0, 0f, 0f, 0f, 0f, 0f,
 				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0,
-				-858993664, 0
+				0, 0
 		};
 		
 		
@@ -375,7 +418,7 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4
 		};
-		DB_GRAPHICS.defaultValues = new Object[]{
+		DB_GRAPHICS.createEntry = new Object[]{
 				0, "", 0, "", 0, "", 0, "",
 				0, "", 0, "", 0, "", 0, "",
 				0, "", 0, "", 0, "", 0, "",
@@ -384,40 +427,40 @@ public enum DatStructureAOC implements DatStructure {
 				0, "", 0, "", 0, "", 0, "",
 				0, "", 0, "", 0, "", 0, "",
 				0, "", 0, "", 0, "", 0, "",
-				0, "", Entry.STRING_UNDEFINED_AOC, 0, 0, -858993664, 0, 0,
-				-858993664, 0, 0, 0, -858993664, 0, 0, 0,
-				-1, -1, -859045888, 0, 0, 0, -858993664, 0,
-				0, 0, -1, -1, -859045888, 0, 0, 0,
-				-858993664, 0, 0, 0, -1, -1, -859045888, 0,
-				0, 0, -858993664, 0, 0, 0, -1, -1,
-				-859045888, 0, 0, 0, -858993664, 0, -859045888, 0,
-				0, 0, -858993664, 0, -859045888, 0, 0, 0,
-				-858993664, 0, 0, 0, -1, -1, -859045888, 0,
-				0, 0, -858993664, 0, 0, 0, -1, -1,
-				-859045888, 0, 0, 0, -858993664, 0, 0, 0,
-				-1, -1, -859045888, 0, 0, 0, -858993664, 0,
-				0, 0, -1, -1, -859045888, 0, 0, 0,
-				-859045888, 0, 0, 0, -1, -1, -859045888, 0,
-				0, 0, -858993664, 0, 0, 0, -1, -1,
-				-859045888, 0, 0, 0, -858993664, 0, 0, 0,
-				-1, -1, -859045888, 0, 0, 0, -858993664, 0,
-				0, 0, -1, -1, -858993664, 0, -858993664, 0,
-				0, -1, 0, 0, -1, -1, -858993664, 1f,
-				0, 0f, 0, 0, -858993664
+				0, "", "<New graphic>", 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				-1, -1, 0, 0, 0, 0, 0, 0,
+				0, 0, -1, -1, 0, 0, 0, 0,
+				0, 0, 0, 0, -1, -1, 0, 0,
+				0, 0, 0, 0, 0, 0, -1, -1,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, -1, -1, 0, 0,
+				0, 0, 0, 0, 0, 0, -1, -1,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				-1, -1, 0, 0, 0, 0, 0, 0,
+				0, 0, -1, -1, 0, 0, 0, 0,
+				0, 0, 0, 0, -1, -1, 0, 0,
+				0, 0, 0, 0, 0, 0, -1, -1,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				-1, -1, 0, 0, 0, 0, 0, 0,
+				0, 0, -1, -1, 0, 0, 0, 0,
+				0, -1, 0, 0, -1, -1, 0, 1f,
+				0, 0f, 0, 0, 0
 		};
 
 		
 		
 		DB_MUSIC.entries = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, new FieldStruct("Another name", Type.STRING, 56),
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNCHANGED_INT4,
+				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Time", Type.FLOAT), FieldStruct.UNCHANGED_INT4,
 				FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1,
 				FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1,
 				FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1,
 				FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNUSED_INT1
 		};
-		DB_MUSIC.defaultValues = new Object[]{
-				-1, -1, Entry.STRING_UNDEFINED_AOC, Entry.STRING_UNDEFINED_AOC.substring(0, 56), 0f, 0f, 0f, 0,
+		DB_MUSIC.createEntry = new Object[]{
+				0, -1, "<New music>", "<New music>", 0f, 0f, 0f, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 204
 		};
 
@@ -425,47 +468,47 @@ public enum DatStructureAOC implements DatStructure {
 		
 		DB_OBJECTS.entries = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, ID_FAMILY, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.ID, new FieldStruct("Health", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4,
-				new FieldStruct("Min range", Type.FLOAT, 4), new FieldStruct("Max range", Type.FLOAT, 4), new FieldStruct("Line of sight", Type.FLOAT, 4), new FieldStruct("Attack speed", Type.FLOAT, 4),
-				new FieldStruct("Area of effect", Type.FLOAT, 4), new FieldStruct("Speed", Type.FLOAT, 4), new FieldStruct("Acceleration/Deceleration", Type.FLOAT, 4), new FieldStruct("Idle turning speed", Type.FLOAT, 4),
-				new FieldStruct("Moving turning speed", Type.FLOAT, 4), FieldStruct.UNKNOWN_FLOAT, new FieldStruct("<PROBABLY> Is air unit", Type.INTEGER, 4), new FieldStruct("Flight time", Type.INTEGER, 4),
-				FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Attack angle", Type.FLOAT, 4), new FieldStruct("<PROBABLY> Attack from the side", Type.INTEGER, 4), ID_WEAPON_TO_HIT,
-				new FieldStruct("Attack", Type.INTEGER, 4), new FieldStruct("Shock armor", Type.INTEGER, 4), new FieldStruct("Arrow armor", Type.INTEGER, 4), new FieldStruct("Pierce armor", Type.INTEGER, 4),
-				new FieldStruct("Gun armor", Type.INTEGER, 4), new FieldStruct("Laser armor", Type.INTEGER, 4), new FieldStruct("Missile armor", Type.INTEGER, 4), new FieldStruct("Projectile ID", DB_OBJECTS),
-				new FieldStruct("Family attack multiplier index", IntStream.range(0, 66).boxed().toArray(Integer[]::new)), FieldStruct.UNKNOWN_INT4, new FieldStruct("Graphic size", Type.FLOAT, 4), new FieldStruct("Unit type", Type.STRING, 52),
+				FieldStruct.UNKNOWN_INT4, FieldStruct.ID, new FieldStruct("Health", Type.INTEGER), FieldStruct.UNKNOWN_INT4,
+				new FieldStruct("Min range", Type.FLOAT), new FieldStruct("Max range", Type.FLOAT), new FieldStruct("Line of sight", Type.FLOAT), new FieldStruct("Attack speed", Type.FLOAT),
+				new FieldStruct("Area of effect", Type.FLOAT), new FieldStruct("Speed", Type.FLOAT), new FieldStruct("Acceleration/Deceleration", Type.FLOAT), new FieldStruct("Idle turning speed", Type.FLOAT),
+				new FieldStruct("Moving turning speed", Type.FLOAT), FieldStruct.UNKNOWN_FLOAT, new FieldStruct("<PROBABLY> Is air unit", Type.INTEGER), new FieldStruct("Flight time", Type.INTEGER),
+				FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Attack angle", Type.FLOAT), new FieldStruct("<PROBABLY> Attack from the side", Type.INTEGER), ID_WEAPON_TO_HIT,
+				new FieldStruct("Attack", Type.INTEGER), new FieldStruct("Shock armor", Type.INTEGER), new FieldStruct("Arrow armor", Type.INTEGER), new FieldStruct("Pierce armor", Type.INTEGER),
+				new FieldStruct("Gun armor", Type.INTEGER), new FieldStruct("Laser armor", Type.INTEGER), new FieldStruct("Missile armor", Type.INTEGER), new FieldStruct("Projectile ID", DB_OBJECTS),
+				new FieldStruct("Family attack multiplier index", IntStream.range(0, 66).boxed().toArray(Integer[]::new)), FieldStruct.UNKNOWN_INT4, new FieldStruct("Graphic size", Type.FLOAT), new FieldStruct("Unit type", Type.STRING, 52),
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, ID_BUTTON, ID_GRAPHIC,
-				new FieldStruct("Build rate", Type.FLOAT, 4), new FieldStruct("Iron gather rate", Type.FLOAT, 4), new FieldStruct("Farm gather rate", Type.FLOAT, 4), new FieldStruct("Gold gather rate", Type.FLOAT, 4),
-				new FieldStruct("Stone gather rate", Type.FLOAT, 4), new FieldStruct("Wood gather rate", Type.FLOAT, 4), new FieldStruct("Hunt gather rate", Type.FLOAT, 4), new FieldStruct("Forage gather rate", Type.FLOAT, 4),
+				new FieldStruct("Build rate", Type.FLOAT), new FieldStruct("Iron gather rate", Type.FLOAT), new FieldStruct("Farm gather rate", Type.FLOAT), new FieldStruct("Gold gather rate", Type.FLOAT),
+				new FieldStruct("Stone gather rate", Type.FLOAT), new FieldStruct("Wood gather rate", Type.FLOAT), new FieldStruct("Hunt gather rate", Type.FLOAT), new FieldStruct("Forage gather rate", Type.FLOAT),
 				new FieldStruct("Creation sound", DB_SOUNDS), new FieldStruct("Action sound 1", DB_SOUNDS), new FieldStruct("Action sound 2", DB_SOUNDS), new FieldStruct("Selection sound 1", DB_SOUNDS),
-				new FieldStruct("Selection sound 2", DB_SOUNDS), new FieldStruct("Death sound", DB_SOUNDS), new FieldStruct("<PROBABLY> Can build", Type.BOOLEAN, 4), ID_BUTTON_COMMAND,
+				new FieldStruct("Selection sound 2", DB_SOUNDS), new FieldStruct("Death sound", DB_SOUNDS), new FieldStruct("<PROBABLY> Can build", Type.BOOLEAN), ID_BUTTON_COMMAND,
 				ID_BUTTON_COMMAND, ID_BUTTON_COMMAND, ID_BUTTON_COMMAND, ID_BUTTON_COMMAND,
 				ID_BUTTON_COMMAND, ID_BUTTON_COMMAND, ID_BUTTON_COMMAND, ID_BUTTON_COMMAND,
-				FieldStruct.UNCHANGED_INT4, new FieldStruct("Square occupied", Type.INTEGER, 4), new FieldStruct("Resource type", ResourceType.values()), new FieldStruct("Resource amount", Type.FLOAT, 4),
-				new FieldStruct("Always face camera", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4, new FieldStruct("Rotting time", Type.FLOAT, 4), new FieldStruct("Population count", Type.INTEGER, 4),
-				new FieldStruct("Transport capacity", Type.INTEGER, 4), new FieldStruct("Show area effect stat"), new FieldStruct("Show repair stat"), new FieldStruct("Show shock armor stat"),
+				FieldStruct.UNCHANGED_INT4, new FieldStruct("Square occupied", Type.INTEGER), new FieldStruct("Resource type", ResourceType.values()), new FieldStruct("Resource amount", Type.FLOAT),
+				new FieldStruct("Always face camera", Type.INTEGER), FieldStruct.UNKNOWN_INT4, new FieldStruct("Rotting time", Type.FLOAT), new FieldStruct("Population count", Type.INTEGER),
+				new FieldStruct("Transport capacity", Type.INTEGER), new FieldStruct("Show area effect stat"), new FieldStruct("Show repair stat"), new FieldStruct("Show shock armor stat"),
 				new FieldStruct("Show pierce armor stat"), new FieldStruct("Show arrow armor stat"), new FieldStruct("Show laser armor stat"), new FieldStruct("Show gun armor stat"),
-				new FieldStruct("Show missile armor stat"), new FieldStruct("Show range", Type.INTEGER, 4), new FieldStruct("Morale bonus", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4,
+				new FieldStruct("Show missile armor stat"), new FieldStruct("Show range", Type.INTEGER), new FieldStruct("Morale bonus", Type.INTEGER), FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_INT1, FieldStruct.UNUSED_INT1,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_INT4, new FieldStruct("Flight altitude", Type.FLOAT, 4), FieldStruct.ID_LANGUAGE,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("Health regeneration", Type.INTEGER, 4), new FieldStruct("Can garrison in air transports"),
+				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_INT4, new FieldStruct("Flight altitude", Type.FLOAT), FieldStruct.ID_LANGUAGE,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("Health regeneration", Type.INTEGER), new FieldStruct("Can garrison in air transports"),
 				new FieldStruct("Can garrison in land transports"), new FieldStruct("Can garrison in sea transports"), FieldStruct.UNUSED_INT1, new FieldStruct("Object type", ObjectType.values()),
-				FieldStruct.UNKNOWN_INT4, new FieldStruct("Circle selection size", Type.FLOAT, 4), new FieldStruct("Shadow size", Type.FLOAT, 4),  FieldStruct.UNUSED_INT4,
-				new FieldStruct("<Some kind of size>", Type.FLOAT, 4), new FieldStruct("Physical size", Type.FLOAT, 4), new FieldStruct("Units can walk above this"), FieldStruct.UNKNOWN_INT1,
+				FieldStruct.UNKNOWN_INT4, new FieldStruct("Circle selection size", Type.FLOAT), new FieldStruct("Shadow size", Type.FLOAT),  FieldStruct.UNUSED_INT4,
+				new FieldStruct("<Some kind of size>", Type.FLOAT), new FieldStruct("Physical size", Type.FLOAT), new FieldStruct("Units can walk above this"), FieldStruct.UNKNOWN_INT1,
 				FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				new FieldStruct("Ammo amount", Type.INTEGER, 4), new FieldStruct("<All bombers use this>"), FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
-				new FieldStruct("<PROBABLY> Parabolic projectile"), FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Category (Heroes use 27)", Type.INTEGER, 4),
+				new FieldStruct("Ammo amount", Type.INTEGER), new FieldStruct("<All bombers use this>"), FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
+				new FieldStruct("<PROBABLY> Parabolic projectile"), FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Category (Heroes use 27)", Type.INTEGER),
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				ID_UPGRADE, new FieldStruct("<Used by units/buildings who can convert>", Type.INTEGER, 4), FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Show in scenari editor"),
+				ID_UPGRADE, new FieldStruct("<Used by units/buildings who can convert>", Type.INTEGER), FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Show in scenari editor"),
 				new FieldStruct("<PROBABLY> Belongs to \"World\""), FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, new FieldStruct("Can be killed with Delete"),
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT1, FieldStruct.UNUSED_INT1, new FieldStruct("Low health effect ID", DB_GFX_EFFECTS),
 				new FieldStruct("Death effect ID", DB_GFX_EFFECTS), new FieldStruct("Start of attack ID", DB_GFX_EFFECTS), UNKNOWN_GFX_EFFECT, new FieldStruct("Movement effect", DB_GFX_EFFECTS),
 				UNKNOWN_GFX_EFFECT, new FieldStruct("Heal other effect ID", DB_GFX_EFFECTS), UNKNOWN_GFX_EFFECT, UNKNOWN_GFX_EFFECT,
 				new FieldStruct("Get hit effect ID", DB_GFX_EFFECTS), new FieldStruct("Permanent effect", DB_GFX_EFFECTS), UNUSED_GFX_EFFECT, new FieldStruct("Projectile effect", DB_GFX_EFFECTS),
 				UNUSED_GFX_EFFECT, UNUSED_GFX_EFFECT, UNUSED_GFX_EFFECT, UNUSED_GFX_EFFECT,
-				UNUSED_GFX_EFFECT, new FieldStruct("<only used by capital ship/yamato>", DB_GFX_EFFECTS), new FieldStruct("<only used by volcano-projectile and meteor>", Type.INTEGER, 4), new FieldStruct("Attack effect ID", DB_GFX_EFFECTS),
+				UNUSED_GFX_EFFECT, new FieldStruct("<only used by capital ship/yamato>", DB_GFX_EFFECTS), new FieldStruct("<only used by volcano-projectile and meteor>", Type.INTEGER), new FieldStruct("Attack effect ID", DB_GFX_EFFECTS),
 				new FieldStruct("Disease effect ID 1", DB_GFX_EFFECTS), new FieldStruct("Disease effect ID 2", DB_GFX_EFFECTS), new FieldStruct("Diffraction shield effect ID", DB_GFX_EFFECTS), new FieldStruct("Pulse cannon effect ID", DB_GFX_EFFECTS),
 				new FieldStruct("Battle cry effect ID", DB_GFX_EFFECTS), new FieldStruct("Bomb hole effect ID", DB_GFX_EFFECTS), UNUSED_GFX_EFFECT, UNKNOWN_GFX_EFFECT,
-				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("<only used by ships>", Type.FLOAT, 4), FieldStruct.UNUSED_INT4,
+				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("<only used by ships>", Type.FLOAT), FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Terrain: Grass, Snow"),
 				new FieldStruct("Elevation: Deep water"), new FieldStruct("Terrain: Rock, Stones and Artificial"), FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
@@ -473,26 +516,26 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.UNKNOWN_BOOL1, new FieldStruct("Terrain: Sand"), new FieldStruct("Terrain: Space"), FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_INT1, FieldStruct.UNUSED_INT1, ID_AREA_EFFECT,
 				ID_AREA_EFFECT, ID_AREA_EFFECT, ID_AREA_EFFECT, FieldStruct.UNUSED_INT4,
-				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Carry capacity", Type.FLOAT, 4), FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Carry capacity", Type.FLOAT), FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNUSED_INT1, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("Debris on death", DB_OBJECTS, 0),
-				new FieldStruct("Debris on death", DB_OBJECTS, 0), FieldStruct.UNKNOWN_INT4, new FieldStruct("Min stealth radius", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4,
-				new FieldStruct("Max citizens garrison", Type.INTEGER, 4), new FieldStruct("Initial citizens garrison", Type.INTEGER, 4), new FieldStruct("Garrison upgrade object to", DB_TECH_TREE), new FieldStruct ("Plane refuel location", Type.INTEGER, 4),
-				new FieldStruct("<Seems related to ships...>", Type.INTEGER, 4), new FieldStruct("Wonder bonus", Type.INTEGER, 4), FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Friendly damage mult", Type.FLOAT, 4), new FieldStruct("Garrison citizens bonus", Type.FLOAT, 4), FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("Num techs it can build", Type.INTEGER, 4),
+				new FieldStruct("Debris on death", DB_OBJECTS, 0), FieldStruct.UNKNOWN_INT4, new FieldStruct("Min stealth radius", Type.INTEGER), FieldStruct.UNKNOWN_INT4,
+				new FieldStruct("Max citizens garrison", Type.INTEGER), new FieldStruct("Initial citizens garrison", Type.INTEGER), new FieldStruct("Garrison upgrade object to", DB_TECH_TREE), new FieldStruct ("Plane refuel location", Type.INTEGER),
+				new FieldStruct("<Seems related to ships...>", Type.INTEGER), new FieldStruct("Wonder bonus", Type.INTEGER), FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT,
+				FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Friendly damage mult", Type.FLOAT), new FieldStruct("Garrison citizens bonus", Type.FLOAT), FieldStruct.UNKNOWN_FLOAT,
+				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("Num techs it can build", Type.INTEGER),
 				ID_TECH, new FieldStruct("Units can walk above this"), new FieldStruct("Stealth"), FieldStruct.UNKNOWN_BOOL1,
-				new FieldStruct("<only used by units with fuel>", Type.INTEGER, 1), FieldStruct.UNKNOWN_INT4, new FieldStruct("Spawn on death", DB_OBJECTS, 0), new FieldStruct("Power", Type.INTEGER, 4),
-				new FieldStruct("Power recover rate", Type.INTEGER, 4), new FieldStruct("Default stance", DB_UNIT_BEHAVIOR), new FieldStruct("Conversion time", Type.INTEGER, 4), FieldStruct.UNKNOWN_FLOAT,
-				new FieldStruct("<It seems heal power, but the roman legionnaire...>", Type.FLOAT, 4, Knowledge.UNKNOWN), FieldStruct.UNKNOWN_FLOAT, new FieldStruct("<PROBABLY> Load range", Type.FLOAT, 4), new FieldStruct("<PROBABLY> Unload range", Type.FLOAT, 4),
+				new FieldStruct("<only used by units with fuel>", Type.INTEGER, 1), FieldStruct.UNKNOWN_INT4, new FieldStruct("Spawn on death", DB_OBJECTS, 0), new FieldStruct("Power", Type.INTEGER),
+				new FieldStruct("Power recover rate", Type.INTEGER), new FieldStruct("Default stance", DB_UNIT_BEHAVIOR), new FieldStruct("Conversion time", Type.INTEGER), FieldStruct.UNKNOWN_FLOAT,
+				new FieldStruct("<It seems heal power, but the roman legionnaire...>", Type.FLOAT, 4, Knowledge.UNKNOWN), FieldStruct.UNKNOWN_FLOAT, new FieldStruct("<PROBABLY> Load range", Type.FLOAT), new FieldStruct("<PROBABLY> Unload range", Type.FLOAT),
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNKNOWN_BOOL1, new FieldStruct("Can attack area"),
-				new FieldStruct("Garrison heal rate", Type.INTEGER, 4), FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("Can walk through trees", Type.INTEGER, 4),
-				new FieldStruct("If 1, it's a melee unit", Type.INTEGER, 4), FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				new FieldStruct("Garrison heal rate", Type.INTEGER), FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("Can walk through trees", Type.INTEGER),
+				new FieldStruct("If 1, it's a melee unit", Type.INTEGER), FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
-				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("<Only used by Pyramid>", Type.INTEGER, 4),
+				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("<Only used by Pyramid>", Type.INTEGER),
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
@@ -551,23 +594,23 @@ public enum DatStructureAOC implements DatStructure {
 				ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
 				ID_OBJECT_BUILD_TECH, FieldStruct.UNKNOWN_INT4
 		};
-		DB_OBJECTS.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED_AOC, 0, -1, -1, 0, -1, 0, 0,
+		DB_OBJECTS.createEntry = new Object[]{
+				"<New object>", 0, -1, -1, 0, -1, 0, 0,
 				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
-				0f, 0f, -858993664, 0, 0, 0f, -858993664, -1,
+				0f, 0f, 0, 0, 0, 0f, 0, -1,
 				0, 0, 0, 0, 0, 0, 0, -1,
-				-1, -858993664, 0f, Entry.STRING_UNDEFINED_AOC.substring(0, 52), -1, 0, -1, -1,
-				0f, 0f, -1.07374176E8, 0f, 0f, 0f, 0f, 0f,
+				-1, 0, 0f, "<Object type>", -1, 0, -1, -1,
+				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
 				-1, -1, -1, -1, -1, -1, 0, -1,
 				-1, -1, -1, -1, -1, -1, -1, -1,
-				-1, 0, 0, 0, -858993664, -1, 0f, 0,
+				-1, 0, 0, 0, 0, -1, 0f, 0,
 				0, 0, 0, 0, 0 ,0 ,0 ,0,
-				0, -858993664, 0, 0, 0, 0, 204, 204,
+				0, 0, 0, 0, 0, 0, 204, 204,
 				0f, -1, 0, 0, 0, 0, 0, 0,
-				0, 0, 204, 0, -858993664, 0f, 0f, 0,
+				0, 0, 204, 0, 0, 0f, 0f, 0,
 				0f, 0f, 0, 1, 204, 204, 0f, 0f,
 				0, 0, 0, 0, 0, -1, 0, 0,
-				0, 0, 0, -858993663, 0, 0, 0f, 1,
+				0, 0, 0, 0, 0, 0, 0f, 1,
 				0, 0, 0, 0, 0, 204, 204, -1,
 				-1, -1, -1, -1, -1, -1, -1, -1,
 				-1, -1, -1, -1, -1, -1, -1, -1,
@@ -580,16 +623,16 @@ public enum DatStructureAOC implements DatStructure {
 				0, 0, 0, 0, 204, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, -1, 0,
 				0, 0, 0, 0f, 0f, 0f, 0f, 0,
-				0, -858993664, 0, 0, -1, 1, 0, 0,
-				204, -858993460, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, -1, 1, 0, 0,
+				204, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0,
-				-859045888, -858993460, -1.07374176E8, -858993460, -858993460, -858993460, -1.07374176E8, -858993460,
-				-858993460, -858993460, -858993460, -858993460, -858993460, -858993460, -858993460, -858993460,
-				-858993460, -858993460, -858993460, -858993460, -858993460, -858993460, -858993460, -858993460,
-				-858993460, -858993460, -858993460, -858993460, -1.07374176E8, -858993460, -858993460, -858993460,
-				-858993460, -858993460, -858993460, -858993460, -858993460, -858993460, -858993460, -858993460,
-				-858993460, -858993460, -858993460, -858993460, -858993460, -858993460, -858993460, -858993460,
-				-858993460, -858993460, -858993460, 0, 0, -1, -1, -1,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, -1, -1, -1,
 				-1, -1, -1, -1, -1, -1, -1, -1,
 				-1, -1, -1, -1, -1, -1, -1, -1,
 				-1, -1, -1, -1, -1, -1, -1, -1,
@@ -614,7 +657,7 @@ public enum DatStructureAOC implements DatStructure {
 				-1, -1, -1, -1, -1, -1, -1, -1,
 				-1, -1, -1, -1, -1, -1, -1, -1,
 				-1, -1, -1, -1, -1, -1, -1, -1,
-				-1, -1, -1, -1, -1, -858993664
+				-1, -1, -1, -1, -1, 0
 		};
 		
 		
@@ -628,69 +671,81 @@ public enum DatStructureAOC implements DatStructure {
 		
 		
 		DB_SOUNDS.entries = new FieldStruct[]{
-				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Pathname", 100, 0), FieldStruct.SEQ_NUMBER, FieldStruct.ID,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Pathname", 0, 0), FieldStruct.NAME, FieldStruct.SEQ_NUMBER,
+				FieldStruct.ID, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4
 		};
-		DB_SOUNDS.defaultValues = new Object[]{
-				0, Entry.STRING_UNDEFINED_AOC, 0, -1, 0, 0, 0, -858993664,
-				0, 0
+		DB_SOUNDS.createEntry = new Object[]{
+				0, "", "<New sound>", 0, -1, 0, 0, 0,
+				0, 0, 0
 		};
 		
 		
 		
 		DB_STARTING_RESOURCHES.entries = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.ID_LANGUAGE,
-				new FieldStruct("Starting food", Type.INTEGER, 4), new FieldStruct("Starting wood", Type.INTEGER, 4), new FieldStruct("Starting stone", Type.INTEGER, 4), new FieldStruct("Starting gold", Type.INTEGER, 4),
-				new FieldStruct("Starting iron", Type.INTEGER, 4)
+				new FieldStruct("Starting food", Type.INTEGER), new FieldStruct("Starting wood", Type.INTEGER), new FieldStruct("Starting stone", Type.INTEGER), new FieldStruct("Starting gold", Type.INTEGER),
+				new FieldStruct("Starting iron", Type.INTEGER)
 		};
-		DB_STARTING_RESOURCHES.defaultValues = new Object[]{
-				"<New Starting Resourches>", -1, -1, -1, 500, 500, 500, 500, 500
+		DB_STARTING_RESOURCHES.createEntry = new Object[]{
+				"<New starting resourches>", -1, -1, -1, 600, 600, 200, 400, 400
 		};
 
 		
 		
 		DB_TECH_TREE.extraEntry = ID_TECH_FROM_OBJECT;
 		DB_TECH_TREE.entries = new FieldStruct[]{
-				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Starting epoch", Type.INTEGER, 4),
-				new FieldStruct("Ending epoch", Type.INTEGER, 4), new FieldStruct("Event ID", DB_EVENTS), FieldStruct.UNKNOWN_INT4, new FieldStruct("Wood cost", Type.INTEGER, 4),
-				new FieldStruct("Stone cost", Type.INTEGER, 4), new FieldStruct("<Only Impassable tile object and Invisible capital>", Type.INTEGER, 4), new FieldStruct("Gold cost", Type.INTEGER, 4), FieldStruct.UNUSED_INT4,
-				new FieldStruct("Iron cost", Type.INTEGER, 4), new FieldStruct("Food cost", Type.INTEGER, 4),
-				new FieldStruct("Build time", Type.INTEGER, 4), new FieldStruct("Unlocked by tech", DB_TECH_TREE),
-				new FieldStruct("Unlocked by power", DB_TECH_TREE), new FieldStruct("<-1 in Epoch Space, 0 everywhere else>", Type.INTEGER, 4), new FieldStruct("<-1 in Epoch Space, 0 everywhere else>", Type.INTEGER, 4), ID_OBJECT,
-				ID_BUTTON, new FieldStruct("Is object?", Type.INTEGER, 4), FieldStruct.ID_LANGUAGE, new FieldStruct("Tech type", TechType.values()),
-				new FieldStruct("<4 in all Epochs, 0 everywhere else>", Type.INTEGER, 4), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Starting epoch", Type.INTEGER),
+				new FieldStruct("Ending epoch", Type.INTEGER), new FieldStruct("Event ID", DB_EVENTS), FieldStruct.UNKNOWN_INT4, new FieldStruct("Wood cost", Type.INTEGER),
+				new FieldStruct("Stone cost", Type.INTEGER), new FieldStruct("<Only Impassable tile object and Invisible capital>", Type.INTEGER), new FieldStruct("Gold cost", Type.INTEGER), FieldStruct.UNUSED_INT4,
+				new FieldStruct("Iron cost", Type.INTEGER), new FieldStruct("Food cost", Type.INTEGER),
+				new FieldStruct("Build time", Type.INTEGER), new FieldStruct("Unlocked by tech", DB_TECH_TREE),
+				new FieldStruct("Unlocked by power", DB_TECH_TREE), new FieldStruct("<-1 in Epoch Space, 0 everywhere else>", Type.INTEGER), new FieldStruct("<-1 in Epoch Space, 0 everywhere else>", Type.INTEGER), ID_OBJECT,
+				ID_BUTTON, new FieldStruct("Is object?", Type.INTEGER), FieldStruct.ID_LANGUAGE, new FieldStruct("Tech type", TechType.values()),
+				new FieldStruct("<4 in all Epochs, 0 everywhere else>", Type.INTEGER), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4,
 				ID_UI_HOTKEY, new FieldStruct("<Only Monoteism and Mech Minotaur use this>", Type.INTEGER, 4, Knowledge.UNKNOWN), new FieldStruct("<Only Monoteism and Mech Minotaur use this>", Type.INTEGER, 4, Knowledge.UNKNOWN), FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_BOOL1, new FieldStruct("Only in scenario"), new FieldStruct("<All powers and power techs use 0>"),
-				new FieldStruct("<All powers and power techs use 0>"), FieldStruct.UNUSED_INT4, new FieldStruct("Epoch number", Type.INTEGER, 4), new FieldStruct("Buildings to advance epoch", Type.INTEGER, 4),
-				new FieldStruct("(Epochs) ID starts from...", Type.INTEGER, 4), new FieldStruct("Last build object", DB_OBJECTS), new FieldStruct("Num of tech builders", Type.INTEGER, 4, false)
+				new FieldStruct("<All powers and power techs use 0>"), FieldStruct.UNUSED_INT4, new FieldStruct("Epoch number", Type.INTEGER), new FieldStruct("Buildings to advance epoch", Type.INTEGER),
+				new FieldStruct("(Epochs) ID starts from...", Type.INTEGER), new FieldStruct("Last build object", DB_OBJECTS), new FieldStruct("Num of tech builders", Type.INTEGER, 4, false)
 		};
-		DB_TECH_TREE.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED_AOC, -1, 0, 0, 15, -1, -1, 0,
+		DB_TECH_TREE.createEntry = new Object[]{
+				"<New technology>", -1, 0, 0, 15, -1, -1, 0,
 				0, 0, 0, 0, 0, 0, 0, 0,
-				0, 0, 0, -1, -1, -859045888, 0, 0,
-				0, 0, 0, 0, -1, -858993460, -858993460, -858993460,
-				-858993460, 0f, 0f, 0f, 0f, 0, 0, 1,
-				1, -872415232, 0, 0, -858993460, -1, 0
+				0, 0, 0, -1, -1, 0, 0, 0,
+				0, 0, 0, 0, -1, 0, 0, 0,
+				0, 0f, 0f, 0f, 0f, 0, 0, 1,
+				1, 0, 0, 0, 0, -1, 0
 		};
 		
 		
 
 		DB_TERRAIN.entries = new FieldStruct[]{
-				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Pathname", 100, 0), FieldStruct.SEQ_NUMBER, FieldStruct.ID,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.ID_LANGUAGE, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Pathname", 0, 0), FieldStruct.NAME, FieldStruct.SEQ_NUMBER,
+				FieldStruct.ID, new FieldStruct("Gray index", Type.INTEGER), FieldStruct.ID_LANGUAGE, new FieldStruct("Valid", Type.BOOLEAN),
+				new FieldStruct("Terrain type", Type.INTEGER), new FieldStruct("Tyles on X axis", Type.INTEGER), new FieldStruct("Tiles on Y axis", Type.INTEGER), new FieldStruct("Available: 0-No, 1-Animated, 65536-Static", Type.INTEGER),
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_INT4
+				new FieldStruct("<Used by animated terrains>", Type.INTEGER), new FieldStruct("<Used by animated terrains>", Type.INTEGER), new FieldStruct("Color: Red", Type.INTEGER), new FieldStruct("Color: Green", Type.INTEGER),
+				new FieldStruct("Color: Blue", Type.INTEGER), FieldStruct.UNUSED_INT4, new FieldStruct("Amb Marsh 1", Type.FLOAT), new FieldStruct("Amb Marsh 2", Type.FLOAT),
+				new FieldStruct("Is an ambient terrain? (Yes = 16777216)", Type.INTEGER)
 		};
-		DB_TERRAIN.defaultValues = new Object[]{
-				0, Entry.STRING_UNDEFINED_AOC, 0, -1, 0, 0, 0, 0,
-				0, 0, -872415232, 0, 0, 0, 0, 0,
-				0, 0, 0, 0, 0, -858993460, -858993460, -858993460,
-				0, 0f, 0f, 0
+		DB_TERRAIN.createEntry = new Object[]{
+				0, "", "<New terrain>", 0, -1, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0f, 0f, 0
+		};
+		
+		
+		
+		DB_TERRAIN_GRAY_TEXTURES.entries = new FieldStruct[]{
+				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Pathname", 0, 0), FieldStruct.NAME, FieldStruct.SEQ_NUMBER,
+				FieldStruct.ID, new FieldStruct("Color: Red", Type.INTEGER), new FieldStruct("Color: Green", Type.INTEGER),
+				new FieldStruct("Color: Blue", Type.INTEGER)
+		};
+		DB_TERRAIN_GRAY_TEXTURES.createEntry = new Object[]{
+				0, "", "<New terrain gray>", 0, -1, 0, 0, 0
 		};
 		
 		
@@ -699,15 +754,45 @@ public enum DatStructureAOC implements DatStructure {
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.ID_LANGUAGE, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4
 		};
-		DB_TERRAIN_TYPE.defaultValues = new Object[]{
-				"<New Starting Resourches>", -1, -1, -1, 500, 500, 500, 500, 500
+		DB_TERRAIN_TYPE.createEntry = new Object[]{
+				"<New terrain type>", -1, -1, 0, -1, 0, 0, 0
+		};
+		
+
+
+		DB_UI_CONTROL_EVENTS.entries = new FieldStruct[]{
+				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4,
+				new FieldStruct("Control event type", ControlType.values())
+		};
+		
+
+
+		DB_UI_CONTROLS.entries = new FieldStruct[]{
+				FieldStruct.NAME, new FieldStruct("Sub", Type.STRING, 100), new FieldStruct("Sub", Type.STRING, 100), new FieldStruct("Sub", Type.STRING, 100),
+				new FieldStruct("Sub", Type.STRING, 100), new FieldStruct("Sub", Type.STRING, 100), FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
+				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
+				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
+				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.SEQ_NUMBER, FieldStruct.ID,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.ID_LANGUAGE, FieldStruct.ID_LANGUAGE, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
+				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 		};
 		
 		
 		
 		DB_UI_FONT.entries = new FieldStruct[]{
-				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Font type", Type.INTEGER, 4),
-				new FieldStruct("Font size", Type.INTEGER, 4), new FieldStruct("Low quality", Type.INTEGER, 4), new FieldStruct("Bold"), new FieldStruct("Italic"),
+				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Font type", Type.INTEGER),
+				new FieldStruct("Font size", Type.INTEGER), new FieldStruct("Low quality", Type.INTEGER), new FieldStruct("Bold"), new FieldStruct("Italic"),
 				new FieldStruct("Underline"), new FieldStruct("Has shadow"), FieldStruct.UNUSED_INT4
 		};
 
@@ -715,15 +800,15 @@ public enum DatStructureAOC implements DatStructure {
 		
 		DB_UI_HOTKEY.entries = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, FieldStruct.UNCHANGED_INT4,
-				FieldStruct.UNCHANGED_INT4, FieldStruct.UNCHANGED_INT4, new FieldStruct("Key scan code", Type.INTEGER, 4)
+				FieldStruct.UNCHANGED_INT4, FieldStruct.UNCHANGED_INT4, new FieldStruct("Key scan code", Type.INTEGER)
 		};
 
 		
 		
 		DB_UNIT_BEHAVIOR.entries = new FieldStruct[]{
-				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_BOOL1,
-				FieldStruct.UNKNOWN_BOOL1, new FieldStruct("Will attack enemies"), FieldStruct.UNKNOWN_BOOL1, new FieldStruct("Will run away if attacked"),
-				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNUSED_INT4,
+				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Run away from enemy"),
+				new FieldStruct("Ignore if outside LOS"), new FieldStruct("Attack enemies"), new FieldStruct("Follow enemies in LOS"), new FieldStruct("Run away if attacked"),
+				new FieldStruct("Return to initial location"), FieldStruct.UNUSED_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4
 		};
 
@@ -735,42 +820,51 @@ public enum DatStructureAOC implements DatStructure {
 				ID_FAMILY, ID_FAMILY, ID_FAMILY, ID_OBJECT,
 				ID_OBJECT, ID_OBJECT, ID_OBJECT, ID_OBJECT,
 				ID_OBJECT, ID_OBJECT, ID_OBJECT, new FieldStruct("Continue on...", DB_UNIT_SET),
-				new FieldStruct("Exclude unit set", DB_UNIT_SET), new FieldStruct("Is the first set in the list", Type.INTEGER, 4)
+				new FieldStruct("Exclude unit set", DB_UNIT_SET), new FieldStruct("Is the first set in the list", Type.INTEGER)
 		};
-		DB_UNIT_SET.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED_AOC, 0, -1, 0, 0, 0, 0, 0,
+		DB_UNIT_SET.createEntry = new Object[]{
+				"<New unit set>", 0, -1, 0, 0, 0, 0, 0,
 				0, 0, 0, -1, -1, -1, -1, -1,
-				-1, -1, -1, -1, -1, -858993664
+				-1, -1, -1, -1, -1, 0
 		};
 
 		
 		
 		DB_UPGRADE.entries = new FieldStruct[]{
-				FieldStruct.NAME, new FieldStruct("Attack mult", Type.FLOAT, 4), new FieldStruct("Health mult", Type.FLOAT, 4), new FieldStruct("Speed mult", Type.FLOAT, 4),
-				new FieldStruct("Range mult", Type.FLOAT, 4), new FieldStruct("Shock armor mult", Type.FLOAT, 4), new FieldStruct("Arrow armor mult", Type.FLOAT, 4), new FieldStruct("Pierce armor mult", Type.FLOAT, 4),
-				new FieldStruct("Gun armor mult", Type.FLOAT, 4), new FieldStruct("Laser armor mult", Type.FLOAT, 4), new FieldStruct("Missile armor mult", Type.FLOAT, 4), new FieldStruct("Fuel/Power mult", Type.FLOAT, 4),
-				FieldStruct.UNUSED_INT4, new FieldStruct("Area mult", Type.FLOAT, 4), FieldStruct.UNUSED_INT4, new FieldStruct("Attack cost mult", Type.FLOAT, 4),
-				new FieldStruct("Health cost mult", Type.FLOAT, 4), new FieldStruct("Speed cost mult", Type.FLOAT, 4), new FieldStruct("Range cost mult", Type.FLOAT, 4), new FieldStruct("Shock armor cost mult", Type.FLOAT, 4),
-				new FieldStruct("Arrow armor cost mult", Type.FLOAT, 4), new FieldStruct("Pierce armor cost mult", Type.FLOAT, 4), new FieldStruct("Gun armor cost mult", Type.FLOAT, 4), new FieldStruct("Laser armor cost mult", Type.FLOAT, 4),
-				new FieldStruct("Missile armor cost mult", Type.FLOAT, 4), new FieldStruct("Fuel/Power cost mult", Type.FLOAT, 4), FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_FLOAT,
-				new FieldStruct("Area cost mult", Type.FLOAT, 4), FieldStruct.UNUSED_INT4, new FieldStruct("Max upgrades per stat", Type.INTEGER, 4), FieldStruct.SEQ_NUMBER,
-				FieldStruct.ID, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4
+				FieldStruct.NAME, new FieldStruct("Attack mult", Type.FLOAT), new FieldStruct("Health mult", Type.FLOAT), new FieldStruct("Speed mult", Type.FLOAT),
+				new FieldStruct("Range mult", Type.FLOAT), new FieldStruct("Shock armor mult", Type.FLOAT), new FieldStruct("Arrow armor mult", Type.FLOAT), new FieldStruct("Pierce armor mult", Type.FLOAT),
+				new FieldStruct("Gun armor mult", Type.FLOAT), new FieldStruct("Laser armor mult", Type.FLOAT), new FieldStruct("Missile armor mult", Type.FLOAT), new FieldStruct("Fuel/Power mult", Type.FLOAT),
+				FieldStruct.UNUSED_INT4, new FieldStruct("Area mult", Type.FLOAT), FieldStruct.UNUSED_INT4, new FieldStruct("Attack cost mult", Type.FLOAT),
+				new FieldStruct("Health cost mult", Type.FLOAT), new FieldStruct("Speed cost mult", Type.FLOAT), new FieldStruct("Range cost mult", Type.FLOAT), new FieldStruct("Shock armor cost mult", Type.FLOAT),
+				new FieldStruct("Arrow armor cost mult", Type.FLOAT), new FieldStruct("Pierce armor cost mult", Type.FLOAT), new FieldStruct("Gun armor cost mult", Type.FLOAT), new FieldStruct("Laser armor cost mult", Type.FLOAT),
+				new FieldStruct("Missile armor cost mult", Type.FLOAT), new FieldStruct("Fuel/Power cost mult", Type.FLOAT), FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_FLOAT,
+				new FieldStruct("Area cost mult", Type.FLOAT), FieldStruct.UNUSED_INT4, new FieldStruct("Max upgrades per stat", Type.INTEGER), FieldStruct.SEQ_NUMBER,
+				FieldStruct.ID, FieldStruct.UNKNOWN_INT4, new FieldStruct("<It seems a starting epoch>", Type.INTEGER), FieldStruct.UNKNOWN_INT4
 		};
-		DB_UPGRADE.defaultValues = new Object[]{
-				Entry.STRING_UNDEFINED_AOC, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
+		DB_UPGRADE.createEntry = new Object[]{
+				"<New upgrade>", 0f, 0f, 0f, 0f, 0f, 0f, 0f,
 				0f, 0f, 0f, 0f, 0, 0f, 0, 0f,
 				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
 				0f, 0f, 0, 0f, 0f, 0, 0, 0,
-				0, 0, 0, -858993664
+				0, 0, 0, 0
 		};
 
 		
 		
 		DB_WEAPON_TO_HIT.entries = new FieldStruct[]{
-				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Shock mult", Type.INTEGER, 4),
-				new FieldStruct("Gun mult", Type.INTEGER, 4), new FieldStruct("Arrow mult", Type.INTEGER, 4), new FieldStruct("Pierce mult", Type.INTEGER, 4), new FieldStruct("Laser mult", Type.INTEGER, 4),
-				new FieldStruct("Missile mult", Type.INTEGER, 4)
+				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Shock mult", Type.INTEGER),
+				new FieldStruct("Gun mult", Type.INTEGER), new FieldStruct("Arrow mult", Type.INTEGER), new FieldStruct("Pierce mult", Type.INTEGER), new FieldStruct("Laser mult", Type.INTEGER),
+				new FieldStruct("Missile mult", Type.INTEGER)
 		};
+
+
+
+		DB_WORLD.entries = new FieldStruct[]{
+				new FieldStruct("Float/Min float", Type.FLOAT), new FieldStruct("Max float", Type.FLOAT), FieldStruct.SEQ_NUMBER, new FieldStruct("ID", WorldID.values(), FieldStruct.COLOR_ID),
+				new FieldStruct("Int/Min int", Type.INTEGER), new FieldStruct("Max int", Type.INTEGER), FieldStruct.UNKNOWN_INT4
+		};
+		DB_WORLD.nameBuilder = (entry) -> WorldID.parseValue(entry.ID).name;
+
 		
 		
 
@@ -809,6 +903,9 @@ public enum DatStructureAOC implements DatStructure {
 	 * In dbtechtree there is more than one group, and each counter says N, but there are actually N+1 entries (because there's also the "Epoch" entry, which is not counted). */
 	public int adjustNumEntries;
 
+	/** Min SequenceNumber for defined objects */
+	public int minSeq;
+	
 	/** Min ID for defined objects */
 	public int minID;
 	
@@ -836,7 +933,7 @@ public enum DatStructureAOC implements DatStructure {
 	public FieldStruct[] entries;
 	
 	/** Default values used by Unknown/New entries. */
-	public Object[] defaultValues = null;
+	public Object[] createEntry = null;
 	
 	/** Optional function to calculate the name */
 	private Function<Entry, String> nameBuilder = null;
@@ -845,11 +942,12 @@ public enum DatStructureAOC implements DatStructure {
 	
 	
 	
-	DatStructureAOC(String name, String fileName, boolean defineNumEntries, int adjustNumEntries, int minID, int indexName, int indexSequence, int indexID, int indexCountExtra){
+	DatStructureAOC(String name, String fileName, boolean defineNumEntries, int adjustNumEntries, int minSeq, int minID, int indexName, int indexSequence, int indexID, int indexCountExtra){
 		this.name = name;
 		this.fileName = fileName;
 		this.defineNumEntries = defineNumEntries;
 		this.adjustNumEntries = adjustNumEntries;
+		this.minSeq = minSeq;
 		this.minID = minID;
 		this.indexName = indexName;
 		this.indexSequence = indexSequence;
@@ -877,6 +975,11 @@ public enum DatStructureAOC implements DatStructure {
 	@Override
 	public int getAdjustNumEntries () {
 		return adjustNumEntries;
+	}
+	
+	@Override
+	public int getMinSeq(){
+		return minSeq;
 	}
 
 	@Override
@@ -916,7 +1019,7 @@ public enum DatStructureAOC implements DatStructure {
 	
 	@Override
 	public Object[] getDefaultValues () {
-		return defaultValues;
+		return createEntry;
 	}
 	
 	@Override
@@ -933,6 +1036,10 @@ public enum DatStructureAOC implements DatStructure {
 		return num;
 	}
 
+	@Override
+	public String toString(){
+		return name;
+	}
 
 	@Override
 	public int compareTo (DatStructure datStructure) {

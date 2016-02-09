@@ -16,14 +16,14 @@ import datstructure.EntryGroup;
 import datstructure.FieldStruct;
 
 public class DatFileManager {
-	
+
 	/** The file to read. */
 	private DatFile datFile;
 	/** The structure of the file. */
 	private DatStructure datStructure;
 	/** The size of the file. */
 	private long fileSize;
-
+	
 	/**
 	 * Create a new DatFileManager to read or write the given datFile.
 	 * @param datFile	The file to load with the relative structure
@@ -33,7 +33,7 @@ public class DatFileManager {
 		this.datFile = datFile;
 		this.datStructure = datStructure;
 	}
-
+	
 	/**
 	 * Read the whole file, perform regular updates of the progress on the GUI and return the content read.
 	 * Support multi-thread loadings: you can load many files at once and display a single progress bar for them all.
@@ -61,7 +61,7 @@ public class DatFileManager {
 		}
 		return new DatContent(datFile, entryGroups);
 	}
-	
+
 	/**
 	 * Read a single EntryGroup from the file, perform regular updates on of the progress on the GUI and return the list of entries.
 	 * Support multi-thread loadings: you can load many files at once and display a single progress bar for them all.
@@ -82,7 +82,11 @@ public class DatFileManager {
 		int numFields = datStructure.getEntries().length;
 		List<Entry> entries;
 		if (defineNumEntries) {
-			entries = new ArrayList<>(numEntries);
+			try{
+				entries = new ArrayList<>(numEntries);
+			} catch (OutOfMemoryError e){
+				throw new IOException(e);
+			}
 		} else {
 			entries = new ArrayList<>();
 		}
@@ -95,11 +99,11 @@ public class DatFileManager {
 		try{
 			for (i = 0; (defineNumEntries && i < numEntries) || (!defineNumEntries && reader.getRemaining() > 0); i++) {	//<= because dbTechTree works differently...
 				List<Object> values = new ArrayList<Object>(numFields);
-
+				
 				for (int j = 0; j < numFields; j++){
 					fieldStruct = datStructure.getEntries()[j];
 					size = fieldStruct.getSize();
-
+					
 					switch(fieldStruct.getType()){
 						case STRING:
 							if (fieldStruct.getIndexStringLengthExtra() >= 0){
@@ -140,8 +144,8 @@ public class DatFileManager {
 		}
 		return new EntryGroup(datStructure, entries);
 	}
-
-
+	
+	
 	/**
 	 * Save the given list of EntryGroup to the file and perform regular updates of the progress on the GUI.
 	 * @param entryGroups	The list of EntryGroup to save
@@ -156,8 +160,8 @@ public class DatFileManager {
 		File backup = new File(datFile.getAbsolutePath() + ".bak");
 		Files.deleteIfExists(backup.toPath());
 		Files.copy(datFile.toPath(), backup.toPath());
-
-
+		
+		
 		int numBaseFields = datStructure.getEntries().length;
 		Entry entry;
 		FieldStruct fieldStruct;
@@ -172,7 +176,7 @@ public class DatFileManager {
 					writer.writeInt(numEntries - datStructure.getAdjustNumEntries());
 				}
 				System.out.println("Save file: " + datFile.getName() + "  >  Group: " + entryGroup + "  >  Num entries: " + numEntries);
-				
+
 				//				StringBuilder sb;
 				for (int i = 0; i < numEntries; i++){
 					update.run();
@@ -212,7 +216,7 @@ public class DatFileManager {
 			}
 		}
 	}
+	
 
-	
-	
+
 }

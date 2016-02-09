@@ -73,20 +73,21 @@ public class Core {
 				values = DatStructureVanilla.values();
 				new FrameMain();
 			}
-		});
-		new Thread(() -> {
-			try {
-				URL url = Core.class.getResource("Language ENG.txt");
-				File f = new File(url.toURI());
-				try(BufferedReader br = new BufferedReader(new FileReader(f))){
-					LANGUAGE = br.lines().parallel().map(LanguageEntry::new).collect(Collectors.toMap(e -> e.code, e -> e));
+
+			new Thread(() -> {
+				try {
+					URL url = Core.class.getResource(AOC ? "Language AOC.txt" : "Language Vanilla.txt");
+					File f = new File(url.toURI());
+					try(BufferedReader br = new BufferedReader(new FileReader(f))){
+						LANGUAGE = br.lines().parallel().map(LanguageEntry::new).collect(Collectors.toMap(e -> e.code, e -> e));
+					}
+					languageVector = new Vector<>(LANGUAGE.values());
+					languageVector.sort(null);
+				} catch (IOException | URISyntaxException e){
+					JOptionPane.showMessageDialog(null, "An error occurred while reading the language file:\n" + e.getMessage() + '\n' + e.getCause(), "Language file", JOptionPane.WARNING_MESSAGE);
 				}
-				languageVector = new Vector<>(LANGUAGE.values());
-				languageVector.sort(null);
-			} catch (IOException | URISyntaxException e){
-				JOptionPane.showMessageDialog(null, "An error occurred while reading the language file:\n" + e.getMessage() + '\n' + e.getCause(), "Language file", JOptionPane.WARNING_MESSAGE);
-			}
-		}).start();
+			}).start();
+		});
 	}
 
 

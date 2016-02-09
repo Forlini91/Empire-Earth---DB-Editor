@@ -25,7 +25,7 @@ public class FieldStruct {
 	/** Common field: A 4 bytes integer which alter the lenght of a string field */
 	public static final FieldStruct STRING_SIZE_EXTRA = new FieldStruct("String size extra", Type.INTEGER, 4, false);
 	/** Unique field: A 4 bytes integer which point to an entry in the file Language.dll */
-	public static final FieldStruct ID_LANGUAGE = new FieldStruct("Language ID", Type.LANGUAGE, 4);
+	public static final FieldStruct ID_LANGUAGE = new FieldStruct("Language ID", Type.LANGUAGE);
 
 
 
@@ -105,6 +105,20 @@ public class FieldStruct {
 		arrValues = null;
 		indexStringLengthExtra = -1;
 		defaultValue = -1;
+	}
+	
+	public FieldStruct (String name, Type type) {
+		this.name = name;
+		this.type = type;
+		size = 4;
+		knowledge = Knowledge.KNOWN;
+		editable = true;
+		color = Color.BLACK;
+		linkToStruct = null;
+		enumValues = null;
+		arrValues = null;
+		defaultValue = -1;
+		indexStringLengthExtra = -1;
 	}
 	
 	public FieldStruct (String name, Type type, int size) {
@@ -230,6 +244,20 @@ public class FieldStruct {
 		editable = true;
 		linkToStruct = null;
 		arrValues = null;
+		indexStringLengthExtra = -1;
+	}
+
+	public FieldStruct (String name, EnumValue[] enumValues, Color color) {
+		this.name = name;
+		this.enumValues = enumValues;
+		this.color = color;
+		type = Type.ENUM;
+		size = 4;
+		knowledge = Knowledge.KNOWN;
+		editable = true;
+		linkToStruct = null;
+		arrValues = null;
+		defaultValue = -1;
 		indexStringLengthExtra = -1;
 	}
 	

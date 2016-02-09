@@ -48,6 +48,7 @@ public class DialogSearchValuesResultsList extends JDialog {
 		dlgLabel.addKeyListener(dlgKeyListener);
 		dlgList.addKeyListener(dlgKeyListener);
 		dlgScrollPane.addKeyListener(dlgKeyListener);
+		dlgList.switchList.addKeyListener(dlgKeyListener);
 		dlgSearch.addKeyListener(dlgKeyListener);
 		dlgClose.addKeyListener(dlgKeyListener);
 		getContentPane().addKeyListener(dlgKeyListener);
@@ -56,11 +57,12 @@ public class DialogSearchValuesResultsList extends JDialog {
 
 		setTitle("For value: " + value);
 		setBounds(Core.getBounds(this, 0.45, 0.6));
-		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{30, 400, 30, 50}, new double[]{1.0}, new double[]{0, 1.0, 0, 0}));
+		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{30, 400, 25, 30, 50}, new double[]{1.0}, new double[]{0, 1.0, 0, 0, 0}));
 		add(dlgLabel, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 0));
 		add(dlgScrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
-		add(dlgSearch, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 2));
-		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 3));
+		add(dlgList.switchList, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 2));
+		add(dlgSearch, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 3));
+		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 4));
 		setVisible(true);
 	}
 

@@ -15,32 +15,6 @@ import java.util.List;
  */
 public class Entry implements Comparable<Entry>, Iterable <Object> {
 
-	/** Byte used for empty values/string */
-	public static final char b00 = 0x00;
-
-	/** Byte used for empty strings */
-	public static final char bCC = 65484;
-	
-	/** Byte used for empty strings */
-	public static final char bFF = 65535;
-
-	/** Sequence of chars used by empty strings (100 chars) */
-	public static final String STRING_UNDEFINED_AOC = new String(new char[]{
-			b00, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
-			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
-			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
-			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
-			bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC, bCC,
-	});
-
-	public static final String STRING_UNDEFINED_VANILLA = new String(new char[]{
-			b00, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
-			bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
-			bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
-			bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
-			bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF, bFF,
-	});
-
 	/** Used by fields without name. */
 	public static final String NAME_NONE = "<No name>";
 	/** Used by undefined fields. */
@@ -60,11 +34,18 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		this.datStructure = datStructure;
 		this.values = values;
 		if (values.size() > 0){
-			sequenceNumber = datStructure.getIndexSequence() < 0 ? 0 : (int) values.get(datStructure.getIndexSequence());
-			if (datStructure.defineNumEntries() || datStructure.getIndexID() >= 0){
-				ID = datStructure.getIndexID() < 0 ? 0 :(int) values.get(datStructure.getIndexID());
-			} else {
-				ID = sequenceID;
+			try {
+				sequenceNumber = datStructure.getIndexSequence() < 0 ? 0 : (int) values.get(datStructure.getIndexSequence());
+				if (datStructure.defineNumEntries() || datStructure.getIndexID() >= 0){
+					ID = datStructure.getIndexID() < 0 ? 0 :(int) values.get(datStructure.getIndexID());
+				} else {
+					ID = sequenceID;
+				}
+			} catch (Exception e){
+				StringBuilder sb = new StringBuilder("Error with entry: " + sequenceID + " of " + datStructure + '\n');
+				values.forEach(x -> sb.append("\tValue: ").append(x).append('\n'));
+				System.err.println(sb);
+				throw e;
 			}
 		}
 	}
@@ -127,16 +108,8 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @return	true if defined, false otherwise
 	 */
 	public boolean isDefined(){
-		if (ID >= datStructure.getMinID() && sequenceNumber >= 0){
-			if (datStructure.getIndexName() >= 0){
-				String name = (String) values.get(datStructure.getIndexName());
-				return !STRING_UNDEFINED_AOC.equals(name) && !STRING_UNDEFINED_VANILLA.equals(name);
-			} else {
-				return true;
-			}
-		}
-		return false;
-
+		return ID >= datStructure.getMinID()
+				&& sequenceNumber >= datStructure.getMinSeq();
 	}
 
 	@Override
@@ -145,7 +118,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 			if (datStructure.getNameBuilder() != null){
 				return "(" + ID + ") " + datStructure.getNameBuilder().apply(this);
 			} else {
-				return "(" + ID + ") " + getName();
+				return "(" + ID + ") " + ((String) values.get(datStructure.getIndexName())).trim();
 			}
 		} else {
 			return NAME_UNDEFINED;

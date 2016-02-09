@@ -49,7 +49,14 @@ public class EntryGroup implements Iterable <Entry> {
 			name = entries.get(0).toString();
 		}
 		if (datStructure.getIndexID() >= 0 || !datStructure.defineNumEntries()){
-			map = entries.parallelStream().filter(entry -> entry.isDefined()).collect(Collectors.toMap(t -> t.ID, t -> t));
+			try {
+				map = entries.parallelStream().filter(entry -> entry.isDefined()).collect(Collectors.toMap(t -> t.ID, t -> t));
+			} catch (Exception e){
+				StringBuilder sb = new StringBuilder("Error with group of " + datStructure);
+				entries.forEach(x -> sb.append('\t').append(x.sequenceNumber).append(' ').append(x.ID).append(' ').append(x.getName()).append('\n'));
+				System.err.println(sb);
+				throw e;
+			}
 		} else {
 			map = new HashMap<>();
 		}
