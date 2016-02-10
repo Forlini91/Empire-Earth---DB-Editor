@@ -3,7 +3,7 @@ package constants;
 
 public enum AreaEffectType implements EnumValue {
 	
-	NONE ("None", 0),
+	C0_NONE ("None", 0),
 	C1_HEALING ("Healing", 1),
 	C2_FIXED_MORALE ("Fixed morale", 2),
 	C3_ANTI_CALAMITY ("Anti calamity", 3),
@@ -17,6 +17,7 @@ public enum AreaEffectType implements EnumValue {
 
 	public final String name;
 	public final int code;
+	
 	AreaEffectType(String name, int code){
 		this.name = name;
 		this.code = code;
@@ -38,7 +39,7 @@ public enum AreaEffectType implements EnumValue {
 				return effectCode;
 			}
 		}
-		return NONE;
+		return null;
 	}
 
 	@Override

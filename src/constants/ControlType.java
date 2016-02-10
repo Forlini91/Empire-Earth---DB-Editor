@@ -21,6 +21,7 @@ public enum ControlType implements EnumValue {
 	
 	public final String name;
 	public final int code;
+
 	ControlType(String name, int code){
 		this.name = name;
 		this.code = code;
@@ -42,7 +43,7 @@ public enum ControlType implements EnumValue {
 				return effectCode;
 			}
 		}
-		return ControlType.C_1_NONE;
+		return null;
 	}
 	
 	@Override

@@ -56,7 +56,7 @@ public enum DatStructureAOC implements DatStructure {
 	DB_UNIT_SET				("Unit sets", "dbunitset.dat", true, 0, 1, 0, 0, 1, 2, -1),
 	DB_UPGRADE				("Upgrades", "dbupgrade.dat", true, 0, 1, 1, 0, 31, 32, -1),
 	DB_WEAPON_TO_HIT		("Weapons to hit", "dbweapontohit.dat", true, 0, 1, 0, 0, 1, 2, -1),
-	DB_WORLD				("World", "dbworld.dat", true, 0, 1, 1, -1, 2, 3, -1),
+	DB_WORLD				("World", "dbworld.dat", true, 0, 1, 0, -1, 2, 3, -1),
 	;
 
 
@@ -285,10 +285,16 @@ public enum DatStructureAOC implements DatStructure {
 		DB_EFFECTS.nameBuilder = (entry) -> {
 			EffectCode effectCode = EffectCode.parseValue((int) entry.values.get(8));
 			switch (effectCode){
+				case NONE:
+				case C04_UNKNOWN:
+				case C10_START_GAME:
+					return effectCode.toString();
 				case C01_SET_BUTTON:
 					return effectCode.name + ": " + Core.DATA.get(DB_BUTTONS).entryGroups.get(0).map.get(entry.values.get(13));
 				case C02_ALTER_ATTRIBUTE:
-					return effectCode.name + ": " + (AttributeCode.parseValue((int) entry.values.get(11))).name;
+					int code = (int) entry.values.get(11);
+					AttributeCode attribute = AttributeCode.parseValue(code);
+					return effectCode.name + ": " + (attribute != null ? attribute.name : code);
 				case C06_SET_GRAPHIC:
 				case C12_GUI_BACKGROUND:
 					return effectCode.name + ": " + Core.DATA.get(DB_GRAPHICS).entryGroups.get(0).map.get(entry.values.get(9));
@@ -305,7 +311,7 @@ public enum DatStructureAOC implements DatStructure {
 				case C21_SET_SELECTION_SOUND_2:
 					return effectCode.name + ": " + Core.DATA.get(DB_SOUNDS).entryGroups.get(0).map.get(entry.values.get(12));
 				default:
-					return effectCode.toString();
+					return "Unknown";
 			}
 		};
 
@@ -898,7 +904,10 @@ public enum DatStructureAOC implements DatStructure {
 				new FieldStruct("Float/Min float", Type.FLOAT), new FieldStruct("Max float", Type.FLOAT), FieldStruct.SEQ_NUMBER, new FieldStruct("ID", WorldID.values(), FieldStruct.COLOR_ID),
 				new FieldStruct("Int/Min int", Type.INTEGER), new FieldStruct("Max int", Type.INTEGER), FieldStruct.UNKNOWN_INT4
 		};
-		DB_WORLD.nameBuilder = (entry) -> WorldID.parseValue(entry.ID).name;
+		DB_WORLD.nameBuilder = (entry) -> {
+			WorldID wID = WorldID.parseValue(entry.ID);
+			return (wID != null) ? wID.name : "<Unknown>";
+		};
 
 		
 		

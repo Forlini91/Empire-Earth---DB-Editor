@@ -2,11 +2,11 @@ package constants;
 
 
 public enum EffectCode implements EnumValue {
-	
+
 	NONE ("None", -1),
 	C01_SET_BUTTON ("Set button", 1),
 	C02_ALTER_ATTRIBUTE ("Alter attribute", 2),
-	C04_UNKNOWN ("Unknown 1", 4),
+	C04_UNKNOWN ("Unknown effect", 4),
 	C06_SET_GRAPHIC ("Set graphic", 6),
 	C08_ENABLE_TECH ("Enable tech", 8),
 	C09_DISABLE_TECH ("Disable tech", 9),
@@ -20,38 +20,38 @@ public enum EffectCode implements EnumValue {
 	C21_SET_SELECTION_SOUND_2 ("Set selection sound 2", 21),
 	C22_REPLACE_OBJECT ("Replace object", 22),
 	;
-
-
+	
+	
 	public final String name;
 	public final int code;
-	
+
 	EffectCode(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-	
+
 	@Override
 	public String getName(){
 		return name;
 	}
-
+	
 	@Override
 	public int getValue () {
 		return code;
 	}
-	
+
 	public static EffectCode parseValue(int code){
 		for (EffectCode effectCode : values()){
 			if (effectCode.code == code){
 				return effectCode;
 			}
 		}
-		return NONE;
+		return null;
 	}
-
+	
 	@Override
 	public String toString(){
 		return name + ": " + code;
 	}
-	
+
 }

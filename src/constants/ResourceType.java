@@ -4,7 +4,7 @@ package constants;
 public enum ResourceType implements EnumValue {
 	
 	C0_None ("None", 0),
-	C1_All ("All", 0),
+	C1_All ("All", 1),
 	C2_Food ("Food", 2),
 	C3_Wood ("Wood", 3),
 	C4_Stone ("Stone", 4),
@@ -36,7 +36,7 @@ public enum ResourceType implements EnumValue {
 				return effectCode;
 			}
 		}
-		return C0_None;
+		return null;
 	}
 
 	@Override

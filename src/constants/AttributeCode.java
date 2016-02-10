@@ -26,12 +26,13 @@ public enum AttributeCode implements EnumValue {
 	C42_PATH_FINDING ("Path finding", 42),
 	C43_HEALTH_RECOVER_RATE ("Health recover rate", 43),
 	C44_POWER_AMOUNT ("Power amount", 44),
-	C45_UNKNOWN ("Unknown", 45),
+	C45_UNKNOWN ("Unknown attribute", 45),
 	;
 
 
 	public final String name;
 	public final int code;
+	
 	AttributeCode(String name, int code){
 		this.name = name;
 		this.code = code;
@@ -53,7 +54,7 @@ public enum AttributeCode implements EnumValue {
 				return effectCode;
 			}
 		}
-		return C_1_NONE;
+		return null;
 	}
 
 	@Override
