@@ -84,11 +84,13 @@ public class JComboBoxArray extends JComboBox <Integer> implements AbstractEntry
 		defaultVal = value;
 		int index = Arrays.binarySearch(fieldStruct.arrValues, (int) value);
 		if (index >= 0){
-			setSelectedIndex(index);;
+			setSelectedIndex(index);
+			editor.setCaretPosition(0);
 			altered = false;
 			return;
 		}
 		setSelectedIndex(0);
+		editor.setCaretPosition(0);
 		altered = false;
 	}
 
@@ -112,11 +114,19 @@ public class JComboBoxArray extends JComboBox <Integer> implements AbstractEntry
 	
 	@Override
 	public void keyTyped (KeyEvent e) {
+		
+	}
+
+	@Override public void keyPressed (KeyEvent e) {}
+	@Override public void keyReleased (KeyEvent e) {
 		SwingUtilities.invokeLater(() -> {
 			String text = editor.getText();
 			if (text == null || text.isEmpty()){
 				System.out.println("Select: null");
 				setSelectedItem(null);
+			} else if (e.getKeyCode() == KeyEvent.VK_TAB && isPopupVisible()){
+				ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);
+				setSelectedItem(popup.getList().getSelectedValue());
 			} else {
 				showPopup();
 				List<Integer> results = searcher.find(fieldStruct.arrValues, null, text);
@@ -130,9 +140,6 @@ public class JComboBoxArray extends JComboBox <Integer> implements AbstractEntry
 			}
 		});
 	}
-
-	@Override public void keyPressed (KeyEvent e) {}
-	@Override public void keyReleased (KeyEvent e) {}
 
 	@Override
 	public void mouseClicked (MouseEvent e) {

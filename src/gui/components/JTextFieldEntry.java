@@ -17,18 +17,18 @@ import gui.FrameEditor;
 
 
 public class JTextFieldEntry extends JTextField implements AbstractEntryField, FocusListener, KeyListener, DocumentListener {
-	
+
 	private static final long serialVersionUID = -7134081240220832439L;
 	private static final Color BROWN = new Color(127, 51, 0);
-
+	
 	private final FieldStruct fieldStruct;
 	private final int index;
 	private final Color defaultColor;
 	private final FrameEditor frameEditor;
 	private Object defaultVal = null;
 	private boolean altered = false;
-	
 
+	
 	public JTextFieldEntry(FrameEditor frameEditor, FieldStruct fieldStruct, int index){
 		this.frameEditor = frameEditor;
 		this.fieldStruct = fieldStruct;
@@ -42,29 +42,29 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 		setEditable(fieldStruct.isEditable());
 		setForeground(defaultColor);
 		setCaretPosition(0);
-
+		
 		addFocusListener(this);
 		if (fieldStruct.indexStringLengthExtra >= 0){
 			addKeyListener(this);
 		}
 		getDocument().addDocumentListener(this);
 	}
-
+	
 	@Override
 	public void resetColor () {
 		setForeground(defaultColor);
 	}
-	
+
 	@Override
 	public FieldStruct getEntryStruct () {
 		return fieldStruct;
 	}
-
+	
 	@Override
 	public int getIndex(){
 		return index;
 	}
-	
+
 	@Override
 	public Object getVal(){
 		switch(fieldStruct.getType()){
@@ -80,7 +80,7 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 				}
 		}
 	}
-
+	
 	@Override
 	public void setVal (Object value) {
 		defaultVal = value;
@@ -89,32 +89,33 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 		} else {
 			setText(String.valueOf(value));
 		}
+		setCaretPosition(0);
 		altered = false;
 	}
-	
+
 	@Override
 	public boolean isAltered (){
 		return altered;
 	}
-
+	
 	@Override
 	public Object getDefaultVal () {
 		return defaultVal;
 	}
-
+	
 	@Override
 	public void refreshField () {}
-
+	
 	@Override
 	public void focusGained(FocusEvent e) {
 		repaint();
 	}
-	
+
 	@Override
 	public void focusLost(FocusEvent e) {
 		repaint();
 	}
-	
+
 	@Override
 	public void keyTyped (KeyEvent e) {
 		SwingUtilities.invokeLater(() -> {
@@ -122,28 +123,28 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 			frameEditor.baseFields.get(fieldStruct.indexStringLengthExtra).setVal(getText().length());
 		});
 	}
-	
+
 	@Override
 	public void keyPressed (KeyEvent e) {}
-	
+
 	@Override
 	public void keyReleased (KeyEvent e) {}
+	
 
-	
-	
+
 	@Override
 	public void insertUpdate (DocumentEvent e) {
 		altered = true;
 	}
-
+	
 	@Override
 	public void removeUpdate (DocumentEvent e) {
 		altered = true;
 	}
-
+	
 	@Override
 	public void changedUpdate (DocumentEvent e) {
 		altered = true;
 	}
-
+	
 }

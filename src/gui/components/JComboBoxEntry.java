@@ -107,11 +107,13 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 			Entry entry = entryGroup.map.get(value);
 			if (entry != null){
 				setSelectedItem(entry);
+				editor.setCaretPosition(0);
 				altered = false;
 				return;
 			}
 		}
 		setSelectedItem(null);
+		editor.setCaretPosition(0);
 		altered = false;
 	}
 	
@@ -142,11 +144,19 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 
 	@Override
 	public void keyTyped (KeyEvent e) {
+
+	}
+
+	@Override public void keyPressed (KeyEvent e) {}
+	@Override public void keyReleased (KeyEvent e) {
 		SwingUtilities.invokeLater(() -> {
 			String text = editor.getText();
 			if (text == null || text.isEmpty()){
 				System.out.println("Select: null");
 				setSelectedItem(null);
+			} else if (e.getKeyCode() == KeyEvent.VK_TAB && isPopupVisible()){
+				ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);
+				setSelectedItem(popup.getList().getSelectedValue());
 			} else {
 				showPopup();
 				List<Entry> results = searcher.find(allEntries, null, text);
@@ -160,9 +170,6 @@ public class JComboBoxEntry extends JComboBox <Entry> implements AbstractEntryFi
 			}
 		});
 	}
-
-	@Override public void keyPressed (KeyEvent e) {}
-	@Override public void keyReleased (KeyEvent e) {}
 
 	@Override
 	public void mouseClicked (MouseEvent e) {
