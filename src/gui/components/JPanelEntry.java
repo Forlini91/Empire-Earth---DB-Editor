@@ -26,6 +26,7 @@ public class JPanelEntry extends JPanel {
 
 		label = new JLabelEntry(fieldStruct, index);
 		label.setPreferredSize(new Dimension(100, 25));
+		label.setMaximumSize(new Dimension(300, 30));
 		switch(fieldStruct.getType()){
 			case BOOLEAN:
 				field = new JToggleBoxEntry(frameEditor, fieldStruct, index);
@@ -45,7 +46,10 @@ public class JPanelEntry extends JPanel {
 			default:
 				field = new JTextFieldEntry(frameEditor, fieldStruct, index);
 		}
-		field.setPreferredSize(new Dimension(100, 25));
+		field.setPreferredSize(new Dimension(100, 30));
+		field.setMaximumSize(new Dimension(300, 45));
+		setPreferredSize(new Dimension(100, 55));
+		setMaximumSize(new Dimension(300, 75));
 		setLayout(new GridLayout(2, 0, 0, 0));
 		add(label);
 		add((Component) field);

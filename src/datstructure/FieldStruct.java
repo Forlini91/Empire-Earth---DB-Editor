@@ -13,6 +13,7 @@ public class FieldStruct {
 
 	public static final Color COLOR_ID = Color.BLUE;
 	public static final Color COLOR_LINK = new Color(50, 200, 50);
+	public static final Color COLOR_UNCERTAIN = new Color(180, 180, 0);
 
 	
 	

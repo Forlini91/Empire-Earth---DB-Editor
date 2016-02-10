@@ -57,21 +57,28 @@ public class Core {
 	public static boolean AOC = false;
 
 	public static final Map<DatStructure, DatContent> DATA = new HashMap<>();
-	public static final Map<DatContent, FrameEditor> FRAME_EDITORS = new HashMap<>();
+	public static final Map<DatContent, List<FrameEditor>> FRAME_EDITORS = new HashMap<>();
 	public static Map<Integer, LanguageEntry> LANGUAGE = null;
 	public static Vector<LanguageEntry> languageVector;
 
 
 	public static void main (String[] args) {
 		EventQueue.invokeLater(() -> {
-			if (JOptionPane.showConfirmDialog(null, "Are you using the Art of Conquest expansion?", "Vanilla or AOC", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0){
-				AOC = true;
-				values = DatStructureAOC.values();
-				new FrameMain();
-			} else {
-				AOC = false;
-				values = DatStructureVanilla.values();
-				new FrameMain();
+			String[] buttons = new String[]{"Vanilla", "Art of Conquest"};
+			int choice = JOptionPane.showOptionDialog(null, "Vanilla or AOC?", "Empire Earth - DB Editor", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
+			switch (choice){
+				case 0:
+					AOC = false;
+					values = DatStructureVanilla.values();
+					new FrameMain();
+					break;
+				case 1:
+					AOC = true;
+					values = DatStructureAOC.values();
+					new FrameMain();
+					break;
+				default:
+					System.exit(0);
 			}
 
 			new Thread(() -> {
@@ -213,16 +220,22 @@ public class Core {
 	public static FrameEditor openFile(Component parent, DatContent datContent, boolean newWindow){
 		if (datContent != null){
 			System.out.println("Open: " + datContent.datFile.getName());
-			FrameEditor frameEditor = FRAME_EDITORS.get(datContent);
-			if (frameEditor == null || newWindow){
-				boolean both = (frameEditor == null && newWindow);
-				frameEditor = new FrameEditor(datContent);
-				if (both || !newWindow) {
-					FRAME_EDITORS.put(datContent, frameEditor);
-				}
+			List<FrameEditor> allWindows;
+			FrameEditor selWindow;
+			if (!FRAME_EDITORS.containsKey(datContent)){
+				allWindows = new ArrayList<>();
+				FRAME_EDITORS.put(datContent, allWindows);
+			} else {
+				allWindows = FRAME_EDITORS.get(datContent);
 			}
-			frameEditor.setVisible(true);
-			return frameEditor;
+			if (allWindows.isEmpty() || newWindow) {
+				selWindow = new FrameEditor(datContent);
+				allWindows.add(selWindow);
+			} else {
+				selWindow = allWindows.get(0);
+			}
+			selWindow.setVisible(true);
+			return selWindow;
 		} else {
 			JOptionPane.showMessageDialog(parent, "An error occurred during the loading of the file", "Error", JOptionPane.ERROR_MESSAGE);
 			return null;
@@ -244,8 +257,8 @@ public class Core {
 		Point point = new Point((rBounds.width / 2) - (dimension.width / 2), (rBounds.height / 2) - (dimension.height / 2) - 25);
 		return new Rectangle(point, dimension);
 	}
-	
-	
+
+
 	/** No need to instantiate this */
 	private Core(){}
 

@@ -28,7 +28,7 @@ public interface DatStructure {
 	
 	FieldStruct[] getEntries ();
 	
-	Object[] getDefaultValues ();
+	Object[] getNewEntryValues ();
 	
 	int compareTo(DatStructure datStructure);
 

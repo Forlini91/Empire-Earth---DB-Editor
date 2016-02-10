@@ -23,7 +23,6 @@ public class JListDouble<E> extends JListExtended<E> implements AbstractJListExt
 	public JCheckBox switchList;
 
 
-
 	public JListDouble (String checkBoxText){
 		this(new ArrayList<>(0), new ArrayList<>(0), checkBoxText);
 	}
@@ -112,11 +111,13 @@ public class JListDouble<E> extends JListExtended<E> implements AbstractJListExt
 
 	@Override
 	public void refresh(){
+		E elem = getSelectedElement();
 		if (switchList.isSelected()) {
 			setListData(new Vector<>(listClean));
 		} else {
 			setListData(new Vector<>(list));
 		}
+		setSelectedElement(elem);
 	}
 	
 }

@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Window;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -9,16 +10,17 @@ import java.util.List;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
 
 import datmanager.Core;
 import datstructure.Entry;
 import datstructure.EntryValueMap;
 import gui.components.AbstractEntryField;
-import gui.components.DialogCloseKeyListener;
 import gui.components.JButtonRed;
 import gui.components.JListDouble;
 import gui.ui.EEScrollBarUI;
@@ -34,7 +36,7 @@ import gui.ui.GridBagLayoutExtended;
 public class DialogSearchValuesResults extends JDialog {
 
 	private static final long serialVersionUID = 4717671766146876755L;
-
+	
 	public DialogSearchValuesResults (Window parent, EntryValueMap entryValueMap, AbstractEntryField field) {
 		super(parent, ModalityType.DOCUMENT_MODAL);
 
@@ -92,15 +94,7 @@ public class DialogSearchValuesResults extends JDialog {
 			}
 		});
 
-		DialogCloseKeyListener dlgKeyListener = new DialogCloseKeyListener(this);
-		dlgLabel.addKeyListener(dlgKeyListener);
-		dlgList.addKeyListener(dlgKeyListener);
-		dlgList.switchList.addKeyListener(dlgKeyListener);
-		rowHeaderList.addKeyListener(dlgKeyListener);
-		dlgScrollPane.addKeyListener(dlgKeyListener);
-		dlgClose.addKeyListener(dlgKeyListener);
-		getContentPane().addKeyListener(dlgKeyListener);
-		addKeyListener(dlgKeyListener);
+		getRootPane().registerKeyboardAction((e) -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 		dlgClose.addActionListener(al -> dispose());
 		
 		setTitle("For field: " + field.getIndex() + " - " + field.getEntryStruct());
@@ -112,5 +106,5 @@ public class DialogSearchValuesResults extends JDialog {
 		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 3));
 		setVisible(true);
 	}
-	
+
 }

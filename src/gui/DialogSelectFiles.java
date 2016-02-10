@@ -38,7 +38,7 @@ public class DialogSelectFiles extends JDialog {
 
 	{
 		setContentPane(contentPane);
-		setBounds(Core.getBounds(this, 0.6, 0.6));
+		setBounds(Core.getBounds(this, 0.6, 0.7));
 		JLabel label = new JLabel("Select which files to load");
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		JButton selectAllButton = new JButtonRed("Select all");

@@ -1,18 +1,20 @@
 package gui;
 
 import java.awt.Window;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 
 import datmanager.Core;
 import datstructure.Entry;
 import datstructure.EntryValueMap;
 import gui.components.AbstractEntryField;
-import gui.components.DialogCloseKeyListener;
 import gui.components.JButtonRed;
 import gui.components.JListEntry;
 import gui.components.JSearchFieldEntry;
@@ -44,15 +46,7 @@ public class DialogSearchValuesResultsList extends JDialog {
 		dlgScrollPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
 		dlgScrollPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
 
-		DialogCloseKeyListener dlgKeyListener = new DialogCloseKeyListener(this);
-		dlgLabel.addKeyListener(dlgKeyListener);
-		dlgList.addKeyListener(dlgKeyListener);
-		dlgScrollPane.addKeyListener(dlgKeyListener);
-		dlgList.switchList.addKeyListener(dlgKeyListener);
-		dlgSearch.addKeyListener(dlgKeyListener);
-		dlgClose.addKeyListener(dlgKeyListener);
-		getContentPane().addKeyListener(dlgKeyListener);
-		addKeyListener(dlgKeyListener);
+		getRootPane().registerKeyboardAction((e) -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 		dlgClose.addActionListener(e2 -> dispose());
 
 		setTitle("For value: " + value);
@@ -65,5 +59,5 @@ public class DialogSearchValuesResultsList extends JDialog {
 		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 4));
 		setVisible(true);
 	}
-
+	
 }

@@ -33,7 +33,7 @@ public class FrameMain extends JFrame {
 	
 	private static final long serialVersionUID = 1973882004055163035L;
 	/** Text used in the ABOUT dialog */
-	public static final String S_ABOUT = "EE - DB Editor\nVersion: 1.3\nCreated by Forlins & the EE Heaven community   \nGNU General Public License v3   ";
+	public static final String S_ABOUT = "EE - DB Editor\nVersion: 1.4\nCreated by Forlins & the EE Heaven community   \nGNU General Public License v3   ";
 	/** Icon used in the top-left corner in all frames/dialog */
 	public static final ImageIcon IMAGE_ICON = new ImageIcon(FrameMain.class.getResource("EE_Icon" + (Core.AOC ? "_AOC" : "") + ".png"));
 	/** EE logo used in the frame {@code FrameMain} */
@@ -161,18 +161,18 @@ public class FrameMain extends JFrame {
 			int gridRows = Math.max(10, Core.DATA.size());
 			scrollPanePanel.setVisible(false);
 			scrollPanePanel.removeAll();
-			scrollPanePanel.setLayout(new GridLayout((int) Math.ceil(gridRows/2f), 2, 10, 10));
+			scrollPanePanel.setLayout(new GridLayout((int) Math.ceil(gridRows/3f), 3, 6, 6));
 			for (DatContent datContent : datContents){
 				scrollPanePanel.add(new JButtonDat(this, datContent));
 			}
 			if (firstLoad) {
-				contentPane.add(scrollPane, new GridBagConstraintsExtended(15, 25, 15, 25, 1, 0, 0, 3));
+				contentPane.add(scrollPane, new GridBagConstraintsExtended(10, 10, 10, 10, 1, 0, 0, 3));
 				firstLoad = false;
 			}
 			scrollPanePanel.setVisible(true);
 			scrollPanePanel.revalidate();
 			scrollPane.setVisible(true);
-			setBounds(Core.getBounds(this, 1200, 0.65));
+			setBounds(Core.getBounds(this, 1280, 0.7));
 		}, ()->{});
 	}
 	

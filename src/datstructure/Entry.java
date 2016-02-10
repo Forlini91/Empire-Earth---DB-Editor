@@ -30,30 +30,56 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	/** The entry's ID. This is a redundant value which can be found in values[indexID]. */
 	public int ID;
 	
-	public Entry(DatStructure datStructure, List<Object> values, int sequenceID){
+	/**
+	 * Create a new entry with the given DatStructure, sequence number, ID and values.
+	 * @param datStructure		The dat file structure
+	 * @param sequenceNumber	The sequence number
+	 * @param ID				The ID
+	 * @param values			The values for this entry
+	 */
+	public Entry(DatStructure datStructure, int sequenceNumber, int ID, List<Object> values){
 		this.datStructure = datStructure;
 		this.values = values;
 		if (values.size() > 0){
 			try {
-				sequenceNumber = datStructure.getIndexSequence() < 0 ? 0 : (int) values.get(datStructure.getIndexSequence());
-				if (datStructure.defineNumEntries() || datStructure.getIndexID() >= 0){
-					ID = datStructure.getIndexID() < 0 ? 0 :(int) values.get(datStructure.getIndexID());
-				} else {
-					ID = sequenceID;
-				}
+				this.sequenceNumber = datStructure.getIndexSequence() < 0 ? sequenceNumber : (int) values.get(datStructure.getIndexSequence());
+				this.ID = datStructure.getIndexID() < 0 ? ID :(int) values.get(datStructure.getIndexID());
 			} catch (Exception e){
-				StringBuilder sb = new StringBuilder("Error with entry: " + sequenceID + " of " + datStructure + '\n');
+				StringBuilder sb = new StringBuilder("Error with entry: " + sequenceNumber + "/" + ID + " of " + datStructure + '\n');
 				values.forEach(x -> sb.append("\tValue: ").append(x).append('\n'));
 				System.err.println(sb);
 				throw e;
 			}
 		}
 	}
-	
-	public Entry(DatStructure datStructure, int ID){
-		this(datStructure, getDefaultValues(datStructure, ID), ID);
+
+	/**
+	 * Create a new Entry with the given DatStructure, sequence number and ID. Assign default values to all other fields.
+	 * @param datStructure		The dat file structure
+	 * @param sequenceNumber	The sequence number
+	 * @param ID				The ID
+	 */
+	public Entry(DatStructure datStructure, int sequenceNumber, int ID){
+		this(datStructure, sequenceNumber, ID, getDefaultValues(datStructure, sequenceNumber, ID));
 	}
 
+	/**
+	 * Duplicate the current entry and assign the given seqNum and ID to the clone.
+	 * @param sequenceNumber	The clone's sequence number
+	 * @param ID				The clone's ID
+	 * @return					A duplicate of this Entry
+	 */
+	public Entry duplicate(int sequenceNumber, int ID){
+		List<Object> valuesCopy = new ArrayList<>(values);
+		if (datStructure.getIndexSequence() >= 0){
+			valuesCopy.set(datStructure.getIndexSequence(), sequenceNumber);
+		}
+		if (datStructure.getIndexID() >= 0){
+			valuesCopy.set(datStructure.getIndexID(), ID);
+		}
+		return new Entry(datStructure, sequenceNumber, ID, valuesCopy);
+	}
+	
 	/**
 	 * Return a list of default values for all fields. Useful when adding a new entry in the file.
 	 * @param datStructure	The new entry's structure
@@ -61,13 +87,16 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @param ID	The new entry's ID
 	 * @return	A list with all default values for every field defined in the structure.
 	 */
-	private static List<Object> getDefaultValues(DatStructure datStructure, int ID){
+	private static List<Object> getDefaultValues(DatStructure datStructure, int sequenceNumber, int ID){
 		int n = datStructure.getEntries().length;
 		List<Object> values = new ArrayList<Object>(n);
 		for (int i = 0; i < n; i++){
-			values.add(datStructure.getDefaultValues()[i]);
+			values.add(datStructure.getNewEntryValues()[i]);
 		}
-		if (datStructure.defineNumEntries() && datStructure.getIndexID() >= 0){
+		if (datStructure.getIndexSequence() >= 0){
+			values.set(datStructure.getIndexSequence(), sequenceNumber);
+		}
+		if (datStructure.getIndexID() >= 0){
 			values.set(datStructure.getIndexID(), ID);
 		}
 		return values;
@@ -118,7 +147,12 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 			if (datStructure.getNameBuilder() != null){
 				return "(" + ID + ") " + datStructure.getNameBuilder().apply(this);
 			} else {
-				return "(" + ID + ") " + ((String) values.get(datStructure.getIndexName())).trim();
+				int indexName = datStructure.getIndexName();
+				if (indexName >= 0){
+					return "(" + ID + ") " + ((String) values.get(indexName)).trim();
+				} else {
+					return NAME_NONE;
+				}
 			}
 		} else {
 			return NAME_UNDEFINED;
