@@ -8,22 +8,23 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import datmanager.Core;
 import datstructure.FieldStruct;
 import gui.FrameEditor;
 
 public class JPanelEntry extends JPanel {
-
+	
 	private static final long serialVersionUID = -8432430218424230659L;
-
+	
 	public final int index;
 	public final FieldStruct fieldStruct;
 	public JLabel label;
 	public AbstractEntryField field;
-
+	
 	public JPanelEntry (FrameEditor frameEditor, FieldStruct fieldStruct, int index){
 		this.index = index;
 		this.fieldStruct = fieldStruct;
-
+		
 		label = new JLabelEntry(fieldStruct, index);
 		label.setPreferredSize(new Dimension(100, 25));
 		label.setMaximumSize(new Dimension(300, 30));
@@ -41,8 +42,10 @@ public class JPanelEntry extends JPanel {
 				field = new JComboBoxArray(frameEditor, fieldStruct, index);
 				break;
 			case LANGUAGE:
-				field = new JComboBoxLanguage(frameEditor, fieldStruct, index);
-				break;
+				if (Core.LANGUAGE != null && Core.LANGUAGE.size() > 0){
+					field = new JComboBoxLanguage(frameEditor, fieldStruct, index);
+					break;
+				}
 			default:
 				field = new JTextFieldEntry(frameEditor, fieldStruct, index);
 		}
@@ -57,11 +60,11 @@ public class JPanelEntry extends JPanel {
 		setOpaque(false);
 		label.setOpaque(false);
 	}
-	
+
 	public void setVal(Object val){
 		field.setVal(val);
 	}
-
+	
 	public Object getVal(){
 		if (field.isAltered()){
 			//			System.out.println(field.getEntryStruct() + ": save value " + field.getVal());
@@ -70,9 +73,9 @@ public class JPanelEntry extends JPanel {
 			return field.getDefaultVal();
 		}
 	}
-	
+
 	public void refreshField(){
 		field.refreshField();
 	}
-
+	
 }

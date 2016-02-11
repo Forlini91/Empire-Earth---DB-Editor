@@ -118,10 +118,6 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	
 	
 	
-
-
-
-	
 	{
 		setBounds(Core.getBounds(this, 0.85, 0.85));
 		setIconImage(FrameMain.IMAGE_ICON.getImage());
@@ -332,7 +328,6 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			panelCountExtra = baseFields.get(indexCountExtra);
 			extraFieldStructure = datContent.datStructure.getExtraEntry();
 		}
-
 		if (datContent.entryGroups.size() <= 1){
 			entryGroupListPane.setVisible(false);
 			gbl_contentPane.columnWidths[0] = 125;
@@ -353,6 +348,10 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		addWindowListener(this);
 		addWindowFocusListener(this);
 	}
+
+
+
+
 
 	@Override
 	public void windowGainedFocus (WindowEvent e) {
@@ -416,8 +415,9 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	private void buildBaseFields (DatStructure datStructure){
 		FieldStruct[] fieldStructs = datStructure.getEntries();
 		int numBaseFields = fieldStructs.length;
+		JPanelEntry panelEntry = null;
 		for (int i = 0; i < numBaseFields; i++){
-			JPanelEntry panelEntry = createPanelEntry(fieldStructs[i], i);
+			panelEntry = createPanelEntry(fieldStructs[i], i);
 			baseFields.add(panelEntry);
 			panelFields.add(panelEntry);
 		}
@@ -513,7 +513,6 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 	public void saveEntry(){
 		DatStructure datStructure = datContent.datStructure;
-		FieldStruct[] fieldStructs = datStructure.getEntries();
 		List<Object> values = currentEntry.values;
 		for (int i = 0; i < numBaseFields; i++){
 			values.set(i, baseFields.get(i).getVal());

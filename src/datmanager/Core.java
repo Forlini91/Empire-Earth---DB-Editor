@@ -8,20 +8,16 @@ import java.awt.GraphicsConfiguration;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Vector;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
@@ -41,6 +37,10 @@ import gui.FrameMain;
  */
 public class Core {
 
+	
+	public static final float VERSION = 1.42f;
+	
+	
 	/** Background used in all frames, windows and dialogs */
 	public static final Color UI_COLOR_BACKGROUND = new Color(249, 241, 224);
 	/** Color used in all buttons */
@@ -58,7 +58,7 @@ public class Core {
 
 	public static final Map<DatStructure, DatContent> DATA = new HashMap<>();
 	public static final Map<DatContent, List<FrameEditor>> FRAME_EDITORS = new HashMap<>();
-	public static Map<Integer, LanguageEntry> LANGUAGE = null;
+	public static Map<Integer, LanguageEntry> LANGUAGE = new HashMap<>();
 	public static Vector<LanguageEntry> languageVector;
 
 
@@ -83,14 +83,17 @@ public class Core {
 
 			new Thread(() -> {
 				try {
-					URL url = Core.class.getResource(AOC ? "Language AOC.txt" : "Language Vanilla.txt");
-					File f = new File(url.toURI());
-					try(BufferedReader br = new BufferedReader(new FileReader(f))){
-						LANGUAGE = br.lines().parallel().map(LanguageEntry::new).collect(Collectors.toMap(e -> e.code, e -> e));
+					InputStream str = Core.class.getResourceAsStream(AOC ? "Language AOC.txt" : "Language Vanilla.txt");
+					try(Scanner br = new Scanner(str)){
+						LanguageEntry languageEntry;
+						while (br.hasNextLine()){
+							languageEntry = new LanguageEntry(br.nextLine());
+							LANGUAGE.put(languageEntry.code, languageEntry);
+						}
 					}
 					languageVector = new Vector<>(LANGUAGE.values());
 					languageVector.sort(null);
-				} catch (IOException | URISyntaxException e){
+				} catch (Exception e){
 					JOptionPane.showMessageDialog(null, "An error occurred while reading the language file:\n" + e.getMessage() + '\n' + e.getCause(), "Language file", JOptionPane.WARNING_MESSAGE);
 				}
 			}).start();
@@ -213,32 +216,32 @@ public class Core {
 	/**
 	 * Try to open the given file or show an error message to the calling component.
 	 * The file must be already loaded.
-	 * @param parent	The parent component.
-	 * @param newWindow TODO
-	 * @param file		The file to open.
 	 */
 	public static FrameEditor openFile(Component parent, DatContent datContent, boolean newWindow){
-		if (datContent != null){
-			System.out.println("Open: " + datContent.datFile.getName());
-			List<FrameEditor> allWindows;
-			FrameEditor selWindow;
-			if (!FRAME_EDITORS.containsKey(datContent)){
-				allWindows = new ArrayList<>();
-				FRAME_EDITORS.put(datContent, allWindows);
+		try{
+			if (datContent != null){
+				System.out.println("Open: " + datContent.datFile.getName());
+				List<FrameEditor> allWindows = FRAME_EDITORS.get(datContent);
+				if (allWindows == null){
+					allWindows = new ArrayList<>();
+					FRAME_EDITORS.put(datContent, allWindows);
+				}
+				FrameEditor selWindow;
+				if (allWindows.isEmpty() || newWindow) {
+					selWindow = new FrameEditor(datContent);
+					allWindows.add(selWindow);
+				} else {
+					selWindow = allWindows.get(0);
+				}
+				selWindow.setVisible(true);
+				return selWindow;
 			} else {
-				allWindows = FRAME_EDITORS.get(datContent);
+				JOptionPane.showMessageDialog(parent, "An error occurred during the loading of the file", "Error", JOptionPane.ERROR_MESSAGE);
+				return null;
 			}
-			if (allWindows.isEmpty() || newWindow) {
-				selWindow = new FrameEditor(datContent);
-				allWindows.add(selWindow);
-			} else {
-				selWindow = allWindows.get(0);
-			}
-			selWindow.setVisible(true);
-			return selWindow;
-		} else {
-			JOptionPane.showMessageDialog(parent, "An error occurred during the loading of the file", "Error", JOptionPane.ERROR_MESSAGE);
-			return null;
+		} catch (Exception e){
+			JOptionPane.showMessageDialog(parent, e.getMessage() + '\n' + (e.getCause() != null ? e.getCause() : ""), "ERROR", JOptionPane.ERROR_MESSAGE);
+			throw e;
 		}
 	}
 
