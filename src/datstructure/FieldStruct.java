@@ -10,13 +10,13 @@ import constants.EnumValue;
  *
  */
 public class FieldStruct {
-
+	
 	public static final Color COLOR_ID = Color.BLUE;
 	public static final Color COLOR_LINK = new Color(50, 200, 50);
 	public static final Color COLOR_UNCERTAIN = new Color(180, 180, 0);
+	
 
-	
-	
+
 	/** Common field: A 100 chars String which define the entry's name. */
 	public static final FieldStruct NAME = new FieldStruct("Name", Type.STRING, 100, Knowledge.KNOWN, COLOR_ID);
 	/** Common field: A 4 bytes integer which define the entry's sequence number. */
@@ -27,9 +27,9 @@ public class FieldStruct {
 	public static final FieldStruct STRING_SIZE_EXTRA = new FieldStruct("String size extra", Type.INTEGER, 4, false);
 	/** Unique field: A 4 bytes integer which point to an entry in the file Language.dll */
 	public static final FieldStruct ID_LANGUAGE = new FieldStruct("Language ID", Type.LANGUAGE);
-
-
-
+	
+	
+	
 	/** Special field: A 1 byte boolean which define an unknown field which always hold the same value. */
 	public static final FieldStruct UNCHANGED_BOOL1 = new FieldStruct("Never changes", Type.BOOLEAN, 1, Knowledge.NEVER_CHANGE, Color.GRAY);
 	/** Special field: A 4 bytes boolean which define an unknown field which always hold the same value. */
@@ -40,7 +40,7 @@ public class FieldStruct {
 	public static final FieldStruct UNCHANGED_INT4 = new FieldStruct("Never changes", Type.INTEGER, 4, Knowledge.NEVER_CHANGE, Color.GRAY);
 	/** Special field: A 4 bytes float which define an unknown field which always hold the same value. */
 	public static final FieldStruct UNCHANGED_FLOAT = new FieldStruct("Never changes", Type.FLOAT, 4, Knowledge.NEVER_CHANGE, Color.GRAY);
-
+	
 	/** Special field: A 1 byte boolean which define an unknown and never used field. */
 	public static final FieldStruct UNUSED_BOOL1 = new FieldStruct("Never used", Type.BOOLEAN, 1, Knowledge.NEVER_USED, Color.GRAY);
 	/** Special field: A 4 bytes boolean which define an unknown and never used field. */
@@ -51,7 +51,7 @@ public class FieldStruct {
 	public static final FieldStruct UNUSED_INT4 = new FieldStruct("Never used", Type.INTEGER, 4, Knowledge.NEVER_USED, Color.GRAY);
 	/** Special field: A 4 bytes float which define an unknown and never used field. */
 	public static final FieldStruct UNUSED_FLOAT = new FieldStruct("Never used", Type.FLOAT, 4, Knowledge.NEVER_USED, Color.GRAY);
-
+	
 	/** Special field: A 1 byte boolean which define a (still) unknown field. */
 	public static final FieldStruct UNKNOWN_BOOL1 = new FieldStruct("Unknown", Type.BOOLEAN, 1, Knowledge.UNKNOWN, Color.RED);
 	/** Special field: A 4 bytes boolean which define a (still) unknown field. */
@@ -62,10 +62,10 @@ public class FieldStruct {
 	public static final FieldStruct UNKNOWN_INT4 = new FieldStruct("Unknown", Type.INTEGER, 4,  Knowledge.UNKNOWN, Color.RED);
 	/** Special field: A 4 bytes float which define a (still) unknown field. */
 	public static final FieldStruct UNKNOWN_FLOAT = new FieldStruct("Unknown", Type.FLOAT, 4,  Knowledge.UNKNOWN, Color.RED);
-	
-	
 
 
+	
+	
 	/** Name or description of the field. */
 	public final String name;
 	/** Type of the value contained in the field. */
@@ -86,14 +86,14 @@ public class FieldStruct {
 	public final Integer[] arrValues;
 	/** Default value to the given field, when no ID is selected */
 	public final Object defaultValue;
-	/** Index of the field which hold the extra size of the string field. (Yeah... some strings length is base+extra) */
-	public final int indexStringLengthExtra;
-	
-	
+	/** Index of the field which hold the size of the string field. (Yeah... some strings length is not a fixed 100) */
+	public final int indexStringLength;
+
 
 	
-	
 
+
+	
 	public FieldStruct (String name){
 		this.name = name;
 		type = Type.BOOLEAN;
@@ -104,10 +104,10 @@ public class FieldStruct {
 		linkToStruct = null;
 		enumValues = null;
 		arrValues = null;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 		defaultValue = -1;
 	}
-	
+
 	public FieldStruct (String name, Type type) {
 		this.name = name;
 		this.type = type;
@@ -119,9 +119,9 @@ public class FieldStruct {
 		enumValues = null;
 		arrValues = null;
 		defaultValue = -1;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 	}
-	
+
 	public FieldStruct (String name, Type type, int size) {
 		this.name = name;
 		this.type = type;
@@ -133,9 +133,9 @@ public class FieldStruct {
 		enumValues = null;
 		arrValues = null;
 		defaultValue = -1;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 	}
-	
+
 	public FieldStruct (String name, Type type, int size, boolean editable) {
 		this.name = name;
 		this.type = type;
@@ -147,9 +147,9 @@ public class FieldStruct {
 		enumValues = null;
 		arrValues = null;
 		defaultValue = -1;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 	}
-	
+
 	public FieldStruct (String name, Type type, int size, Knowledge knowledge) {
 		this.name = name;
 		this.type = type;
@@ -161,9 +161,9 @@ public class FieldStruct {
 		enumValues = null;
 		arrValues = null;
 		defaultValue = -1;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 	}
-	
+
 	public FieldStruct (String name, Type type, int size, Knowledge knowledge, Color color) {
 		this.name = name;
 		this.type = type;
@@ -175,9 +175,9 @@ public class FieldStruct {
 		enumValues = null;
 		arrValues = null;
 		defaultValue = -1;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 	}
-	
+
 	public FieldStruct (String name, DatStructure linkToStruct) {
 		this.name = name;
 		this.linkToStruct = linkToStruct;
@@ -189,9 +189,9 @@ public class FieldStruct {
 		enumValues = null;
 		arrValues = null;
 		defaultValue = -1;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 	}
-
+	
 	public FieldStruct (String name, DatStructure linkToStruct, int defaultValue) {
 		this.name = name;
 		this.linkToStruct = linkToStruct;
@@ -203,9 +203,9 @@ public class FieldStruct {
 		editable = true;
 		enumValues = null;
 		arrValues = null;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 	}
-	
+
 	public FieldStruct (String name, DatStructure linkToStruct, Knowledge knowledge) {
 		this.name = name;
 		this.linkToStruct = linkToStruct;
@@ -217,9 +217,9 @@ public class FieldStruct {
 		editable = true;
 		enumValues = null;
 		arrValues = null;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 	}
-
+	
 	public FieldStruct (String name, EnumValue[] enumValues) {
 		this.name = name;
 		this.enumValues = enumValues;
@@ -231,9 +231,9 @@ public class FieldStruct {
 		linkToStruct = null;
 		arrValues = null;
 		defaultValue = -1;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 	}
-
+	
 	public <T> FieldStruct (String name, EnumValue[] enumValues, EnumValue defaultValue) {
 		this.name = name;
 		this.enumValues = enumValues;
@@ -245,9 +245,9 @@ public class FieldStruct {
 		editable = true;
 		linkToStruct = null;
 		arrValues = null;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 	}
-
+	
 	public FieldStruct (String name, EnumValue[] enumValues, Color color) {
 		this.name = name;
 		this.enumValues = enumValues;
@@ -259,9 +259,9 @@ public class FieldStruct {
 		linkToStruct = null;
 		arrValues = null;
 		defaultValue = -1;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 	}
-	
+
 	public FieldStruct (String name, Integer[] arrValues) {
 		this.name = name;
 		this.arrValues = arrValues;
@@ -273,9 +273,9 @@ public class FieldStruct {
 		linkToStruct = null;
 		enumValues = null;
 		defaultValue = -1;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 	}
-
+	
 	public <T> FieldStruct (String name, Integer[] arrValues, EnumValue defaultValue) {
 		this.name = name;
 		this.arrValues = arrValues;
@@ -287,13 +287,13 @@ public class FieldStruct {
 		editable = true;
 		linkToStruct = null;
 		enumValues = null;
-		indexStringLengthExtra = -1;
+		indexStringLength = -1;
 	}
-
-	public FieldStruct (String name, int size, int indexStringLengthExtra){
+	
+	public FieldStruct (String name, int size, int indexStringLength){
 		this.name = name;
 		this.size = size;
-		this.indexStringLengthExtra = indexStringLengthExtra;
+		this.indexStringLength = indexStringLength;
 		type = Type.STRING;
 		knowledge = Knowledge.KNOWN;
 		color = Color.BLACK;
@@ -303,49 +303,49 @@ public class FieldStruct {
 		arrValues = null;
 		defaultValue = -1;
 	}
-
-
-	
-	
 	
 	
 
+
+
+
 	
+
 	public String getName () {
 		return name;
 	}
-	
+
 	public Type getType () {
 		return type;
 	}
-	
+
 	public int getSize () {
 		return size;
 	}
-
+	
 	public Knowledge getKnowledge () {
 		return knowledge;
 	}
-
+	
 	public boolean isEditable () {
 		return editable;
 	}
-
+	
 	public Color getColor () {
 		return color;
 	}
-	
+
 	public DatStructure getLinkToStruct () {
 		return linkToStruct;
 	}
-	
-	public int getIndexStringLengthExtra () {
-		return indexStringLengthExtra;
-	}
 
+	public int getIndexStringLength () {
+		return indexStringLength;
+	}
+	
 	@Override
 	public String toString(){
 		return name + ' ' + '(' + type + ' ' + size + ')';
 	}
-
+	
 }

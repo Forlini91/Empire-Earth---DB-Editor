@@ -6,10 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import datstructure.DatContent;
 import datstructure.Entry;
+import datstructure.FieldStruct;
 
 /**
  * A class which can convert the integer, float and string values to array of bytes and save them in a *.dat file.
@@ -25,18 +28,41 @@ public class DatWriter implements AutoCloseable, Closeable {
 		this.datFile = datFile;
 		int sizeSingle = datFile.datStructure.getNumBytes();
 		int alloc = datContent.datStructure.defineNumEntries() ? 4 * datContent.entryGroups.size() : 0;
-		int indexExtra = datContent.datStructure.getIndexCountExtra();
 		List<Entry> entries = datContent.getAllEntries();
 		alloc += sizeSingle * entries.size();
-		int numExtra;
-		if (indexExtra >= 0){
+
+		int indexExtra = datContent.datStructure.getIndexCountExtra();
+		List<Integer> dynamicStrings = new ArrayList<>();
+		for (FieldStruct fieldStruct : datContent.datStructure.getFieldStructs()){
+			if (fieldStruct.indexStringLength >= 0){
+				dynamicStrings.add(fieldStruct.indexStringLength);
+			}
+		}
+		
+		if (dynamicStrings.size() > 0){
+			if (indexExtra >= 0){
+				for (Entry entry : entries){
+					alloc += 4 * (int) entry.values.get(indexExtra);
+					for (Integer indexStringLength : dynamicStrings){
+						alloc += (int) entry.values.get(indexStringLength);
+					}
+				}
+			} else {
+				for (Entry entry : entries) {
+					for (Integer indexStringLength : dynamicStrings){
+						alloc += (int) entry.values.get(indexStringLength);
+					}
+				}
+			}
+		} else if (indexExtra >= 0){
 			for (Entry entry : entries){
-				numExtra = (int) entry.values.get(indexExtra);
-				alloc += 4 * numExtra;
+				alloc += 4 * (int) entry.values.get(indexExtra);
 			}
 		}
 		writer = ByteBuffer.allocate(alloc).order(ByteOrder.LITTLE_ENDIAN);
 	}
+	
+	
 	
 	public void writeInt(int value) throws IOException {
 		writer.putInt(value);
@@ -51,7 +77,8 @@ public class DatWriter implements AutoCloseable, Closeable {
 	}
 
 	public void writeString(String string, int numBytes) throws IOException{
-		writer.put(string.getBytes());
+		byte[] str = Arrays.copyOf(string.getBytes(), numBytes);
+		writer.put(str);
 	}
 	
 	@Override

@@ -88,7 +88,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @return	A list with all default values for every field defined in the structure.
 	 */
 	private static List<Object> getDefaultValues(DatStructure datStructure, int sequenceNumber, int ID){
-		int n = datStructure.getEntries().length;
+		int n = datStructure.getFieldStructs().length;
 		List<Object> values = new ArrayList<Object>(n);
 		for (int i = 0; i < n; i++){
 			values.add(datStructure.getNewEntryValues()[i]);

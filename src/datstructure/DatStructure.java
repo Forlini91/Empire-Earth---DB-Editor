@@ -26,7 +26,7 @@ public interface DatStructure {
 	
 	FieldStruct getExtraEntry ();
 	
-	FieldStruct[] getEntries ();
+	FieldStruct[] getFieldStructs ();
 	
 	Object[] getNewEntryValues ();
 	

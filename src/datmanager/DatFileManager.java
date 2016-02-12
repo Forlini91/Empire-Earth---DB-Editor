@@ -79,7 +79,7 @@ public class DatFileManager {
 		} else {
 			numEntries = -1;
 		}
-		int numFields = datStructure.getEntries().length;
+		int numFields = datStructure.getFieldStructs().length;
 		List<Entry> entries;
 		if (defineNumEntries) {
 			try{
@@ -101,13 +101,13 @@ public class DatFileManager {
 				List<Object> values = new ArrayList<Object>(numFields);
 
 				for (int j = 0; j < numFields; j++){
-					fieldStruct = datStructure.getEntries()[j];
+					fieldStruct = datStructure.getFieldStructs()[j];
 					size = fieldStruct.getSize();
 
 					switch(fieldStruct.getType()){
 						case STRING:
-							if (fieldStruct.getIndexStringLengthExtra() >= 0){
-								size += (int) values.get(fieldStruct.getIndexStringLengthExtra());
+							if (fieldStruct.getIndexStringLength() >= 0){
+								size += (int) values.get(fieldStruct.getIndexStringLength());
 							}
 							if (size > 0){
 								read = reader.readString(size);
@@ -162,7 +162,7 @@ public class DatFileManager {
 		Files.copy(datFile.toPath(), backup.toPath());
 
 
-		int numBaseFields = datStructure.getEntries().length;
+		int numBaseFields = datStructure.getFieldStructs().length;
 		Entry entry;
 		FieldStruct fieldStruct;
 		int numEntries;
@@ -184,15 +184,15 @@ public class DatFileManager {
 					numFields = entry.values.size();
 					for (int j = 0; j < numFields; j++){
 						if (j < numBaseFields) {
-							fieldStruct = datStructure.getEntries()[j];
+							fieldStruct = datStructure.getFieldStructs()[j];
 						} else {
 							fieldStruct = datStructure.getExtraEntry();
 						}
 						size = fieldStruct.getSize();
 						switch (fieldStruct.getType()){
 							case STRING:
-								if (fieldStruct.getIndexStringLengthExtra() >= 0){
-									size += (int) entry.values.get(fieldStruct.getIndexStringLengthExtra());
+								if (fieldStruct.getIndexStringLength() >= 0){
+									size += (int) entry.values.get(fieldStruct.getIndexStringLength());
 								}
 								if (size > 0){
 									writer.writeString((String) entry.values.get(j), size);

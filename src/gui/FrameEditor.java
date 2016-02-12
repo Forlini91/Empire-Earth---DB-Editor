@@ -319,7 +319,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		setVisible(false);
 		
 		this.datContent = datContent;
-		int nFields = datContent.datStructure.getEntries().length;
+		int nFields = datContent.datStructure.getFieldStructs().length;
 		baseFields = new ArrayList<>(nFields);
 		extraFields = new ArrayList<>(20);
 		indexCountExtra = datContent.datStructure.getIndexCountExtra();
@@ -413,7 +413,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	}
 
 	private void buildBaseFields (DatStructure datStructure){
-		FieldStruct[] fieldStructs = datStructure.getEntries();
+		FieldStruct[] fieldStructs = datStructure.getFieldStructs();
 		int numBaseFields = fieldStructs.length;
 		JPanelEntry panelEntry = null;
 		for (int i = 0; i < numBaseFields; i++){
@@ -424,7 +424,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	}
 
 	private void buildExtraFields(Entry entry, int numExtraFields){
-		numBaseFields = entry.datStructure.getEntries().length;
+		numBaseFields = entry.datStructure.getFieldStructs().length;
 		if (numExtraFields < 0 && indexCountExtra >= 0){
 			numExtraFields = (int) entry.values.get(indexCountExtra);
 		}
