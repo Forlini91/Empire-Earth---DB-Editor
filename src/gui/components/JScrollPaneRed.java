@@ -10,15 +10,15 @@ import javax.swing.SwingConstants;
 import gui.ui.EEScrollBarUI;
 
 public class JScrollPaneRed extends JScrollPane {
-
+	
 	private static final long serialVersionUID = -7689733963310921975L;
-
+	
 	public Component viewportView;
-
+	
 	public JScrollPaneRed(){
 		this(new JPanel());
 	}
-
+	
 	public JScrollPaneRed(Component viewportView){
 		getVerticalScrollBar().setUnitIncrement(8);
 		getVerticalScrollBar().setUI(new EEScrollBarUI());
@@ -28,7 +28,7 @@ public class JScrollPaneRed extends JScrollPane {
 		setViewportView(viewportView);
 		getViewport().setOpaque(false);
 	}
-	
+
 	public JScrollPaneRed(Component viewportView, Component headerView, boolean column){
 		this(viewportView);
 		if (column){
@@ -39,13 +39,13 @@ public class JScrollPaneRed extends JScrollPane {
 			getRowHeader().setOpaque(false);
 		}
 	}
-	
+
 	public JScrollPaneRed(Component viewportView, Component columnHeaderView, Component rowHeaderView){
 		this(viewportView);
 		setColumnHeaderView(columnHeaderView);
 		getColumnHeader().setOpaque(false);
 	}
-
+	
 	public JScrollPaneRed(Component viewportView, String columnHeaderViewText){
 		this(viewportView);
 		JLabel columnHeaderView = new JLabel(columnHeaderViewText, SwingConstants.CENTER);
@@ -53,7 +53,7 @@ public class JScrollPaneRed extends JScrollPane {
 		setColumnHeaderView(columnHeaderView);
 		getColumnHeader().setOpaque(false);
 	}
-	
+
 	public JScrollPaneRed(Component viewportView, String headerViewText, Component rowHeaderView){
 		this(viewportView);
 		JLabel headerView = new JLabel(headerViewText, SwingConstants.CENTER);
@@ -63,11 +63,11 @@ public class JScrollPaneRed extends JScrollPane {
 		setRowHeaderView(rowHeaderView);
 		getRowHeader().setOpaque(false);
 	}
-
+	
 	@Override
 	public void setViewportView (Component viewportView) {
 		super.setViewportView(viewportView);
 		this.viewportView = viewportView;
 	}
-	
+
 }

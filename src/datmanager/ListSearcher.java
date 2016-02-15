@@ -64,6 +64,7 @@ public class ListSearcher<T> {
 		this.updateFunction = updateFunction;
 		if (text != null && text.length() > 0) {
 			if (!text.equalsIgnoreCase(currentSearch)){
+				System.out.print("Search: " + currentSearch + "   >   " + text);
 				clearResult();
 				currentSearch = text;
 				if (!text.isEmpty()){
@@ -80,6 +81,7 @@ public class ListSearcher<T> {
 		} else {
 			clearResult();
 		}
+		System.out.println("Results: " + results);
 		return results;
 	}
 	

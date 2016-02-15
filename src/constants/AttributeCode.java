@@ -2,10 +2,11 @@ package constants;
 
 
 public enum AttributeCode implements EnumValue {
-	
+
 	C_1_NONE ("None", -1),
 	C00_NONE ("None", 0),
-	C01_CITIZENS_DOG_STATS ("Citizens & Dog - HP & Atk", 1),
+	C01_ATTACK ("Attack", 1),
+	C02_NAME ("Name", 1),
 	C03_RANGE ("Range", 3),
 	C04_LOS ("LOS", 4),
 	C06_HEALTH ("Health", 6),
@@ -26,28 +27,28 @@ public enum AttributeCode implements EnumValue {
 	C42_PATH_FINDING ("Path finding", 42),
 	C43_HEALTH_RECOVER_RATE ("Health recover rate", 43),
 	C44_POWER_AMOUNT ("Power amount", 44),
-	C45_UNKNOWN ("Unknown attribute", 45),
+	C45_NAME ("Name", 45),
 	;
-
-
+	
+	
 	public final String name;
 	public final int code;
-	
+
 	AttributeCode(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-
+	
 	@Override
 	public String getName(){
 		return name;
 	}
-
+	
 	@Override
 	public int getValue () {
 		return code;
 	}
-	
+
 	public static AttributeCode parseValue(int code){
 		for (AttributeCode effectCode : values()){
 			if (effectCode.code == code){
@@ -56,10 +57,10 @@ public enum AttributeCode implements EnumValue {
 		}
 		return null;
 	}
-
+	
 	@Override
 	public String toString(){
 		return name + ": " + code;
 	}
-	
+
 }

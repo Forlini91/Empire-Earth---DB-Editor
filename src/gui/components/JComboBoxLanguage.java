@@ -22,19 +22,19 @@ import gui.FrameEditor;
 
 
 public class JComboBoxLanguage extends JComboBox <LanguageEntry> implements AbstractEntryField, ItemListener, MouseListener, KeyListener {
-
-	private static final long serialVersionUID = -5787229930995728192L;
 	
+	private static final long serialVersionUID = -5787229930995728192L;
+
 	private static final BiPredicate<String, LanguageEntry> NAME_MATCHER = (text, lang) -> lang.text.toLowerCase().contains(text);
 	private static final BiPredicate<Integer, LanguageEntry> ID_MATCHER = (val, lang) -> (""+lang.code).contains(""+val);
-	
+
 	private ListSearcher <LanguageEntry> searcher = new ListSearcher<>(NAME_MATCHER, ID_MATCHER);
 	private JTextComponent editor = ((JTextComponent) getEditor().getEditorComponent());
 	private FieldStruct fieldStruct;
 	private int index;
 	private Object defaultVal = null;
 	private boolean altered = false;
-	
+
 	public JComboBoxLanguage(FrameEditor frameEditor, FieldStruct fieldStruct, int index){
 		super(Core.languageVector);
 		this.fieldStruct = fieldStruct;
@@ -44,7 +44,7 @@ public class JComboBoxLanguage extends JComboBox <LanguageEntry> implements Abst
 		addMouseListener(this);
 		editor.addKeyListener(this);
 	}
-	
+
 	@Override
 	public synchronized void addMouseListener (MouseListener l) {
 		super.addMouseListener(l);
@@ -52,22 +52,22 @@ public class JComboBoxLanguage extends JComboBox <LanguageEntry> implements Abst
 			editor.addMouseListener(l);
 		}
 	}
-
+	
 	@Override
 	public void resetColor () {
 		setForeground(null);
 	}
-
+	
 	@Override
 	public FieldStruct getEntryStruct () {
 		return fieldStruct;
 	}
-
+	
 	@Override
 	public int getIndex(){
 		return index;
 	}
-
+	
 	@Override
 	public Object getVal(){
 		Object obj = getSelectedItem();
@@ -82,7 +82,7 @@ public class JComboBoxLanguage extends JComboBox <LanguageEntry> implements Abst
 			return -1;
 		}
 	}
-
+	
 	@Override
 	public void setVal(Object value){
 		defaultVal = value;
@@ -100,30 +100,30 @@ public class JComboBoxLanguage extends JComboBox <LanguageEntry> implements Abst
 		editor.setCaretPosition(0);
 		altered = false;
 	}
-	
+
 	@Override
 	public void refreshField() {}
-
+	
 	@Override
 	public boolean isAltered () {
 		return altered;
 	}
-
+	
 	@Override
 	public Object getDefaultVal () {
 		return defaultVal;
 	}
-	
+
 	@Override
 	public void itemStateChanged (ItemEvent e) {
 		altered = true;
 	}
-
+	
 	@Override
 	public void keyTyped (KeyEvent e) {
-
+		
 	}
-	
+
 	@Override public void keyPressed (KeyEvent e) {}
 	@Override public void keyReleased (KeyEvent e) {
 		SwingUtilities.invokeLater(() -> {
@@ -135,7 +135,9 @@ public class JComboBoxLanguage extends JComboBox <LanguageEntry> implements Abst
 				ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);
 				setSelectedItem(popup.getList().getSelectedValue());
 			} else {
-				showPopup();
+				if (!isPopupVisible()) {
+					showPopup();
+				}
 				List<LanguageEntry> results = searcher.find(Core.languageVector, null, text);
 				if (results != null){
 					LanguageEntry enumValue = searcher.findNext();
@@ -147,17 +149,17 @@ public class JComboBoxLanguage extends JComboBox <LanguageEntry> implements Abst
 			}
 		});
 	}
-	
+
 	@Override
 	public void mouseClicked (MouseEvent e) {
 		if (SwingUtilities.isLeftMouseButton(e)){
 			showPopup();
 		}
 	}
-	
+
 	@Override public void mousePressed (MouseEvent e) {}
 	@Override public void mouseReleased (MouseEvent e) {}
 	@Override public void mouseEntered (MouseEvent e) {}
 	@Override public void mouseExited (MouseEvent e) {}
-
+	
 }

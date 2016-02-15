@@ -20,7 +20,7 @@ import datmanager.Core;
  *
  */
 public enum DatStructureVanilla implements DatStructure {
-
+	
 	DB_AI_UNIT_TARGETING	("AI Unit Targeting", "dbaiunittargeting.dat", true, 0, 1, 0, 0, 1, 2, -1),
 	DB_AMBIENT_SOUNDS		("Ambient sounds", "dbambientsounds.dat", true, 0, 1, 0, 0, 1, 2, -1),
 	DB_ANIMALS				("Animals", "dbanimals.dat", true, 0, 1, 0, 0, 1, 2, -1),
@@ -57,9 +57,9 @@ public enum DatStructureVanilla implements DatStructure {
 	DB_WEAPON_TO_HIT		("Weapons to hit", "dbweapontohit.dat", true, 0, 1, 0, 0, 1, 2, -1),
 	DB_WORLD				("World", "dbworld.dat", true, 0, 1, 0, -1, 2, 3, -1),
 	;
-
-
-
+	
+	
+	
 	/** Unique field: A 4 bytes integer which point to an area effect's ID. */
 	public static final FieldStruct ID_AREA_EFFECT = new FieldStruct("Area Effect ID", DB_AREA_EFFECT);
 	/** Unique field: A 4 bytes integer which point to a button's ID. */
@@ -93,12 +93,12 @@ public enum DatStructureVanilla implements DatStructure {
 	/** Unique field: A 4 bytes integer which point to a button's ID. */
 	public static final FieldStruct ID_BUTTON_COMMAND = new FieldStruct("Button/Command ID", DB_BUTTONS);
 	/** Special field: A 4 bytes float which define an unused ID. */
-	public static final FieldStruct UNUSED_GFX_EFFECT = new FieldStruct("Unused", DB_GFX_EFFECTS, Knowledge.NEVER_USED);
+	public static final FieldStruct UNUSED_GFX_EFFECT = new FieldStruct("Unused GFX effect", DB_GFX_EFFECTS, Knowledge.NEVER_USED);
 	/** Special field: A 4 bytes float which define a (still) unknown ID. */
-	public static final FieldStruct UNKNOWN_GFX_EFFECT = new FieldStruct("Unknown", DB_GFX_EFFECTS, Knowledge.UNKNOWN);
+	public static final FieldStruct UNKNOWN_GFX_EFFECT = new FieldStruct("Unknown GFX effect", DB_GFX_EFFECTS, Knowledge.UNKNOWN);
+
 	
-
-
+	
 	static {
 		DB_AI_UNIT_TARGETING.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4,
@@ -106,22 +106,22 @@ public enum DatStructureVanilla implements DatStructure {
 				FieldStruct.UNUSED_INT4, FieldStruct.UNCHANGED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNCHANGED_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4
 		};
-		
-		
-		
+
+
+
 		DB_AMBIENT_SOUNDS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_FLOAT,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_FLOAT
 		};
-		DB_AMBIENT_SOUNDS.createEntry = new Object[]{
+		DB_AMBIENT_SOUNDS.newEntryValues = new Object[]{
 				"<New ambient sound>", 0, -1, -1, 0f, 0f, 0f, 0f,
 				0f, 0f, 0f, 0f, 0, 0f,
 		};
-		
-		
-		
+
+
+
 		DB_ANIMALS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
@@ -135,7 +135,7 @@ public enum DatStructureVanilla implements DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 		};
-		DB_ANIMALS.createEntry = new Object[]{
+		DB_ANIMALS.newEntryValues = new Object[]{
 				"<New animal>", 0, -1, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0,
 				0f, 0, 0, 0, 0, 0, 0, 0,
@@ -143,9 +143,9 @@ public enum DatStructureVanilla implements DatStructure {
 				0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0,
 		};
-
-
-
+		
+		
+		
 		DB_AREA_EFFECT.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Effect type", AreaEffectType.values()),
 				FieldStruct.UNKNOWN_INT4, new FieldStruct("Effect on units", DB_GFX_EFFECTS), new FieldStruct("Apply on unit set", DB_UNIT_SET), FieldStruct.UNKNOWN_INT4,
@@ -154,45 +154,48 @@ public enum DatStructureVanilla implements DatStructure {
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4
 		};
-		DB_AREA_EFFECT.createEntry = new Object[]{
+		DB_AREA_EFFECT.newEntryValues = new Object[]{
 				"<New area effect>", 0, -1, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0f,
 				0f, 0f, 0f, 0f, 0, 0, 0
 		};
-		
-		
-		
+
+
+
 		DB_BUTTONS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, new FieldStruct("Texture", Type.STRING, 100), FieldStruct.SEQ_NUMBER, FieldStruct.ID,
 				new FieldStruct("<only used by espionage center>", Type.INTEGER), new FieldStruct("<only used by farm and espionage center>", Type.INTEGER), new FieldStruct("Position", Type.INTEGER), FieldStruct.UNKNOWN_INT4
 		};
-		DB_BUTTONS.createEntry = new Object[]{
+		DB_BUTTONS.newEntryValues = new Object[]{
 				"<New button>", "textures\\zut_smileyface_00T", 0, -1, 0, 0, 0, -1
 		};
+		
 
-		
-		
+
 		DB_CALAMITY.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.SEQ_NUMBER,
 				FieldStruct.ID, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
+				FieldStruct.UNUSED_INT4, UNKNOWN_GFX_EFFECT, UNKNOWN_GFX_EFFECT, UNKNOWN_GFX_EFFECT,
+				UNKNOWN_GFX_EFFECT, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				ID_OBJECT, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, ID_SOUND, ID_SOUND, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.ID_LANGUAGE, FieldStruct.UNKNOWN_INT4
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL1,
+				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNKNOWN_BOOL1,
+				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNUSED_BOOL1, ID_SOUND,
+				ID_SOUND, new FieldStruct("Calamity cost", Type.INTEGER), ID_UNIT_SET, FieldStruct.ID_LANGUAGE,
+				FieldStruct.UNKNOWN_INT4
 		};
-		DB_CALAMITY.createEntry = new Object[]{
+		DB_CALAMITY.newEntryValues = new Object[]{
 				"<New calamity>", 0f, 0f, 0f, 0f, 0f, 0f, 0,
 				0, 0, 0, 0, 1, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0,
-				0, 0, 0, 1, 0, -1, -1, 0,
-				0, 0, 0
+				0, 0, 0, 1, 0, 0, 0, 0,
+				0, 0, 0, -1, -1, 0, 0, 0,
+				0
 		};
-		
-		
-		
+
+
+
 		DB_CIVILIZATION.fieldStructs = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, FieldStruct.ID_LANGUAGE,
 				new FieldStruct("Cost increment", Type.INTEGER), ID_UNIT_SET, new FieldStruct("Attack bonus", Type.FLOAT), new FieldStruct("Attack bonus cost", Type.FLOAT),
@@ -215,16 +218,28 @@ public enum DatStructureVanilla implements DatStructure {
 				new FieldStruct("Placeholder 7 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, FieldStruct.COLOR_UNCERTAIN), new FieldStruct("Placeholder 7 cost", Type.FLOAT, 4, Knowledge.NEVER_USED, FieldStruct.COLOR_UNCERTAIN), new FieldStruct("Placeholder 8 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, FieldStruct.COLOR_UNCERTAIN), new FieldStruct("Placeholder 8 cost", Type.FLOAT, 4, Knowledge.NEVER_USED, FieldStruct.COLOR_UNCERTAIN),
 				new FieldStruct("Placeholder 9 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, FieldStruct.COLOR_UNCERTAIN), new FieldStruct("Placeholder 9 cost", Type.FLOAT, 4, Knowledge.NEVER_USED, FieldStruct.COLOR_UNCERTAIN), new FieldStruct("Placeholder 10 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, FieldStruct.COLOR_UNCERTAIN), new FieldStruct("Placeholder 10 cost", Type.FLOAT, 4, Knowledge.NEVER_USED, FieldStruct.COLOR_UNCERTAIN)
 		};
-		
-		
-		
-		DB_CLIFF_TERRAIN.fieldStructs = new FieldStruct[]{
-				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ID_TERRAIN,
-				ID_TERRAIN, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4
+		DB_CIVILIZATION.newEntryValues = new Object[]{
+				0, -1, "<New civilization>", 0, 0f, 0f, 0f, 0f,
+				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
+				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
+				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
+				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
+				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
+				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
+				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
+				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
+				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
 		};
 
 
 
+		DB_CLIFF_TERRAIN.fieldStructs = new FieldStruct[]{
+				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ID_TERRAIN,
+				ID_TERRAIN, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4
+		};
+		
+		
+		
 		DB_COLOR_TABLE.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct ("Player - Red", Type.FLOAT),
 				new FieldStruct ("Player - Green", Type.FLOAT), new FieldStruct ("Player - Blue", Type.FLOAT), new FieldStruct ("Model - Red", Type.FLOAT), new FieldStruct ("Model - Green", Type.FLOAT),
@@ -232,27 +247,27 @@ public enum DatStructureVanilla implements DatStructure {
 				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
 				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
 		};
-		
-		
-		
+
+
+
 		DB_CP_BEHAVIOR.fieldStructs = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_INT4
 		};
-		
-		
-		
 
+
+
+		
 		DB_EFFECTS.fieldStructs = new FieldStruct[]{
-				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNUSED_INT4, new FieldStruct("Set attribute", Type.FLOAT),
-				new FieldStruct("Alter attribute", Type.FLOAT), new FieldStruct("Upgrade these objects...", DB_OBJECTS), new FieldStruct("... to these objects", DB_OBJECTS), ID_UNIT_SET,
+				FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Set base attribute", Type.FLOAT), new FieldStruct("Alter base attribute", Type.FLOAT),
+				new FieldStruct("Alter attribute multiplier", Type.FLOAT), new FieldStruct("Upgrade these objects...", DB_OBJECTS), new FieldStruct("... to these objects", DB_OBJECTS), ID_UNIT_SET,
 				new FieldStruct("Effect code", EffectCode.values()), new FieldStruct("New graphic", DB_GRAPHICS), ID_TECH, new FieldStruct("Attribute code", AttributeCode.values()),
 				ID_SOUND, ID_BUTTON, new FieldStruct("New area effect", DB_AREA_EFFECT), FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4,
 		};
-		DB_EFFECTS.createEntry = new Object[]{
+		DB_EFFECTS.newEntryValues = new Object[]{
 				0, 0, 0f, 0f, 0f, -1, -1, -1,
 				-1, -1, -1, -1, -1, -1, -1, 0,
 				0, 0, 0, 0, 0, 0,
@@ -289,18 +304,18 @@ public enum DatStructureVanilla implements DatStructure {
 					return "Unknown";
 			}
 		};
-
 		
+
 		DB_EVENTS.extraEntry = new FieldStruct("Effect", DB_EFFECTS); //FieldStruct.UNKNOWN_INT4;
 		DB_EVENTS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, new FieldStruct("Num effects", Type.INTEGER, 4, false),
 		};
-		DB_EVENTS.createEntry = new Object[]{
+		DB_EVENTS.newEntryValues = new Object[]{
 				"<New event>", 0, -1
 		};
-		
-		
-		
+
+
+
 		DB_FAMILY.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Hovercraft, UFO, Rock thrower", Type.INTEGER),
 				new FieldStruct("Frigate", Type.INTEGER), new FieldStruct("Machine gun", Type.INTEGER), new FieldStruct("Galley", Type.INTEGER), new FieldStruct("Tank", Type.INTEGER),
@@ -321,26 +336,46 @@ public enum DatStructureVanilla implements DatStructure {
 				new FieldStruct("Capitol ship", Type.INTEGER), new FieldStruct("Space fighter", Type.INTEGER), new FieldStruct("Space corvette", Type.INTEGER), new FieldStruct("ICBM (Power)", Type.INTEGER),
 				new FieldStruct("Space turret", Type.INTEGER), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4
 		};
-		
-		
-		
+		DB_FAMILY.newEntryValues = new Object[]{
+				"<New family>", 0, -1, 100, 100, 100, 100, 100,
+				100, 100, 100, 100, 100, 100, 100, 100,
+				100, 100, 100, 100, 100, 100, 100, 100,
+				100, 100, 100, 100, 100, 100, 100, 100,
+				100, 100, 100, 100, 100, 100, 100, 100,
+				100, 100, 100, 100, 100, 100, 100, 100,
+				100, 100, 100, 100, 100, 100, 100, 100,
+				100, 100, 100, 100, 100, 100, 100, 100,
+				100, 100, 100, 100, 100, 100, 100,
+		};
+
+
+
+		FieldStruct ALTER_HEALTH_BY = new FieldStruct("Alter health percent", Type.FLOAT);
 		DB_GAME_VARIANT.fieldStructs = new FieldStruct[]{
-				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
-				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
-				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
-				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNCHANGED_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Gather rate multiplier", Type.FLOAT), FieldStruct.UNKNOWN_INT4, FieldStruct.ID_LANGUAGE,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Wonder cost multiplier", Type.FLOAT), FieldStruct.UNKNOWN_INT4,
+				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ALTER_HEALTH_BY,
+				ID_UNIT_SET, ALTER_HEALTH_BY, ID_UNIT_SET, ALTER_HEALTH_BY,
+				ID_UNIT_SET, ALTER_HEALTH_BY, ID_UNIT_SET, ALTER_HEALTH_BY,
+				ID_UNIT_SET, ALTER_HEALTH_BY, ID_UNIT_SET, ALTER_HEALTH_BY,
+				ID_UNIT_SET, ALTER_HEALTH_BY, ID_UNIT_SET, ALTER_HEALTH_BY,
+				ID_UNIT_SET, ALTER_HEALTH_BY, ID_UNIT_SET, FieldStruct.UNCHANGED_FLOAT,
+				new FieldStruct("Epoch advancement cost multiplier", Type.FLOAT), new FieldStruct("Gather time multiplier", Type.FLOAT), new FieldStruct("Alter max morale (dynamic)", Type.INTEGER), FieldStruct.ID_LANGUAGE,
+				new FieldStruct("First epoch advancement cost multiplier", Type.FLOAT), new FieldStruct("Second epoch advancement cost multiplier", Type.FLOAT), new FieldStruct("Cost multiplier", Type.FLOAT), ID_UNIT_SET,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Available in random maps", Type.INTEGER),
 				FieldStruct.UNUSED_INT4
 		};
-		
-		
-		
+		DB_GAME_VARIANT.newEntryValues = new Object[]{
+				"<New game variant>", 0, -1, 0f, -1, 0f, -1, 0f,
+				-1, 0f, -1, 0f, -1, 0f, -1, 0f,
+				-1, 0f, -1, 0f, -1, 0f, -1, 0f,
+				1.0f, 1.0f, 0, 0, 1.0f, 1.0f, 0f, -1,
+				1.0f, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 1, 0
+		};
+
+
+
 		DB_GFX_EFFECTS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, ID_GRAPHIC, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
@@ -352,15 +387,15 @@ public enum DatStructureVanilla implements DatStructure {
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4
 		};
-		DB_GFX_EFFECTS.createEntry = new Object[]{
+		DB_GFX_EFFECTS.newEntryValues = new Object[]{
 				"<New graphic effect>", 0, -1, -1, -1, -1, 1f, 1f,
 				0f, 0, 0, 0, 0, 0, 0, -1,
 				-1, -1, 0, 0f, 0f, 0f, 0f, 0f,
 				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0,
 				0, 0
 		};
-		
-		
+
+
 		DB_GRAPHICS.fieldStructs = new FieldStruct[]{
 				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Name 1", 0, 0), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Model path", 0, 2),
 				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 4), FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Texture path", 0, 6),
@@ -419,7 +454,7 @@ public enum DatStructureVanilla implements DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4
 		};
-		DB_GRAPHICS.createEntry = new Object[]{
+		DB_GRAPHICS.newEntryValues = new Object[]{
 				0, "", 0, "", 0, "", 0, "",
 				0, "", 0, "", 0, "", 0, "",
 				0, "", 0, "", 0, "", 0, "",
@@ -449,9 +484,9 @@ public enum DatStructureVanilla implements DatStructure {
 				0, -1, 0, 0, -1, -1, 0, 1f,
 				0, 0f, 0, 0, 0
 		};
+		
 
-		
-		
+
 		DB_MUSIC.fieldStructs = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, new FieldStruct("Another name", Type.STRING, 56),
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Time", Type.FLOAT), FieldStruct.UNCHANGED_INT4,
@@ -460,13 +495,13 @@ public enum DatStructureVanilla implements DatStructure {
 				FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1,
 				FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNCHANGED_BOOL1, FieldStruct.UNUSED_INT1
 		};
-		DB_MUSIC.createEntry = new Object[]{
+		DB_MUSIC.newEntryValues = new Object[]{
 				0, -1, "<New music>", "<New music>", 0f, 0f, 0f, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 204
 		};
+		
 
-		
-		
+
 		DB_OBJECTS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, ID_FAMILY, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.ID, new FieldStruct("Health", Type.INTEGER), FieldStruct.UNKNOWN_INT4,
@@ -494,7 +529,7 @@ public enum DatStructureVanilla implements DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("Health regeneration", Type.INTEGER), new FieldStruct("Can garrison in air transports"),
 				new FieldStruct("Can garrison in land transports"), new FieldStruct("Can garrison in sea transports"), FieldStruct.UNUSED_INT1, new FieldStruct("Object type", ObjectType.values()),
 				FieldStruct.UNKNOWN_INT4, new FieldStruct("Circle selection size", Type.FLOAT), new FieldStruct("Shadow size", Type.FLOAT),  FieldStruct.UNUSED_INT4,
-				new FieldStruct("<Some kind of size>", Type.FLOAT), new FieldStruct("Physical size", Type.FLOAT), new FieldStruct("Units can walk above this"), FieldStruct.UNKNOWN_INT1,
+				new FieldStruct("<Some kind of size>", Type.FLOAT), new FieldStruct("Physical size", Type.FLOAT), FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT1,
 				FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 				new FieldStruct("Ammo amount", Type.INTEGER), new FieldStruct("<All bombers use this>"), FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
 				new FieldStruct("<PROBABLY> Parabolic projectile"), FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Category (Heroes use 27)", Type.INTEGER),
@@ -506,7 +541,7 @@ public enum DatStructureVanilla implements DatStructure {
 				UNKNOWN_GFX_EFFECT, new FieldStruct("Heal other effect ID", DB_GFX_EFFECTS), UNKNOWN_GFX_EFFECT, UNKNOWN_GFX_EFFECT,
 				new FieldStruct("Get hit effect ID", DB_GFX_EFFECTS), new FieldStruct("Permanent effect", DB_GFX_EFFECTS), UNUSED_GFX_EFFECT, new FieldStruct("Projectile effect", DB_GFX_EFFECTS),
 				UNUSED_GFX_EFFECT, UNUSED_GFX_EFFECT, UNUSED_GFX_EFFECT, UNUSED_GFX_EFFECT,
-				UNUSED_GFX_EFFECT, new FieldStruct("<only used by capital ship/yamato>", DB_GFX_EFFECTS), new FieldStruct("<only used by volcano-projectile and meteor>", Type.INTEGER), new FieldStruct("Attack effect ID", DB_GFX_EFFECTS),
+				UNUSED_GFX_EFFECT, UNKNOWN_GFX_EFFECT, new FieldStruct("<only used by volcano-projectile and meteor>", Type.INTEGER), new FieldStruct("Attack effect ID", DB_GFX_EFFECTS),
 				new FieldStruct("Disease effect ID 1", DB_GFX_EFFECTS), new FieldStruct("Disease effect ID 2", DB_GFX_EFFECTS), new FieldStruct("Diffraction shield effect ID", DB_GFX_EFFECTS), new FieldStruct("Pulse cannon effect ID", DB_GFX_EFFECTS),
 				new FieldStruct("Battle cry effect ID", DB_GFX_EFFECTS), new FieldStruct("Bomb hole effect ID", DB_GFX_EFFECTS), UNUSED_GFX_EFFECT, UNKNOWN_GFX_EFFECT,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("<only used by ships>", Type.FLOAT), FieldStruct.UNUSED_INT4,
@@ -595,7 +630,7 @@ public enum DatStructureVanilla implements DatStructure {
 				ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
 				ID_OBJECT_BUILD_TECH,
 		};
-		DB_OBJECTS.createEntry = new Object[]{
+		DB_OBJECTS.newEntryValues = new Object[]{
 				"<New object>", 0, -1, -1, 0, -1, 0, 0,
 				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
 				0f, 0f, 0, 0, 0, 0f, 0, -1,
@@ -660,40 +695,39 @@ public enum DatStructureVanilla implements DatStructure {
 				-1, -1, -1, -1, -1, -1, -1, -1,
 				-1, -1, -1, -1, -1
 		};
-		
-		
-		
+
+
+
 		DB_PREMADE_CIVS.fieldStructs = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.ID_LANGUAGE, FieldStruct.ID_LANGUAGE,
-
 		};
+		
 
-		
-		
+
 		DB_SOUNDS.fieldStructs = new FieldStruct[]{
 				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Pathname", 0, 0), FieldStruct.NAME, FieldStruct.SEQ_NUMBER,
 				FieldStruct.ID, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4
 		};
-		DB_SOUNDS.createEntry = new Object[]{
+		DB_SOUNDS.newEntryValues = new Object[]{
 				0, "", "<New sound>", 0, -1, 0, 0, 0,
 				0, 0, 0
 		};
-		
-		
-		
+
+
+
 		DB_STARTING_RESOURCHES.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.ID_LANGUAGE,
 				new FieldStruct("Starting food", Type.INTEGER), new FieldStruct("Starting wood", Type.INTEGER), new FieldStruct("Starting stone", Type.INTEGER), new FieldStruct("Starting gold", Type.INTEGER),
 				new FieldStruct("Starting iron", Type.INTEGER)
 		};
-		DB_STARTING_RESOURCHES.createEntry = new Object[]{
+		DB_STARTING_RESOURCHES.newEntryValues = new Object[]{
 				"<New starting resourches>", -1, -1, -1, 600, 600, 200, 400, 400
 		};
+		
 
-		
-		
+
 		DB_TECH_TREE.extraEntry = ID_TECH_FROM_OBJECT;
 		DB_TECH_TREE.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Starting epoch", Type.INTEGER),
@@ -703,14 +737,14 @@ public enum DatStructureVanilla implements DatStructure {
 				new FieldStruct("Build time", Type.INTEGER), new FieldStruct("Unlocked by tech", DB_TECH_TREE),
 				new FieldStruct("Unlocked by power", DB_TECH_TREE), new FieldStruct("<-1 in Epoch Space, 0 everywhere else>", Type.INTEGER), new FieldStruct("<-1 in Epoch Space, 0 everywhere else>", Type.INTEGER), ID_OBJECT,
 				ID_BUTTON, new FieldStruct("Is object?", Type.INTEGER), FieldStruct.ID_LANGUAGE, new FieldStruct("Tech type", TechType.values()),
-				new FieldStruct("<4 in all Epochs, 0 everywhere else>", Type.INTEGER), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4,
+				new FieldStruct("<4 in all Epochs, 0 everywhere else>", Type.INTEGER), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct("Calamity", DB_CALAMITY),
 				ID_UI_HOTKEY, new FieldStruct("<Only Monoteism and Mech Minotaur use this>", Type.INTEGER, 4, Knowledge.UNKNOWN), new FieldStruct("<Only Monoteism and Mech Minotaur use this>", Type.INTEGER, 4, Knowledge.UNKNOWN), FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_BOOL1, new FieldStruct("Only in scenario"), new FieldStruct("<All powers and power techs use 0>"),
 				new FieldStruct("<All powers and power techs use 0>"), new FieldStruct("Epoch number", Type.INTEGER), new FieldStruct("Buildings to advance epoch", Type.INTEGER), new FieldStruct("(Epochs) ID starts from...", Type.INTEGER),
 				new FieldStruct("Last build object", DB_OBJECTS), new FieldStruct("Num of tech builders", Type.INTEGER, 4, false)
 		};
-		DB_TECH_TREE.createEntry = new Object[]{
+		DB_TECH_TREE.newEntryValues = new Object[]{
 				"<New technology>", -1, 0, 0, 15, -1, -1, 0,
 				0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, -1, -1, 0, 0, 0,
@@ -718,9 +752,9 @@ public enum DatStructureVanilla implements DatStructure {
 				0, 0f, 0f, 0f, 0f, 0, 0, 1,
 				1, 0, 0, 0, -1, 0
 		};
-		
-		
 
+
+		
 		DB_TERRAIN.fieldStructs = new FieldStruct[]{
 				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Pathname", 0, 0), FieldStruct.NAME, FieldStruct.SEQ_NUMBER,
 				FieldStruct.ID, new FieldStruct("Gray index", Type.INTEGER), FieldStruct.ID_LANGUAGE, new FieldStruct("Valid", Type.BOOLEAN),
@@ -731,36 +765,36 @@ public enum DatStructureVanilla implements DatStructure {
 				new FieldStruct("Color: Blue", Type.INTEGER), FieldStruct.UNUSED_INT4, new FieldStruct("Amb Marsh 1", Type.FLOAT), new FieldStruct("Amb Marsh 2", Type.FLOAT),
 				new FieldStruct("Is an ambient terrain? (Yes = 16777216)", Type.INTEGER)
 		};
-		DB_TERRAIN.createEntry = new Object[]{
+		DB_TERRAIN.newEntryValues = new Object[]{
 				0, "", "<New terrain>", 0, -1, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0f, 0f, 0
 		};
-		
-		
-		
+
+
+
 		DB_TERRAIN_GRAY_TEXTURES.fieldStructs = new FieldStruct[]{
 				FieldStruct.STRING_SIZE_EXTRA, new FieldStruct("Pathname", 0, 0), FieldStruct.NAME, FieldStruct.SEQ_NUMBER,
 				FieldStruct.ID, new FieldStruct("Color: Red", Type.INTEGER), new FieldStruct("Color: Green", Type.INTEGER),
 				new FieldStruct("Color: Blue", Type.INTEGER)
 		};
-		DB_TERRAIN_GRAY_TEXTURES.createEntry = new Object[]{
+		DB_TERRAIN_GRAY_TEXTURES.newEntryValues = new Object[]{
 				0, "", "<New terrain gray>", 0, -1, 0, 0, 0
 		};
-		
-		
 
+
+		
 		DB_TERRAIN_TYPE.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.ID_LANGUAGE, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4
 		};
-		DB_TERRAIN_TYPE.createEntry = new Object[]{
+		DB_TERRAIN_TYPE.newEntryValues = new Object[]{
 				"<New terrain type>", -1, -1, 0, -1, 0, 0, 0
 		};
+
 		
-
-
+		
 		DB_UI_BACK.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.NAME, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
@@ -771,16 +805,16 @@ public enum DatStructureVanilla implements DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT4,
 		};
+
 		
-
-
+		
 		DB_UI_CONTROL_EVENTS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Control", DB_UI_CONTROLS),
 				new FieldStruct("Control event type", ControlType.values())
 		};
+
 		
-
-
+		
 		DB_UI_CONTROLS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, new FieldStruct("Sub", Type.STRING, 100), new FieldStruct("Sub", Type.STRING, 100), new FieldStruct("Sub", Type.STRING, 100),
 				new FieldStruct("Sub", Type.STRING, 100), new FieldStruct("Sub", Type.STRING, 100), FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
@@ -802,33 +836,33 @@ public enum DatStructureVanilla implements DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT4,
 		};
-		
 
 		
+
 		DB_UI_FONT.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Font type", Type.INTEGER),
 				new FieldStruct("Font size", Type.INTEGER), new FieldStruct("Quality", Type.INTEGER), new FieldStruct("Bold"), FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, new FieldStruct("Has shadow"), FieldStruct.UNUSED_INT4
 		};
+		
 
-		
-		
+
 		DB_UI_HOTKEY.fieldStructs = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, FieldStruct.UNCHANGED_INT4,
 				FieldStruct.UNCHANGED_INT4, FieldStruct.UNCHANGED_INT4, new FieldStruct("Key scan code", Type.INTEGER)
 		};
+		
 
-		
-		
+
 		DB_UNIT_BEHAVIOR.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Run away from enemy"),
 				new FieldStruct("Ignore enemy outside LOS"), new FieldStruct("Attack enemy"), new FieldStruct("Follow enemy"), new FieldStruct("Run away if attacked"),
 				new FieldStruct("Return to initial location"), FieldStruct.UNUSED_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4
 		};
+		
 
-		
-		
+
 		DB_UNIT_SET.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ID_FAMILY,
 				ID_FAMILY, ID_FAMILY, ID_FAMILY, ID_FAMILY,
@@ -837,14 +871,14 @@ public enum DatStructureVanilla implements DatStructure {
 				ID_OBJECT, ID_OBJECT, ID_OBJECT, new FieldStruct("Include unit set...", DB_UNIT_SET),
 				new FieldStruct("Exclude unit set", DB_UNIT_SET), new FieldStruct("Is the first set in the list", Type.INTEGER)
 		};
-		DB_UNIT_SET.createEntry = new Object[]{
+		DB_UNIT_SET.newEntryValues = new Object[]{
 				"<New unit set>", 0, -1, 0, 0, 0, 0, 0,
 				0, 0, 0, -1, -1, -1, -1, -1,
 				-1, -1, -1, -1, -1, 0
 		};;
+		
 
-		
-		
+
 		DB_UPGRADE.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, new FieldStruct("Attack mult", Type.FLOAT), new FieldStruct("Health mult", Type.FLOAT), new FieldStruct("Speed mult", Type.FLOAT),
 				new FieldStruct("Range mult", Type.FLOAT), new FieldStruct("Shock armor mult", Type.FLOAT), new FieldStruct("Arrow armor mult", Type.FLOAT), new FieldStruct("Pierce armor mult", Type.FLOAT),
@@ -856,24 +890,24 @@ public enum DatStructureVanilla implements DatStructure {
 				new FieldStruct("Area cost mult", Type.FLOAT), FieldStruct.UNUSED_INT4, new FieldStruct("Max upgrades per stat", Type.INTEGER), FieldStruct.SEQ_NUMBER,
 				FieldStruct.ID, FieldStruct.UNKNOWN_INT4, new FieldStruct("<It seems a starting epoch>", Type.INTEGER), FieldStruct.UNKNOWN_INT4
 		};
-		DB_UPGRADE.createEntry = new Object[]{
+		DB_UPGRADE.newEntryValues = new Object[]{
 				"<New upgrade>", 0f, 0f, 0f, 0f, 0f, 0f, 0f,
 				0f, 0f, 0f, 0f, 0, 0f, 0, 0f,
 				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
 				0f, 0f, 0, 0f, 0f, 0, 0, 0,
 				0, 0, 0, 0
 		};
+		
 
-		
-		
+
 		DB_WEAPON_TO_HIT.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Shock mult", Type.INTEGER),
 				new FieldStruct("Gun mult", Type.INTEGER), new FieldStruct("Arrow mult", Type.INTEGER), new FieldStruct("Pierce mult", Type.INTEGER), new FieldStruct("Laser mult", Type.INTEGER),
 				new FieldStruct("Missile mult", Type.INTEGER)
 		};
-
-
-
+		
+		
+		
 		DB_WORLD.fieldStructs = new FieldStruct[]{
 				new FieldStruct("Float/Min float", Type.FLOAT), new FieldStruct("Max float", Type.FLOAT), FieldStruct.SEQ_NUMBER, new FieldStruct("ID", WorldID.values(), FieldStruct.COLOR_ID),
 				new FieldStruct("Int/Min int", Type.INTEGER), new FieldStruct("Max int", Type.INTEGER), FieldStruct.UNKNOWN_INT4
@@ -882,9 +916,9 @@ public enum DatStructureVanilla implements DatStructure {
 			WorldID wID = WorldID.parseValue(entry.ID);
 			return (wID != null) ? wID.name : "<Unknown>";
 		};
-		
-		
 
+
+		
 		System.out.println("Check entries definitions:");
 		int count;
 		for (DatStructure datStructure : values()){
@@ -895,70 +929,70 @@ public enum DatStructureVanilla implements DatStructure {
 			System.out.println('\t' + datStructure.getFileName() + ':' + ' ' + count + "  >  fields: " + datStructure.getFieldStructs().length + "  |  defaults: " + (datStructure.getNewEntryValues() != null ? datStructure.getNewEntryValues().length : "null"));
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
 	/** Name of the structure. Used for GUI purposes. */
 	public String name;
-
+	
 	/** Name of the file. It must match exactly the dat filename. */
 	public String fileName;
-
+	
 	/** Define the number of elements at the beginning? */
 	public boolean defineNumEntries;
-
+	
 	/** The game define a counter "num entries" at the beginning of each group in the file.
 	 *  This field alter the counter when reading and writing, to adjust the real number of entries in the file.
 	 * For now, only dbtechtree.dat require this, due to its particular structure.
 	 * In dbtechtree there is more than one group, and each counter says N, but there are actually N+1 entries (because there's also the "Epoch" entry, which is not counted). */
 	public int adjustNumEntries;
-	
+
 	/** Min SequenceNumber for defined objects */
 	public int minSeq;
-
+	
 	/** Min ID for defined objects */
 	public int minID;
-	
+
 	/** Index of the field which hold the entry name. It's -1 if entries have no name. */
 	public int indexName;
-
+	
 	/** Index of the field which hold the entry sequence number. It's -1 entries have no sequence number. */
 	public int indexSequence;		//index of the entry in the array, which define the Sequence number
-
+	
 	/** Index of the field which hold the entry ID. It's -1 if entries have no ID. */
 	public int indexID;				//index of the entry in the array, which define the ID
-
+	
 	/** Index of the field which hold the number of extra fields (if the entry size can be dynamic).
 	 * It's -1 if entries have a fixed size and can't have extra fields.
 	 * For now, only dbtechtree.dat require this. */
 	public int indexCountExtra;		//index of the entry in the array, which define the number of extra entries
-
+	
 	/** This field define the type/size of extra fields, which are all identical (if the entry size can be dynamic).
 	 * For now, only dbtechtree.dat require this, due to its particular structure.
 	 * It's null if not used. */
 	public FieldStruct extraEntry = null;
-
+	
 	/** This array define the description/type/size of all fields of a single entry in the file.
 	 * You can expect the sum of the sizes of these entries must match the size of an entry in the file. */
 	public FieldStruct[] fieldStructs;
-	
+
 	/** Default values used by Unknown/New entries. */
-	public Object[] createEntry = null;
-	
+	public Object[] newEntryValues = null;
+
 	/** Optional function to calculate the name */
 	private Function<Entry, String> nameBuilder = null;
+	
 
-	
-	
-	
-	
+
+
+
 	DatStructureVanilla(String name, String fileName, boolean defineNumEntries, int adjustNumEntries, int minSeq, int minID, int indexName, int indexSequence, int indexID, int indexCountExtra){
 		this.name = name;
 		this.fileName = fileName;
@@ -972,79 +1006,79 @@ public enum DatStructureVanilla implements DatStructure {
 		this.indexCountExtra = indexCountExtra;
 		nameBuilder = null;
 	}
-	
-	
 
+
+	
 	@Override
 	public String getName () {
 		return name;
 	}
-	
+
 	@Override
 	public String getFileName () {
 		return fileName;
 	}
-
+	
 	@Override
 	public boolean defineNumEntries(){
 		return defineNumEntries;
 	}
-
+	
 	@Override
 	public int getAdjustNumEntries () {
 		return adjustNumEntries;
 	}
-
+	
 	@Override
 	public int getMinSeq(){
 		return minSeq;
 	}
-
+	
 	@Override
 	public int getMinID(){
 		return minID;
 	}
-
+	
 	@Override
 	public int getIndexName () {
 		return indexName;
 	}
-	
+
 	@Override
 	public int getIndexSequence () {
 		return indexSequence;
 	}
-	
+
 	@Override
 	public int getIndexID () {
 		return indexID;
 	}
-
+	
 	@Override
 	public int getIndexCountExtra () {
 		return indexCountExtra;
 	}
-	
+
 	@Override
 	public FieldStruct getExtraEntry () {
 		return extraEntry;
 	}
-	
+
 	@Override
 	public FieldStruct[] getFieldStructs () {
 		return fieldStructs;
 	}
-	
+
 	@Override
 	public Object[] getNewEntryValues () {
-		return createEntry;
+		return newEntryValues;
 	}
-	
+
 	@Override
 	public Function<Entry, String> getNameBuilder(){
 		return nameBuilder;
 	}
-	
+
 	@Override
 	public int getNumBytes(){
 		int num = 0;
@@ -1053,15 +1087,15 @@ public enum DatStructureVanilla implements DatStructure {
 		}
 		return num;
 	}
-
+	
 	@Override
 	public String toString(){
 		return name;
 	}
-
+	
 	@Override
 	public int compareTo (DatStructure datStructure) {
 		return compareTo((DatStructureVanilla) datStructure);
 	}
-
+	
 }
