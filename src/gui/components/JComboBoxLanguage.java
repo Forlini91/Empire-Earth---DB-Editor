@@ -75,8 +75,10 @@ public class JComboBoxLanguage extends JComboBox <LanguageEntry> implements Abst
 		if (obj != null){
 			if (obj instanceof LanguageEntry) {
 				return ((LanguageEntry) obj).code;
+			}  else if (obj instanceof String){
+				return Integer.valueOf((String) obj);
 			} else {
-				return obj;
+				return -1;
 			}
 		} else {
 			return -1;

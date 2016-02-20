@@ -39,7 +39,7 @@ public class JComboBoxArray extends JComboBox <Integer> implements AbstractEntry
 		super(fieldStruct.arrValues);
 		this.fieldStruct = fieldStruct;
 		this.index = index;
-		setEditable(true);
+		setEditable(false);
 		addItemListener(this);
 		addMouseListener(this);
 		editor.addKeyListener(this);
