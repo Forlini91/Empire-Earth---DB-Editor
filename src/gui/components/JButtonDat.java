@@ -7,11 +7,11 @@ import datmanager.Core;
 import datstructure.DatContent;
 
 public class JButtonDat extends JButtonRed {
-	
-	private static final long serialVersionUID = -1271897565206154222L;
 
+	private static final long serialVersionUID = -1271897565206154222L;
+	
 	public JButtonDat(Window parent, DatContent datContent){
-		super (datContent.datStructure.getName());
+		super (datContent.datFile.datStructure.getName());
 		addActionListener(e -> {
 			Core.openFile(parent, datContent, (e.getModifiers() & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK);
 		});

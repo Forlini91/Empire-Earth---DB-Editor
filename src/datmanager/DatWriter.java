@@ -23,22 +23,22 @@ public class DatWriter implements AutoCloseable, Closeable {
 	private DatFile datFile;
 	private ByteBuffer writer;
 	private boolean closed = false;
-	
+
 	public DatWriter(DatFile datFile, DatContent datContent) throws IOException {
 		this.datFile = datFile;
 		int sizeSingle = datFile.datStructure.getNumBytes();
-		int alloc = datContent.datStructure.defineNumEntries() ? 4 * datContent.entryGroups.size() : 0;
+		int alloc = datContent.datFile.datStructure.defineNumEntries() ? 4 * datContent.entryGroups.size() : 0;
 		List<Entry> entries = datContent.getAllEntries();
 		alloc += sizeSingle * entries.size();
-
-		int indexExtra = datContent.datStructure.getIndexCountExtra();
+		
+		int indexExtra = datContent.datFile.datStructure.getIndexCountExtra();
 		List<Integer> dynamicStrings = new ArrayList<>();
-		for (FieldStruct fieldStruct : datContent.datStructure.getFieldStructs()){
+		for (FieldStruct fieldStruct : datContent.datFile.datStructure.getFieldStructs()){
 			if (fieldStruct.indexStringLength >= 0){
 				dynamicStrings.add(fieldStruct.indexStringLength);
 			}
 		}
-		
+
 		if (dynamicStrings.size() > 0){
 			if (indexExtra >= 0){
 				for (Entry entry : entries){
@@ -61,26 +61,26 @@ public class DatWriter implements AutoCloseable, Closeable {
 		}
 		writer = ByteBuffer.allocate(alloc).order(ByteOrder.LITTLE_ENDIAN);
 	}
-	
-	
-	
+
+
+
 	public void writeInt(int value) throws IOException {
 		writer.putInt(value);
 	}
-
+	
 	public void writeByte(int value){
 		writer.put((byte) value);
 	}
-	
+
 	public void writeFloat(float value) throws IOException {
 		writer.putFloat(value);
 	}
-
+	
 	public void writeString(String string, int numBytes) throws IOException{
 		byte[] str = Arrays.copyOf(string.getBytes(), numBytes);
 		writer.put(str);
 	}
-	
+
 	@Override
 	public void close() throws IOException {
 		if (!closed){

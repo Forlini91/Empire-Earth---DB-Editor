@@ -36,11 +36,11 @@ import gui.FrameMain;
  *
  */
 public class Core {
+
 	
-
-	public static final float VERSION = 1.45f;
-
-
+	public static final float VERSION = 1.44f;
+	
+	
 	/** Background used in all frames, windows and dialogs */
 	public static final Color UI_COLOR_BACKGROUND = new Color(249, 241, 224);
 	/** Color used in all buttons */
@@ -53,15 +53,15 @@ public class Core {
 	private static final int LOAD_MAX_WAIT = 15000;
 	/** The DatStructure which will be used */
 	public static DatStructure[] values;
-
-	public static boolean AOC = false;
 	
+	public static boolean AOC = false;
+
 	public static final Map<DatStructure, DatContent> DATA = new HashMap<>();
 	public static final Map<DatContent, List<FrameEditor>> FRAME_EDITORS = new HashMap<>();
 	public static Map<Integer, LanguageEntry> LANGUAGE = new HashMap<>();
 	public static Vector<LanguageEntry> languageVector;
-	
-	
+
+
 	public static void main (String[] args) {
 		EventQueue.invokeLater(() -> {
 			String[] buttons = new String[]{"Vanilla", "Art of Conquest"};
@@ -80,7 +80,7 @@ public class Core {
 				default:
 					System.exit(0);
 			}
-			
+
 			new Thread(() -> {
 				try {
 					InputStream str = Core.class.getResourceAsStream(AOC ? "Language AOC.txt" : "Language Vanilla.txt");
@@ -99,9 +99,9 @@ public class Core {
 			}).start();
 		});
 	}
-	
-	
 
+
+	
 	/**
 	 * Load the given file and disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -114,7 +114,7 @@ public class Core {
 			onLoaded.accept(data.get(datFile.datStructure));
 		}, onFail);
 	}
-	
+
 	/**
 	 * Load the given list of files and disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -130,6 +130,7 @@ public class Core {
 			Object lockObj = new Object();
 			DialogProgressBar progressDialog = new DialogProgressBar("Loading...", files.size(), true);
 			Map <DatStructure, DatContent> dataLoad = new HashMap<>();
+			List<DatFile> errors = new ArrayList<>();
 			for (int i = 0; i < files.size(); i++){
 				int index = i;
 				Thread t = new Thread(() -> {
@@ -137,23 +138,30 @@ public class Core {
 					try {
 						DatFileManager dbManager = new DatFileManager(datFile, datFile.datStructure);
 						DatContent datContent = dbManager.read(progressDialog::updatePercPart, index);
-						dataLoad.put(datFile.datStructure, datContent);
+						synchronized(lockObj){
+							dataLoad.put(datFile.datStructure, datContent);
+							if (dataLoad.size() >= files.size() - errors.size()) {
+								lockObj.notifyAll();
+							}
+						}
 					} catch (Exception e) {
 						synchronized(lockObj){
 							JOptionPane.showMessageDialog(parent, "An error occurred during the loading of " + datFile, "Error", JOptionPane.ERROR_MESSAGE);
-							files.remove(datFile);
-							e.printStackTrace();
-						}
-					}
-					synchronized(lockObj){
-						if (dataLoad.size() >= files.size()) {
-							lockObj.notifyAll();
+							errors.add(datFile);
+							if (dataLoad.size() >= files.size() - errors.size()) {
+								lockObj.notifyAll();
+							}
+							if (e.getCause() != null){
+								e.getCause().printStackTrace();
+							} else {
+								e.printStackTrace();
+							}
 						}
 					}
 				});
 				t.start();
 			}
-			
+
 			try {
 				synchronized(lockObj){
 					if (dataLoad.size() < files.size()){
@@ -164,7 +172,7 @@ public class Core {
 				return;
 			}
 			progressDialog.dispose();
-
+			files.removeAll(errors);
 			if (dataLoad.size() >= files.size()) {
 				onLoaded.accept(dataLoad);
 			} else {
@@ -175,9 +183,9 @@ public class Core {
 			}
 		}).start();
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Save the given list of EntryGroup to the given file. Disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -197,7 +205,7 @@ public class Core {
 			DialogProgressBar progressBar = new DialogProgressBar("Saving...", count, false);
 			new Thread(() -> {
 				try {
-					DatFileManager dbManager = new DatFileManager(datContent.datFile, datContent.datStructure);
+					DatFileManager dbManager = new DatFileManager(datContent.datFile, datContent.datFile.datStructure);
 					dbManager.save(datContent, progressBar::update);
 				} catch (IOException e) {
 					JOptionPane.showMessageDialog(parent, "An error occurred during the saving of " + datContent.datFile + '\n' + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -210,9 +218,9 @@ public class Core {
 			}).start();
 		}).start();
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Try to open the given file or show an error message to the calling component.
 	 * The file must be already loaded.
@@ -244,8 +252,8 @@ public class Core {
 			throw e;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Calculate the bounds of the given component
 	 * @param component		The component
@@ -260,9 +268,9 @@ public class Core {
 		Point point = new Point((rBounds.width / 2) - (dimension.width / 2), (rBounds.height / 2) - (dimension.height / 2) - 25);
 		return new Rectangle(point, dimension);
 	}
-	
-	
+
+
 	/** No need to instantiate this */
 	private Core(){}
-	
+
 }

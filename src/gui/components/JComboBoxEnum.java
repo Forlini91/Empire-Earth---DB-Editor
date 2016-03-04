@@ -75,11 +75,11 @@ public class JComboBoxEnum extends JComboBox <EnumValue> implements AbstractEntr
 				return ((EnumValue) obj).getValue();
 			} else if (obj instanceof String){
 				return Integer.valueOf((String) obj);
+			} else if (obj instanceof Integer){
+				return (int) obj;
 			} else {
 				return -1;
 			}
-		} else if (defaultVal != null){
-			return defaultVal;
 		} else {
 			return fieldStruct.defaultValue;
 		}
