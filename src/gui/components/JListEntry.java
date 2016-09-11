@@ -3,6 +3,7 @@ package gui.components;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,35 +14,74 @@ import javax.swing.KeyStroke;
 
 import datstructure.Entry;
 
+/**
+ * A JList which can hold the entries
+ * @author MarcoForlini
+ */
 public class JListEntry extends JListDouble<Entry> {
-
+	
 	private static final long serialVersionUID = -1460528354644591567L;
+	
+	/** The entries can be moved */
 	public boolean allowMove = false;
-
-	public JListEntry(String checkBoxText){
-		this(new ArrayList<>(0), checkBoxText);
-	}
-
-	public JListEntry (Entry[] array, String checkBoxText){
-		this(Arrays.asList(array), checkBoxText, true);
+	
+	/**
+	 * Create a new JListEntry
+	 */
+	public JListEntry(){
+		this(new ArrayList<>(0));
 	}
 	
-	public JListEntry (List<Entry> list, String checkBoxText){
-		this(list, buildListClean(list), checkBoxText, true);
+	/**
+	 * Create a new JListEntry
+	 * @param array		The array of elements
+	 */
+	public JListEntry (Entry[] array){
+		this(Arrays.asList(array), true);
 	}
 
-	public JListEntry (List<Entry> list, String checkBoxText, boolean hideUnused){
-		this(list, buildListClean(list), checkBoxText, hideUnused);
+	/**
+	 * Create a new JListEntry
+	 * @param list		The list of elements
+	 */
+	public JListEntry (List<Entry> list){
+		this(list, buildListClean(list), true);
 	}
-
-	public JListEntry (List<Entry> list, List<Entry> listClean, String checkBoxText){
-		this(list, listClean, checkBoxText, true);
+	
+	/**
+	 * Create a new JListEntry
+	 * @param list			The list of elements
+	 * @param hideUnused	The "hide" checkbox state
+	 */
+	public JListEntry (List<Entry> list, boolean hideUnused){
+		this(list, buildListClean(list), hideUnused);
 	}
-
-	public JListEntry (List<Entry> list, List<Entry> listClean, String checkBoxText, boolean hideUnused){
-		this(list, listClean, new JCheckBoxExtended(checkBoxText, hideUnused));
+	
+	/**
+	 * Create a new JListEntry
+	 * @param list		The list of elements
+	 * @param listClean	The list of not-undefined elements
+	 */
+	public JListEntry (List<Entry> list, List<Entry> listClean){
+		this(list, listClean, true);
 	}
-
+	
+	/**
+	 * Create a new JListEntry
+	 * @param list		The list of elements
+	 * @param listClean	The list of not-undefined elements
+	 * @param hideUnused	The "hide" checkbox state
+	 */
+	public JListEntry (List<Entry> list, List<Entry> listClean, boolean hideUnused){
+		this(list, listClean, new JCheckBoxExtended("Hide undefined entries", hideUnused));
+	}
+	
+	/**
+	 * Create a new JListEntry
+	 * @param list			The list of elements
+	 * @param listClean		The list of not-undefined elements
+	 * @param switchList	The "hide" checkbox
+	 */
 	public JListEntry (List<Entry> list, List<Entry> listClean, JCheckBox switchList){
 		super(list, listClean, switchList);
 		registerKeyboardAction((e) -> moveUp(e), KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK), JComponent.WHEN_FOCUSED);
@@ -49,7 +89,11 @@ public class JListEntry extends JListDouble<Entry> {
 		registerKeyboardAction((e) -> moveDown(e), KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK), JComponent.WHEN_FOCUSED);
 		registerKeyboardAction((e) -> moveDown(e), KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK + InputEvent.SHIFT_DOWN_MASK), JComponent.WHEN_FOCUSED);
 	}
-
+	
+	/**
+	 * Move an element up, if allowed
+	 * @param e		The action event
+	 */
 	public void moveUp(ActionEvent e){
 		//		System.out.println("CTRL + Up");
 		if (allowMove && hasFocus()){
@@ -76,10 +120,12 @@ public class JListEntry extends JListDouble<Entry> {
 			}
 		}
 	}
-
-
+	
+	/**
+	 * Move an element down, if allowed
+	 * @param e		The action event
+	 */
 	public void moveDown(ActionEvent e){
-		//		System.out.println("CTRL + Down");
 		if (allowMove && hasFocus()){
 			int amount = (e.getModifiers() & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK ? 10 : 1;
 			int index = getSelectedIndex();
@@ -104,26 +150,27 @@ public class JListEntry extends JListDouble<Entry> {
 			}
 		}
 	}
-
-
+	
+	
 	@Override
 	public void setList(Entry[] newList){
 		list = Arrays.asList(newList);
 		listClean = buildListClean(list);
 		refresh();
 	}
-
+	
 	@Override
 	public void setList(List<Entry> newList){
 		list = newList;
 		listClean = buildListClean(list);
 		refresh();
 	}
-	
 
+	
 	/**
 	 * Build and return a "clean" list: a list without undefined fields.
-	 * @return	The clean list
+	 * @param list	The list of elements
+	 * @return		The list of not-undefined elements
 	 */
 	public static List<Entry> buildListClean(List<Entry> list){
 		int n = list.size();
@@ -137,11 +184,23 @@ public class JListEntry extends JListDouble<Entry> {
 		}
 		return newListClean;
 	}
-
+	
 	@Override
 	public void refresh(){
 		super.refresh();
-		allowMove = list.size() > 0 && list.get(0).datStructure.getNewEntryValues() != null;
+		allowMove = list.size() > 0 && list.get(0).datStructure.newEntryValues != null;
 	}
 
+
+	/**
+	 * Select the element in the mouse event location
+	 * @param e		The mouse event
+	 */
+	public void selectElement(MouseEvent e){
+		int selected = locationToIndex(e.getPoint());
+		if (selected >= 0){
+			setSelectedIndex(selected);
+		}
+	}
+	
 }

@@ -4,6 +4,11 @@ package gui.components;
 import java.util.List;
 
 
+/**
+ * Declare the methods used by a JListExtended
+ * @author MarcoForlini
+ * @param <E>	The type of elements
+ */
 public interface AbstractJListExtended <E> {
 
 	/**
@@ -15,14 +20,12 @@ public interface AbstractJListExtended <E> {
 	/**
 	 * Set the list of elements from an array
 	 * @param newList	The array of elements
-	 * @param newCleanList	The clean array of elements
 	 */
 	void setList (E[] newList);
 
 	/**
 	 * Set the list of elements
 	 * @param newList	The list of elements
-	 * @param newCleanList	The clean list of elements
 	 */
 	void setList (List <E> newList);
 

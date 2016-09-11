@@ -29,8 +29,9 @@ public class DialogProgressBar extends JWindow {
 	
 	/**
 	 * Create a progress bar dialog. It will have a label with the given text and a progress bar with the given max.
-	 * @param text	Text of the label to display above the progress bar
-	 * @param max	Progress bar max value
+	 * @param text			Text of the label to display above the progress bar
+	 * @param max			Progress bar max value
+	 * @param multiThread	If true, the bar is used in a multiThread operation
 	 */
 	public DialogProgressBar(String text, int max, boolean multiThread){
 		setBounds(Core.getBounds(this, 400, 60));
@@ -40,12 +41,12 @@ public class DialogProgressBar extends JWindow {
 		setContentPane(contentPane);
 		contentPane.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		contentPane.setLayout(new BorderLayout(0, 0));
-		contentPane.setBackground(Core.UI_COLOR_BACKGROUND);
+		contentPane.setBackground(GUI.COLOR_UI_BACKGROUND);
 
 		progressBar.setBorder(new EmptyBorder(4, 8, 8, 8));
 		progressBar.setStringPainted(true);
-		progressBar.setForeground(Core.UI_COLOR_ELEMENT.brighter());
-		progressBar.setBackground(Core.UI_COLOR_BACKGROUND);
+		progressBar.setForeground(GUI.COLOR_UI_ELEMENT.brighter());
+		progressBar.setBackground(GUI.COLOR_UI_BACKGROUND);
 
 		JLabel lblTitle = new JLabel(text);
 		lblTitle.setLabelFor(progressBar);

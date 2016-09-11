@@ -7,9 +7,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import datstructure.FieldStruct;
-import gui.FrameEditor;
 
-public class JToggleBoxEntry extends JToggleButton implements AbstractEntryField, ChangeListener {
+
+/**
+ * A JCheckBox which can hold the value of a field
+ * @author MarcoForlini
+ */
+public class JToggleBoxField extends JToggleButton implements EntryFieldInterface, ChangeListener {
 
 	private static final long serialVersionUID = 2945166199101734683L;
 
@@ -18,7 +22,12 @@ public class JToggleBoxEntry extends JToggleButton implements AbstractEntryField
 	private Object defaultVal = null;
 	private boolean altered = false;
 
-	public JToggleBoxEntry(FrameEditor frameEditor, FieldStruct fieldStruct, int index){
+	/**
+	 * Create a new {@link JToggleButtonRed}
+	 * @param fieldStruct	The field structure
+	 * @param index			Index of the field
+	 */
+	public JToggleBoxField(FieldStruct fieldStruct, int index){
 		this.fieldStruct = fieldStruct;
 		this.index = index;
 		if (fieldStruct.getName() != null){
@@ -70,7 +79,7 @@ public class JToggleBoxEntry extends JToggleButton implements AbstractEntryField
 	}
 
 	@Override
-	public void refreshField () {}
+	public void refreshField () {/*Do nothing*/}
 
 	@Override
 	public boolean isAltered () {

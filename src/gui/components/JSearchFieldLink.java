@@ -6,14 +6,13 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.function.BiPredicate;
 
 import javax.swing.JTextField;
 import javax.swing.plaf.basic.BasicTextFieldUI;
 import javax.swing.text.JTextComponent;
 
 import datmanager.ListSearcher;
-import datstructure.Entry;
+import datstructure.Link;
 
 
 /**
@@ -23,20 +22,18 @@ import datstructure.Entry;
 public class JSearchFieldLink extends JTextField implements KeyListener, FocusListener {
 
 	private static final long serialVersionUID = -516645984968177458L;
-	private static final BiPredicate<String, Entry> NAME_MATCHER = (text, entry) -> entry.isDefined() && entry.toString().toLowerCase().contains(text);
-	private static final BiPredicate<Integer, Entry> ID_MATCHER = (val, entry) -> entry.ID == val;
 
 	/** The associated JList with the entries */
-	public AbstractJListExtended<Entry> entryList;
+	public AbstractJListExtended<Link> entryList;
 	
 	/** The searcher which search the data in the JList */
-	public ListSearcher <Entry> search = new ListSearcher<>(NAME_MATCHER, ID_MATCHER);
+	public ListSearcher <Link> search = new ListSearcher<>(ListSearcher.LINK_NAME_MATCHER, ListSearcher.LINK_ID_MATCHER);
 
 	/**
 	 * Create a new {@link JSearchFieldLink}
 	 * @param entryList		The list of entries
 	 */
-	public JSearchFieldLink (AbstractJListExtended<Entry> entryList) {
+	public JSearchFieldLink (AbstractJListExtended<Link> entryList) {
 		this.entryList = entryList;
 		setBackground(Color.WHITE);
 		setOpaque(true);

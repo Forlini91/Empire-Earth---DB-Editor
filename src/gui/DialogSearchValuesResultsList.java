@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.Window;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -12,9 +14,9 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
 import datmanager.Core;
+import datmanager.DatFile;
 import datstructure.Entry;
-import datstructure.EntryValueMap;
-import gui.components.AbstractEntryField;
+import datstructure.EntryGroup;
 import gui.components.JButtonRed;
 import gui.components.JListEntry;
 import gui.components.JSearchFieldEntry;
@@ -26,20 +28,25 @@ import gui.ui.GridBagLayoutExtended;
  * In the {@code DialogSearchValuesResults} dialog the user can double click on any entry to get the full list of entries.
  * This dialog show this list of entries.
  * @author MarcoForlini
- * @see #DialogSearchValuesResults(Window, EntryValueMap, AbstractEntryField)
  */
 public class DialogSearchValuesResultsList extends JDialog {
 	
 	private static final long serialVersionUID = 7589015334494498605L;
-
+	
+	/**
+	 * Create a new {@link DialogSearchValuesResultsList}
+	 * @param parent	The parent window
+	 * @param list		The list of entries
+	 * @param value		The selected value
+	 */
 	public DialogSearchValuesResultsList(Window parent, List<Entry> list, Object value){
 		super(parent, ModalityType.DOCUMENT_MODAL);
 		JLabel dlgLabel = new JLabel("All entries with this value:");
-		JListEntry dlgList = new JListEntry(list, "Hide unused fields");
+		JListEntry dlgList = new JListEntry(list);
 		JScrollPane dlgScrollPane = new JScrollPane(dlgList);
 		JSearchFieldEntry dlgSearch = new JSearchFieldEntry(dlgList);
 		JButton dlgClose = new JButtonRed("Close");
-		getContentPane().setBackground(Core.UI_COLOR_BACKGROUND);
+		getContentPane().setBackground(GUI.COLOR_UI_BACKGROUND);
 		dlgLabel.setOpaque(false);
 		dlgScrollPane.setOpaque(false);
 		dlgScrollPane.getViewport().setOpaque(false);
@@ -57,7 +64,26 @@ public class DialogSearchValuesResultsList extends JDialog {
 		add(dlgList.switchList, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 2));
 		add(dlgSearch, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 3));
 		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 4));
-		setVisible(true);
+
+		dlgList.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mouseClicked (MouseEvent e) {
+				int index = dlgList.getSelectedIndex();
+				if (e.getClickCount() == 2) {
+					Entry selEntry = dlgList.get(index);
+					if (selEntry != null) {
+						DatFile datFile = selEntry.datStructure.datFile;
+						if (datFile != null){
+							EntryGroup entryGroup = datFile.findGroup(selEntry);
+							if (entryGroup != null){
+								FrameEditor frameEditor = Core.openFile(DialogSearchValuesResultsList.this, datFile, true);
+								frameEditor.goToEntry(entryGroup, selEntry);
+							}
+						}
+					}
+				}
+			}
+		});
 	}
 	
 }

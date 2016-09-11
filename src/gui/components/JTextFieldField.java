@@ -5,32 +5,49 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
+import java.util.Locale;
+import java.util.function.Consumer;
 
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import datstructure.FieldStruct;
 import datstructure.Type;
-import gui.FrameEditor;
 
 
-public class JTextFieldEntry extends JTextField implements AbstractEntryField, FocusListener, KeyListener, DocumentListener {
-	
+/**
+ * A JTextField which can hold the value of a field
+ * @author MarcoForlini
+ */
+public class JTextFieldField extends JTextField implements EntryFieldInterface, KeyListener, FocusListener, DocumentListener {
+
 	private static final long serialVersionUID = -7134081240220832439L;
+	private static final NumberFormat numberFormat;
 	private static final Color BROWN = new Color(127, 51, 0);
-
+	static {
+		numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
+		numberFormat.setMaximumFractionDigits(6);
+		numberFormat.setGroupingUsed(false);
+		numberFormat.setRoundingMode(RoundingMode.HALF_UP);
+	}
+	
 	private final FieldStruct fieldStruct;
 	private final int index;
 	private final Color defaultColor;
-	private final FrameEditor frameEditor;
 	private Object defaultVal = null;
 	private boolean altered = false;
-	
+	private Consumer<String> updater = null;
 
-	public JTextFieldEntry(FrameEditor frameEditor, FieldStruct fieldStruct, int index){
-		this.frameEditor = frameEditor;
+	
+	/**
+	 * Create a new {@link JTextFieldField}
+	 * @param fieldStruct	The field structure
+	 * @param index			Index of the field
+	 */
+	public JTextFieldField(FieldStruct fieldStruct, int index){
 		this.fieldStruct = fieldStruct;
 		this.index = index;
 		if (fieldStruct.getColor() == Color.RED){
@@ -42,29 +59,39 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 		setEditable(fieldStruct.isEditable());
 		setForeground(defaultColor);
 		setCaretPosition(0);
-
+		
 		addFocusListener(this);
-		if (fieldStruct.indexStringLength >= 0){
-			addKeyListener(this);
-		}
 		getDocument().addDocumentListener(this);
 	}
 
+	/**
+	 * Register an updater function which run when a key is typed
+	 * @param updater	The updater function
+	 */
+	public void registerUpdater(Consumer<String> updater){
+		if (updater == null){
+			removeKeyListener(this);
+		} else if (this.updater == null){
+			addKeyListener(this);
+		}
+		this.updater = updater;
+	}
+	
 	@Override
 	public void resetColor () {
 		setForeground(defaultColor);
 	}
-	
+
 	@Override
 	public FieldStruct getEntryStruct () {
 		return fieldStruct;
 	}
-
+	
 	@Override
 	public int getIndex(){
 		return index;
 	}
-	
+
 	@Override
 	public Object getVal(){
 		switch(fieldStruct.getType()){
@@ -75,76 +102,75 @@ public class JTextFieldEntry extends JTextField implements AbstractEntryField, F
 			default:
 				if (getText().isEmpty()){
 					return 0;
-				} else {
-					return Integer.valueOf(getText());
 				}
+				return Integer.valueOf(getText());
 		}
 	}
-
+	
 	@Override
 	public void setVal (Object value) {
 		defaultVal = value;
 		if (fieldStruct.getType() == Type.STRING){
-			setText(((String) value).trim());
+			setText((String) value);
 		} else {
-			setText(String.valueOf(value));
+			if (value instanceof Float){
+				setText(numberFormat.format((float) value));
+			} else {
+				setText(Integer.toString((int) value));
+			}
 		}
 		setCaretPosition(0);
 		altered = false;
 	}
-	
+
 	@Override
 	public boolean isAltered (){
 		return altered;
 	}
-
+	
 	@Override
 	public Object getDefaultVal () {
 		return defaultVal;
 	}
-
+	
 	@Override
-	public void refreshField () {}
-
+	public void refreshField () {/*Do nothing*/}
+	
 	@Override
 	public void focusGained(FocusEvent e) {
 		repaint();
 	}
-	
+
 	@Override
 	public void focusLost(FocusEvent e) {
 		repaint();
 	}
-	
-	@Override
-	public void keyTyped (KeyEvent e) {
-		SwingUtilities.invokeLater(() -> {
-			//			System.out.println("Edit: " + fieldStruct + "  >  " + getText().length());
-			frameEditor.baseFields.get(fieldStruct.indexStringLength).setVal(getText().length());
-		});
-	}
-	
-	@Override
-	public void keyPressed (KeyEvent e) {}
-	
-	@Override
-	public void keyReleased (KeyEvent e) {}
 
-	
 	
 	@Override
 	public void insertUpdate (DocumentEvent e) {
 		altered = true;
 	}
-
+	
 	@Override
 	public void removeUpdate (DocumentEvent e) {
 		altered = true;
 	}
-
+	
 	@Override
 	public void changedUpdate (DocumentEvent e) {
 		altered = true;
 	}
-
+	
+	@Override
+	public void keyTyped (KeyEvent e) {
+		updater.accept(getText());
+	}
+	
+	@Override
+	public void keyPressed (KeyEvent e) {/*Do nothing*/}
+	
+	@Override
+	public void keyReleased (KeyEvent e) {/*Do nothing*/}
+	
 }

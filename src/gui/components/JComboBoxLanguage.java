@@ -14,67 +14,77 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.text.JTextComponent;
 
-import datmanager.Core;
-import datmanager.LanguageEntry;
+import datmanager.Language;
 import datmanager.ListSearcher;
 import datstructure.FieldStruct;
-import gui.FrameEditor;
 
 
-public class JComboBoxLanguage extends JComboBox <LanguageEntry> implements AbstractEntryField, ItemListener, MouseListener, KeyListener {
-
+/**
+ * A JCheckBox which hold the list of languages
+ * @author MarcoForlini
+ */
+public class JComboBoxLanguage extends JComboBox <Language> implements EntryFieldInterface, ItemListener, MouseListener, KeyListener {
+	
 	private static final long serialVersionUID = -5787229930995728192L;
-	
-	private static final BiPredicate<String, LanguageEntry> NAME_MATCHER = (text, lang) -> lang.text.toLowerCase().contains(text);
-	private static final BiPredicate<Integer, LanguageEntry> ID_MATCHER = (val, lang) -> (""+lang.code).contains(""+val);
-	
-	private ListSearcher <LanguageEntry> searcher = new ListSearcher<>(NAME_MATCHER, ID_MATCHER);
-	private JTextComponent editor = ((JTextComponent) getEditor().getEditorComponent());
+
+	private static final BiPredicate<String, Language> NAME_MATCHER = (text, lang) -> lang.text.toLowerCase().contains(text);
+	private static final BiPredicate<Integer, Language> ID_MATCHER = (val, lang) -> {
+		String text = val.toString();
+		return Integer.toString(lang.ID).contains(text) || NAME_MATCHER.test(text, lang);
+	};
+
+	private ListSearcher <Language> searcher = new ListSearcher<>(NAME_MATCHER, ID_MATCHER);
+	private JTextComponent textComponent = ((JTextComponent) getEditor().getEditorComponent());
 	private FieldStruct fieldStruct;
 	private int index;
 	private Object defaultVal = null;
 	private boolean altered = false;
-	
-	public JComboBoxLanguage(FrameEditor frameEditor, FieldStruct fieldStruct, int index){
-		super(Core.languageVector);
+
+	/**
+	 * Create a new {@link JComboBoxLanguage}
+	 * @param fieldStruct	The field structure
+	 * @param index			Index of the field
+	 */
+	public JComboBoxLanguage(FieldStruct fieldStruct, int index){
+		super(Language.LIST);
 		this.fieldStruct = fieldStruct;
 		this.index = index;
 		setEditable(true);
 		addItemListener(this);
 		addMouseListener(this);
-		editor.addKeyListener(this);
+		textComponent.addKeyListener(this);
 	}
-	
+
 	@Override
 	public synchronized void addMouseListener (MouseListener l) {
 		super.addMouseListener(l);
-		if (editor != null){
-			editor.addMouseListener(l);
+		if (textComponent != null){
+			textComponent.addMouseListener(l);
 		}
 	}
-
+	
 	@Override
 	public void resetColor () {
 		setForeground(null);
 	}
-
+	
 	@Override
 	public FieldStruct getEntryStruct () {
 		return fieldStruct;
 	}
-
+	
 	@Override
 	public int getIndex(){
 		return index;
 	}
-
+	
 	@Override
 	public Object getVal(){
 		Object obj = getSelectedItem();
 		//		System.out.println("Getting: " + fieldStruct + " = " + obj + '(' + fieldStruct.defaultValue + '/' + defaultVal + ')');
 		if (obj != null){
-			if (obj instanceof LanguageEntry) {
-				return ((LanguageEntry) obj).code;
+			if (obj instanceof Language) {
+				return ((Language) obj).ID;
 			}  else if (obj instanceof String){
 				return Integer.valueOf((String) obj);
 			} else if (obj instanceof Integer){
@@ -82,56 +92,51 @@ public class JComboBoxLanguage extends JComboBox <LanguageEntry> implements Abst
 			} else {
 				return -1;
 			}
-		} else {
-			return -1;
 		}
+		return -1;
 	}
-
+	
 	@Override
 	public void setVal(Object value){
 		defaultVal = value;
 		if (value != null && value instanceof Integer){
 			int code = (int) value;
-			LanguageEntry le = Core.LANGUAGE.get(code);
+			Language le = Language.MAP.get(code);
 			if (le != null){
 				setSelectedItem(le);
-				editor.setCaretPosition(0);
+				textComponent.setCaretPosition(0);
 				altered = false;
 				return;
 			}
 		}
 		setSelectedItem(value);
-		editor.setCaretPosition(0);
+		textComponent.setCaretPosition(0);
 		altered = false;
 	}
-	
-	@Override
-	public void refreshField() {}
 
+	@Override
+	public void refreshField() {/*Do nothing*/}
+	
 	@Override
 	public boolean isAltered () {
 		return altered;
 	}
-
+	
 	@Override
 	public Object getDefaultVal () {
 		return defaultVal;
 	}
-	
+
 	@Override
 	public void itemStateChanged (ItemEvent e) {
 		altered = true;
 	}
-
-	@Override
-	public void keyTyped (KeyEvent e) {
-
-	}
 	
-	@Override public void keyPressed (KeyEvent e) {}
+	@Override public void keyTyped (KeyEvent e) {/*Do nothing*/}
+	@Override public void keyPressed (KeyEvent e) {/*Do nothing*/}
 	@Override public void keyReleased (KeyEvent e) {
 		SwingUtilities.invokeLater(() -> {
-			String text = editor.getText();
+			String text = textComponent.getText();
 			if (text == null || text.isEmpty()){
 				System.out.println("Select: null");
 				setSelectedItem(null);
@@ -142,9 +147,9 @@ public class JComboBoxLanguage extends JComboBox <LanguageEntry> implements Abst
 				if (!isPopupVisible()) {
 					showPopup();
 				}
-				List<LanguageEntry> results = searcher.find(Core.languageVector, null, text);
+				List<Language> results = searcher.find(Language.LIST, null, text);
 				if (results != null){
-					LanguageEntry enumValue = searcher.findNext();
+					Language enumValue = searcher.findNext();
 					if (enumValue != null){
 						ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);
 						popup.getList().setSelectedValue(enumValue, true);
@@ -153,17 +158,17 @@ public class JComboBoxLanguage extends JComboBox <LanguageEntry> implements Abst
 			}
 		});
 	}
-	
+
 	@Override
 	public void mouseClicked (MouseEvent e) {
 		if (SwingUtilities.isLeftMouseButton(e)){
 			showPopup();
 		}
 	}
-	
-	@Override public void mousePressed (MouseEvent e) {}
-	@Override public void mouseReleased (MouseEvent e) {}
-	@Override public void mouseEntered (MouseEvent e) {}
-	@Override public void mouseExited (MouseEvent e) {}
 
+	@Override public void mousePressed (MouseEvent e) {/*Do nothing*/}
+	@Override public void mouseReleased (MouseEvent e) {/*Do nothing*/}
+	@Override public void mouseEntered (MouseEvent e) {/*Do nothing*/}
+	@Override public void mouseExited (MouseEvent e) {/*Do nothing*/}
+	
 }

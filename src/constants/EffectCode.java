@@ -1,45 +1,122 @@
 package constants;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.function.Function;
 
+import datmanager.Language;
+import datstructure.Entry;
+import datstructure.Link;
+
+/**
+ * Effect codes used in an Effect entry.
+ * They defines the action to execute.
+ * @author MarcoForlini
+ */
 public enum EffectCode implements EnumValue {
-
+	
+	/** Do nothing */
 	NONE ("None", -1),
+	/** Assign a new dbbutton entry to this object */
 	C01_SET_BUTTON ("Set button", 1),
+	/** Set/Mod the given attribute */
 	C02_ALTER_ATTRIBUTE ("Alter attribute", 2),
+	/** Unknown effect */
+	C03_UNKNOWN ("Unknown effect", 3),
+	/** Unknown effect. It's only used by entry 1358 (which is unused by the game) */
 	C04_UNKNOWN ("Unknown effect", 4),
+	/** Unknown effect */
+	C05_UNKNOWN ("Unknown effect", 5),
+	/** Assign a new dbgraphic entry to this object */
 	C06_SET_GRAPHIC ("Set graphic", 6),
+	/** Unknown effect */
+	C07_UNKNOWN ("Unknown effect", 7),
+	/** Enable the selected tech */
 	C08_ENABLE_TECH ("Enable tech", 8),
+	/** Disable the selected tech */
 	C09_DISABLE_TECH ("Disable tech", 9),
+	/** Special effect used by entries 237 and 238 */
 	C10_START_GAME ("Start game", 10),
+	/** Unknown effect */
+	C11_UNKNOWN ("Unknown effect", 11),
+	/** Assign a new GUI background */
 	C12_GUI_BACKGROUND ("GUI Background", 12),
+	/** Unknown effect */
+	C13_UNKNOWN ("Unknown effect", 13),
+	/** Unknown effect */
+	C14_UNKNOWN ("Unknown effect", 14),
+	/** Assign a new action sound in slot 1*/
 	C15_SET_ACTION_SOUND_1 ("Set action sound 1", 15),
+	/** Unknown effect */
+	C16_UNKNOWN ("Unknown effect", 16),
+	/** Assign a new death sound */
 	C17_SET_DEATH_SOUND ("Set death sound", 17),
+	/** Assign a new selection sound in slot 1*/
 	C18_SET_SELECTION_SOUND_1 ("Set selection sound 1", 18),
-	C19_REPLACE_ALL_OBJECTS ("Replace all objects", 19),
+	/** Replace all objects of the given class with objects of another given class and tech (they will inherit health, power and upgrades) */
+	C19_UPDGRADE_ALL_OBJECTS ("Upgrade objects", 19),
+	/** Assign a new action sound in slot 2*/
 	C20_SET_ACTION_SOUND_2 ("Set action sound 2", 20),
+	/** Assign a new selection sound in slot 2*/
 	C21_SET_SELECTION_SOUND_2 ("Set selection sound 2", 21),
-	C22_REPLACE_OBJECT ("Replace object", 22),
+	/** Replace the current object with an object from the given class (it will inherit health and power, but not the upgrades) */
+	C22_REPLACE_OBJECTS ("Replace objects", 22),
 	;
 	
+
 	
+	
+	
+	/** Name to be shown in the UI */
 	public final String name;
+
+	/** Code used in the dat files */
 	public final int code;
 
-	EffectCode(String name, int code){
-		this.name = name;
-		this.code = code;
-	}
+	/** Function which build the name of the entry */
+	public Function<Entry, String> nameBuilder;
+	
 
+	EffectCode(String effectName, int effectCode){
+		name = effectName;
+		code = effectCode;
+		switch (effectCode){
+			case -1:
+				nameBuilder = entry -> name; break;
+			case 1:
+				nameBuilder = entry -> name + ":  " + getObjectSetTech(entry).target + "  >  " + getButton(entry).target; break;
+			case 2:
+				nameBuilder = entry -> name + ":  " + getAttribute(entry); break;
+			case 6:
+				nameBuilder = entry -> name + ":  " + getObjectSetTech(entry).target + "  >  " + getGraphic(entry).target; break;
+			case 8: case 9:
+				nameBuilder = entry -> name + ":  " + getTech(entry).target; break;
+			case 12:
+				nameBuilder = entry -> name + ":  " + getGraphic(entry).target; break;
+			case 15: case 17: case 18: case 20: case 21:
+				nameBuilder = entry -> name +  ":  " + getObjectSetTech(entry).target + "  >  " + getSound(entry).target; break;
+			case 19: case 22:
+				nameBuilder = entry -> name + ":  " + getObjectSetTech(entry).target + "  >  " + getObject2(entry).target; break;
+			default:
+				nameBuilder = entry -> name;
+		}
+	}
+	
 	@Override
 	public String getName(){
 		return name;
 	}
-	
+
 	@Override
-	public int getValue () {
+	public int getCode () {
 		return code;
 	}
 
+	/**
+	 * Parse the code and return the relative enum.
+	 * @param code	The code
+	 * @return		The relative enum
+	 */
 	public static EffectCode parseValue(int code){
 		for (EffectCode effectCode : values()){
 			if (effectCode.code == code){
@@ -48,10 +125,169 @@ public enum EffectCode implements EnumValue {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String toString(){
-		return name + ": " + code;
+		return buildUIName();
+	}
+	
+	
+	
+	
+	/**
+	 * Extract the object/set/tech from the given entry
+	 * @param entry		The entry
+	 * @return			The object from/set/tech link
+	 */
+	public static Link getObjectSetTech(Entry entry){
+		Link link;
+		link = (Link) entry.values.get(5);
+		if (link.target.isDefined()) {
+			return link;
+		}
+		link = (Link) entry.values.get(7);
+		if (link.target.isDefined()){
+			return link;
+		}
+		link = (Link) entry.values.get(10);
+		if (link.target.isDefined()){
+			return link;
+		}
+		return Link.NULL;
+	}
+	
+	/**
+	 * Extract the object 1 from the given entry
+	 * @param entry		The entry
+	 * @return			The object 1 link
+	 */
+	public static Link getObject1(Entry entry){
+		Link link = (Link) entry.values.get(5);
+		if (link.target.isDefined()) {
+			return link;
+		}
+		return Link.NULL;
 	}
 
+	/**
+	 * Extract the object 2 from the given entry
+	 * @param entry		The entry
+	 * @return			The object 2 link
+	 */
+	public static Link getObject2(Entry entry){
+		Link link = (Link) entry.values.get(6);
+		if (link.target.isDefined()) {
+			return link;
+		}
+		return Link.NULL;
+	}
+
+	/**
+	 * Extract the graphic from the given entry
+	 * @param entry		The entry
+	 * @return			The graphic link
+	 */
+	public static Link getGraphic(Entry entry){
+		Link link = (Link) entry.values.get(9);
+		if (link.target.isDefined()){
+			return link;
+		}
+		return Link.NULL;
+	}
+	
+	/**
+	 * Extract the tech from the given entry
+	 * @param entry		The entry
+	 * @return			The tech link
+	 */
+	public static Link getTech(Entry entry){
+		Link link = (Link) entry.values.get(10);
+		if (link.target.isDefined()){
+			return link;
+		}
+		return Link.NULL;
+	}
+	
+	/**
+	 * Extract the sound from the given entry
+	 * @param entry		The entry
+	 * @return			The sound link
+	 */
+	public static Link getSound(Entry entry){
+		Link link = (Link) entry.values.get(12);
+		if (link.target.isDefined()){
+			return link;
+		}
+		return Link.NULL;
+	}
+
+	/**
+	 * Extract the button from the given entry
+	 * @param entry		The entry
+	 * @return			The button link
+	 */
+	public static Link getButton(Entry entry){
+		Link link = (Link) entry.values.get(13);
+		if (link.target.isDefined()){
+			return link;
+		}
+		return Link.NULL;
+	}
+	
+	
+	
+	/**
+	 * Get the attribute name/code
+	 * @param entry	The entry
+	 * @return		The atribute name/code
+	 */
+	public static Object getAttribute(Entry entry){
+		int attributeCode = (int) entry.values.get(11);
+		AttributeCode attribute = AttributeCode.parseValue(attributeCode);
+		if (attribute != null){
+			switch (attribute){
+				case C23_POP_LIMIT:
+				case C38_COMMERCIAL_TAXES:
+					return attribute.name + ' ' + getAttributeValue(entry);
+				case C40_AREA_EFFECT:
+					return getObjectSetTech(entry).target + "  >  " + attribute.name + " = " + ((Link) entry.values.get(14)).target;
+				case C45_NAME:
+					Float langID = (Float) entry.values.get(2);
+					if (langID > 0){
+						return getObjectSetTech(entry).target + "  >  " + attribute.name + " = " + Language.MAP.get(langID.intValue());
+					}
+					return getObjectSetTech(entry).target + "  >  " + attribute.name + " = (" + langID + ')';
+				default:
+					return getObjectSetTech(entry).target + "  >  " + attribute.name + getAttributeValue(entry);
+			}
+		}
+		return getObjectSetTech(entry).target + "  >  " + attributeCode;
+	}
+
+
+	private static DecimalFormat df = new DecimalFormat("#.##");
+	static{
+		df.setRoundingMode(RoundingMode.HALF_DOWN);
+		df.setDecimalSeparatorAlwaysShown(false);
+		df.setPositivePrefix("+");
+	}
+
+	/**
+	 * Build and return a string which represents the attribute's set/alter/alter mult value
+	 * @param entry	The entry
+	 * @return		The string for the attribute's value
+	 */
+	public static String getAttributeValue(Entry entry){
+		float val = (float) entry.values.get(2);
+		if (val != 0){
+			return " = " + val;
+		}
+		val = (float) entry.values.get(3);
+		if (val != 0){
+			return (val > 0 ? " + " + val : " - " + -val);
+		}
+		val = 100 * (float) entry.values.get(4);
+		return ' ' + df.format(val) + '%';
+	}
+	
 }

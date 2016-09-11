@@ -3,51 +3,89 @@ package gui.components;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.function.Supplier;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import datmanager.Core;
+import datmanager.DatFile;
+import datmanager.Language;
+import datstructure.Entry;
 import datstructure.FieldStruct;
+import datstructure.Link;
 import gui.FrameEditor;
+import gui.GUI;
 
+/**
+ * A panel which contains a label and a field
+ * @author MarcoForlini
+ */
 public class JPanelEntry extends JPanel {
-	
+
 	private static final long serialVersionUID = -8432430218424230659L;
-	
+
+	/** Index of the field */
 	public final int index;
+	/** Field structure */
 	public final FieldStruct fieldStruct;
-	public JLabel label;
-	public AbstractEntryField field;
-	
-	public JPanelEntry (FrameEditor frameEditor, FieldStruct fieldStruct, int index){
+	/** The label */
+	public JLabelField label;
+	/** The field */
+	public EntryFieldInterface field = null;
+	/** A supplier which get the current entry */
+	public Supplier<Entry> currentEntry;
+
+	/**
+	 * Create a new JPanelEntry
+	 * @param frameEditor	The parent window
+	 * @param fieldStruct	The field structure
+	 * @param index			Index of the field
+	 * @param currentEntry	A supplier which get the current entry
+	 */
+	public JPanelEntry (FrameEditor frameEditor, FieldStruct fieldStruct, int index, Supplier<Entry> currentEntry){
 		this.index = index;
 		this.fieldStruct = fieldStruct;
-		
-		label = new JLabelEntry(fieldStruct, index);
+		this.currentEntry = currentEntry;
+
+		label = new JLabelField(fieldStruct, index);
 		label.setPreferredSize(new Dimension(100, 25));
 		label.setMaximumSize(new Dimension(300, 30));
+		boolean disable = false;
 		switch(fieldStruct.getType()){
 			case BOOLEAN:
-				field = new JToggleBoxEntry(frameEditor, fieldStruct, index);
-				break;
-			case ID:
-				field = new JComboBoxEntry(frameEditor, fieldStruct, index);
+				field = new JToggleBoxField(fieldStruct, index);
 				break;
 			case ENUM:
-				field = new JComboBoxEnum(frameEditor, fieldStruct, index);
+				field = new JComboBoxEnum(fieldStruct, index);
 				break;
 			case RANGE:
-				field = new JComboBoxArray(frameEditor, fieldStruct, index);
+				field = new JComboBoxArray(fieldStruct, index);
+				break;
+			case ID:
+				if (fieldStruct.linkToStruct.datFile != null && Core.LINK_SYSTEM){
+					field = new JComboBoxField(fieldStruct, index);
+				} else {
+					disable = true;
+				}
 				break;
 			case LANGUAGE:
-				if (Core.LANGUAGE != null && Core.LANGUAGE.size() > 0){
-					field = new JComboBoxLanguage(frameEditor, fieldStruct, index);
-					break;
+				if (Language.MAP != null && !Language.MAP.isEmpty()){
+					field = new JComboBoxLanguage(fieldStruct, index);
 				}
-			default:
-				field = new JTextFieldEntry(frameEditor, fieldStruct, index);
+				break;
+		}
+		if (field == null) {
+			JTextFieldField textField = new JTextFieldField(fieldStruct, index);
+			if (fieldStruct.indexSize >= 0){
+				textField.registerUpdater(text -> frameEditor.baseFields.get(fieldStruct.indexSize).setVal(text.length()));
+			}
+			field = textField;
+		}
+		if (disable){
+			field.setForeground(GUI.COLOR_UI_ELEMENT);
+			label.setForeground(GUI.COLOR_FIELD_ID_DISABLED); 
+			label.setToolTipText("File " + fieldStruct.linkToStruct.fileName + " not loaded");
 		}
 		field.setPreferredSize(new Dimension(100, 30));
 		field.setMaximumSize(new Dimension(300, 45));
@@ -60,22 +98,43 @@ public class JPanelEntry extends JPanel {
 		setOpaque(false);
 		label.setOpaque(false);
 	}
-
-	public void setVal(Object val){
-		field.setVal(val);
-	}
 	
-	public Object getVal(){
-		if (field.isAltered()){
-			//			System.out.println(field.getEntryStruct() + ": save value " + field.getVal());
-			return field.getVal();
+	/**
+	 * Sets the value of the field
+	 * @param val	The value of the field
+	 */
+	public void setVal(Object val){
+		if (val instanceof Link){
+			field.setVal(((Link) val).target.ID);
 		} else {
-			return field.getDefaultVal();
+			field.setVal(val);
 		}
 	}
 
+	/**
+	 * Gets the value of the field
+	 * @return	the value of the field
+	 */
+	public Object getVal(){
+		Object val;
+		if (field.isAltered()){
+			val = field.getVal();
+		} else {
+			val = field.getDefaultVal();
+		}
+		if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Core.LINK_SYSTEM){
+			DatFile datFile = fieldStruct.linkToStruct.datFile;
+			Entry target = datFile.findEntry(val).entry;
+			return new Link(currentEntry.get(), fieldStruct, target);
+		}
+		return val;
+	}
+	
+	/**
+	 * Refresh the field data
+	 */
 	public void refreshField(){
 		field.refreshField();
 	}
-	
+
 }

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -30,6 +31,10 @@ import java.util.stream.Collectors;
  */
 public class EntryGroup implements Iterable <Entry> {
 
+	/** Dummy EntryGroup used for null/invalid pointers */
+	public static final EntryGroup NULL = new EntryGroup();
+
+
 	/** The structure of the entries in this group. A redundant value for quick access purposes. */
 	public DatStructure datStructure;
 
@@ -42,30 +47,39 @@ public class EntryGroup implements Iterable <Entry> {
 	/** The name of this group. This is the name of the first entry in the group, but only if there are more groups. */
 	public String name;
 	
+	/**
+	 * Create a new EntryGroup with the given structure and entries
+	 * @param datStructure	The structure of each entry
+	 * @param entries		The list of entries
+	 */
 	public EntryGroup (DatStructure datStructure, List<Entry> entries) {
 		this.datStructure = datStructure;
 		this.entries = entries;
 		if (entries.size() > 0){
 			name = entries.get(0).toString();
 		}
-		if (datStructure.getIndexID() >= 0 || !datStructure.defineNumEntries()){
-			try {
-				map = entries.parallelStream().filter(entry -> entry.isDefined()).collect(Collectors.toMap(t -> t.ID, t -> t));
-			} catch (Exception e){
-				StringBuilder sb = new StringBuilder("Error with group of " + datStructure);
-				entries.forEach(x -> sb.append('\t').append(x.sequenceNumber).append(' ').append(x.ID).append(' ').append(x.getName()).append('\n'));
-				System.err.println(sb);
-				throw e;
-			}
+		if (datStructure.indexID >= 0 || !datStructure.defineNumEntries){
+			map = entries.stream().filter(Entry::isDefined).collect(Collectors.toMap(t -> t.ID, Function.identity()));
 		} else {
 			map = new HashMap<>();
 		}
 	}
 
-	public EntryGroup (DatStructure datStructure, String name, int ID){
+	/**
+	 * Create a new empty EntryGroup with the given structure, name and ID.
+	 * @param datStructure	The structure of each entry
+	 * @param name			The name
+	 */
+	public EntryGroup (DatStructure datStructure, String name){
 		this.datStructure = datStructure;
 		this.name = name;
 		entries = new ArrayList<>();
+	}
+
+	private EntryGroup (){
+		datStructure = null;
+		name = null;
+		entries = null;
 	}
 	
 	@Override

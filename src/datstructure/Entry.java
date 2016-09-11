@@ -1,8 +1,12 @@
 package datstructure;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+
+import datmanager.DatFile;
 
 /**
  * An Entry is an object in the file.
@@ -15,6 +19,9 @@ import java.util.List;
  */
 public class Entry implements Comparable<Entry>, Iterable <Object> {
 
+	/** A dummy Entry field used for null/invalid links */
+	public static final Entry NULL = new Entry(null, -1, -1);
+	
 	/** Used by fields without name. */
 	public static final String NAME_NONE = "<No name>";
 	/** Used by undefined fields. */
@@ -42,8 +49,8 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		this.values = values;
 		if (values.size() > 0){
 			try {
-				this.sequenceNumber = datStructure.getIndexSequence() < 0 ? sequenceNumber : (int) values.get(datStructure.getIndexSequence());
-				this.ID = datStructure.getIndexID() < 0 ? ID :(int) values.get(datStructure.getIndexID());
+				this.sequenceNumber = datStructure.indexSequence < 0 ? sequenceNumber : (int) values.get(datStructure.indexSequence);
+				this.ID = datStructure.indexID < 0 ? ID :(int) values.get(datStructure.indexID);
 			} catch (Exception e){
 				StringBuilder sb = new StringBuilder("Error with entry: " + sequenceNumber + "/" + ID + " of " + datStructure + '\n');
 				values.forEach(x -> sb.append("\tValue: ").append(x).append('\n'));
@@ -71,11 +78,11 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 */
 	public Entry duplicate(int sequenceNumber, int ID){
 		List<Object> valuesCopy = new ArrayList<>(values);
-		if (datStructure.getIndexSequence() >= 0){
-			valuesCopy.set(datStructure.getIndexSequence(), sequenceNumber);
+		if (datStructure.indexSequence >= 0){
+			valuesCopy.set(datStructure.indexSequence, sequenceNumber);
 		}
-		if (datStructure.getIndexID() >= 0){
-			valuesCopy.set(datStructure.getIndexID(), ID);
+		if (datStructure.indexID >= 0){
+			valuesCopy.set(datStructure.indexID, ID);
 		}
 		return new Entry(datStructure, sequenceNumber, ID, valuesCopy);
 	}
@@ -88,16 +95,19 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @return	A list with all default values for every field defined in the structure.
 	 */
 	private static List<Object> getDefaultValues(DatStructure datStructure, int sequenceNumber, int ID){
-		int n = datStructure.getFieldStructs().length;
-		List<Object> values = new ArrayList<Object>(n);
+		if (datStructure == null){
+			return new ArrayList<>(0);
+		}
+		int n = datStructure.fieldStructs.length;
+		List<Object> values = new ArrayList<>(n);
 		for (int i = 0; i < n; i++){
-			values.add(datStructure.getNewEntryValues()[i]);
+			values.add(datStructure.newEntryValues[i]);
 		}
-		if (datStructure.getIndexSequence() >= 0){
-			values.set(datStructure.getIndexSequence(), sequenceNumber);
+		if (datStructure.indexSequence >= 0){
+			values.set(datStructure.indexSequence, sequenceNumber);
 		}
-		if (datStructure.getIndexID() >= 0){
-			values.set(datStructure.getIndexID(), ID);
+		if (datStructure.indexID >= 0){
+			values.set(datStructure.indexID, ID);
 		}
 		return values;
 	}
@@ -107,13 +117,35 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @return	A printable name for the entry
 	 */
 	public String getName(){
-		if (datStructure.getIndexName() < 0){
+		if (isDefined()){
+			if (datStructure.nameBuilder != null){
+				return datStructure.nameBuilder.apply(this);
+			}
+			int indexName = datStructure.indexName;
+			if (indexName >= 0) {
+				return (String) values.get(indexName);
+			}
 			return NAME_NONE;
-		} else if (isDefined()){
-			return ((String) values.get(datStructure.getIndexName())).trim();
-		} else {
-			return NAME_UNDEFINED;
 		}
+		return NAME_UNDEFINED;
+	}
+	
+	/**
+	 * Get a printable name of the entry.
+	 * @return	A printable name for the entry
+	 */
+	public String getTrimmedName(){
+		if (isDefined()){
+			if (datStructure.nameBuilder != null){
+				return datStructure.nameBuilder.apply(this);
+			}
+			int indexName = datStructure.indexName;
+			if (indexName >= 0) {
+				return ((String) values.get(indexName)).trim();
+			}
+			return NAME_NONE;
+		}
+		return NAME_UNDEFINED;
 	}
 
 	/**
@@ -137,36 +169,90 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @return	true if defined, false otherwise
 	 */
 	public boolean isDefined(){
-		return ID >= datStructure.getMinID()
-				&& sequenceNumber >= datStructure.getMinSeq();
+		return datStructure != null
+				&& ID >= datStructure.minID
+				&& sequenceNumber >= datStructure.minSeq;
 	}
 
 	@Override
 	public String toString(){
 		if (isDefined()){
-			if (datStructure.getNameBuilder() != null){
-				return "(" + ID + ") " + datStructure.getNameBuilder().apply(this);
-			} else {
-				int indexName = datStructure.getIndexName();
-				if (indexName >= 0){
-					return "(" + ID + ") " + ((String) values.get(indexName)).trim();
-				} else {
-					return NAME_NONE;
-				}
+			if (datStructure.nameBuilder != null){
+				return "(" + ID + ") " + datStructure.nameBuilder.apply(this);
 			}
-		} else {
-			return NAME_UNDEFINED;
+			int indexName = datStructure.indexName;
+			if (indexName >= 0){
+				return "(" + ID + ") " + ((String) values.get(indexName)).trim();
+			}
+			return NAME_NONE;
 		}
+		return NAME_UNDEFINED;
 	}
 	
 	@Override
 	public int compareTo (Entry o) {
-		return Integer.compare(sequenceNumber, o.sequenceNumber);
+		if (o == null || o.datStructure == null){
+			return -1;
+		} else if (datStructure == null){
+			return 1;
+		}
+		switch(datStructure.compareTo(o.datStructure)){
+			case -1: return -1;
+			case 1: return 1;
+			default: return Integer.compare(ID, o.ID);
+		}
 	}
 
 	@Override
 	public Iterator <Object> iterator () {
 		return values.iterator();
 	}
-	
+
+	/**
+	 * Find and return all links to this entry
+	 * @param ordered	If true, order the list
+	 * @return	All links to this entry
+	 */
+	public List<Link> getLinksToEntry(boolean ordered){
+		Collection<Link> linksToEntrySet = new HashSet<>();
+		DatFile.LOADED.forEach(datFile -> {
+			FieldStruct[] fieldStructs = datFile.datStructure.fieldStructs;
+			Link link;
+			int n = fieldStructs.length;
+			for (int i = 0; i < n; i++){
+				if (fieldStructs[i].linkToStruct == datStructure) {
+					for (EntryGroup entryGroup : datFile) {
+						for (Entry entry : entryGroup) {
+							link = (Link) entry.values.get(i);
+							if (link.target == this){
+								linksToEntrySet.add(link);
+							}
+						}
+					}
+				}
+			}
+			FieldStruct extraField = datFile.datStructure.extraField;
+			if (extraField != null && extraField.linkToStruct == datStructure) {
+				int indexExtra = datFile.datStructure.getIndexExtraFields();
+				int n2;
+				for (EntryGroup entryGroup : datFile) {
+					for (Entry entry : entryGroup) {
+						n2 = n + (Integer) entry.values.get(indexExtra);
+						for (int i = indexExtra+1; i < n2; i++){
+							link = (Link) entry.values.get(i);
+							if (link.target == this){
+								linksToEntrySet.add(link);
+							}
+						}
+					}
+				}
+			}
+		});
+		List<Link> linksToEntry = new ArrayList<>(linksToEntrySet);
+		if (ordered){
+			linksToEntry.sort(null);
+		}
+		return linksToEntry;
+	}
+
 }

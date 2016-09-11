@@ -6,76 +6,85 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import datstructure.DatContent;
 import datstructure.Entry;
-import datstructure.FieldStruct;
 
 /**
  * A class which can convert the integer, float and string values to array of bytes and save them in a *.dat file.
  * @author MarcoForlini
  *
  */
-public class DatWriter implements AutoCloseable, Closeable {
+public class DatWriter implements Closeable {
 	private DatFile datFile;
 	private ByteBuffer writer;
 	private boolean closed = false;
 
-	public DatWriter(DatFile datFile, DatContent datContent) throws IOException {
+	
+	/**
+	 * @param datFile		The datFile to write
+	 * @throws IOException	If any IO exception occur
+	 */
+	public DatWriter(DatFile datFile) throws IOException {
 		this.datFile = datFile;
+		List<Entry> entries = datFile.getAllEntries();
 		int sizeSingle = datFile.datStructure.getNumBytes();
-		int alloc = datContent.datFile.datStructure.defineNumEntries() ? 4 * datContent.entryGroups.size() : 0;
-		List<Entry> entries = datContent.getAllEntries();
-		alloc += sizeSingle * entries.size();
-		
-		int indexExtra = datContent.datFile.datStructure.getIndexCountExtra();
-		List<Integer> dynamicStrings = new ArrayList<>();
-		for (FieldStruct fieldStruct : datContent.datFile.datStructure.getFieldStructs()){
-			if (fieldStruct.indexStringLength >= 0){
-				dynamicStrings.add(fieldStruct.indexStringLength);
-			}
-		}
 
-		if (dynamicStrings.size() > 0){
-			if (indexExtra >= 0){
-				for (Entry entry : entries){
-					alloc += 4 * (int) entry.values.get(indexExtra);
-					for (Integer indexStringLength : dynamicStrings){
-						alloc += (int) entry.values.get(indexStringLength);
-					}
-				}
-			} else {
-				for (Entry entry : entries) {
-					for (Integer indexStringLength : dynamicStrings){
-						alloc += (int) entry.values.get(indexStringLength);
-					}
-				}
-			}
-		} else if (indexExtra >= 0){
-			for (Entry entry : entries){
-				alloc += 4 * (int) entry.values.get(indexExtra);
-			}
+		//Adds all "numEntries" fields in the file (0 if the field is not present, 4*numEpochs in dbtechtree.dat, 4 in the others)
+		int alloc = datFile.datStructure.defineNumEntries ? 4 * datFile.entryGroups.size() : 0;
+		alloc += sizeSingle * entries.size();		//Adds the base size of an entry * the number of entries
+		
+		/* If the file contains extra fields, adds 4 for each one */
+		if (datFile.datStructure.extraField != null){
+			int indexExtra = datFile.datStructure.getIndexExtraFields();
+			alloc += 4 * entries.parallelStream().mapToInt(entry -> (int)entry.values.get(indexExtra)).sum();
 		}
+		
+		alloc += Arrays
+				.stream(datFile.datStructure.fieldStructs)	//iterate all FieldStructs
+				.parallel()
+				.filter(fs -> fs.indexSize >= 0)			//only take the ones with indexSize >= 0
+				.mapToInt(fs -> entries.stream().mapToInt(entry -> (int)entry.values.get(fs.indexSize)).sum())	//take the size every entry declare in that field and sum it
+				.sum();
 		writer = ByteBuffer.allocate(alloc).order(ByteOrder.LITTLE_ENDIAN);
 	}
+	
 
 
 
+	/**
+	 * Write a 4 bytes integer
+	 * @param value the value to write
+	 * @throws IOException	If any IO exception occur
+	 */
 	public void writeInt(int value) throws IOException {
 		writer.putInt(value);
 	}
 	
+	/**
+	 * Write a single byte integer
+	 * @param value the value to write
+	 */
 	public void writeByte(int value){
 		writer.put((byte) value);
 	}
 
+	/**
+	 * Write a 4 bytes float
+	 * @param value the value to write
+	 * @throws IOException	If any IO exception occur
+	 */
 	public void writeFloat(float value) throws IOException {
 		writer.putFloat(value);
 	}
 	
+	/**
+	 * Write a string of length numBytes
+	 * @param string the string to write
+	 * @param numBytes the length of the string (trim the string or put extra \0 chars if string length is different than this value)
+	 * @throws IOException	If any IO exception occur
+	 */
 	public void writeString(String string, int numBytes) throws IOException{
 		byte[] str = Arrays.copyOf(string.getBytes(), numBytes);
 		writer.put(str);

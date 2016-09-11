@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.Frame;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -11,8 +13,10 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
 import datmanager.Core;
+import datmanager.DatFile;
 import datstructure.Entry;
-import gui.components.AbstractEntryField;
+import datstructure.EntryGroup;
+import gui.components.EntryFieldInterface;
 import gui.components.JButtonRed;
 import gui.components.JListDouble;
 import gui.components.JScrollPaneRed;
@@ -30,14 +34,21 @@ public class DialogSearchFieldResults extends JDialog {
 
 	private static final long serialVersionUID = 2493133528817012871L;
 
-	public DialogSearchFieldResults (Frame owner, List<Entry> entries, List<Entry> entriesClean, AbstractEntryField field) {
-		super(owner, ModalityType.DOCUMENT_MODAL);
+	/**
+	 * Create a new {@link DialogSearchFieldResults}
+	 * @param parent		The parent frame
+	 * @param entries		The list of entries
+	 * @param entriesClean	The list of clean entries
+	 * @param field			The selected field
+	 */
+	public DialogSearchFieldResults (Frame parent, List<Entry> entries, List<Entry> entriesClean, EntryFieldInterface field) {
+		super(parent, ModalityType.DOCUMENT_MODAL);
 
-		JListDouble<Entry> dlgList = new JListDouble<>(entries, entriesClean, "Hide undefined fields");
-		JScrollPane dlgScrollPane = new JScrollPaneRed(dlgList, "All entries with the same value");
+		JListDouble<Entry> dlgList = new JListDouble<>(entries, entriesClean);
+		JScrollPane dlgScrollPane = new JScrollPaneRed(dlgList, "All entries with the same value: " + field.getVal());
 		JSearchFieldEntry dlgSearch = new JSearchFieldEntry(dlgList);
 		JButton dlgClose = new JButtonRed("Close");
-		getContentPane().setBackground(Core.UI_COLOR_BACKGROUND);
+		getContentPane().setBackground(GUI.COLOR_UI_BACKGROUND);
 		dlgScrollPane.setOpaque(false);
 		dlgScrollPane.getViewport().setOpaque(false);
 		dlgScrollPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
@@ -53,8 +64,26 @@ public class DialogSearchFieldResults extends JDialog {
 		add(dlgSearch, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
 		add(dlgList.switchList, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 2));
 		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 3));
-		
-		setVisible(true);
+
+		dlgList.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mouseClicked (MouseEvent e) {
+				int index = dlgList.getSelectedIndex();
+				if (e.getClickCount() == 2) {
+					Entry selEntry = dlgList.get(index);
+					if (selEntry != null) {
+						DatFile datFile = selEntry.datStructure.datFile;
+						if (datFile != null){
+							EntryGroup entryGroup = datFile.findGroup(selEntry);
+							if (entryGroup != null){
+								FrameEditor frameEditor = Core.openFile(DialogSearchFieldResults.this, datFile, true);
+								frameEditor.goToEntry(entryGroup, selEntry);
+							}
+						}
+					}
+				}
+			}
+		});
 	}
 
 }

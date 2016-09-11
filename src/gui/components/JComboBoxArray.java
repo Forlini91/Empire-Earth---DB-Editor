@@ -17,39 +17,47 @@ import javax.swing.text.JTextComponent;
 
 import datmanager.ListSearcher;
 import datstructure.FieldStruct;
-import gui.FrameEditor;
 
 
-public class JComboBoxArray extends JComboBox <Integer> implements AbstractEntryField, ItemListener, MouseListener, KeyListener {
+/**
+ * A JComboBox which hold the content of an array
+ * @author MarcoForlini
+ */
+public class JComboBoxArray extends JComboBox <Integer> implements EntryFieldInterface, ItemListener, MouseListener, KeyListener {
 
 	private static final long serialVersionUID = -5787229930995728192L;
 	
-	private static final BiPredicate<String, Integer> NAME_MATCHER = (text, code) -> false;
-	private static final BiPredicate<Integer, Integer> ID_MATCHER = (val, code) -> code == val;
+	private static final BiPredicate<String, Integer> NAME_MATCHER = (text, code) -> text.contentEquals(Integer.toString(code));
+	private static final BiPredicate<Integer, Integer> ID_MATCHER = (val, code) -> code == val || NAME_MATCHER.test(Integer.toString(val), code);
 
 	private ListSearcher <Integer> searcher = new ListSearcher<>(NAME_MATCHER, ID_MATCHER);
-	private JTextComponent editor = ((JTextComponent) getEditor().getEditorComponent());
+	private JTextComponent textEditor = ((JTextComponent) getEditor().getEditorComponent());
 	private FieldStruct fieldStruct;
 	private int index;
 	private Object defaultVal = null;
 	private boolean altered = false;
 	
 	
-	public JComboBoxArray(FrameEditor frameEditor, FieldStruct fieldStruct, int index){
+	/**
+	 * Create a new {@link JComboBoxArray}
+	 * @param fieldStruct	The structure of the field
+	 * @param index			Index of the field
+	 */
+	public JComboBoxArray(FieldStruct fieldStruct, int index){
 		super(fieldStruct.arrValues);
 		this.fieldStruct = fieldStruct;
 		this.index = index;
 		setEditable(false);
 		addItemListener(this);
 		addMouseListener(this);
-		editor.addKeyListener(this);
+		textEditor.addKeyListener(this);
 	}
 	
 	@Override
 	public synchronized void addMouseListener (MouseListener l) {
 		super.addMouseListener(l);
-		if (editor != null){
-			editor.addMouseListener(l);
+		if (textEditor != null){
+			textEditor.addMouseListener(l);
 		}
 	}
 
@@ -71,12 +79,10 @@ public class JComboBoxArray extends JComboBox <Integer> implements AbstractEntry
 	@Override
 	public Object getVal(){
 		Object obj = getSelectedItem();
-		//		System.out.println("Getting: " + fieldStruct + " = " + obj + '(' + fieldStruct.defaultValue + '/' + defaultVal + ')');
 		if (obj != null){
 			return obj;
-		} else {
-			return fieldStruct.arrValues[0];
 		}
+		return fieldStruct.arrValues[0];
 	}
 
 	@Override
@@ -85,17 +91,17 @@ public class JComboBoxArray extends JComboBox <Integer> implements AbstractEntry
 		int index = Arrays.binarySearch(fieldStruct.arrValues, (int) value);
 		if (index >= 0){
 			setSelectedIndex(index);
-			editor.setCaretPosition(0);
+			textEditor.setCaretPosition(0);
 			altered = false;
 			return;
 		}
 		setSelectedIndex(0);
-		editor.setCaretPosition(0);
+		textEditor.setCaretPosition(0);
 		altered = false;
 	}
 	
 	@Override
-	public void refreshField() {}
+	public void refreshField() {/*Do nothing*/}
 
 	@Override
 	public boolean isAltered () {
@@ -112,15 +118,11 @@ public class JComboBoxArray extends JComboBox <Integer> implements AbstractEntry
 		altered = true;
 	}
 
-	@Override
-	public void keyTyped (KeyEvent e) {
-
-	}
-	
-	@Override public void keyPressed (KeyEvent e) {}
+	@Override public void keyTyped (KeyEvent e) {/*Do nothing*/}
+	@Override public void keyPressed (KeyEvent e) {/*Do nothing*/}
 	@Override public void keyReleased (KeyEvent e) {
 		SwingUtilities.invokeLater(() -> {
-			String text = editor.getText();
+			String text = textEditor.getText();
 			if (text == null || text.isEmpty()){
 				System.out.println("Select: null");
 				setSelectedItem(null);
@@ -150,9 +152,9 @@ public class JComboBoxArray extends JComboBox <Integer> implements AbstractEntry
 		}
 	}
 	
-	@Override public void mousePressed (MouseEvent e) {}
-	@Override public void mouseReleased (MouseEvent e) {}
-	@Override public void mouseEntered (MouseEvent e) {}
-	@Override public void mouseExited (MouseEvent e) {}
+	@Override public void mousePressed (MouseEvent e) {/*Do nothing*/}
+	@Override public void mouseReleased (MouseEvent e) {/*Do nothing*/}
+	@Override public void mouseEntered (MouseEvent e) {/*Do nothing*/}
+	@Override public void mouseExited (MouseEvent e) {/*Do nothing*/}
 
 }

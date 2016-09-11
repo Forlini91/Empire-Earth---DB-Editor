@@ -10,13 +10,17 @@ import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
-import datmanager.Core;
+import gui.GUI;
 
+/**
+ * A BasicScrollBarUI which use the program colors
+ * @author MarcoForlini
+ */
 public class EEScrollBarUI extends BasicScrollBarUI {
 	
 	@Override
 	protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
-		g.setColor(Core.UI_COLOR_BACKGROUND);
+		g.setColor(GUI.COLOR_UI_BACKGROUND);
 		g.translate(trackBounds.x, trackBounds.y);
 		g.fillRect(0, 0, trackBounds.width-4, trackBounds.height);
 		g.translate(-trackBounds.x, -trackBounds.y);
@@ -25,7 +29,7 @@ public class EEScrollBarUI extends BasicScrollBarUI {
 	@Override
 	protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
 		super.paintThumb(g, c, thumbBounds);
-		g.setColor(Core.UI_COLOR_ELEMENT);
+		g.setColor(GUI.COLOR_UI_ELEMENT);
 		g.translate(thumbBounds.x, thumbBounds.y);
 		g.fillRect(2, 2, thumbBounds.width - 4, thumbBounds.height - 4);
 		g.translate(-thumbBounds.x, -thumbBounds.y);
@@ -38,7 +42,7 @@ public class EEScrollBarUI extends BasicScrollBarUI {
 				UIManager.getColor("ScrollBar.thumbShadow"),
 				Color.WHITE,
 				UIManager.getColor("ScrollBar.thumbHighlight"));
-		button.setBackground(Core.UI_COLOR_ELEMENT);
+		button.setBackground(GUI.COLOR_UI_ELEMENT);
 		button.setForeground(Color.WHITE);
 		return button;
 	}
@@ -50,7 +54,7 @@ public class EEScrollBarUI extends BasicScrollBarUI {
 				UIManager.getColor("ScrollBar.thumbShadow"),
 				Color.WHITE,
 				UIManager.getColor("ScrollBar.thumbHighlight"));
-		button.setBackground(Core.UI_COLOR_ELEMENT);
+		button.setBackground(GUI.COLOR_UI_ELEMENT);
 		button.setForeground(Color.WHITE);
 		return button;
 	}

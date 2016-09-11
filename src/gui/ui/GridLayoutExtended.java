@@ -5,6 +5,10 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 
 
+/**
+ * A customized {@link GridLayout}
+ * @author MarcoForlini
+ */
 public class GridLayoutExtended extends GridLayout {
 
 	private static final long serialVersionUID = 4063754464776709203L;
@@ -14,6 +18,16 @@ public class GridLayoutExtended extends GridLayout {
 	int minRows = 0;
 	int minCols = 0;
 	
+	
+	/**
+	 * Create a new {@link GridLayoutExtended}
+	 * @param vertical		If true, place the elements in column, else in row
+	 * @param rightToLeft	If true, place the element from right to left
+	 * @param rows			Number of rows
+	 * @param cols			Number of columns
+	 * @param hgap			Horizontal space between columns
+	 * @param vgap			Vertical space between rows
+	 */
 	public GridLayoutExtended (boolean vertical, boolean rightToLeft, int rows, int cols, int hgap, int vgap) {
 		super(Math.max(rows, 0), Math.max(cols, 0), hgap, vgap);
 		minRows = Math.abs(Math.min(rows, -1));
@@ -64,8 +78,6 @@ public class GridLayoutExtended extends GridLayout {
 						int i = (vertical ? c * nrows + r : r * ncols + c);
 						if (i < ncomponents) {
 							parent.getComponent(i).setBounds(x, y, w, h);
-						} else {
-
 						}
 					}
 				}

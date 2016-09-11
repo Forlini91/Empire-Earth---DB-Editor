@@ -25,6 +25,10 @@ import gui.ui.GridBagConstraintsExtended;
 import gui.ui.GridBagLayoutExtended;
 
 
+/**
+ * Dialog which allow the user to select the files he want to load
+ * @author MarcoForlini
+ */
 public class DialogSelectFiles extends JDialog {
 	
 	private static final long serialVersionUID = 4743010835668668611L;
@@ -48,7 +52,7 @@ public class DialogSelectFiles extends JDialog {
 		getRootPane().setDefaultButton(okButton);
 		
 		contentPane.setLayout(gridBagLayout);
-		contentPane.setBackground(Core.UI_COLOR_BACKGROUND);
+		contentPane.setBackground(GUI.COLOR_UI_BACKGROUND);
 		contentPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		contentPane.add(scrollPane, new GridBagConstraintsExtended(0, 0, 20, 0, 0, 0, 2, 1));
 		contentPane.add(selectAllButton, new GridBagConstraintsExtended(0, 0, 0, 2, 0, 1));
@@ -87,6 +91,13 @@ public class DialogSelectFiles extends JDialog {
 		});
 	}
 	
+	/**
+	 * Create a new {@link DialogSelectFiles}
+	 * @param parent		The parent window
+	 * @param files			The list of available files
+	 * @param loaded		The list of already loaded files
+	 * @param firstLoad		If true, this is the first load
+	 */
 	public DialogSelectFiles (JFrame parent, List<DatFile> files, List<Boolean> loaded, boolean firstLoad) {
 		super(parent, ModalityType.DOCUMENT_MODAL);
 		setTitle("Load files");
@@ -99,6 +110,10 @@ public class DialogSelectFiles extends JDialog {
 		}
 	}
 	
+	/**
+	 * Check all toggles and return the chosen files
+	 * @return	The files to load
+	 */
 	public List<DatFile> getFilesToLoad(){
 		setVisible(true);
 		if (!confirm){
@@ -113,14 +128,30 @@ public class DialogSelectFiles extends JDialog {
 		return files;
 	}
 
+
+	/**
+	 * A JToggleButton which can hold a dat file data
+	 * @author MarcoForlini
+	 */
 	public static class JFileContainer extends JToggleButtonRed {
-		private static final long serialVersionUID = 7255738274808055053L;
-		DatFile datFile;
-		private JFileContainer (DatFile datFile, boolean loaded, boolean firstLoad) {
+
+		private static final long serialVersionUID = -5111891743368666332L;
+
+		/** The dat file */
+		public final DatFile datFile;
+		
+		/**
+		 * Create a new {@link JFileContainer}
+		 * @param datFile	The dat file associated to this button
+		 * @param loaded	If true, the file has already been loaded
+		 * @param firstLoad	If true, this is the first load
+		 */
+		public JFileContainer (DatFile datFile, boolean loaded, boolean firstLoad) {
 			super(datFile.getName());
 			this.datFile = datFile;
 			if (loaded){
 				setSelected(false);
+				setEnabled(false);
 				setBackground(Color.BLUE);
 			} else {
 				setSelected(firstLoad);
