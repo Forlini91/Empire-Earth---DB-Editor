@@ -6,6 +6,7 @@ import java.util.stream.IntStream;
 
 import constants.AreaEffectType;
 import constants.AttributeCode;
+import constants.CalamityType;
 import constants.ControlType;
 import constants.EffectCode;
 import constants.GFXEffectType;
@@ -142,7 +143,7 @@ public class DatStructure {
 		
 		
 		DB_AMBIENT_SOUNDS.fieldStructs = new FieldStruct[]{
-				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ID_SOUND,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_FLOAT,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_FLOAT
@@ -210,13 +211,13 @@ public class DatStructure {
 		
 		
 		DB_CALAMITY.fieldStructs = new FieldStruct[]{
-				FieldStruct.NAME, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
+				FieldStruct.NAME, new FieldStruct("Area damage", Type.FLOAT), FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.SEQ_NUMBER,
-				FieldStruct.ID, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNUSED_INT4, ID_GFX_UNKNOWN, ID_GFX_UNKNOWN, ID_GFX_UNKNOWN,
-				ID_GFX_UNKNOWN, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
-				ID_OBJECT, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL1,
+				FieldStruct.ID, new FieldStruct("Calamity type", CalamityType.values()), FieldStruct.UNKNOWN_INT4, new FieldStruct("Duration", Type.INTEGER),
+				FieldStruct.UNUSED_INT4, new FieldStruct("Cast effect", DB_GFX_EFFECTS), new FieldStruct("Hit area effect", DB_GFX_EFFECTS), new FieldStruct("Hit target effect", DB_GFX_EFFECTS),
+				new FieldStruct("Hit target effect", DB_GFX_EFFECTS), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
+				ID_OBJECT, new FieldStruct("Param 1", Type.INTEGER), new FieldStruct("Param 2", Type.INTEGER), new FieldStruct("Param 3", Type.INTEGER),
+				new FieldStruct("Param 4", Type.INTEGER), new FieldStruct("Param 5", Type.INTEGER), new FieldStruct("Param 6", Type.INTEGER), FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNUSED_BOOL1, ID_SOUND,
 				ID_SOUND, new FieldStruct("Calamity cost", Type.INTEGER), ID_UNIT_SET, FieldStruct.ID_LANGUAGE,
@@ -659,7 +660,7 @@ public class DatStructure {
 		
 		DB_WEAPON_TO_HIT.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Shock mult", Type.INTEGER),
-				new FieldStruct("Gun mult", Type.INTEGER), new FieldStruct("Arrow mult", Type.INTEGER), new FieldStruct("Pierce mult", Type.INTEGER), new FieldStruct("Laser mult", Type.INTEGER),
+				new FieldStruct("Arrow mult", Type.INTEGER), new FieldStruct("Pierce mult", Type.INTEGER), new FieldStruct("Gun mult", Type.INTEGER), new FieldStruct("Laser mult", Type.INTEGER),
 				new FieldStruct("Missile mult", Type.INTEGER)
 		};
 
@@ -694,7 +695,7 @@ public class DatStructure {
 					new FieldStruct("Repair bonus", Type.FLOAT), new FieldStruct("Repair bonus cost", Type.FLOAT), new FieldStruct("Area effect bonus", Type.FLOAT), new FieldStruct("Area effect bonus cost", Type.FLOAT),
 					new FieldStruct("Mountain combat bonus", Type.FLOAT), new FieldStruct("Mountain combat bonus cost", Type.FLOAT), new FieldStruct("Population cap bonus", Type.FLOAT), new FieldStruct("Population cap bonus cost", Type.FLOAT),
 					new FieldStruct("Area conversion bonus", Type.FLOAT), new FieldStruct("Area conversion bonus cost", Type.FLOAT), new FieldStruct("Cost reduction", Type.FLOAT), new FieldStruct("Cost reduction cost", Type.FLOAT),
-					new FieldStruct("Night-time LOS bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Night-tme LOS bonus cost", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Slavery bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Slavery bonus cost", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN),
+					new FieldStruct("Night-time LOS bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Night-time LOS bonus cost", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Slavery bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Slavery bonus cost", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN),
 					new FieldStruct("Capitol upgrade bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Capitol upgrade bonus cost", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Heroes bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Heroes bonus cost", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN),
 					new FieldStruct("Placeholder 1 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Placeholder 1 cost", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Placeholder 2 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Placeholder 2 cost", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN),
 					new FieldStruct("Placeholder 3 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Placeholder 3 cost", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Placeholder 4 bonus", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN), new FieldStruct("Placeholder 4 cost", Type.FLOAT, 4, Knowledge.NEVER_USED, GUI.COLOR_FIELD_UNCERTAIN),
@@ -767,7 +768,7 @@ public class DatStructure {
 					FieldStruct.UNKNOWN_BOOL1, new FieldStruct("<PROBABLY> Parabolic projectile"), FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
 					new FieldStruct("Category (Heroes use 27)", Type.INTEGER), FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 					FieldStruct.UNKNOWN_INT4, ID_UPGRADE, new FieldStruct("<Used by units/buildings who can convert>", Type.INTEGER), FieldStruct.UNKNOWN_FLOAT,
-					new FieldStruct("Show in scenari editor"), new FieldStruct("<PROBABLY> Belongs to \"World\""), FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
+					new FieldStruct("Can be owned by a player"), new FieldStruct("Can be owned by \"World\""), FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
 					new FieldStruct("Can be killed with Delete"), FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT1, FieldStruct.UNUSED_INT1,
 					new FieldStruct("Low health effect ID", DB_GFX_EFFECTS), new FieldStruct("Death effect ID", DB_GFX_EFFECTS), new FieldStruct("Start of attack ID", DB_GFX_EFFECTS), ID_GFX_UNKNOWN,
 					new FieldStruct("Movement effect", DB_GFX_EFFECTS), ID_GFX_UNKNOWN, new FieldStruct("Heal other effect ID", DB_GFX_EFFECTS), ID_GFX_UNKNOWN,
@@ -1019,8 +1020,8 @@ public class DatStructure {
 			
 			DB_CIV_POWER.fieldStructs = new FieldStruct[]{
 					FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Cost", Type.FLOAT),
-					ID_UNIT_SET, ID_TECH, new FieldStruct("Int amount", Type.INTEGER), new FieldStruct("GFX Effect", DB_GFX_EFFECTS),
-					FieldStruct.UNUSED_INT4, new FieldStruct("Float amount", Type.FLOAT), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
+					ID_UNIT_SET, ID_TECH, new FieldStruct("Set amount", Type.INTEGER), new FieldStruct("GFX Effect", DB_GFX_EFFECTS),
+					FieldStruct.UNUSED_INT4, new FieldStruct("Mod amount", Type.FLOAT), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 					FieldStruct.UNUSED_INT4, ID_OBJECT
 			};
 

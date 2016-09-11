@@ -22,9 +22,9 @@ import gui.GUI;
  * @author MarcoForlini
  */
 public class JPanelEntry extends JPanel {
-
+	
 	private static final long serialVersionUID = -8432430218424230659L;
-
+	
 	/** Index of the field */
 	public final int index;
 	/** Field structure */
@@ -35,7 +35,7 @@ public class JPanelEntry extends JPanel {
 	public EntryFieldInterface field = null;
 	/** A supplier which get the current entry */
 	public Supplier<Entry> currentEntry;
-
+	
 	/**
 	 * Create a new JPanelEntry
 	 * @param frameEditor	The parent window
@@ -47,7 +47,7 @@ public class JPanelEntry extends JPanel {
 		this.index = index;
 		this.fieldStruct = fieldStruct;
 		this.currentEntry = currentEntry;
-
+		
 		label = new JLabelField(fieldStruct, index);
 		label.setPreferredSize(new Dimension(100, 25));
 		label.setMaximumSize(new Dimension(300, 30));
@@ -78,13 +78,16 @@ public class JPanelEntry extends JPanel {
 		if (field == null) {
 			JTextFieldField textField = new JTextFieldField(fieldStruct, index);
 			if (fieldStruct.indexSize >= 0){
-				textField.registerUpdater(text -> frameEditor.baseFields.get(fieldStruct.indexSize).setVal(text.length()));
+				textField.registerUpdater(
+						text -> {
+							frameEditor.baseFields.get(fieldStruct.indexSize).setVal(text.length());
+						});
 			}
 			field = textField;
 		}
 		if (disable){
 			field.setForeground(GUI.COLOR_UI_ELEMENT);
-			label.setForeground(GUI.COLOR_FIELD_ID_DISABLED); 
+			label.setForeground(GUI.COLOR_FIELD_ID_DISABLED);
 			label.setToolTipText("File " + fieldStruct.linkToStruct.fileName + " not loaded");
 		}
 		field.setPreferredSize(new Dimension(100, 30));
@@ -98,7 +101,7 @@ public class JPanelEntry extends JPanel {
 		setOpaque(false);
 		label.setOpaque(false);
 	}
-	
+
 	/**
 	 * Sets the value of the field
 	 * @param val	The value of the field
@@ -110,7 +113,7 @@ public class JPanelEntry extends JPanel {
 			field.setVal(val);
 		}
 	}
-
+	
 	/**
 	 * Gets the value of the field
 	 * @return	the value of the field
@@ -129,12 +132,12 @@ public class JPanelEntry extends JPanel {
 		}
 		return val;
 	}
-	
+
 	/**
 	 * Refresh the field data
 	 */
 	public void refreshField(){
 		field.refreshField();
 	}
-
+	
 }

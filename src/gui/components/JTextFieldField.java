@@ -3,8 +3,6 @@ package gui.components;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -22,7 +20,7 @@ import datstructure.Type;
  * A JTextField which can hold the value of a field
  * @author MarcoForlini
  */
-public class JTextFieldField extends JTextField implements EntryFieldInterface, KeyListener, FocusListener, DocumentListener {
+public class JTextFieldField extends JTextField implements EntryFieldInterface, FocusListener, DocumentListener {
 
 	private static final long serialVersionUID = -7134081240220832439L;
 	private static final NumberFormat numberFormat;
@@ -33,13 +31,14 @@ public class JTextFieldField extends JTextField implements EntryFieldInterface, 
 		numberFormat.setGroupingUsed(false);
 		numberFormat.setRoundingMode(RoundingMode.HALF_UP);
 	}
+	private static final Consumer<String> nullUpdater = text -> {/*Do nothing*/};
 	
 	private final FieldStruct fieldStruct;
 	private final int index;
 	private final Color defaultColor;
 	private Object defaultVal = null;
 	private boolean altered = false;
-	private Consumer<String> updater = null;
+	private Consumer<String> updater = nullUpdater;
 
 	
 	/**
@@ -69,12 +68,11 @@ public class JTextFieldField extends JTextField implements EntryFieldInterface, 
 	 * @param updater	The updater function
 	 */
 	public void registerUpdater(Consumer<String> updater){
-		if (updater == null){
-			removeKeyListener(this);
-		} else if (this.updater == null){
-			addKeyListener(this);
+		if (updater != null){
+			this.updater = updater;
+		} else {
+			this.updater = nullUpdater;
 		}
-		this.updater = updater;
 	}
 	
 	@Override
@@ -150,27 +148,19 @@ public class JTextFieldField extends JTextField implements EntryFieldInterface, 
 	@Override
 	public void insertUpdate (DocumentEvent e) {
 		altered = true;
+		updater.accept(getText());
 	}
 	
 	@Override
 	public void removeUpdate (DocumentEvent e) {
 		altered = true;
+		updater.accept(getText());
 	}
 	
 	@Override
 	public void changedUpdate (DocumentEvent e) {
 		altered = true;
-	}
-	
-	@Override
-	public void keyTyped (KeyEvent e) {
 		updater.accept(getText());
 	}
-	
-	@Override
-	public void keyPressed (KeyEvent e) {/*Do nothing*/}
-	
-	@Override
-	public void keyReleased (KeyEvent e) {/*Do nothing*/}
 	
 }

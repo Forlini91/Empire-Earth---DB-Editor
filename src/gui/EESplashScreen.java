@@ -20,7 +20,7 @@ public class EESplashScreen extends JFrame {
 
 	private static final long serialVersionUID = -5296485583875576204L;
 	private static final BufferedImage image;
-	private static final String[] buttons = new String[]{"Vanilla", "Art of Conquest"};
+	private static final String[] buttons = new String[]{"Vanilla", "Art of Conquest", "Exit"};
 	private static final ImageIcon IMAGE_ICON = new ImageIcon(GUI.class.getResource("EE_Icon.png"));
 	static {
 		BufferedImage img = null;
@@ -50,7 +50,7 @@ public class EESplashScreen extends JFrame {
 	 */
 	public Boolean askEditorType(){
 		setVisible(true);
-		int answer = JOptionPane.showOptionDialog(this, "Vanilla or AOC?", "Empire Earth - DB Editor", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
+		int answer = JOptionPane.showOptionDialog(this, "Vanilla or AOC?", "Empire Earth - DB Editor", JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
 		setVisible(false);
 		switch (answer){
 			case 0: return false;
