@@ -30,9 +30,9 @@ import gui.ui.GridBagLayoutExtended;
  * @author MarcoForlini
  */
 public class DialogSearchValuesResultsList extends JDialog {
-	
+
 	private static final long serialVersionUID = 7589015334494498605L;
-	
+
 	/**
 	 * Create a new {@link DialogSearchValuesResultsList}
 	 * @param parent	The parent window
@@ -52,10 +52,10 @@ public class DialogSearchValuesResultsList extends JDialog {
 		dlgScrollPane.getViewport().setOpaque(false);
 		dlgScrollPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
 		dlgScrollPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
-
+		
 		getRootPane().registerKeyboardAction((e) -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 		dlgClose.addActionListener(e2 -> dispose());
-
+		
 		setTitle("For value: " + value);
 		setBounds(Core.getBounds(this, 0.45, 0.6));
 		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{30, 400, 25, 30, 50}, new double[]{1.0}, new double[]{0, 1.0, 0, 0, 0}));
@@ -64,7 +64,7 @@ public class DialogSearchValuesResultsList extends JDialog {
 		add(dlgList.switchList, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 2));
 		add(dlgSearch, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 3));
 		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 4));
-
+		
 		dlgList.addMouseListener(new MouseAdapter(){
 			@Override
 			public void mouseClicked (MouseEvent e) {
@@ -85,5 +85,5 @@ public class DialogSearchValuesResultsList extends JDialog {
 			}
 		});
 	}
-	
+
 }

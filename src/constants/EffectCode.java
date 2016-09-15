@@ -14,7 +14,7 @@ import datstructure.Link;
  * @author MarcoForlini
  */
 public enum EffectCode implements EnumValue {
-	
+
 	/** Do nothing */
 	NONE ("None", -1),
 	/** Assign a new dbbutton entry to this object */
@@ -62,21 +62,21 @@ public enum EffectCode implements EnumValue {
 	/** Replace the current object with an object from the given class (it will inherit health and power, but not the upgrades) */
 	C22_REPLACE_OBJECTS ("Replace objects", 22),
 	;
-	
 
 	
-	
-	
+
+
+
 	/** Name to be shown in the UI */
 	public final String name;
-
+	
 	/** Code used in the dat files */
 	public final int code;
-
+	
 	/** Function which build the name of the entry */
 	public Function<Entry, String> nameBuilder;
-	
 
+	
 	EffectCode(String effectName, int effectCode){
 		name = effectName;
 		code = effectCode;
@@ -101,39 +101,66 @@ public enum EffectCode implements EnumValue {
 				nameBuilder = entry -> name;
 		}
 	}
-	
+
 	@Override
 	public String getName(){
 		return name;
 	}
-
+	
 	@Override
 	public int getCode () {
 		return code;
 	}
 
+	@Override
+	public boolean isValid (int code) {
+		return code >= -1 && code <= 22;
+	}
+
+	
+	
 	/**
 	 * Parse the code and return the relative enum.
 	 * @param code	The code
 	 * @return		The relative enum
 	 */
 	public static EffectCode parseValue(int code){
-		for (EffectCode effectCode : values()){
-			if (effectCode.code == code){
-				return effectCode;
-			}
+		switch (code){
+			case -1: return NONE;
+			case 1: return C01_SET_BUTTON;
+			case 2: return C02_ALTER_ATTRIBUTE;
+			case 3: return C03_UNKNOWN;
+			case 4: return C04_UNKNOWN;
+			case 5: return C05_UNKNOWN;
+			case 6: return C06_SET_GRAPHIC;
+			case 7: return C07_UNKNOWN;
+			case 8: return C08_ENABLE_TECH;
+			case 9: return C09_DISABLE_TECH;
+			case 10: return C10_START_GAME;
+			case 11: return C11_UNKNOWN;
+			case 12: return C12_GUI_BACKGROUND;
+			case 13: return C13_UNKNOWN;
+			case 14: return C14_UNKNOWN;
+			case 15: return C15_SET_ACTION_SOUND_1;
+			case 16: return C16_UNKNOWN;
+			case 17: return C17_SET_DEATH_SOUND;
+			case 18: return C18_SET_SELECTION_SOUND_1;
+			case 19: return C19_UPDGRADE_ALL_OBJECTS;
+			case 20: return C20_SET_ACTION_SOUND_2;
+			case 21: return C21_SET_SELECTION_SOUND_2;
+			case 22: return C22_REPLACE_OBJECTS;
+			default: return null;
 		}
-		return null;
 	}
-
+	
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Extract the object/set/tech from the given entry
 	 * @param entry		The entry
@@ -155,7 +182,7 @@ public enum EffectCode implements EnumValue {
 		}
 		return Link.NULL;
 	}
-	
+
 	/**
 	 * Extract the object 1 from the given entry
 	 * @param entry		The entry
@@ -168,7 +195,7 @@ public enum EffectCode implements EnumValue {
 		}
 		return Link.NULL;
 	}
-
+	
 	/**
 	 * Extract the object 2 from the given entry
 	 * @param entry		The entry
@@ -181,7 +208,7 @@ public enum EffectCode implements EnumValue {
 		}
 		return Link.NULL;
 	}
-
+	
 	/**
 	 * Extract the graphic from the given entry
 	 * @param entry		The entry
@@ -194,7 +221,7 @@ public enum EffectCode implements EnumValue {
 		}
 		return Link.NULL;
 	}
-	
+
 	/**
 	 * Extract the tech from the given entry
 	 * @param entry		The entry
@@ -207,7 +234,7 @@ public enum EffectCode implements EnumValue {
 		}
 		return Link.NULL;
 	}
-	
+
 	/**
 	 * Extract the sound from the given entry
 	 * @param entry		The entry
@@ -220,7 +247,7 @@ public enum EffectCode implements EnumValue {
 		}
 		return Link.NULL;
 	}
-
+	
 	/**
 	 * Extract the button from the given entry
 	 * @param entry		The entry
@@ -233,13 +260,13 @@ public enum EffectCode implements EnumValue {
 		}
 		return Link.NULL;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Get the attribute name/code
 	 * @param entry	The entry
-	 * @return		The atribute name/code
+	 * @return		The attribute name/code
 	 */
 	public static Object getAttribute(Entry entry){
 		int attributeCode = (int) entry.values.get(11);
@@ -263,15 +290,15 @@ public enum EffectCode implements EnumValue {
 		}
 		return getObjectSetTech(entry).target + "  >  " + attributeCode;
 	}
-
-
+	
+	
 	private static DecimalFormat df = new DecimalFormat("#.##");
 	static{
 		df.setRoundingMode(RoundingMode.HALF_DOWN);
 		df.setDecimalSeparatorAlwaysShown(false);
 		df.setPositivePrefix("+");
 	}
-
+	
 	/**
 	 * Build and return a string which represents the attribute's set/alter/alter mult value
 	 * @param entry	The entry
@@ -289,5 +316,5 @@ public enum EffectCode implements EnumValue {
 		val = 100 * (float) entry.values.get(4);
 		return ' ' + df.format(val) + '%';
 	}
-	
+
 }

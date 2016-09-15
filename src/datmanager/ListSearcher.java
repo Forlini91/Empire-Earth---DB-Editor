@@ -48,6 +48,8 @@ public class ListSearcher<T> {
 	/** The current searched string */
 	private String currentSearch = null;
 	
+	private List<T> currentList = null;
+	
 	/** The current index of the search */
 	public int searchIndex = 0;
 	
@@ -83,9 +85,10 @@ public class ListSearcher<T> {
 	public List<T> find (List<T> list, Consumer<T> updateFunction, String text){
 		this.updateFunction = updateFunction;
 		if (text != null && text.length() > 0) {
-			if (!text.equalsIgnoreCase(currentSearch)){
+			if (list != currentList || !text.equalsIgnoreCase(currentSearch)){
 				System.out.print("Search: " + currentSearch + "   >   " + text);
 				clearResult();
+				currentList = list;
 				currentSearch = text;
 				if (!text.isEmpty()){
 					try {
@@ -177,6 +180,22 @@ public class ListSearcher<T> {
 			return value;
 		}
 		return null;
+	}
+	
+	/**
+	 * Return the last result of this search instance
+	 * @return the last result
+	 */
+	public T getCurrent(){
+		if (results != null && searchIndex >= 0 && searchIndex < results.size()){
+			return results.get(searchIndex);
+		}
+		return null;
+	}
+	
+	@SuppressWarnings ("javadoc")
+	public void resetCurrent(){
+		searchIndex = -1;
 	}
 	
 	

@@ -14,14 +14,14 @@ import constants.WorldID;
  * @author MarcoForlini
  */
 public class EntryValueMap{
-
+	
 	/** Map each value to the list of entries which use that value */
 	public final Map<Object, List<Entry>> map;
 	/** Map each not-null value to the list of entries which use that value */
 	public final Map<Object, List<Entry>> mapClean;
 	/** Total number of entries */
 	public final int counter;
-	
+
 	/**
 	 * Create a new {@link EntryValueMap}
 	 * @param map		Map each value to the list of entries which use that value
@@ -33,7 +33,7 @@ public class EntryValueMap{
 		this.mapClean = mapClean;
 		this.counter = counter;
 	}
-
+	
 	/**
 	 * Scan all entries and group entries by value
 	 * @param entryGroups 			The list of entry groups
@@ -54,6 +54,8 @@ public class EntryValueMap{
 		List<Entry> entries;
 		Object value;
 		int counter = 0;
+		boolean enumType = fieldStruct.enumValues != null;
+		int size = enumType ? fieldStruct.enumValues.length : 0;
 		for (EntryGroup entryGroup : entryGroups){
 			for (Entry entry : entryGroup){
 				counter++;
@@ -62,7 +64,7 @@ public class EntryValueMap{
 					if (value instanceof Link){
 						value = ((Link) value).target;
 					} else if (value instanceof Integer){
-						if (fieldStruct.enumValues != null){
+						if (enumType){
 							int intVal = (Integer) value;
 							if (fieldStruct.enumValues instanceof ControlType[] && intVal > 0){
 								intVal -= 1000;
@@ -72,10 +74,10 @@ public class EntryValueMap{
 								if (value == null){
 									continue;
 								}
-							} else if (intVal >= 0) {
+							} else if (intVal >= 0 && intVal < size) {
 								value = fieldStruct.enumValues[intVal];
 							} else {
-								value = fieldStruct.enumValues[0];
+								value = intVal;
 							}
 						}
 					}
@@ -86,7 +88,7 @@ public class EntryValueMap{
 					} else {
 						valueEntryMap.get(value).add(entry);
 					}
-
+					
 					if (filterUndefined && entry.isDefined()){
 						if (!valueEntryMapClean.containsKey(value)){
 							entries = new ArrayList<>();
@@ -99,7 +101,8 @@ public class EntryValueMap{
 				}
 			}
 		}
+
 		return new EntryValueMap (new TreeMap<>(valueEntryMap), new TreeMap<>(valueEntryMapClean), counter);
 	}
-	
+
 }

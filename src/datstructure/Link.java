@@ -8,23 +8,31 @@ import java.util.stream.Collectors;
  * @author MarcoForlini
  */
 public class Link implements Comparable<Link> {
-
+	
+	/** Null target entry */
+	public static final Entry nullTarget = new Entry(null, true, -2, -2);
+	static {
+		nullTarget.name = "Null";
+	}
+	
 	/** Null/Invalid link */
-	public static final Link NULL = new Link(Entry.NULL, null, Entry.NULL);
+	public static final Link NULL = new Link(Entry.NULL, null, nullTarget);
 	
-	
+
+
+
 	/** The source entry which contains the link */
 	public Entry source;
-
+	
 	/** The field struct */
 	public FieldStruct fieldStruct;
-
+	
 	/** The pointed entry */
 	public Entry target;
-
+	
 	/** If true, the link is inverted */
 	public final boolean inverted;
-
+	
 	/**
 	 * Create a new Link
 	 * @param source			The entry which point
@@ -34,10 +42,10 @@ public class Link implements Comparable<Link> {
 	public Link (Entry source, FieldStruct fieldStruct, Entry target){
 		this.source = source;
 		this.fieldStruct = fieldStruct;
-		this.target = target;
+		this.target = target != null ? target : nullTarget;
 		inverted = false;
 	}
-
+	
 	/**
 	 * Create a new Link with inverted source and target
 	 * @param link	An existing link
@@ -48,12 +56,12 @@ public class Link implements Comparable<Link> {
 		target = link.source;
 		inverted = !link.inverted;
 	}
-
+	
 	@Override
 	public String toString(){
 		return "(" + target.datStructure + "  >  " + fieldStruct.name + ")   " + target.toString();
 	}
-
+	
 	/**
 	 * Given a list of links, return a list with all Links inverted (from target to source)
 	 * @param links 	A list of links
@@ -67,7 +75,7 @@ public class Link implements Comparable<Link> {
 		}
 		return inverseLinks;
 	}
-
+	
 	@Override
 	public int compareTo (Link o) {
 		if (o == null){
@@ -81,7 +89,12 @@ public class Link implements Comparable<Link> {
 			e1s = source; e1t = target;
 			e2s = o.source; e2t = o.target;
 		}
-		
+		if (e1s.dummyEntry || e2t.dummyEntry){
+			return (e2s.dummyEntry || e2t.dummyEntry) ? 0 : -1;
+		} else if (e2s.dummyEntry || e2t.dummyEntry){
+			return 1;
+		}
+
 		switch (e1s.datStructure.compareTo(e2s.datStructure)){
 			case -1: return -1;
 			case 1: return 1;
@@ -96,7 +109,7 @@ public class Link implements Comparable<Link> {
 		}
 		return e1t.compareTo(e2t);
 	}
-
+	
 	@Override
 	public boolean equals (Object o) {
 		if (this == o){

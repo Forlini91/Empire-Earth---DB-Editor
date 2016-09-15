@@ -24,11 +24,11 @@ public class DatWriter implements Closeable {
 	
 	/**
 	 * @param datFile		The datFile to write
+	 * @param entries		The entries to save
 	 * @throws IOException	If any IO exception occur
 	 */
-	public DatWriter(DatFile datFile) throws IOException {
+	public DatWriter(DatFile datFile, List<Entry> entries) throws IOException {
 		this.datFile = datFile;
-		List<Entry> entries = datFile.getAllEntries();
 		int sizeSingle = datFile.datStructure.getNumBytes();
 
 		//Adds all "numEntries" fields in the file (0 if the field is not present, 4*numEpochs in dbtechtree.dat, 4 in the others)

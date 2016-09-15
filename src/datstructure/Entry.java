@@ -20,7 +20,17 @@ import datmanager.DatFile;
 public class Entry implements Comparable<Entry>, Iterable <Object> {
 
 	/** A dummy Entry field used for null/invalid links */
-	public static final Entry NULL = new Entry(null, -1, -1);
+	public static final Entry NULL = new Entry(null, true, -1, -1);
+	
+	/** A dummy Entry field used for null/invalid links */
+	public static final Entry NULL0 = new Entry(null, true, 0, 0);
+
+	static {
+		NULL.name = "Null (-1)";
+		NULL.sequenceNumber = -1;
+		NULL.ID = -1;
+		NULL0.name = "Null (0)";
+	}
 	
 	/** Used by fields without name. */
 	public static final String NAME_NONE = "<No name>";
@@ -28,6 +38,8 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	public static final String NAME_UNDEFINED = "<Undefined>";
 	
 
+	/** Name of the entry. If null, the name is calculated basing on the fields */
+	public String name = null;
 	/** The structure of this entry. */
 	public final DatStructure datStructure;
 	/** The values of this entry. They are in the same order as the fiels defined in the structure. */
@@ -36,16 +48,22 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	public int sequenceNumber;
 	/** The entry's ID. This is a redundant value which can be found in values[indexID]. */
 	public int ID;
+	/** If true, this entry is just for Link purposes and must be ignored anywhere except in Links */
+	public boolean dummyEntry = false;
+	
+	
 	
 	/**
 	 * Create a new entry with the given DatStructure, sequence number, ID and values.
 	 * @param datStructure		The dat file structure
+	 * @param dummyEntry		If true, this entry is just for Link purposes and must be ignored anywhere except in Links
 	 * @param sequenceNumber	The sequence number
 	 * @param ID				The ID
 	 * @param values			The values for this entry
 	 */
-	public Entry(DatStructure datStructure, int sequenceNumber, int ID, List<Object> values){
+	public Entry(DatStructure datStructure, boolean dummyEntry, int sequenceNumber, int ID, List<Object> values){
 		this.datStructure = datStructure;
+		this.dummyEntry = dummyEntry;
 		this.values = values;
 		if (values.size() > 0){
 			try {
@@ -57,17 +75,21 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 				System.err.println(sb);
 				throw e;
 			}
+		} else {
+			this.ID = ID;
+			this.sequenceNumber = sequenceNumber;
 		}
 	}
 
 	/**
 	 * Create a new Entry with the given DatStructure, sequence number and ID. Assign default values to all other fields.
 	 * @param datStructure		The dat file structure
+	 * @param dummyEntry		If true, this entry is just for Link purposes and must be ignored anywhere except in Links
 	 * @param sequenceNumber	The sequence number
 	 * @param ID				The ID
 	 */
-	public Entry(DatStructure datStructure, int sequenceNumber, int ID){
-		this(datStructure, sequenceNumber, ID, getDefaultValues(datStructure, sequenceNumber, ID));
+	public Entry(DatStructure datStructure, boolean dummyEntry, int sequenceNumber, int ID){
+		this(datStructure, dummyEntry, sequenceNumber, ID, getDefaultValues(datStructure, sequenceNumber, ID));
 	}
 
 	/**
@@ -84,7 +106,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		if (datStructure.indexID >= 0){
 			valuesCopy.set(datStructure.indexID, ID);
 		}
-		return new Entry(datStructure, sequenceNumber, ID, valuesCopy);
+		return new Entry(datStructure, dummyEntry, sequenceNumber, ID, valuesCopy);
 	}
 	
 	/**
@@ -95,7 +117,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @return	A list with all default values for every field defined in the structure.
 	 */
 	private static List<Object> getDefaultValues(DatStructure datStructure, int sequenceNumber, int ID){
-		if (datStructure == null){
+		if (datStructure == null || datStructure.newEntryValues == null){
 			return new ArrayList<>(0);
 		}
 		int n = datStructure.fieldStructs.length;
@@ -117,7 +139,9 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @return	A printable name for the entry
 	 */
 	public String getName(){
-		if (isDefined()){
+		if (name != null){
+			return name;
+		} else if (isDefined()){
 			if (datStructure.nameBuilder != null){
 				return datStructure.nameBuilder.apply(this);
 			}
@@ -135,7 +159,9 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @return	A printable name for the entry
 	 */
 	public String getTrimmedName(){
-		if (isDefined()){
+		if (name != null){
+			return name;
+		} else if (isDefined()){
 			if (datStructure.nameBuilder != null){
 				return datStructure.nameBuilder.apply(this);
 			}
@@ -146,6 +172,14 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 			return NAME_NONE;
 		}
 		return NAME_UNDEFINED;
+	}
+
+	/**
+	 * Check if this entry is a valid target you can jump in the GUI
+	 * @return	true if you can jump here, false otherwise
+	 */
+	public boolean isValidLinkTarget(){
+		return !dummyEntry && isDefined();
 	}
 
 	/**
@@ -176,7 +210,9 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 
 	@Override
 	public String toString(){
-		if (isDefined()){
+		if (name != null){
+			return name;
+		} else if (isDefined()){
 			if (datStructure.nameBuilder != null){
 				return "(" + ID + ") " + datStructure.nameBuilder.apply(this);
 			}

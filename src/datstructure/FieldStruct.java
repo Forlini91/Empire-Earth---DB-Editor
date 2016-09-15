@@ -80,8 +80,11 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public final Integer[] arrValues;
 	/** Default value to the given field, when no ID is selected */
 	public final Object defaultValue;
+	/** Null value for ID fields */
+	public final int nullID;
 	/** Index of the field which hold the size of the string field. (Yeah... some strings length is not a fixed 100) */
 	public final int indexSize;
+	
 	
 	
 
@@ -104,6 +107,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		arrValues = null;
 		indexSize = -1;
 		defaultValue = -1;
+		nullID = 0;
 	}
 	
 	/**
@@ -123,6 +127,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		arrValues = null;
 		defaultValue = -1;
 		indexSize = -1;
+		nullID = 0;
 	}
 	
 	/**
@@ -143,6 +148,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		arrValues = null;
 		defaultValue = -1;
 		indexSize = -1;
+		nullID = 0;
 	}
 	
 	/**
@@ -164,6 +170,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		arrValues = null;
 		defaultValue = -1;
 		indexSize = -1;
+		nullID = 0;
 	}
 	
 	/**
@@ -185,6 +192,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		arrValues = null;
 		defaultValue = -1;
 		indexSize = -1;
+		nullID = 0;
 	}
 	
 	/**
@@ -207,16 +215,20 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		arrValues = null;
 		defaultValue = -1;
 		indexSize = -1;
+		nullID = 0;
 	}
 	
 	/**
 	 * Create a new FieldStruct with the given name, which is a link to another entry
 	 * @param name			Name of the field
 	 * @param linkToStruct	Link to this dat
+	 * @param nullID		ID used by the game to indicate a NULL link
 	 */
-	public FieldStruct (String name, DatStructure linkToStruct) {
+	public FieldStruct (String name, DatStructure linkToStruct, int nullID) {
 		this.name = name;
 		this.linkToStruct = linkToStruct;
+		this.nullID = nullID;
+		defaultValue = nullID;
 		type = Type.ID;
 		size = 4;
 		knowledge = Knowledge.KNOWN;
@@ -224,7 +236,6 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		editable = true;
 		enumValues = null;
 		arrValues = null;
-		defaultValue = -1;
 		indexSize = -1;
 	}
 
@@ -232,11 +243,13 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	 * Create a new FieldStruct with the given name, which is a link to another entry
 	 * @param name			Name of the field
 	 * @param linkToStruct	Link to this dat
+	 * @param nullID		ID used by the game to indicate a NULL link
 	 * @param defaultValue	Default value if the link can't be found
 	 */
-	public FieldStruct (String name, DatStructure linkToStruct, int defaultValue) {
+	public FieldStruct (String name, DatStructure linkToStruct, int nullID, int defaultValue) {
 		this.name = name;
 		this.linkToStruct = linkToStruct;
+		this.nullID = nullID;
 		this.defaultValue = defaultValue;
 		type = Type.ID;
 		size = 4;
@@ -252,15 +265,17 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	 * Create a new FieldStruct with the given name and knowledge, which is a link to another entry
 	 * @param name			Name of the field
 	 * @param linkToStruct	Link to this dat
+	 * @param nullID		ID used by the game to indicate a NULL link
 	 * @param knowledge		The current knowledge we have about this field
 	 */
-	public FieldStruct (String name, DatStructure linkToStruct, Knowledge knowledge) {
+	public FieldStruct (String name, DatStructure linkToStruct, int nullID, Knowledge knowledge) {
 		this.name = name;
 		this.linkToStruct = linkToStruct;
+		this.nullID = nullID;
+		defaultValue = nullID;
 		this.knowledge = knowledge;
 		type = Type.ID;
 		size = 4;
-		defaultValue = -1;
 		color = GUI.COLOR_FIELD_LINK;
 		editable = true;
 		enumValues = null;
@@ -285,6 +300,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		arrValues = null;
 		defaultValue = -1;
 		indexSize = -1;
+		nullID = 0;
 	}
 
 	/**
@@ -305,6 +321,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		linkToStruct = null;
 		arrValues = null;
 		indexSize = -1;
+		nullID = 0;
 	}
 
 	/**
@@ -325,6 +342,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		arrValues = null;
 		defaultValue = -1;
 		indexSize = -1;
+		nullID = 0;
 	}
 	
 	/**
@@ -344,6 +362,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		enumValues = null;
 		defaultValue = -1;
 		indexSize = -1;
+		nullID = 0;
 	}
 
 	/**
@@ -364,6 +383,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		linkToStruct = null;
 		enumValues = null;
 		indexSize = -1;
+		nullID = 0;
 	}
 
 	/**
@@ -383,6 +403,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		linkToStruct = null;
 		arrValues = null;
 		defaultValue = -1;
+		nullID = 0;
 	}
 
 

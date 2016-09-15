@@ -13,23 +13,23 @@ import javax.swing.JCheckBox;
  * @param <E> Type of elements
  */
 public class JListDouble<E> extends JListExtended<E> {
-
-	private static final long serialVersionUID = -1460528354644591567L;
 	
+	private static final long serialVersionUID = -1460528354644591567L;
+
 	/** A list without undefined fields. */
 	public List<E> listClean;
-	
+
 	/** A JCheckBox which allow the user to hide/show the undefined fields, by switching the normal and clean lists. */
 	public JCheckBox switchList;
-	
-	
+
+
 	/**
 	 * Create a new {@link JListDouble}
 	 */
 	public JListDouble (){
 		this(new ArrayList<>(0), new ArrayList<>(0));
 	}
-
+	
 	/**
 	 * Create a new {@link JListDouble}
 	 * @param switchList	The "hide" checkbox state
@@ -37,7 +37,7 @@ public class JListDouble<E> extends JListExtended<E> {
 	public JListDouble (boolean switchList){
 		this(new ArrayList<>(0), new ArrayList<>(0), switchList);
 	}
-
+	
 	/**
 	 * Create a new {@link JListDouble}
 	 * @param list			The list of elements
@@ -46,7 +46,7 @@ public class JListDouble<E> extends JListExtended<E> {
 	public JListDouble (List<E> list, List<E> listClean){
 		this(list, listClean, true);
 	}
-
+	
 	/**
 	 * Create a new {@link JListDouble}
 	 * @param list			The list of elements
@@ -56,7 +56,7 @@ public class JListDouble<E> extends JListExtended<E> {
 	public JListDouble (List<E> list, List<E> listClean, boolean switchList){
 		this(list, listClean, new JCheckBoxExtended("Hide undefined fields", switchList));
 	}
-
+	
 	/**
 	 * Create a new {@link JListDouble}
 	 * @param list			The list of elements
@@ -67,12 +67,14 @@ public class JListDouble<E> extends JListExtended<E> {
 		this.list = list;
 		this.listClean = listClean;
 		this.switchList = switchList;
-		switchList.addChangeListener(E -> refresh());
+		switchList.addActionListener(e -> {
+			refresh();
+		});
 		refresh();
 	}
-
-
 	
+	
+
 	/**
 	 * Set the lists
 	 * @param newList		The array of elements
@@ -81,7 +83,7 @@ public class JListDouble<E> extends JListExtended<E> {
 	public void setList(E[] newList, E[] newCleanList){
 		setList(Arrays.asList(newList), Arrays.asList(newCleanList));
 	}
-	
+
 	/**
 	 * Set the lists
 	 * @param newList		The list of elements
@@ -92,45 +94,45 @@ public class JListDouble<E> extends JListExtended<E> {
 		listClean = newCleanList;
 		refresh();
 	}
+	
 
-	
-	
+
 	@Override
 	public int getLength(){
 		return (switchList.isSelected() ? listClean : list).size();
 	}
-
+	
 	@Override
 	public E getSelectedElement(){
 		return getSelectedValue();
 	}
-	
+
 	@Override
 	public void setSelectedElement(E element){
 		setSelectedValue(element, true);
 	}
-
+	
 	@Override
 	public void setSelectedElement(int index){
 		setSelectedValue((switchList.isSelected() ? listClean : list).get(index), true);
 	}
-
 	
+
 	@Override
 	public E get(int index){
 		return (switchList.isSelected() ? listClean : list).get(index);
 	}
-	
+
 	@Override
 	public int indexOf(E element){
 		return (switchList.isSelected() ? listClean : list).indexOf(element);
 	}
-	
+
 	@Override
 	public void refresh(){
 		E elem = getSelectedElement();
 		setListData(new Vector<>(switchList.isSelected() ? listClean : list));
 		setSelectedElement(elem);
 	}
-
+	
 }

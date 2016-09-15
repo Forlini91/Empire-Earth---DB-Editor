@@ -20,6 +20,13 @@ public interface EnumValue {
 	int getCode();
 
 	/**
+	 * Checks if the given code is valid
+	 * @param code	The code
+	 * @return		true if the code is valid, false otherwise
+	 */
+	boolean isValid(int code);
+	
+	/**
 	 * Build a name for the UI
 	 * @return The UI name
 	 */

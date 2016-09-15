@@ -5,6 +5,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
@@ -35,6 +38,7 @@ import com.sun.glass.events.KeyEvent;
 
 import datmanager.Core;
 import datmanager.DatFile;
+import datmanager.DatFile.EntryLocation;
 import datstructure.DatStructure;
 import datstructure.Entry;
 import datstructure.EntryGroup;
@@ -44,6 +48,7 @@ import datstructure.Knowledge;
 import datstructure.Link;
 import gui.components.EntryFieldInterface;
 import gui.components.JButtonRed;
+import gui.components.JComboBoxField;
 import gui.components.JListDouble;
 import gui.components.JListEntry;
 import gui.components.JPanelEntry;
@@ -77,6 +82,14 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	private final GridBagConstraints gbc_removeID = new GridBagConstraintsExtended(4, 4, 4, 0, 3, 2);
 	private final GridBagConstraints gbc_addID = new GridBagConstraintsExtended(4, 4, 4, 4, 4, 2);
 	private static final int GRID_MIN_ENTRY_SLOTS = 32;
+
+	private final DatFile techFile = DatStructure.DB_TECH_TREE.datFile;
+	private final DatFile familyFile = DatStructure.DB_FAMILY.datFile;
+	private final DatFile upgradeFile = DatStructure.DB_UPGRADE.datFile;
+	private final DatFile graphicFile = DatStructure.DB_GRAPHICS.datFile;
+	private final boolean isDbObject;
+	private final boolean isDbUnitSet;
+
 
 	/** The data loaded */
 	public DatFile datFile;
@@ -130,6 +143,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	private final JMenuItem fieldMenuMarkUnusedFields = new JMenuItem("Mark all unused/interesting fields");
 	private final JMenuItem fieldMenuUnmarkUnusedFields = new JMenuItem("Remove marks");
 	private final JMenuItem fieldMenuRefreshList = new JMenuItem("Refresh list");
+	private final JMenuItem fieldMenuOpenLink = new JMenuItem("Open link");
 	
 	private final JPopupMenu entryListMenu = new JPopupMenu();
 	private final JMenuItem entryListMenuAdd = new JMenuItem("Add entry");
@@ -139,7 +153,11 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	private final JMenuItem entryListMenuPasteData = new JMenuItem("Paste entry fields");
 	private final JMenuItem entryListMenuMoveTo = new JMenuItem("Move to epoch...");
 	private final JMenuItem entryListMenuShowLinks = new JMenuItem("Show all links to this entry");
+	private final JMenuItem entryListMenuGoToFamily = new JMenuItem("Go to Family");
+	private final JMenuItem entryListMenuGoToGraphic = new JMenuItem("Go to Graphic");
+	private final JMenuItem entryListMenuGoToUpgrade = new JMenuItem("Go to Upgrade");
 	private final JMenuItem entryListMenuGoToTech = new JMenuItem("Go to Technology");
+	private final JMenuItem entryListMenuGoToParentSet = new JMenuItem("Go to parent set");
 
 	private final JMenuBar menuBar = new JMenuBar();
 	private int numBaseFields = 0;
@@ -147,6 +165,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	private int indexCountExtra = -1;
 	private JPanelEntry panelCountExtra = null;
 	private FieldStruct extraFieldStructure = null;
+
 
 
 
@@ -203,7 +222,6 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		
 		contentPane.setLayout(gbl_contentPane);
 		contentPane.add(entryGroupListPane, gbc_entryGroupListPane);
-		//		contentPane.add(entryListPane, gbc_entryListPane);
 		contentPane.add(scrollPaneFields, gbc_scrollPaneFields);
 		contentPane.add(entrySearchField, gbc_entrySearchField);
 		contentPane.add(reset, gbc_resetButton);
@@ -242,9 +260,29 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 				}
 			}
 		});
-		entryList.addMouseListener(new PopupMenuHandler(entryListMenu,
-				e -> true,
-				entryList::selectElement));
+		entryList.addMouseListener(new MouseAdapter(){
+			@Override
+			@SuppressWarnings ("synthetic-access")
+			public void mousePressed(MouseEvent e) {
+				entryList.selectElement(e);
+				showMenu(e);
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				showMenu(e);
+			}
+			@SuppressWarnings ("synthetic-access")
+			public void showMenu(MouseEvent e){
+				if (e.isPopupTrigger()) {
+					entryListMenuGoToFamily.setEnabled(entryListMenuGoToFamily.isVisible() && isDbObject && familyFile != null && ((Link)currentEntry.values.get(2)).target.isValidLinkTarget());
+					entryListMenuGoToGraphic.setEnabled(entryListMenuGoToGraphic.isVisible() && isDbObject && graphicFile != null && ((Link)currentEntry.values.get(39)).target.isValidLinkTarget());
+					entryListMenuGoToUpgrade.setEnabled(entryListMenuGoToUpgrade.isVisible() && isDbObject && upgradeFile != null && ((Link)currentEntry.values.get(121)).target.isValidLinkTarget());
+					entryListMenuGoToTech.setEnabled(entryListMenuGoToTech.isVisible() && isDbObject && techFile != null && ((Link)currentEntry.values.get(225)).target.isValidLinkTarget());
+					entryListMenuGoToParentSet.setEnabled(entryListMenuGoToParentSet.isVisible() && isDbUnitSet && getParentEntry(datFile, currentEntry, 19) != EntryLocation.NULL);
+					entryListMenu.show(e.getComponent(), e.getX(), e.getY());
+				}
+			}
+		});
 		entryList.switchList.setHorizontalAlignment(SwingConstants.RIGHT);
 		entryList.switchList.setHorizontalTextPosition(SwingConstants.LEFT);
 		entryListPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
@@ -257,19 +295,23 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		entryListMenu.add(entryListMenuPasteData);
 		entryListMenu.add(entryListMenuMoveTo);
 		entryListMenu.add(entryListMenuShowLinks);
+		entryListMenu.add(entryListMenuGoToFamily);
+		entryListMenu.add(entryListMenuGoToGraphic);
+		entryListMenu.add(entryListMenuGoToUpgrade);
 		entryListMenu.add(entryListMenuGoToTech);
+		entryListMenu.add(entryListMenuGoToParentSet);
 		entryListMenuPasteData.setVisible(false);
 		entryListMenuAdd.addActionListener(e -> {
 			Integer maxSeq = null;
 			Integer maxID = null;
 			try{
-				maxSeq = datFile.getAllEntries().parallelStream().mapToInt(x->x.sequenceNumber).max().getAsInt();
+				maxSeq = datFile.getAllEntries(true).parallelStream().mapToInt(x->x.sequenceNumber).max().getAsInt();
 				maxID = currentEntryGroup.entries.parallelStream().mapToInt(x->x.ID).max().getAsInt();
 			} catch (NoSuchElementException e1){
 				JOptionPane.showMessageDialog(this, "An error occurred while adding the new entry. No data has been altered", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			Entry newEntry = new Entry(datFile.datStructure, maxSeq+1, maxID+1);
+			Entry newEntry = new Entry(datFile.datStructure, false, maxSeq+1, maxID+1);
 			currentEntryGroup.entries.add(newEntry);
 			currentEntryGroup.map.put(newEntry.ID, newEntry);
 			entryList.setList(currentEntryGroup.entries);
@@ -296,7 +338,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		entryListMenuDuplicate.addActionListener(e -> {
 			if (currentEntry != null){
 				try{
-					Integer maxSeq = datFile.getAllEntries().parallelStream().mapToInt(x->x.sequenceNumber).max().getAsInt();
+					Integer maxSeq = datFile.getAllEntries(true).parallelStream().mapToInt(x->x.sequenceNumber).max().getAsInt();
 					Integer maxID = currentEntryGroup.entries.parallelStream().mapToInt(x->x.ID).max().getAsInt();
 					Entry newEntry = currentEntry.duplicate(maxSeq+1, maxID+1);
 					currentEntryGroup.entries.add(newEntry);
@@ -332,25 +374,69 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 				d.setVisible(true);
 			}
 		});
-		entryListMenuGoToTech.addActionListener(e -> {
-			DatFile targetFile = DatStructure.DB_TECH_TREE.datFile;
-			if (targetFile != null){
-				Entry entry = ((Link)currentEntry.values.get(225)).target;
-				if (entry != null){
-					EntryGroup group = targetFile.findGroup(entry);
+		entryListMenuGoToFamily.addActionListener(e -> {
+			if (familyFile != null){
+				Entry entry = ((Link)currentEntry.values.get(2)).target;
+				if (!entry.dummyEntry){
+					EntryGroup group = familyFile.findGroup(entry);
 					if (group != null){
-						FrameEditor frameEditor = Core.openFile(this, targetFile, false);
+						FrameEditor frameEditor = Core.openFile(this, familyFile, (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0);
 						frameEditor.goToEntry(group, entry);
 					}
 				}
 			}
 		});
+		entryListMenuGoToGraphic.addActionListener(e -> {
+			if (graphicFile != null){
+				Entry entry = ((Link)currentEntry.values.get(39)).target;
+				if (!entry.dummyEntry){
+					EntryGroup group = graphicFile.findGroup(entry);
+					if (group != null){
+						FrameEditor frameEditor = Core.openFile(this, graphicFile, (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0);
+						frameEditor.goToEntry(group, entry);
+					}
+				}
+			}
+		});
+		entryListMenuGoToUpgrade.addActionListener(e -> {
+			if (upgradeFile != null){
+				Entry entry = ((Link)currentEntry.values.get(121)).target;
+				if (!entry.dummyEntry){
+					EntryGroup group = upgradeFile.findGroup(entry);
+					if (group != null){
+						FrameEditor frameEditor = Core.openFile(this, upgradeFile, (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0);
+						frameEditor.goToEntry(group, entry);
+					}
+				}
+			}
+		});
+		entryListMenuGoToTech.addActionListener(e -> {
+			if (techFile != null){
+				Entry entry = ((Link)currentEntry.values.get(225)).target;
+				if (!entry.dummyEntry){
+					EntryGroup group = techFile.findGroup(entry);
+					if (group != null){
+						FrameEditor frameEditor = Core.openFile(this, techFile, (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0);
+						frameEditor.goToEntry(group, entry);
+					}
+				}
+			}
+		});
+		entryListMenuGoToParentSet.addActionListener(e -> {
+			EntryLocation location = getParentEntry(datFile, currentEntry, 19);
+			if (location != EntryLocation.NULL){
+				FrameEditor frameEditor = Core.openFile(this, datFile, (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0);
+				frameEditor.goToEntry(location.entryGroup, location.entry);
+			}
+		});
+
 		
 		fieldMenu.add(fieldMenuSearchValues);
 		fieldMenu.add(fieldMenuSearchFields);
 		fieldMenu.add(fieldMenuMarkUnusedFields);
 		fieldMenu.add(fieldMenuUnmarkUnusedFields);
 		fieldMenu.add(fieldMenuRefreshList);
+		fieldMenu.add(fieldMenuOpenLink);
 		fieldMenuSearchValues.addActionListener(e -> {
 			EntryFieldInterface field = (EntryFieldInterface) rightClicked;
 			EntryValueMap entryValueMap = EntryValueMap.getValuesMap(datFile.entryGroups, field.getIndex(), true);
@@ -362,6 +448,23 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		fieldMenuUnmarkUnusedFields.addActionListener(e -> unmarkUnusedFields());
 		fieldMenuUnmarkUnusedFields.setVisible(false);
 		fieldMenuRefreshList.addActionListener(e -> ((EntryFieldInterface) rightClicked).refreshField());
+		fieldMenuOpenLink.addActionListener(e -> {
+			JComboBoxField field = (JComboBoxField) rightClicked;
+			Object selectedItem = field.getSelectedItem();
+			if (selectedItem != null && selectedItem instanceof Entry) {
+				Entry selectedEntry = (Entry) selectedItem;
+				if (selectedEntry.isValidLinkTarget()){
+					DatFile datFile = field.linkToStruct.datFile;
+					if (datFile != null){
+						EntryGroup entryGroup = datFile.findGroup(selectedEntry);
+						if (entryGroup != null){
+							FrameEditor frameEditor = Core.openFile(this, datFile, (e.getModifiers() & KeyEvent.MODIFIER_SHIFT) != 0);
+							frameEditor.goToEntry(entryGroup, selectedEntry);
+						}
+					}
+				}
+			}
+		});
 
 		panelFields.setLayout(gridLayout);
 		panelFields.setOpaque(false);
@@ -434,7 +537,13 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			entryListMenuMoveTo.setVisible(allowNewEntry && datFile.entryGroups.size() > 1);
 			entryGroupList.setSelectedIndex(0);
 		}
-		entryListMenuGoToTech.setVisible(datFile.datStructure == DatStructure.DB_OBJECTS);
+		isDbObject = datFile.datStructure == DatStructure.DB_OBJECTS;
+		isDbUnitSet = datFile.datStructure == DatStructure.DB_UNIT_SET;
+		entryListMenuGoToTech.setVisible(isDbObject);
+		entryListMenuGoToFamily.setVisible(isDbObject);
+		entryListMenuGoToGraphic.setVisible(isDbObject);
+		entryListMenuGoToUpgrade.setVisible(isDbObject);
+		entryListMenuGoToParentSet.setVisible(isDbUnitSet);
 
 		setAutoRequestFocus(true);
 		addWindowListener(this);
@@ -453,7 +562,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 	@Override
 	public void windowClosing (WindowEvent e) {
-		if (datFile.isUnsaved()){
+		if (datFile.isUnsaved() && datFile.frameEditors.size() <= 1){
 			switch (JOptionPane.showConfirmDialog(this, "Some entries have been altered. Do you want to save them to the file?\nChanges won't be lost anyway until you close the program, so you can open this window again and save later", "Save to file?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, GUI.IMAGE_ICON)){
 				case 0:
 					Core.saveFile(this, datFile);
@@ -505,6 +614,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 				e -> {
 					rightClicked = component;
 					fieldMenuRefreshList.setVisible(fieldStruct.linkToStruct != null);
+					fieldMenuOpenLink.setVisible(fieldStruct.linkToStruct != null);
 				}));
 		return panelEntry;
 	}
@@ -562,6 +672,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		updateGrid(false);
 		panelFields.setVisible(true);
 	}
+	
 	
 	
 	/**
@@ -698,6 +809,9 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	 */
 	public void goToEntry(EntryGroup entryGroup, Entry entry){
 		System.out.println("Go to: " + datFile.getName() + " > " + entryGroup + " > " + entry);
+		if (!entry.isDefined() && entryList.switchList.isSelected()){
+			entryList.switchList.doClick();
+		}
 		if (!isVisible()){
 			setVisible(true);
 		}
@@ -706,7 +820,6 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			entryList.setSelectedElement(entry);
 		}
 	}
-	
 	
 	
 	
@@ -796,5 +909,26 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		fieldMenuUnmarkUnusedFields.setVisible(false);
 	}
 	
+	
+	/**
+	 * Find the parent entry of the given entry, if any (an entry which contains this entry)
+	 * @param datFile			The datFile where to search
+	 * @param childEntry		The child entry
+	 * @param indexLinkField	Index of the field where to search the Link to the child entry.
+	 * @return					The parent entry
+	 */
+	private static EntryLocation getParentEntry (DatFile datFile, Entry childEntry, int indexLinkField){
+		int ID = childEntry.getID();
+		Link link;
+		for (EntryGroup entryGroup : datFile.entryGroups){
+			for (Entry entry : entryGroup){
+				link = (Link) entry.values.get(indexLinkField);
+				if (link != null && link.target.ID == ID){
+					return new EntryLocation(entryGroup, entry);
+				}
+			}
+		}
+		return EntryLocation.NULL;
+	}
 	
 }

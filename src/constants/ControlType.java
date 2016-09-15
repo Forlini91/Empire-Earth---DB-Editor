@@ -7,7 +7,7 @@ package constants;
  * @author MarcoForlini
  */
 public enum ControlType implements EnumValue {
-	
+
 	/** No condition */
 	NONE ("None", -1),
 	/** Unknown event */
@@ -35,47 +35,62 @@ public enum ControlType implements EnumValue {
 	/** Type in the chat box */
 	C1012_Chat ("Chat", 1012),
 	;
-
-
+	
+	
 	/** Name to be shown in the UI */
 	public final String name;
-	
+
 	/** Code used in the dat files */
 	public final int code;
-	
-	
+
+
 	ControlType(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-	
+
 	@Override
 	public String getName(){
 		return name;
 	}
-
+	
 	@Override
 	public int getCode () {
 		return code;
 	}
-	
+
+	@Override
+	public boolean isValid (int code) {
+		return code >= -1 && code <= 1012;
+	}
+
 	/**
 	 * Parse the code and return the relative enum.
 	 * @param code	The code
 	 * @return		The relative enum
 	 */
 	public static ControlType parseValue(int code){
-		for (ControlType effectCode : values()){
-			if (effectCode.code == code){
-				return effectCode;
-			}
+		switch (code){
+			case -1: return NONE;
+			case 0: return C0_Update_Controls;
+			case 1000: return C1000_Slider;
+			case 1001: return C1001_Check;
+			case 1002: return C1002_Uncheck;
+			case 1003: return C1003_List_select;
+			case 1004: return C1004_Double_click;
+			case 1007: return C1007_Password;
+			case 1008: return C1008_Single_click;
+			case 1009: return C1009_Done_typing;
+			case 1010: return C1010_Hovering;
+			case 1011: return C1011_Not_hovering;
+			case 1012: return C1012_Chat;
+			default: return null;
 		}
-		return null;
 	}
-
+	
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-	
+
 }

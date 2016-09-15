@@ -1,5 +1,8 @@
 package gui.components;
 
+import java.awt.Toolkit;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -11,13 +14,13 @@ import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JList;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.text.JTextComponent;
 
 import datmanager.Core;
 import datmanager.DatFile;
-import datmanager.DatFile.EntryLocation;
 import datmanager.ListSearcher;
 import datstructure.DatStructure;
 import datstructure.Entry;
@@ -31,7 +34,7 @@ import gui.FrameEditor;
  * @author MarcoForlini
  */
 public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInterface, MouseListener, KeyListener, ItemListener {
-	
+
 	private static final long serialVersionUID = -5787229930995728192L;
 
 	private ListSearcher <Entry> searcher = new ListSearcher<>(ListSearcher.ENTRY_NAME_MATCHER, ListSearcher.ENTRY_ID_MATCHER);
@@ -39,10 +42,10 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 	private FieldStruct fieldStruct;
 	private int index;
 	private List<Entry> allEntries = null;
-	private DatStructure linkToStruct;
+	@SuppressWarnings ("javadoc") public DatStructure linkToStruct;
 	private Object defaultVal = null;
 	private boolean altered = false;
-
+	
 	/**
 	 * Create a new {@link JComboBoxField}
 	 * @param fieldStruct	The field structure
@@ -55,16 +58,38 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 		if (linkToStruct != null){
 			DatFile datFile = linkToStruct.datFile;
 			if (datFile != null){
-				allEntries = datFile.getAllEntries();
+				allEntries = datFile.getAllEntries(true);
 				setModel(new DefaultComboBoxModel<>(new Vector<>(allEntries)));
 			}
 		}
 		setEditable(true);
 		addMouseListener(this);
 		addItemListener(this);
+		textEditor.addFocusListener(new FocusListener() {
+			@SuppressWarnings ("synthetic-access")
+			@Override
+			public void focusLost (FocusEvent e) {
+				ComboPopup cp = (ComboPopup) getUI().getAccessibleChild(JComboBoxField.this, 0);
+				Object item = null;
+				item = cp.getList().getSelectedValue();
+				if (item == null){
+					item = searcher.getCurrent();
+				}
+				if (item != null){
+					setSelectedItem(item);
+				}
+			}
+			
+			@SuppressWarnings ("synthetic-access")
+			@Override
+			public void focusGained (FocusEvent e) {
+				textEditor.setCaretPosition(textEditor.getText().length());
+				textEditor.moveCaretPosition(0);
+			}
+		});
 		textEditor.addKeyListener(this);
 	}
-	
+
 	@Override
 	public synchronized void addMouseListener (MouseListener l) {
 		super.addMouseListener(l);
@@ -72,22 +97,22 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 			textEditor.addMouseListener(l);
 		}
 	}
-	
+
 	@Override
 	public void resetColor () {
 		setForeground(null);
 	}
-	
+
 	@Override
 	public FieldStruct getEntryStruct () {
 		return fieldStruct;
 	}
-	
+
 	@Override
 	public int getIndex(){
 		return index;
 	}
-	
+
 	@Override
 	public Object getVal(){
 		Object obj = getSelectedItem();
@@ -105,7 +130,7 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 		}
 		return fieldStruct.defaultValue;
 	}
-	
+
 	@Override
 	public void setVal(Object value){
 		defaultVal = value;
@@ -114,74 +139,102 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 			setSelectedItem(value);
 			return;
 		}
-		EntryLocation entryLocation = datFile.findEntry(value);
-		if (entryLocation != null){
-			setSelectedItem(entryLocation.entry);
+		Entry entry = datFile.findEntry(value);
+		if (entry != null){
+			setSelectedItem(entry);
 		} else {
 			setSelectedItem(null);
 		}
 		textEditor.setCaretPosition(0);
 		altered = false;
 	}
-
+	
 	@Override
 	public void refreshField () {
 		Object sel = getSelectedItem();
 		if (linkToStruct != null){
 			DatFile datFile = linkToStruct.datFile;
 			if (datFile != null){
-				allEntries = datFile.getAllEntries();
+				allEntries = datFile.getAllEntries(true);
 				setModel(new DefaultComboBoxModel<>(new Vector<>(allEntries)));
 			}
 		}
 		setSelectedItem(sel);
 	}
-	
+
 	@Override
 	public boolean isAltered () {
 		return altered;
 	}
-	
+
 	@Override
 	public Object getDefaultVal () {
 		return defaultVal;
 	}
-
-
 	
+	
+
 	@Override public void keyTyped (KeyEvent e) {/*Do nothing*/}
 	@Override public void keyPressed (KeyEvent e) {/*Do nothing*/}
 	@Override public void keyReleased (KeyEvent e) {
 		SwingUtilities.invokeLater(() -> {
+			int key = e.getKeyCode();
+			if (key == KeyEvent.VK_UNDEFINED){
+				return;
+			}
 			String text = textEditor.getText();
 			if (text == null || text.isEmpty()){
 				System.out.println("Select: null");
 				setSelectedItem(null);
-			} else if (e.getKeyCode() == KeyEvent.VK_TAB && isPopupVisible()){
+				return;
+			}
+			boolean isEnter = key == KeyEvent.VK_ENTER;
+			if (isEnter && !e.isControlDown() && !e.isShiftDown()){
 				ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);
-				setSelectedItem(popup.getList().getSelectedValue());
-			} else {
+				JList<?> list = popup.getList();
+				if (list.getSelectedValue() != null) {
+					setSelectedItem(list.getSelectedValue());
+				} else {
+					setSelectedItem(searcher.getCurrent());
+				}
+				hidePopup();
+				return;
+			}
+			switch (key){
+				case KeyEvent.VK_CONTROL:
+				case KeyEvent.VK_SHIFT:
+				case KeyEvent.VK_ALT:
+				case KeyEvent.VK_ALT_GRAPH:
+					return;
+			}
+			if (!e.isActionKey()){
 				if (!isPopupVisible()) {
 					showPopup();
 				}
+				boolean lastSearch = searcher.getCurrent() != null;
 				List<Entry> results = searcher.find(allEntries, null, text);
 				if (results != null){
-					Entry entry = searcher.findNext();
+					Entry entry = isEnter && e.isShiftDown() ? searcher.findPrevious() : searcher.findNext();
 					System.out.println("Find: " + entry);
 					if (entry != null){
 						ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);
 						popup.getList().setSelectedValue(entry, true);
+					} else if (lastSearch){
+						Toolkit.getDefaultToolkit().beep();
 					}
 				}
 			}
 		});
 	}
-	
+
 	@Override
 	public void mouseClicked (MouseEvent e) {
 		Object selectedItem = getSelectedItem();
 		if (e.isControlDown() && selectedItem != null && selectedItem instanceof Entry){
 			Entry selectedEntry = (Entry) selectedItem;
+			if (!selectedEntry.isValidLinkTarget()){
+				return;
+			}
 			DatFile datFile = linkToStruct.datFile;
 			if (datFile != null){
 				EntryGroup entryGroup = datFile.findGroup(selectedEntry);
@@ -194,15 +247,18 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 			showPopup();
 		}
 	}
-	
+
 	@Override public void mousePressed (MouseEvent e) {/*Do nothing*/}
 	@Override public void mouseReleased (MouseEvent e) {/*Do nothing*/}
 	@Override public void mouseEntered (MouseEvent e) {/*Do nothing*/}
 	@Override public void mouseExited (MouseEvent e) {/*Do nothing*/}
-
+	
 	@Override
 	public void itemStateChanged (ItemEvent e) {
 		altered = true;
 	}
+	
+
+	
 	
 }

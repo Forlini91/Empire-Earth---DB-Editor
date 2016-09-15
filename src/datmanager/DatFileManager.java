@@ -145,7 +145,7 @@ public class DatFileManager {
 						values.add(read);
 					}
 				}
-				entry = new Entry(datStructure, i, i, values);
+				entry = new Entry(datStructure, false, i, i, values);
 				entries.add(entry);
 				update.accept((float) (1.0 - (double) reader.getRemaining() / fileSize), threadIndex);
 			}
@@ -171,15 +171,17 @@ public class DatFileManager {
 			Files.deleteIfExists(newBackup.toPath());
 			Files.move(datFile.toPath(), newBackup.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			
-			
 			int numBaseFields = datStructure.fieldStructs.length;
 			Entry entry;
 			FieldStruct fieldStruct;
+			Link link;
 			int numEntries;
 			int numFields;
 			int size;
 			boolean defineNumEntries = datStructure.defineNumEntries;
-			try (DatWriter writer = new DatWriter(datFile)) {
+			
+			List<Entry> allEntries = datFile.getAllEntries(false);
+			try (DatWriter writer = new DatWriter(datFile, allEntries)) {
 				for (EntryGroup entryGroup : datFile){
 					numEntries = entryGroup.entries.size();
 					if (defineNumEntries){
@@ -217,7 +219,8 @@ public class DatFileManager {
 										if (fieldStruct.getSize() == 1) {
 											writer.writeByte((int) entry.values.get(j));
 										} else if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Core.LINK_SYSTEM){
-											writer.writeInt(((Link) entry.values.get(j)).target.ID);
+											link = (Link) entry.values.get(j);
+											writer.writeInt(link.target.ID);
 										} else {
 											writer.writeInt((int) entry.values.get(j));
 										}

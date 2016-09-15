@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
 
-import datmanager.DatFile.EntryLocation;
 import datstructure.DatStructure;
 import datstructure.Entry;
 import datstructure.EntryGroup;
@@ -42,7 +41,7 @@ import gui.GUI;
 public class Core {
 	
 	/** The editor version/revision */
-	public static final float VERSION = 1.46f;
+	public static final float VERSION = 1.5f;
 
 	/** Max time (milliseconds) it will wait for loading to complete. If time exceed this value, the load is considered failed. */
 	private static final int LOAD_MAX_WAIT = 15000;
@@ -184,23 +183,35 @@ public class Core {
 		FieldStruct[] fieldStructs;
 		FieldStruct fieldStruct;
 		DatFile datFile;
-		EntryLocation pointedEntry;
+		Entry targetEntry;
 		int indexExtra, n2;
 		Object value;
+		Entry sourceEntry;
 		
 		for (DatFile datFileLoaded : DatFile.LOADED) {
 			fieldStructs = datFileLoaded.datStructure.fieldStructs;
 			int n = fieldStructs.length;
+			
 			for (int i = 0; i < n; i++){
 				fieldStruct = fieldStructs[i];
 				if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Core.LINK_SYSTEM) {
 					datFile = fieldStruct.linkToStruct.datFile;
 					for (EntryGroup entryGroup : datFileLoaded){
-						for (Entry entry : entryGroup){
-							value = entry.values.get(i);
-							if (value instanceof Integer){
-								pointedEntry = datFile.findEntry(value);
-								entry.values.set(i, new Link(entry, fieldStruct, pointedEntry.entry));
+						for (int j = 0; j < entryGroup.entries.size(); j++){
+							sourceEntry = entryGroup.entries.get(j);
+							if (i < sourceEntry.values.size()){
+								value = sourceEntry.values.get(i);
+								if (value instanceof Integer){
+									targetEntry = datFile.findEntry(value);
+									if (targetEntry == null){
+										targetEntry = new Entry(datFile.datStructure, true, -2, (int) value);
+										targetEntry.name = '(' + value.toString() + ") Null/Invalid entry";
+										datFile.dummyEntryGroup.add(0, targetEntry);
+										datFile.dummyEntryMap.put((int) value, targetEntry);
+										System.out.println("Create dummy entry: " + datFileLoaded.datStructure + " (" + fieldStruct + ") -> " + datFile.datStructure + "  =  " + targetEntry);
+									}
+									sourceEntry.values.set(i, new Link(sourceEntry, fieldStruct, targetEntry));
+								}
 							}
 						}
 					}
@@ -212,11 +223,22 @@ public class Core {
 				indexExtra = datFileLoaded.datStructure.getIndexExtraFields();
 				datFile = fieldStruct.linkToStruct.datFile;
 				for (EntryGroup entryGroup : datFileLoaded){
-					for (Entry entry : entryGroup){
-						n2 = n + (Integer) entry.values.get(indexExtra);
-						for (int i = indexExtra+1; i < n2; i++){
-							pointedEntry = datFile.findEntry(entry.values.get(i));
-							entry.values.set(i, new Link(entry, fieldStruct, pointedEntry.entry));
+					for (int j = 0; j < entryGroup.entries.size(); j++){
+						sourceEntry = entryGroup.entries.get(j);
+						if (indexExtra < sourceEntry.values.size()){
+							n2 = n + (Integer) sourceEntry.values.get(indexExtra);
+							for (int i = indexExtra+1; i < n2; i++){
+								value = sourceEntry.values.get(i);
+								targetEntry = datFile.findEntry(value);
+								if (targetEntry == null){
+									targetEntry = new Entry(datFile.datStructure, true, -2, (int) value);
+									targetEntry.name = '(' + value.toString() + ") Null/Invalid entry";
+									datFile.dummyEntryGroup.add(0, targetEntry);
+									datFile.dummyEntryMap.put((int) value, targetEntry);
+									System.out.println("Create dummy entry: " + datFileLoaded.datStructure + " (" + fieldStruct + ") -> " + datFile.datStructure + "  =  " + targetEntry);
+								}
+								sourceEntry.values.set(i, new Link(sourceEntry, fieldStruct, targetEntry));
+							}
 						}
 					}
 				}

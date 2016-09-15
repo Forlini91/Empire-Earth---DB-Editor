@@ -24,35 +24,41 @@ import gui.components.JButtonDat;
  *
  */
 public class DatFile extends File implements Iterable<EntryGroup> {
-
+	
 	private static final long serialVersionUID = 4028033199491184179L;
-
+	
 	/** All loaded files */
 	public static final Collection<DatFile> LOADED = new HashSet<>();
+
 	
-
-
+	
 	/** The structure of the file. */
 	public final DatStructure datStructure;
-	
+
 	/** The button of the file */
 	public JButtonDat datButton = null;
-	
+
 	/** If true, the file has been loaded */
 	private boolean loaded = false;
-
+	
 	/** If true, the file must be saved */
 	private boolean unsaved = false;
-	
+
 	/** The content of the file */
 	public List<EntryGroup> entryGroups = null;
 	
+	/** List of dummy entries which only exists to maintain all links intact */
+	public List<Entry> dummyEntryGroup = new ArrayList<>();
+	
+	/** Map of dummy entries which only exists to maintain all links intact */
+	public Map<Integer, Entry> dummyEntryMap = new HashMap<>();
+
 	/** List of FrameEditor opened for this file */
 	public final List<FrameEditor> frameEditors = new ArrayList<>();
+
 	
-
-
-
+	
+	
 	/**
 	 * Creates a new <code>DatFile</code> instance by converting the given
 	 * pathname string into an abstract pathname.  If the given string is
@@ -67,7 +73,7 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 		super(pathname);
 		this.datStructure = datStructure;
 	}
-
+	
 	/**
 	 * Create a new DatContent
 	 * @param entryGroups	The content of the file
@@ -77,7 +83,7 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 		datStructure.datFile = this;
 		loaded = true;
 	}
-	
+
 	/**
 	 * Check and return if the file has been loaded
 	 * @return true if the file has been loaded
@@ -85,34 +91,37 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 	public boolean isLoaded(){
 		return loaded;
 	}
-	
-	
+
+
 	/**
 	 * Search for the entry with the given ID in the file
 	 * @param ID	The ID of the entry to search
 	 * @return		The Entry with the given ID and its EntryGroup or null if no Entry exists with the given ID.
 	 */
-	public EntryLocation findEntry(Object ID){
+	public Entry findEntry(Object ID){
 		if (isLoaded()){
-			Entry result;
-			if (entryGroups.size() > 0){
+			Entry result = dummyEntryMap.get(ID);
+			if (result != null) {
+				return result;
+			}
+			if (entryGroups.size() > 1){
 				for (EntryGroup entryGroup : entryGroups){
 					result = entryGroup.map.get(ID);
 					if (result != null) {
-						return new EntryLocation(entryGroup, result);
+						return result;
 					}
 				}
 			} else {
 				EntryGroup entryGroup = entryGroups.get(0);
 				result = entryGroup.map.get(ID);
 				if (result != null) {
-					return new EntryLocation(entryGroup, result);
+					return result;
 				}
 			}
 		}
-		return EntryLocation.NULL;
+		return null;
 	}
-
+	
 	/**
 	 * Search for the EntryGroup containing the given Entry
 	 * @param entry		The entry
@@ -135,52 +144,64 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 		}
 		return EntryGroup.NULL;
 	}
-
 	
+
 	/**
 	 * Build and return the list of entries in this file
+	 * @param includeDummy	If true, include the dummy entries
 	 * @return	The list of entries in this file
 	 */
-	public List<Entry> getAllEntries(){
+	public List<Entry> getAllEntries(boolean includeDummy){
 		if (isLoaded()){
+			int size = includeDummy ? dummyEntryGroup.size() : 0;
 			if (entryGroups.size() > 1) {
-				int size = entryGroups
+				size += entryGroups
 						.parallelStream()
 						.mapToInt(x->x.entries.size())
 						.sum();
-				List<Entry> allEntries = new ArrayList<>(size);
-				for (EntryGroup entryGroup : entryGroups){
-					allEntries.addAll(entryGroup.entries);
-				}
-				return allEntries;
+			} else {
+				size += entryGroups.get(0).entries.size();
 			}
-			return entryGroups.get(0).entries;
-		}
-		return null;
-	}
-
-	/**
-	 * Build and return the list of entries in this file
-	 * @return	The list of entries in this file
-	 */
-	public Map<Integer, Entry> getAllEntriesMap(){
-		if (isLoaded()){
-			if (entryGroups.size() > 1) {
-				int size = entryGroups
-						.parallelStream()
-						.mapToInt(x->x.map.size())
-						.sum();
-				Map<Integer, Entry> allEntries = new HashMap<>(size);
-				for (EntryGroup entryGroup : entryGroups){
-					allEntries.putAll(entryGroup.map);
-				}
-				return allEntries;
+			List<Entry> allEntries = new ArrayList<>(size);
+			if (includeDummy) {
+				allEntries.addAll(dummyEntryGroup);
 			}
-			return new HashMap<>(entryGroups.get(0).map);
+			for (EntryGroup entryGroup : entryGroups){
+				allEntries.addAll(entryGroup.entries);
+			}
+			return allEntries;
 		}
 		return null;
 	}
 	
+	/**
+	 * Build and return the list of entries in this file
+	 * @param includeDummy	If true, include the dummy entries
+	 * @return	The list of entries in this file
+	 */
+	public Map<Integer, Entry> getAllEntriesMap(boolean includeDummy){
+		if (isLoaded()){
+			int size = includeDummy ? dummyEntryMap.size() : 0;
+			if (entryGroups.size() > 1) {
+				size += entryGroups
+						.parallelStream()
+						.mapToInt(x->x.map.size())
+						.sum();
+			} else {
+				size += entryGroups.get(0).map.size();
+			}
+			Map<Integer, Entry> allEntries = new HashMap<>(size);
+			if (includeDummy){
+				allEntries.putAll(dummyEntryMap);
+			}
+			for (EntryGroup entryGroup : entryGroups){
+				allEntries.putAll(entryGroup.map);
+			}
+			return allEntries;
+		}
+		return null;
+	}
+
 	@Override
 	public int compareTo (File o) {
 		if (o instanceof DatFile){
@@ -188,7 +209,7 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 		}
 		return super.compareTo(o);
 	}
-	
+
 	@Override
 	public Iterator <EntryGroup> iterator () {
 		if (isLoaded()){
@@ -196,14 +217,14 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String toString(){
 		return "DatContent: " + super.toString();
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Check the file unsaved state
 	 * @return the unsaved state
@@ -211,7 +232,7 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 	public boolean isUnsaved () {
 		return unsaved;
 	}
-	
+
 	/**
 	 * Set/Unset the file unsaved state
 	 * @param unsaved the new unsaved state
@@ -222,24 +243,25 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 			datButton.setBorder(unsaved ? BorderFactory.createLineBorder(Color.GREEN.darker(), 4) : null);
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * This class contains informations about an entry location
 	 * @author MarcoForlini
 	 */
 	public static class EntryLocation {
-
+		
 		/** Dummy EntryLocation used for null/invalid links */
-		public static final EntryLocation NULL = new EntryLocation (EntryGroup.NULL, Entry.NULL);
+		public static final EntryLocation NULL = new EntryLocation (null, null);
+
 
 		/** Entry group */
 		public final EntryGroup entryGroup;
-
+		
 		/** Entry */
 		public final Entry entry;
-
+		
 		/**
 		 * Create a new EntryLocation
 		 * @param entryGroup	The entry group
@@ -250,5 +272,5 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 			this.entry = entry;
 		}
 	}
-	
+
 }

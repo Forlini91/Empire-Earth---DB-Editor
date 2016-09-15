@@ -22,9 +22,9 @@ import gui.GUI;
  * @author MarcoForlini
  */
 public class JPanelEntry extends JPanel {
-	
+
 	private static final long serialVersionUID = -8432430218424230659L;
-	
+
 	/** Index of the field */
 	public final int index;
 	/** Field structure */
@@ -35,7 +35,7 @@ public class JPanelEntry extends JPanel {
 	public EntryFieldInterface field = null;
 	/** A supplier which get the current entry */
 	public Supplier<Entry> currentEntry;
-	
+
 	/**
 	 * Create a new JPanelEntry
 	 * @param frameEditor	The parent window
@@ -47,7 +47,7 @@ public class JPanelEntry extends JPanel {
 		this.index = index;
 		this.fieldStruct = fieldStruct;
 		this.currentEntry = currentEntry;
-		
+
 		label = new JLabelField(fieldStruct, index);
 		label.setPreferredSize(new Dimension(100, 25));
 		label.setMaximumSize(new Dimension(300, 30));
@@ -101,7 +101,7 @@ public class JPanelEntry extends JPanel {
 		setOpaque(false);
 		label.setOpaque(false);
 	}
-
+	
 	/**
 	 * Sets the value of the field
 	 * @param val	The value of the field
@@ -113,7 +113,7 @@ public class JPanelEntry extends JPanel {
 			field.setVal(val);
 		}
 	}
-	
+
 	/**
 	 * Gets the value of the field
 	 * @return	the value of the field
@@ -127,17 +127,17 @@ public class JPanelEntry extends JPanel {
 		}
 		if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Core.LINK_SYSTEM){
 			DatFile datFile = fieldStruct.linkToStruct.datFile;
-			Entry target = datFile.findEntry(val).entry;
+			Entry target = datFile.findEntry(val);
 			return new Link(currentEntry.get(), fieldStruct, target);
 		}
 		return val;
 	}
-
+	
 	/**
 	 * Refresh the field data
 	 */
 	public void refreshField(){
 		field.refreshField();
 	}
-	
+
 }
