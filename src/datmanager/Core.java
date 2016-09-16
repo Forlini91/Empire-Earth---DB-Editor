@@ -10,13 +10,16 @@ import java.awt.Window;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.math.RoundingMode;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
@@ -39,18 +42,18 @@ import gui.GUI;
  *
  */
 public class Core {
-	
+
 	/** The editor version/revision */
 	public static final float VERSION = 1.5f;
-
+	
 	/** Max time (milliseconds) it will wait for loading to complete. If time exceed this value, the load is considered failed. */
 	private static final int LOAD_MAX_WAIT = 15000;
-
+	
 	private static final String[] loadErrorChoices = {"Close", "Get \"Wofies Multidecompressor\" from Empire Earth Heaven", "Check error"};
-
+	
 	/** If false, disable the link system */
 	public static boolean LINK_SYSTEM = true;
-	
+
 	/** If true, the editor is in AOC mode */
 	public static Boolean AOC = new EESplashScreen().askEditorType();
 	static {
@@ -59,17 +62,25 @@ public class Core {
 		}
 	}
 	
+	@SuppressWarnings ("javadoc")
+	public static final NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
+	static {
+		numberFormat.setMaximumFractionDigits(6);
+		numberFormat.setGroupingUsed(false);
+		numberFormat.setRoundingMode(RoundingMode.HALF_UP);
+	}
 
 	
+
 	@SuppressWarnings ({ "javadoc" })
 	public static void main (String[] args) {
 		new Thread(Language.LIST::size).start();  //This makes the Language class initialize... SSSHHH!!!
 		new Thread(DatStructure::init).start();
 		FrameMain.instance.setVisible(true);
 	}
-	
-	
 
+
+	
 	/**
 	 * Load the given file and disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -80,7 +91,7 @@ public class Core {
 	public static void loadFile(Window parent, DatFile datFile, Consumer<DatFile> onLoaded, Runnable onFail){
 		loadFiles(parent, new ArrayList<>(Arrays.asList(datFile)), (data) -> onLoaded.accept(datFile), onFail);
 	}
-	
+
 	/**
 	 * Load the given list of files and disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -148,7 +159,7 @@ public class Core {
 				});
 				t.start();
 			}
-			
+
 			try {
 				synchronized(lockObj){
 					if (dataLoad.size() < files.size()){
@@ -174,8 +185,8 @@ public class Core {
 			}
 		}).start();
 	}
-
-
+	
+	
 	/**
 	 * Build the links to the fields
 	 */
@@ -187,11 +198,11 @@ public class Core {
 		int indexExtra, n2;
 		Object value;
 		Entry sourceEntry;
-		
+
 		for (DatFile datFileLoaded : DatFile.LOADED) {
 			fieldStructs = datFileLoaded.datStructure.fieldStructs;
 			int n = fieldStructs.length;
-			
+
 			for (int i = 0; i < n; i++){
 				fieldStruct = fieldStructs[i];
 				if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Core.LINK_SYSTEM) {
@@ -217,7 +228,7 @@ public class Core {
 					}
 				}
 			}
-			
+
 			fieldStruct = datFileLoaded.datStructure.extraField;
 			if (fieldStruct != null && fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Core.LINK_SYSTEM) {
 				indexExtra = datFileLoaded.datStructure.getIndexExtraFields();
@@ -245,9 +256,9 @@ public class Core {
 			}
 		}
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Save the given list of EntryGroup to the given file. Disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -280,9 +291,9 @@ public class Core {
 			}).start();
 		}).start();
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Try to open the given file or show an error message to the calling component.
 	 * The file must be already loaded.
@@ -312,8 +323,8 @@ public class Core {
 			throw e;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Calculate the bounds of the given component
 	 * @param component		The component
@@ -328,8 +339,8 @@ public class Core {
 		Point point = new Point((rBounds.width / 2) - (dimension.width / 2), (rBounds.height / 2) - (dimension.height / 2) - 25);
 		return new Rectangle(point, dimension);
 	}
-
-
+	
+	
 	/**
 	 * Convert a throwable's stack trace to String
 	 * @param e		The throwable
@@ -342,8 +353,9 @@ public class Core {
 		return new String(baos.toByteArray(), StandardCharsets.UTF_8);
 	}
 	
-	
+
+
 	/** No need to instantiate this */
 	private Core(){}
-	
+
 }

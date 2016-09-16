@@ -18,26 +18,26 @@ import datmanager.DatFile;
  *
  */
 public class Entry implements Comparable<Entry>, Iterable <Object> {
-
-	/** A dummy Entry field used for null/invalid links */
-	public static final Entry NULL = new Entry(null, true, -1, -1);
 	
 	/** A dummy Entry field used for null/invalid links */
-	public static final Entry NULL0 = new Entry(null, true, 0, 0);
+	public static final Entry NULL = new Entry(null, true, -1, -1);
 
+	/** A dummy Entry field used for null/invalid links */
+	public static final Entry NULL0 = new Entry(null, true, 0, 0);
+	
 	static {
 		NULL.name = "Null (-1)";
 		NULL.sequenceNumber = -1;
 		NULL.ID = -1;
 		NULL0.name = "Null (0)";
 	}
-	
+
 	/** Used by fields without name. */
 	public static final String NAME_NONE = "<No name>";
 	/** Used by undefined fields. */
 	public static final String NAME_UNDEFINED = "<Undefined>";
-	
 
+	
 	/** Name of the entry. If null, the name is calculated basing on the fields */
 	public String name = null;
 	/** The structure of this entry. */
@@ -50,9 +50,9 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	public int ID;
 	/** If true, this entry is just for Link purposes and must be ignored anywhere except in Links */
 	public boolean dummyEntry = false;
-	
-	
-	
+
+
+
 	/**
 	 * Create a new entry with the given DatStructure, sequence number, ID and values.
 	 * @param datStructure		The dat file structure
@@ -80,7 +80,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 			this.sequenceNumber = sequenceNumber;
 		}
 	}
-
+	
 	/**
 	 * Create a new Entry with the given DatStructure, sequence number and ID. Assign default values to all other fields.
 	 * @param datStructure		The dat file structure
@@ -91,7 +91,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	public Entry(DatStructure datStructure, boolean dummyEntry, int sequenceNumber, int ID){
 		this(datStructure, dummyEntry, sequenceNumber, ID, getDefaultValues(datStructure, sequenceNumber, ID));
 	}
-
+	
 	/**
 	 * Duplicate the current entry and assign the given seqNum and ID to the clone.
 	 * @param sequenceNumber	The clone's sequence number
@@ -108,7 +108,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		}
 		return new Entry(datStructure, dummyEntry, sequenceNumber, ID, valuesCopy);
 	}
-	
+
 	/**
 	 * Return a list of default values for all fields. Useful when adding a new entry in the file.
 	 * @param datStructure	The new entry's structure
@@ -133,7 +133,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		}
 		return values;
 	}
-	
+
 	/**
 	 * Get a printable name of the entry.
 	 * @return	A printable name for the entry
@@ -153,7 +153,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		}
 		return NAME_UNDEFINED;
 	}
-	
+
 	/**
 	 * Get a printable name of the entry.
 	 * @return	A printable name for the entry
@@ -173,7 +173,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		}
 		return NAME_UNDEFINED;
 	}
-
+	
 	/**
 	 * Check if this entry is a valid target you can jump in the GUI
 	 * @return	true if you can jump here, false otherwise
@@ -181,7 +181,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	public boolean isValidLinkTarget(){
 		return !dummyEntry && isDefined();
 	}
-
+	
 	/**
 	 * Get the entry's ID.
 	 * @return the entry's ID
@@ -189,7 +189,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	public int getID () {
 		return ID;
 	}
-	
+
 	/**
 	 * Get the entry's sequence number.
 	 * @return the entry's sequence number
@@ -197,7 +197,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	public int getSequenceNumber() {
 		return sequenceNumber;
 	}
-	
+
 	/**
 	 * Check and return if the entry is defined and usable.
 	 * @return	true if defined, false otherwise
@@ -207,7 +207,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 				&& ID >= datStructure.minID
 				&& sequenceNumber >= datStructure.minSeq;
 	}
-
+	
 	@Override
 	public String toString(){
 		if (name != null){
@@ -224,7 +224,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		}
 		return NAME_UNDEFINED;
 	}
-	
+
 	@Override
 	public int compareTo (Entry o) {
 		if (o == null || o.datStructure == null){
@@ -238,12 +238,12 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 			default: return Integer.compare(ID, o.ID);
 		}
 	}
-
+	
 	@Override
 	public Iterator <Object> iterator () {
 		return values.iterator();
 	}
-
+	
 	/**
 	 * Find and return all links to this entry
 	 * @param ordered	If true, order the list
@@ -291,4 +291,63 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		return linksToEntry;
 	}
 
+
+
+	
+	/**
+	 * Get the Link value at the given index
+	 * @param index	The index
+	 * @return		The Link value
+	 * @throws IndexOutOfBoundsException	If there's no value with the given index
+	 * @throws ClassCastException			If the value was not a Link
+	 */
+	public Link getLink(int index) throws IndexOutOfBoundsException, ClassCastException {
+		Object obj = values.get(index);
+		if (obj instanceof Link){
+			return (Link) obj;
+		}
+		throw new ClassCastException("The field was not a link");
+	}
+	
+	/**
+	 * Get the int value at the given index
+	 * @param index	The index
+	 * @return		The int value
+	 * @throws IndexOutOfBoundsException	If there's no value with the given index
+	 * @throws ClassCastException			If the value was not an integer
+	 */
+	public Integer getInt(int index) throws IndexOutOfBoundsException, ClassCastException {
+		Object obj = values.get(index);
+		if (obj instanceof Integer){
+			return (Integer) obj;
+		}
+		throw new ClassCastException("The field was not an integer");
+	}
+
+	/**
+	 * Get the float value at the given index
+	 * @param index	The index
+	 * @return		The float value
+	 * @throws IndexOutOfBoundsException	If there's no value with the given index
+	 * @throws ClassCastException			If the value was not a float
+	 */
+	public Float getFloat(int index) throws IndexOutOfBoundsException, ClassCastException {
+		Object obj = values.get(index);
+		if (obj instanceof Float){
+			return (Float) obj;
+		}
+		throw new ClassCastException("The field was not a float");
+	}
+
+	/**
+	 * Get the String value at the given index
+	 * Convert the value to string if not already a string
+	 * @param index	The index
+	 * @return		The String value
+	 * @throws IndexOutOfBoundsException	If there's no value with the given index
+	 */
+	public String getString(int index) throws IndexOutOfBoundsException {
+		return values.get(index).toString();
+	}
+	
 }
