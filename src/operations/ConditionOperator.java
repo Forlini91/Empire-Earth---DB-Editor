@@ -67,7 +67,11 @@ public class ConditionOperator implements Condition {
 		this.index = index;
 		this.operator = operator;
 		this.value = value;
-		name = datFile.datStructure.fieldStructs[index+1].name + ' ' + operator + ' ' + value;
+		if (index < 0){
+			name = "<Any field> " + operator + ' ' + value;
+		} else {
+			name = datFile.datStructure.fieldStructs[index].name + ' ' + operator + ' ' + value;
+		}
 		condition = buildCondition(datFile.datStructure, index, operator, value);
 	}
 	
