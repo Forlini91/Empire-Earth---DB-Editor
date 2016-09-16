@@ -22,6 +22,7 @@ import javax.swing.border.EmptyBorder;
 import datmanager.Core;
 import datmanager.DatFile;
 import datstructure.DatStructure;
+import gui.components.JButtonRed;
 import operations.ConditionOperator;
 import operations.Operator;
 
@@ -64,18 +65,20 @@ public class DialogConditionBuilder extends JDialog {
 	private final JTextField textField = new JTextField();
 	
 	private final JButton
-	btnOk = new JButton("OK"),
-	btnCancel = new JButton("Cancel");
+	btnOk = new JButtonRed("OK"),
+	btnCancel = new JButtonRed("Cancel");
 
 	
 	
 	{
 		setBounds(Core.getBounds(this, 450, 225));
+		setResizable(false);
 		comboBoxOperator.setModel(new DefaultComboBoxModel <>(Operator.values()));
 		lblName.setHorizontalAlignment(SwingConstants.CENTER);
 		btnCancel.addActionListener(e -> dispose());
 		contentPanel.setLayout(gbl_contentPanel);
 		contentPanel.setBorder(new EmptyBorder(10, 10, 10, 5));
+		contentPanel.setBackground(GUI.COLOR_UI_BACKGROUND);
 		contentPanel.add(lblName, gbc_lblName);
 		contentPanel.add(lblField, gbc_lblField);
 		contentPanel.add(comboBoxField, gbc_comboBoxField);
@@ -177,9 +180,9 @@ public class DialogConditionBuilder extends JDialog {
 
 	
 	static {
-		gbl_contentPanel.columnWidths = new int[] {0, 0};
+		gbl_contentPanel.columnWidths = new int[] {125, 125};
 		gbl_contentPanel.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
-		gbl_contentPanel.columnWeights = new double[]{0.2, 0.8};
+		gbl_contentPanel.columnWeights = new double[]{0.3, 0.7};
 		gbl_contentPanel.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
 
 		gbc_lblName.fill = GridBagConstraints.BOTH;

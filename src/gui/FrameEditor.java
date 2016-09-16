@@ -145,6 +145,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	private final JMenuItem fieldMenuUnmarkUnusedFields = new JMenuItem("Remove marks");
 	private final JMenuItem fieldMenuRefreshList = new JMenuItem("Refresh list");
 	private final JMenuItem fieldMenuOpenLink = new JMenuItem("Open link");
+	private final JMenuItem fieldMenuNextFree = new JMenuItem("Find next free ID/number");
 
 	private final JPopupMenu entryListMenu = new JPopupMenu();
 	private final JMenuItem entryListMenuAdd = new JMenuItem("Add entry");
@@ -309,20 +310,18 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		entryListMenu.add(entryListMenuGoToParentSet);
 		entryListMenuPasteData.setVisible(false);
 		entryListMenuAdd.addActionListener(e -> {
-			Integer maxSeq = null;
-			Integer maxID = null;
 			try{
-				maxSeq = datFile.getAllEntries(true).parallelStream().mapToInt(x->x.sequenceNumber).max().getAsInt();
-				maxID = currentEntryGroup.entries.parallelStream().mapToInt(x->x.ID).max().getAsInt();
+				int maxSeq = datFile.getAllEntries(true).parallelStream().mapToInt(x->x.sequenceNumber).max().getAsInt();
+				int maxID = currentEntryGroup.entries.parallelStream().mapToInt(x->x.ID).max().getAsInt();
+				Entry newEntry = new Entry(datFile.datStructure, false, maxSeq+1, maxID+1);
+				currentEntryGroup.entries.add(newEntry);
+				currentEntryGroup.map.put(newEntry.ID, newEntry);
+				entryList.setList(currentEntryGroup.entries);
+				entryList.setSelectedElement(newEntry);
 			} catch (NoSuchElementException e1){
-				JOptionPane.showMessageDialog(this, "An error occurred while adding the new entry. No data has been altered", "Error", JOptionPane.ERROR_MESSAGE);
+				Core.printException(this, e1, "An error occurred while adding the new entry. No data has been altered", "Error");
 				return;
 			}
-			Entry newEntry = new Entry(datFile.datStructure, false, maxSeq+1, maxID+1);
-			currentEntryGroup.entries.add(newEntry);
-			currentEntryGroup.map.put(newEntry.ID, newEntry);
-			entryList.setList(currentEntryGroup.entries);
-			entryList.setSelectedElement(newEntry);
 		});
 		entryListMenuRemove.addActionListener(e -> {
 			if (currentEntry != null){
@@ -345,15 +344,15 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		entryListMenuDuplicate.addActionListener(e -> {
 			if (currentEntry != null){
 				try{
-					Integer maxSeq = datFile.getAllEntries(true).parallelStream().mapToInt(x->x.sequenceNumber).max().getAsInt();
-					Integer maxID = currentEntryGroup.entries.parallelStream().mapToInt(x->x.ID).max().getAsInt();
+					int maxID = currentEntryGroup.entries.parallelStream().mapToInt(x->x.ID).max().getAsInt();
+					int maxSeq = datFile.getAllEntries(false).parallelStream().mapToInt(x->x.sequenceNumber).max().getAsInt();
 					Entry newEntry = currentEntry.duplicate(maxSeq+1, maxID+1);
 					currentEntryGroup.entries.add(newEntry);
 					currentEntryGroup.map.put(newEntry.ID, newEntry);
 					entryList.setList(currentEntryGroup.entries);
 					entryList.setSelectedElement(newEntry);
 				} catch (NoSuchElementException e1){
-					JOptionPane.showMessageDialog(this, "An error occurred while adding the new entry. No data has been altered", "Error", JOptionPane.ERROR_MESSAGE);
+					Core.printException(this, e1, "An error occurred while adding the new entry. No data has been altered", "Error");
 				}
 			}
 		});
@@ -444,6 +443,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		fieldMenu.add(fieldMenuUnmarkUnusedFields);
 		fieldMenu.add(fieldMenuRefreshList);
 		fieldMenu.add(fieldMenuOpenLink);
+		fieldMenu.add(fieldMenuNextFree);
 		fieldMenuSearchValues.addActionListener(e -> {
 			EntryFieldInterface field = (EntryFieldInterface) rightClicked;
 			EntryValueMap entryValueMap = EntryValueMap.getValuesMap(datFile.entryGroups, field.getIndex(), true);
@@ -471,6 +471,20 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 					}
 				}
 			}
+		});
+		fieldMenuNextFree.addActionListener(e -> {
+			EntryFieldInterface field = (EntryFieldInterface) rightClicked;
+			FieldStruct fieldStruct = field.getEntryStruct();
+			int highest;
+			if (fieldStruct == FieldStruct.ID){
+				highest = currentEntryGroup.entries.parallelStream().mapToInt(x->x.ID).max().getAsInt();
+			} else if (fieldStruct == FieldStruct.SEQ_NUMBER){
+				highest = datFile.getAllEntries(false).parallelStream().mapToInt(x->x.sequenceNumber).max().getAsInt();
+			} else {
+				Core.printException(this, new IllegalStateException("This is not an ID or Sequence Number field"), "An error occurred while checking the max ID/Number", "Error");
+				return;
+			}
+			field.setVal(highest+1);
 		});
 		
 		panelFields.setLayout(gridLayout);
@@ -622,6 +636,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 					rightClicked = component;
 					fieldMenuRefreshList.setVisible(fieldStruct.linkToStruct != null);
 					fieldMenuOpenLink.setVisible(fieldStruct.linkToStruct != null);
+					fieldMenuNextFree.setVisible(fieldStruct == FieldStruct.ID || fieldStruct == FieldStruct.SEQ_NUMBER);
 				}));
 		return panelEntry;
 	}
@@ -731,7 +746,13 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		}
 		int n = entry.values.size();
 		for (int i = 0; i < numBaseFields; i++){
-			baseFields.get(i).setVal(entry.values.get(i));
+			try {
+				baseFields.get(i).setVal(entry.values.get(i));
+			} catch (IllegalArgumentException e){
+				String message = "Error while writing value " + entry.values.get(i) + " in field (" + i + ") " + entry.datStructure.fieldStructs[i];
+				Core.printException(this, e, message, "Error");
+				throw new IllegalArgumentException(message, e);
+			}
 		}
 		for (int i = 0, j = n-numBaseFields; i < j; i++){
 			extraFields.get(i).setVal(entry.values.get(numBaseFields+i));

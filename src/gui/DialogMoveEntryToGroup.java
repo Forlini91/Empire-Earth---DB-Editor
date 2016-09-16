@@ -27,12 +27,12 @@ import gui.ui.GridBagLayoutExtended;
  * @author MarcoForlini
  */
 public class DialogMoveEntryToGroup extends JDialog {
-
+	
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = -8547149058851208651L;
-	
+
 	/**
 	 * Create a new {@link DialogMoveEntryToGroup}
 	 * @param parent			The parent window
@@ -74,14 +74,14 @@ public class DialogMoveEntryToGroup extends JDialog {
 				onChange.run();
 				entry.getLinksToEntry(false).parallelStream().forEach(link -> link.source.datStructure.datFile.setUnsaved(true));
 			} catch (Exception e){
-				JOptionPane.showMessageDialog(this, "An error occurred while moving the entry. No data has been altered", "Error", JOptionPane.ERROR_MESSAGE, GUI.IMAGE_ICON);
+				Core.printException(null, e, "An error occurred while moving the entry. No data has been altered", "Error");
 			}
 			dispose();
 		});
 		dlgCancel.addActionListener(al -> dispose());
-
+		
 		getRootPane().registerKeyboardAction((e) -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
-
+		
 		setTitle("Move entry to another group");
 		setBounds(Core.getBounds(this, 0.3, 0.6));
 		getContentPane().setBackground(GUI.COLOR_UI_BACKGROUND);
@@ -90,5 +90,5 @@ public class DialogMoveEntryToGroup extends JDialog {
 		add(dlgConfirm, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
 		add(dlgCancel, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 2));
 	}
-
+	
 }

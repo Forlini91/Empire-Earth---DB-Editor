@@ -1,5 +1,6 @@
 package datmanager;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -24,6 +25,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import datstructure.DatStructure;
 import datstructure.Entry;
@@ -35,6 +38,7 @@ import gui.EESplashScreen;
 import gui.FrameEditor;
 import gui.FrameMain;
 import gui.GUI;
+import gui.components.JScrollPaneRed;
 
 /**
  * Core class. Contains the method main, the main data loaded by the program and some useful methods
@@ -42,18 +46,19 @@ import gui.GUI;
  *
  */
 public class Core {
-
+	
 	/** The editor version/revision */
 	public static final float VERSION = 1.5f;
-	
+
 	/** Max time (milliseconds) it will wait for loading to complete. If time exceed this value, the load is considered failed. */
 	private static final int LOAD_MAX_WAIT = 15000;
-	
-	private static final String[] loadErrorChoices = {"Close", "Get \"Wofies Multidecompressor\" from Empire Earth Heaven", "Check error"};
-	
+
+	private static final String[] loadErrorChoices = {"Close", "Get \"Wofies Multidecompressor\" from Empire Earth Heaven", "Show stack trace"};
+	private static final String[] exceptionChoices = {"Close", "Show stack trace"};
+
 	/** If false, disable the link system */
 	public static boolean LINK_SYSTEM = true;
-
+	
 	/** If true, the editor is in AOC mode */
 	public static Boolean AOC = new EESplashScreen().askEditorType();
 	static {
@@ -61,7 +66,7 @@ public class Core {
 			System.exit(0);
 		}
 	}
-	
+
 	@SuppressWarnings ("javadoc")
 	public static final NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
 	static {
@@ -69,18 +74,18 @@ public class Core {
 		numberFormat.setGroupingUsed(false);
 		numberFormat.setRoundingMode(RoundingMode.HALF_UP);
 	}
-
 	
 
+	
 	@SuppressWarnings ({ "javadoc" })
 	public static void main (String[] args) {
 		new Thread(Language.LIST::size).start();  //This makes the Language class initialize... SSSHHH!!!
 		new Thread(DatStructure::init).start();
 		FrameMain.instance.setVisible(true);
 	}
-
-
 	
+	
+
 	/**
 	 * Load the given file and disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -91,7 +96,7 @@ public class Core {
 	public static void loadFile(Window parent, DatFile datFile, Consumer<DatFile> onLoaded, Runnable onFail){
 		loadFiles(parent, new ArrayList<>(Arrays.asList(datFile)), (data) -> onLoaded.accept(datFile), onFail);
 	}
-
+	
 	/**
 	 * Load the given list of files and disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -99,7 +104,7 @@ public class Core {
 	 * @param onLoaded	The code to run if loading succeed
 	 * @param onFail	The code to run if loading fails
 	 */
-	public static void loadFiles(Window parent, List<DatFile> files, Consumer<Collection<DatFile>> onLoaded, Runnable onFail){
+	public static void loadFiles(Component parent, List<DatFile> files, Consumer<Collection<DatFile>> onLoaded, Runnable onFail){
 		if (parent != null){
 			parent.setEnabled(false);
 		}
@@ -130,10 +135,8 @@ public class Core {
 								while (e.getCause() != null){
 									e = e.getCause();
 								}
-								int choice;
-								do {
-									choice = JOptionPane.showOptionDialog(parent, "An error occurred during the loading of " + datFile + ".\nAre you sure this file has been extracted from " + (AOC ? "Art of Conquest's (and not Vanilla game's)" : "Empire Earth's (and not Art of Conquest's)") + " archive Data.ssa?\nAlso, have you decrypted the files with \"Wofies Multidecompressor\"?\nYou know, the files you extract from Data.ssa must also be decrypted (and EE Studio doesn't correctly decrypt them).\nFirst decrypted the files you've extracted, then retry the loading", "Error", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, GUI.IMAGE_ICON, loadErrorChoices, loadErrorChoices[0]);
-									switch (choice) {
+								ERROR: do {
+									switch (JOptionPane.showOptionDialog(parent, "An error occurred during the loading of " + datFile + ".\nAre you sure this file has been extracted from " + (AOC ? "Art of Conquest's (and not Vanilla game's)" : "Empire Earth's (and not Art of Conquest's)") + " archive Data.ssa?\nAlso, have you decrypted the files with \"Wofies Multidecompressor\"?\nYou know, the files you extract from Data.ssa must also be decrypted (and EE Studio doesn't correctly decrypt them).\nFirst decrypt the files you've extracted, then retry the loading", "Error", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, GUI.IMAGE_ICON, loadErrorChoices, loadErrorChoices[0])) {
 										case 1:
 											try {
 												final URI uri = new URI("http://ee.heavengames.com/downloads/showfile.php?fileid=2543");
@@ -145,12 +148,14 @@ public class Core {
 											} catch (Exception e2) {
 												JOptionPane.showMessageDialog(parent, "Can't open the link", "Error", JOptionPane.ERROR_MESSAGE, GUI.IMAGE_ICON);
 											}
-											break;
+											continue;
 										case 2:
-											JOptionPane.showMessageDialog(parent, buildStackTrace(e), e.getMessage(), JOptionPane.ERROR_MESSAGE, GUI.IMAGE_ICON);
-											break;
+											printException(parent, e);
+											continue;
+										default:
+											break ERROR;
 									}
-								} while (choice > 0);
+								} while (true);
 								errors.add(datFile);
 								lockObj.notifyAll();
 							}
@@ -159,7 +164,7 @@ public class Core {
 				});
 				t.start();
 			}
-
+			
 			try {
 				synchronized(lockObj){
 					if (dataLoad.size() < files.size()){
@@ -167,6 +172,7 @@ public class Core {
 					}
 				}
 			} catch (InterruptedException e) {
+				printException(parent, e, "The thread has been interrupted during the wait. What rudeness!!!", "Not a real error");
 				return;
 			}
 			if (progressDialog.isDisplayable()){
@@ -185,8 +191,8 @@ public class Core {
 			}
 		}).start();
 	}
-	
-	
+
+
 	/**
 	 * Build the links to the fields
 	 */
@@ -198,11 +204,11 @@ public class Core {
 		int indexExtra, n2;
 		Object value;
 		Entry sourceEntry;
-
+		
 		for (DatFile datFileLoaded : DatFile.LOADED) {
 			fieldStructs = datFileLoaded.datStructure.fieldStructs;
 			int n = fieldStructs.length;
-
+			
 			for (int i = 0; i < n; i++){
 				fieldStruct = fieldStructs[i];
 				if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Core.LINK_SYSTEM) {
@@ -228,7 +234,7 @@ public class Core {
 					}
 				}
 			}
-
+			
 			fieldStruct = datFileLoaded.datStructure.extraField;
 			if (fieldStruct != null && fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Core.LINK_SYSTEM) {
 				indexExtra = datFileLoaded.datStructure.getIndexExtraFields();
@@ -256,9 +262,9 @@ public class Core {
 			}
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Save the given list of EntryGroup to the given file. Disable (but not freeze) the calling window until finished.
 	 * @param parent	The parent window
@@ -291,9 +297,9 @@ public class Core {
 			}).start();
 		}).start();
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Try to open the given file or show an error message to the calling component.
 	 * The file must be already loaded.
@@ -319,12 +325,12 @@ public class Core {
 			JOptionPane.showMessageDialog(parent, "An error occurred during the loading of the file", "Error", JOptionPane.ERROR_MESSAGE, GUI.IMAGE_ICON);
 			return null;
 		} catch (Exception e){
-			JOptionPane.showMessageDialog(parent, buildStackTrace(e), e.getMessage(), JOptionPane.ERROR_MESSAGE, GUI.IMAGE_ICON);
+			printException(parent, e, "Error while opening the window for DatFile: " + datFile, "Error");
 			throw e;
 		}
 	}
-
-
+	
+	
 	/**
 	 * Calculate the bounds of the given component
 	 * @param component		The component
@@ -339,8 +345,8 @@ public class Core {
 		Point point = new Point((rBounds.width / 2) - (dimension.width / 2), (rBounds.height / 2) - (dimension.height / 2) - 25);
 		return new Rectangle(point, dimension);
 	}
-	
-	
+
+
 	/**
 	 * Convert a throwable's stack trace to String
 	 * @param e		The throwable
@@ -353,9 +359,35 @@ public class Core {
 		return new String(baos.toByteArray(), StandardCharsets.UTF_8);
 	}
 	
+	/**
+	 * Show a message about an error and ask the user to see the stack trace of the given exception
+	 * @param parent	The parent component
+	 * @param e			The exception
+	 * @param message	Message to display
+	 * @param title		Title of the message
+	 */
+	public static void printException(Component parent, Throwable e, String message, String title){
+		if (JOptionPane.showOptionDialog(parent, message, title, 0, JOptionPane.ERROR_MESSAGE, null, exceptionChoices, exceptionChoices[0]) == 1) {
+			printException(parent, e);
+		}
+	}
+	
+	/**
+	 * Show a message with the stack trace of the given exception
+	 * @param parent	The parent component
+	 * @param e			The exception
+	 */
+	public static void printException(Component parent, Throwable e){
+		JTextArea area = new JTextArea(buildStackTrace(e));
+		area.setForeground(Color.RED);
+		JScrollPane scrollPane = new JScrollPaneRed(area);
+		scrollPane.setPreferredSize(new Dimension(800, 500));
+		JOptionPane.showMessageDialog(null, scrollPane, "Exception: stack trace", JOptionPane.ERROR_MESSAGE);
+	}
 
-
+	
+	
 	/** No need to instantiate this */
 	private Core(){}
-
+	
 }

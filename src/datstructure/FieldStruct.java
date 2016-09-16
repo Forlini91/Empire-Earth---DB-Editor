@@ -3,6 +3,7 @@ package datstructure;
 import java.awt.Color;
 
 import constants.EnumValue;
+import datmanager.Core;
 import gui.GUI;
 
 /**
@@ -493,6 +494,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		try {
 			return (FieldStruct) super.clone();
 		} catch (CloneNotSupportedException e) {	/* Won't happen...*/
+			Core.printException(null, e, "You should not see this error...", "Error");
 			return null;
 		}
 	}
