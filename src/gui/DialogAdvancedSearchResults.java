@@ -31,9 +31,9 @@ import gui.ui.GridBagLayoutExtended;
  *
  */
 public class DialogAdvancedSearchResults extends JDialog {
-	
+
 	private static final long serialVersionUID = 2493133528817012871L;
-	
+
 	/**
 	 * Create a new {@link DialogAdvancedSearchResults}
 	 * @param parent		The parent frame
@@ -42,7 +42,7 @@ public class DialogAdvancedSearchResults extends JDialog {
 	 */
 	public DialogAdvancedSearchResults (Window parent, List<Entry> entries, DatFile datFile) {
 		super(parent, ModalityType.DOCUMENT_MODAL);
-		
+
 		List<Entry> entriesClean = entries.parallelStream().filter(entry -> entry.isDefined()).collect(Collectors.toList());
 		JListDouble<Entry> dlgList = new JListDouble<>(entries, entriesClean);
 		JScrollPane dlgScrollPane = new JScrollPaneRed(dlgList, "Results:");
@@ -53,18 +53,18 @@ public class DialogAdvancedSearchResults extends JDialog {
 		dlgScrollPane.getViewport().setOpaque(false);
 		dlgScrollPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
 		dlgScrollPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
-		
+
 		getRootPane().registerKeyboardAction((e) -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 		dlgClose.addActionListener(al -> dispose());
-		
-		setTitle("Search result in file " + datFile);
+
+		setTitle("Search result in file " + datFile.datStructure);
 		setBounds(Core.getBounds(this, 0.6, 0.8));
 		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{400, 30, 25, 50}, new double[]{1.0}, new double[]{1.0, 0, 0, 0}));
 		add(dlgScrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 0));
 		add(dlgSearch, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
 		add(dlgList.switchList, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 2));
 		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 3));
-		
+
 		dlgList.addMouseListener(new MouseAdapter(){
 			@Override
 			public void mouseClicked (MouseEvent e) {
@@ -85,5 +85,5 @@ public class DialogAdvancedSearchResults extends JDialog {
 			}
 		});
 	}
-	
+
 }

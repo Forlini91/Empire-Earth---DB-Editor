@@ -11,7 +11,7 @@ import gui.GUI;
  *
  */
 public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
-	
+
 	/** Common field: A 100 chars String which define the entry's name. */
 	public static final FieldStruct NAME = new FieldStruct("Name", Type.STRING, 100, Knowledge.KNOWN, GUI.COLOR_FIELD_ID);
 	/** Common field: A 4 bytes integer which define the entry's sequence number. */
@@ -22,9 +22,9 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public static final FieldStruct STRING_SIZE_EXTRA = new FieldStruct("String size extra", Type.INTEGER, 4, false);
 	/** Unique field: A 4 bytes integer which point to an entry in the file Language.dll */
 	public static final FieldStruct ID_LANGUAGE = new FieldStruct("Language ID", Type.LANGUAGE);
-	
-	
-	
+
+
+
 	/** Special field: A 1 byte boolean which define an unknown field which always hold the same value. */
 	public static final FieldStruct UNCHANGED_BOOL1 = new FieldStruct("Never changes", Type.BOOLEAN, 1, Knowledge.NEVER_CHANGE, Color.GRAY);
 	/** Special field: A 4 bytes boolean which define an unknown field which always hold the same value. */
@@ -35,7 +35,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public static final FieldStruct UNCHANGED_INT4 = new FieldStruct("Never changes", Type.INTEGER, 4, Knowledge.NEVER_CHANGE, Color.GRAY);
 	/** Special field: A 4 bytes float which define an unknown field which always hold the same value. */
 	public static final FieldStruct UNCHANGED_FLOAT = new FieldStruct("Never changes", Type.FLOAT, 4, Knowledge.NEVER_CHANGE, Color.GRAY);
-	
+
 	/** Special field: A 1 byte boolean which define an unknown and never used field. */
 	public static final FieldStruct UNUSED_BOOL1 = new FieldStruct("Never used", Type.BOOLEAN, 1, Knowledge.NEVER_USED, Color.GRAY);
 	/** Special field: A 4 bytes boolean which define an unknown and never used field. */
@@ -46,7 +46,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public static final FieldStruct UNUSED_INT4 = new FieldStruct("Never used", Type.INTEGER, 4, Knowledge.NEVER_USED, Color.GRAY);
 	/** Special field: A 4 bytes float which define an unknown and never used field. */
 	public static final FieldStruct UNUSED_FLOAT = new FieldStruct("Never used", Type.FLOAT, 4, Knowledge.NEVER_USED, Color.GRAY);
-	
+
 	/** Special field: A 1 byte boolean which define a (still) unknown field. */
 	public static final FieldStruct UNKNOWN_BOOL1 = new FieldStruct("Unknown", Type.BOOLEAN, 1, Knowledge.UNKNOWN, Color.RED);
 	/** Special field: A 4 bytes boolean which define a (still) unknown field. */
@@ -57,9 +57,9 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public static final FieldStruct UNKNOWN_INT4 = new FieldStruct("Unknown", Type.INTEGER, 4,  Knowledge.UNKNOWN, Color.RED);
 	/** Special field: A 4 bytes float which define a (still) unknown field. */
 	public static final FieldStruct UNKNOWN_FLOAT = new FieldStruct("Unknown", Type.FLOAT, 4,  Knowledge.UNKNOWN, Color.RED);
-
-
 	
+	
+
 	/** Name or description of the field. */
 	public final String name;
 	/** Type of the value contained in the field. */
@@ -84,13 +84,13 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public final int nullID;
 	/** Index of the field which hold the size of the string field. (Yeah... some strings length is not a fixed 100) */
 	public final int indexSize;
-
-
-
+	
+	
 	
 
-
 	
+	
+
 	/**
 	 * Create a new boolean FieldStruct with the given name
 	 * @param name	Name of the field
@@ -109,7 +109,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		defaultValue = -1;
 		nullID = 0;
 	}
-
+	
 	/**
 	 * Create a new 4 bytes FieldStruct with the given name and type
 	 * @param name	Name of the field
@@ -129,7 +129,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 		nullID = 0;
 	}
-
+	
 	/**
 	 * Create a new FieldStruct with the given name, type and size
 	 * @param name	Name of the field
@@ -150,7 +150,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 		nullID = 0;
 	}
-
+	
 	/**
 	 * Create a new FieldStruct with the given name, type and size
 	 * @param name	Name of the field
@@ -172,7 +172,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 		nullID = 0;
 	}
-
+	
 	/**
 	 * Create a new FieldStruct with the given name, type and size
 	 * @param name	Name of the field
@@ -194,7 +194,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 		nullID = 0;
 	}
-
+	
 	/**
 	 * Create a new FieldStruct with the given name, type and size
 	 * @param name	Name of the field
@@ -217,7 +217,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 		nullID = 0;
 	}
-
+	
 	/**
 	 * Create a new FieldStruct with the given name, which is a link to another entry
 	 * @param name			Name of the field
@@ -238,7 +238,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		arrValues = null;
 		indexSize = -1;
 	}
-	
+
 	/**
 	 * Create a new FieldStruct with the given name, which is a link to another entry
 	 * @param name			Name of the field
@@ -260,7 +260,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		arrValues = null;
 		indexSize = -1;
 	}
-
+	
 	/**
 	 * Create a new FieldStruct with the given name and knowledge, which is a link to another entry
 	 * @param name			Name of the field
@@ -282,7 +282,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		arrValues = null;
 		indexSize = -1;
 	}
-	
+
 	/**
 	 * Create a new FieldStruct with the given name and list of values
 	 * @param name			Name of the field
@@ -302,7 +302,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 		nullID = 0;
 	}
-	
+
 	/**
 	 * Create a new FieldStruct with the given name and list of values
 	 * @param name			Name of the field
@@ -323,7 +323,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 		nullID = 0;
 	}
-	
+
 	/**
 	 * Create a new FieldStruct with the given name and list of values
 	 * @param name			Name of the field
@@ -344,7 +344,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 		nullID = 0;
 	}
-
+	
 	/**
 	 * Create a new FieldStruct with the given name and list of values
 	 * @param name			Name of the field
@@ -364,7 +364,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 		nullID = 0;
 	}
-	
+
 	/**
 	 * Create a new FieldStruct with the given name and list of values
 	 * @param name			Name of the field
@@ -385,7 +385,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 		nullID = 0;
 	}
-	
+
 	/**
 	 * Create a new FieldStruct with the given name and index of the field with the size.
 	 * @param name			Name of the field
@@ -405,14 +405,14 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		defaultValue = -1;
 		nullID = 0;
 	}
-	
-	
-
-
 
 
 	
+	
+	
+	
 
+	
 	/**
 	 * Gets the name of the field
 	 * @return	The name of the field
@@ -420,7 +420,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public String getName () {
 		return name;
 	}
-
+	
 	/**
 	 * Gets the type of the field
 	 * @return	The type of the field
@@ -428,7 +428,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public Type getType () {
 		return type;
 	}
-
+	
 	/**
 	 * Gets the size of the field
 	 * @return	The size of the field
@@ -436,7 +436,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public int getSize () {
 		return size;
 	}
-	
+
 	/**
 	 * Gets the knowledge about this field
 	 * @return	The knowledge about this field
@@ -444,7 +444,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public Knowledge getKnowledge () {
 		return knowledge;
 	}
-
+	
 	/**
 	 * Check if the field is editable
 	 * @return	true if it's editable, false otherwise
@@ -452,7 +452,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public boolean isEditable () {
 		return editable;
 	}
-
+	
 	/**
 	 * Gets the color of the field
 	 * @return	The color of the field
@@ -460,7 +460,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public Color getColor () {
 		return color;
 	}
-
+	
 	/**
 	 * Gets the link to the other file
 	 * @return	The link to the other file
@@ -468,7 +468,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public DatStructure getLinkToStruct () {
 		return linkToStruct;
 	}
-
+	
 	/**
 	 * Gets the index of field which hold the size of this field
 	 * @return	The index of field which hold the size of this field
@@ -476,21 +476,18 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public int getIndexSize () {
 		return indexSize;
 	}
-	
+
 	@Override
 	public String toString(){
-		if (type != null) {
-			return name + ' ' + '(' + type + ' ' + size + ')';
-		}
-		return name;
+		return name + ' ' + '(' + type + ' ' + size + ')';
 	}
-
-
+	
+	
 	@Override
 	public int compareTo (FieldStruct o) {
 		return Integer.signum(name.compareTo(o.name));
 	}
-	
+
 	@Override
 	protected FieldStruct clone () {
 		try {
@@ -499,5 +496,5 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 			return null;
 		}
 	}
-	
+
 }

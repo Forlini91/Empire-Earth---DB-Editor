@@ -1,6 +1,7 @@
 package operations;
 
 import java.util.function.DoublePredicate;
+import java.util.stream.IntStream;
 
 import datmanager.Core;
 import datmanager.DatFile;
@@ -69,8 +70,12 @@ public class ConditionOperator implements Condition {
 		this.value = value;
 		if (index < 0){
 			name = "<Any field> " + operator + ' ' + value;
-		} else {
+		} else if (index < datFile.datStructure.fieldStructs.length){
 			name = datFile.datStructure.fieldStructs[index].name + ' ' + operator + ' ' + value;
+		} else if (datFile.datStructure.extraField != null){
+			name = datFile.datStructure.extraField.name + ' ' + operator + ' ' + value;
+		} else {
+			throw new IllegalStateException("You have asked for the extra field of an file, but this file doesn't have an extra field");
 		}
 		condition = buildCondition(datFile.datStructure, index, operator, value);
 	}
@@ -94,10 +99,12 @@ public class ConditionOperator implements Condition {
 	
 	private static Condition buildSingleFieldCondition(DatStructure datStructure, int index, Operator operator, Object value){
 		Type type;
+		boolean extraIndexes = false;
 		if (index < datStructure.fieldStructs.length){
 			type = datStructure.fieldStructs[index].type;
 		} else if (datStructure.extraField != null){
 			type = datStructure.extraField.type;
+			extraIndexes = true;
 		} else {
 			return ALWAYS_FALSE;
 		}
@@ -129,6 +136,11 @@ public class ConditionOperator implements Condition {
 			}
 			DoublePredicate check = checkBuild;	//This fucking idiot fucking requires the fucking variable to fucking be effectively fucking final, FUCK!...
 			if (Core.LINK_SYSTEM && type == Type.ID){
+				if (extraIndexes){
+					return (Entry entry) -> IntStream
+							.range(index, entry.values.size())
+							.anyMatch(i -> check.test(entry.getLink(i).target.ID));
+				}
 				return (Entry entry) -> check.test(entry.getLink(index).target.ID);
 			} else if (type == Type.FLOAT) {
 				return (Entry entry) -> check.test(entry.getFloat(index));
