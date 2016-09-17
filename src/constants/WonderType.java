@@ -7,7 +7,7 @@ package constants;
  * @author MarcoForlini
  */
 public enum WonderType implements EnumValue {
-
+	
 	/** No power */
 	C0_NONE ("None", 0),
 	/** Power which allow multiple conversion */
@@ -23,41 +23,37 @@ public enum WonderType implements EnumValue {
 	/** Power which allow units to regenerate health */
 	C6_REGENERATION ("Regeneration", 6),
 	;
-	
-	
+
+
 	/** Name to be shown in the UI */
 	public final String name;
-
+	
 	/** Code used in the dat files */
 	public final int code;
-	
 
+	
 	WonderType(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-
+	
 	@Override
 	public String getName(){
 		return name;
 	}
-	
+
 	@Override
 	public int getCode () {
 		return code;
 	}
-
+	
 	@Override
 	public boolean isValid (int code) {
 		return code >= 0 && code <= 9;
 	}
-
-	/**
-	 * Parse the code and return the relative enum.
-	 * @param code	The code
-	 * @return		The relative enum
-	 */
-	public static WonderType parseValue(int code){
+	
+	@Override
+	public WonderType parseValue(int code){
 		switch (code){
 			case 0: return C0_NONE;
 			case 1: return C1_MULTIPLE_CONVERSIONS;
@@ -69,10 +65,10 @@ public enum WonderType implements EnumValue {
 			default: return null;
 		}
 	}
-	
+
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-
+	
 }

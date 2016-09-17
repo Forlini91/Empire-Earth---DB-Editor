@@ -7,7 +7,7 @@ package constants;
  * @author MarcoForlini
  */
 public enum ObjectType implements EnumValue {
-	
+
 	/** Building and World */
 	C0_Buildings_World ("Buildings & World", 0),
 	/** Air unit */
@@ -29,41 +29,37 @@ public enum ObjectType implements EnumValue {
 	/** Sea units */
 	C9_Ships_Submarines ("Ships & Submarines", 9),
 	;
-
-
+	
+	
 	/** Name to be shown in the UI */
 	public final String name;
-	
+
 	/** Code used in the dat files */
 	public final int code;
-
-
+	
+	
 	ObjectType(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-
+	
 	@Override
 	public String getName(){
 		return name;
 	}
-
+	
 	@Override
 	public int getCode () {
 		return code;
 	}
-
+	
 	@Override
 	public boolean isValid (int code) {
 		return code >= 0 && code <= 9;
 	}
-	
-	/**
-	 * Parse the code and return the relative enum.
-	 * @param code	The code
-	 * @return		The relative enum
-	 */
-	public static ObjectType parseValue(int code){
+
+	@Override
+	public ObjectType parseValue(int code){
 		switch (code){
 			case 0: return C0_Buildings_World;
 			case 1: return C1_Aircrafts;
@@ -78,10 +74,10 @@ public enum ObjectType implements EnumValue {
 			default: return null;
 		}
 	}
-
+	
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-	
+
 }

@@ -7,7 +7,7 @@ package constants;
  * @author MarcoForlini
  */
 public enum AreaEffectType implements EnumValue {
-	
+
 	/** No effect in this area */
 	NONE ("None", 0),
 	/** Objects recover HP */
@@ -27,40 +27,36 @@ public enum AreaEffectType implements EnumValue {
 	/** Objects are cloaked */
 	C8_CLOAK ("Cloaking", 8)
 	;
-
 	
+
 	/** Name to be shown in the UI */
 	public final String name;
-
+	
 	/** Code used in the dat files */
 	public final int code;
-
+	
 	AreaEffectType(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-
+	
 	@Override
 	public String getName(){
 		return name;
 	}
-
+	
 	@Override
 	public int getCode () {
 		return code;
 	}
-
+	
 	@Override
 	public boolean isValid (int code) {
 		return code >= 0 && code <= 8;
 	}
-	
-	/**
-	 * Parse the code and return the relative enum.
-	 * @param code	The code
-	 * @return		The relative enum
-	 */
-	public static AreaEffectType parseValue(int code){
+
+	@Override
+	public AreaEffectType parseValue(int code){
 		switch (code){
 			case 0: return NONE;
 			case 1: return C1_HEALING;
@@ -74,10 +70,10 @@ public enum AreaEffectType implements EnumValue {
 			default: return null;
 		}
 	}
-
+	
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-
+	
 }

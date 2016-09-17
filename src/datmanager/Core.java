@@ -261,6 +261,8 @@ public class Core {
 				}
 			}
 		}
+		
+		DatFile.LOADED.forEach(df -> df.dummyEntryGroup.sort(null));
 	}
 
 

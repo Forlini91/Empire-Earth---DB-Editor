@@ -7,7 +7,7 @@ package constants;
  * @author MarcoForlini
  */
 public enum TerrainFamily implements EnumValue {
-	
+
 	/** Ambient */
 	C00_AMBIENT ("Ambient", 0),
 	/** Unknown */
@@ -35,41 +35,37 @@ public enum TerrainFamily implements EnumValue {
 	/** Space terrain */
 	C12_SPACE ("Space", 12),
 	;
-
-
+	
+	
 	/** Name to be shown in the UI */
 	public final String name;
-	
+
 	/** Code used in the dat files */
 	public final int code;
-
 	
+
 	TerrainFamily(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-
+	
 	@Override
 	public String getName(){
 		return name;
 	}
-
+	
 	@Override
 	public int getCode () {
 		return code;
 	}
-	
+
 	@Override
 	public boolean isValid (int code) {
 		return code >= 0 && code <= 12;
 	}
-	
-	/**
-	 * Parse the code and return the relative enum.
-	 * @param code	The code
-	 * @return		The relative enum
-	 */
-	public static TerrainFamily parseValue(int code){
+
+	@Override
+	public TerrainFamily parseValue(int code){
 		switch (code){
 			case 0: return C00_AMBIENT;
 			case 1: return C01_UNKNOWN;
@@ -87,10 +83,10 @@ public enum TerrainFamily implements EnumValue {
 			default: return null;
 		}
 	}
-
+	
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-	
+
 }

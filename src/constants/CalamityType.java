@@ -7,7 +7,7 @@ package constants;
  */
 @SuppressWarnings ("javadoc")
 public enum CalamityType implements EnumValue {
-
+	
 	NONE ("None", 0),
 	C01_UNKNOWN ("Unknown", 1),
 	C02_UNKNOWN ("Unknown", 2),
@@ -36,44 +36,41 @@ public enum CalamityType implements EnumValue {
 	C25_LOS ("LOS", 25),
 	C26_PARATROOPERS ("Paratroopers", 26),
 	;
-
 	
 
-
-
+	
+	
+	
 	/** Name to be shown in the UI */
 	public final String name;
-	
+
 	/** Code used in the dat files */
 	public final int code;
-
 	
+
 	CalamityType(String effectName, int effectCode){
 		name = effectName;
 		code = effectCode;
 	}
-
+	
 	@Override
 	public String getName(){
 		return name;
 	}
-	
+
 	@Override
 	public int getCode () {
 		return code;
 	}
-
+	
 	@Override
 	public boolean isValid (int code) {
 		return code >= 0 && code <= 26;
 	}
+	
 
-	/**
-	 * Parse the code and return the relative enum.
-	 * @param code	The code
-	 * @return		The relative enum
-	 */
-	public static CalamityType parseValue(int code){
+	@Override
+	public CalamityType parseValue(int code){
 		switch (code){
 			case 0: return NONE;
 			case 1: return C01_UNKNOWN;
@@ -105,10 +102,10 @@ public enum CalamityType implements EnumValue {
 			default: return null;
 		}
 	}
-	
+
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-
+	
 }

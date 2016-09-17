@@ -32,9 +32,9 @@ import operations.Operator;
  * @author MarcoForlini
  */
 public class DialogConditionBuilder extends JDialog {
-
+	
 	private static final long serialVersionUID = 3920757751703086221L;
-
+	
 	private static GridBagLayout gbl_contentPanel = new GridBagLayout();
 	private static GridBagConstraints
 	gbc_lblName = new GridBagConstraints(),
@@ -46,30 +46,30 @@ public class DialogConditionBuilder extends JDialog {
 	gbc_textField = new GridBagConstraints(),
 	gbc_btnCancel = new GridBagConstraints(),
 	gbc_btnOk = new GridBagConstraints();
+
 	
-
-
-
-
+	
+	
+	
 	private ConditionOperator condition = null;
-
+	
 	private JPanel contentPanel = new JPanel();
 	private final JLabel
 	lblField = new JLabel("Field"),
 	lblOperator = new JLabel("Operator"),
 	lblValue = new JLabel("Value");
-	
+
 	private final JLabel lblName = new JLabel();
 	private final JComboBox<String> comboBoxField = new JComboBox<>();
 	private final JComboBox<Operator> comboBoxOperator = new JComboBox<>();
 	private final JTextField textField = new JTextField();
-	
+
 	private final JButton
 	btnOk = new JButtonRed("OK"),
 	btnCancel = new JButtonRed("Cancel");
+	
 
-	
-	
+
 	{
 		setBounds(Core.getBounds(this, 450, 225));
 		setResizable(false);
@@ -77,7 +77,7 @@ public class DialogConditionBuilder extends JDialog {
 		lblName.setHorizontalAlignment(SwingConstants.CENTER);
 		btnCancel.addActionListener(e -> dispose());
 		contentPanel.setLayout(gbl_contentPanel);
-		contentPanel.setBorder(new EmptyBorder(10, 10, 10, 5));
+		contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		contentPanel.setBackground(GUI.COLOR_UI_BACKGROUND);
 		contentPanel.add(lblName, gbc_lblName);
 		contentPanel.add(lblField, gbc_lblField);
@@ -92,15 +92,15 @@ public class DialogConditionBuilder extends JDialog {
 		getRootPane().setDefaultButton(btnOk);
 		getRootPane().registerKeyboardAction((e) -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 	}
-	
-	
-	
+
+
+
 	private DialogConditionBuilder (Window parent, DatFile datFile) {
 		super(parent, ModalityType.DOCUMENT_MODAL);
 		setDatFile(datFile);
 		setTitle("Create new filter for " + datFile.datStructure);
 	}
-
+	
 	private DialogConditionBuilder (Window parent, ConditionOperator condition){
 		super(parent, ModalityType.DOCUMENT_MODAL);
 		setDatFile(condition.datFile);
@@ -110,9 +110,9 @@ public class DialogConditionBuilder extends JDialog {
 		comboBoxOperator.setSelectedItem(condition.operator);
 		textField.setText(condition.value.toString());
 	}
-
-
-
+	
+	
+	
 	private void setDatFile(DatFile datFile){
 		DatStructure datStructure = datFile.datStructure;
 		lblName.setText("File: " + datStructure);
@@ -127,14 +127,14 @@ public class DialogConditionBuilder extends JDialog {
 			fields[length+1] = "(EXTRA FIELD) " + datStructure.extraField.toString();
 		}
 		comboBoxField.setModel(new DefaultComboBoxModel<>(fields));
-
+		
 		btnOk.addActionListener(e -> {
 			String text = textField.getText();
 			if (text.isEmpty()){
 				JOptionPane.showMessageDialog(this, "Can't create a new filter without a value", "Missing value", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-
+			
 			int index = comboBoxField.getSelectedIndex()-1;
 			Operator operator = (Operator) comboBoxOperator.getSelectedItem();
 			Object value;
@@ -143,7 +143,7 @@ public class DialogConditionBuilder extends JDialog {
 			} catch (NumberFormatException nfe) {
 				value = text;
 			}
-			
+
 			if (condition == null){
 				condition = new ConditionOperator(datFile, index, operator, value);
 			} else {
@@ -152,8 +152,8 @@ public class DialogConditionBuilder extends JDialog {
 			setVisible(false);
 		});
 	}
-
-
+	
+	
 	/**
 	 * Open a new dialog to build a new condition
 	 * @param parent	The parent window
@@ -165,7 +165,7 @@ public class DialogConditionBuilder extends JDialog {
 		builder.setVisible(true);
 		return builder.condition;
 	}
-
+	
 	/**
 	 * Open a new dialog to modify the given condition
 	 * @param parent	The parent window
@@ -175,64 +175,64 @@ public class DialogConditionBuilder extends JDialog {
 		DialogConditionBuilder builder = new DialogConditionBuilder(parent, condition);
 		builder.setVisible(true);
 	}
-
-
-
 	
+	
+	
+
 	static {
 		gbl_contentPanel.columnWidths = new int[] {125, 125};
 		gbl_contentPanel.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
 		gbl_contentPanel.columnWeights = new double[]{0.3, 0.7};
 		gbl_contentPanel.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
-
+		
 		gbc_lblName.fill = GridBagConstraints.BOTH;
 		gbc_lblName.insets = new Insets(5, 5, 5, 5);
 		gbc_lblName.gridx = 0;
 		gbc_lblName.gridy = 0;
 		gbc_lblName.gridwidth = 2;
-
+		
 		gbc_lblField.fill = GridBagConstraints.BOTH;
 		gbc_lblField.insets = new Insets(0, 5, 5, 5);
 		gbc_lblField.gridx = 0;
 		gbc_lblField.gridy = 1;
-
+		
 		gbc_comboBoxField.fill = GridBagConstraints.BOTH;
 		gbc_comboBoxField.insets = new Insets(0, 5, 5, 5);
 		gbc_comboBoxField.gridx = 1;
 		gbc_comboBoxField.gridy = 1;
-
+		
 		gbc_lblOperator.fill = GridBagConstraints.BOTH;
 		gbc_lblOperator.insets = new Insets(0, 5, 5, 5);
 		gbc_lblOperator.gridx = 0;
 		gbc_lblOperator.gridy = 2;
-
+		
 		gbc_comboBoxOperator.fill = GridBagConstraints.BOTH;
 		gbc_comboBoxOperator.insets = new Insets(0, 5, 5, 5);
 		gbc_comboBoxOperator.gridx = 1;
 		gbc_comboBoxOperator.gridy = 2;
-
+		
 		gbc_lblValue.fill = GridBagConstraints.BOTH;
 		gbc_lblValue.insets = new Insets(0, 5, 5, 5);
 		gbc_lblValue.gridx = 0;
 		gbc_lblValue.gridy = 3;
-
+		
 		gbc_textField.fill = GridBagConstraints.BOTH;
 		gbc_textField.gridx = 1;
 		gbc_textField.gridy = 3;
 		gbc_textField.insets = new Insets(0, 5, 5, 5);
-
+		
 		gbc_btnOk.fill = GridBagConstraints.BOTH;
 		gbc_btnOk.insets = new Insets(20, 5, 5, 5);
 		gbc_btnOk.gridx = 0;
 		gbc_btnOk.gridy = 4;
 		gbc_btnOk.gridwidth = 2;
-		
+
 		gbc_btnCancel.fill = GridBagConstraints.BOTH;
 		gbc_btnCancel.insets = new Insets(0, 5, 5, 5);
 		gbc_btnCancel.gridx = 0;
 		gbc_btnCancel.gridy = 5;
 		gbc_btnCancel.gridwidth = 2;
-		
+
 	}
-	
+
 }

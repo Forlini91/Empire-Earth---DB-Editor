@@ -14,14 +14,14 @@ import constants.WorldID;
  * @author MarcoForlini
  */
 public class EntryValueMap{
-	
+
 	/** Map each value to the list of entries which use that value */
 	public final Map<Object, List<Entry>> map;
 	/** Map each not-null value to the list of entries which use that value */
 	public final Map<Object, List<Entry>> mapClean;
 	/** Total number of entries */
 	public final int counter;
-
+	
 	/**
 	 * Create a new {@link EntryValueMap}
 	 * @param map		Map each value to the list of entries which use that value
@@ -33,7 +33,7 @@ public class EntryValueMap{
 		this.mapClean = mapClean;
 		this.counter = counter;
 	}
-	
+
 	/**
 	 * Scan all entries and group entries by value
 	 * @param entryGroups 			The list of entry groups
@@ -55,7 +55,6 @@ public class EntryValueMap{
 		Object value;
 		int counter = 0;
 		boolean enumType = fieldStruct.enumValues != null;
-		int size = enumType ? fieldStruct.enumValues.length : 0;
 		for (EntryGroup entryGroup : entryGroups){
 			for (Entry entry : entryGroup){
 				counter++;
@@ -70,14 +69,15 @@ public class EntryValueMap{
 								intVal -= 1000;
 							}
 							if (fieldStruct.enumValues instanceof WorldID[]){
-								value = WorldID.parseValue(intVal);
+								value = WorldID.C00_NULL.parseValue(intVal);
 								if (value == null){
 									continue;
 								}
-							} else if (intVal >= 0 && intVal < size) {
-								value = fieldStruct.enumValues[intVal];
 							} else {
-								value = intVal;
+								value = fieldStruct.enumValues[0].parseValue(intVal);
+								if (value == null){
+									throw new IllegalArgumentException("Can't find this code: " + intVal);
+								}
 							}
 						}
 					}
@@ -88,7 +88,7 @@ public class EntryValueMap{
 					} else {
 						valueEntryMap.get(value).add(entry);
 					}
-					
+
 					if (filterUndefined && entry.isDefined()){
 						if (!valueEntryMapClean.containsKey(value)){
 							entries = new ArrayList<>();
@@ -101,8 +101,8 @@ public class EntryValueMap{
 				}
 			}
 		}
-
+		
 		return new EntryValueMap (new TreeMap<>(valueEntryMap), new TreeMap<>(valueEntryMapClean), counter);
 	}
-
+	
 }

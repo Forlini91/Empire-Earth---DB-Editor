@@ -119,12 +119,8 @@ public enum EffectCode implements EnumValue {
 
 	
 	
-	/**
-	 * Parse the code and return the relative enum.
-	 * @param code	The code
-	 * @return		The relative enum
-	 */
-	public static EffectCode parseValue(int code){
+	@Override
+	public EffectCode parseValue(int code){
 		switch (code){
 			case -1: return NONE;
 			case 1: return C01_SET_BUTTON;
@@ -270,7 +266,7 @@ public enum EffectCode implements EnumValue {
 	 */
 	public static Object getAttribute(Entry entry){
 		int attributeCode = (int) entry.values.get(11);
-		AttributeCode attribute = AttributeCode.parseValue(attributeCode);
+		AttributeCode attribute = AttributeCode.C01_ATTACK.parseValue(attributeCode);
 		if (attribute != null){
 			switch (attribute){
 				case C23_POP_LIMIT:

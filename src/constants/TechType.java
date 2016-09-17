@@ -7,7 +7,7 @@ package constants;
  * @author MarcoForlini
  */
 public enum TechType implements EnumValue {
-
+	
 	/** Technology which improve the civilization (+15% food gather rate) */
 	C0_Research ("Research", 0),
 	/** Technology which allow to create/build an object */
@@ -29,41 +29,37 @@ public enum TechType implements EnumValue {
 	/** Technology which allow to upgrade a single object to a new one (Upgrade Settlement to Town center) */
 	C9_Garrison_Upgrade ("Upgrade single object", 9),
 	;
-	
-	
+
+
 	/** Name to be shown in the UI */
 	public final String name;
-
+	
 	/** Code used in the dat files */
 	public final int code;
-	
 
+	
 	TechType(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-
+	
 	@Override
 	public String getName(){
 		return name;
 	}
-	
+
 	@Override
 	public int getCode () {
 		return code;
 	}
-
+	
 	@Override
 	public boolean isValid (int code) {
 		return code >= 0 && code <= 9;
 	}
-
-	/**
-	 * Parse the code and return the relative enum.
-	 * @param code	The code
-	 * @return		The relative enum
-	 */
-	public static TechType parseValue(int code){
+	
+	@Override
+	public TechType parseValue(int code){
 		switch (code){
 			case 0: return C0_Research;
 			case 1: return C1_Object;
@@ -78,10 +74,10 @@ public enum TechType implements EnumValue {
 			default: return null;
 		}
 	}
-	
+
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-
+	
 }
