@@ -60,6 +60,7 @@ public class DatStructure {
 	DB_UI_CONTROL_EVENTS	 = new DatStructure	("UI Control events", "dbuicontrolevents.dat", true, 0, 1, 0, 0, 1, 2, 3),
 	DB_UI_CONTROLS			 = new DatStructure	("UI Controls", "dbuicontrols.dat", true, 0, 1, 0, 0, 18, 19, 4),
 	DB_UI_FONT				 = new DatStructure	("UI Fonts", "dbuifonts.dat", true, 0, 1, 0, 0, 1, 2, 3),
+	DB_UI_FORMS				 = new DatStructure	("UI Forms", "dbuiforms.dat", true, 0, 0, 0, 0, 2, 3, 4),//TODO: Check this
 	DB_UI_HOTKEY			 = new DatStructure	("UI Hotkeys", "dbuihotkey.dat", true, 0, 1, 0, 2, 0, 1, 4),
 	DB_UNIT_BEHAVIOR		 = new DatStructure	("Unit behavior", "dbunitbehavior.dat", true, 0, 1, 0, 0, 1, 2, 3),
 	DB_UNIT_SET				 = new DatStructure	("Unit sets", "dbunitset.dat", true, 0, 1, 0, 0, 1, 2, 3),
@@ -559,8 +560,6 @@ public class DatStructure {
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT4,
 		};
 
-		
-
 
 		DB_UI_CONTROL_EVENTS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Control", DB_UI_CONTROLS, 0),
@@ -601,8 +600,15 @@ public class DatStructure {
 				new FieldStruct("Underline"), new FieldStruct("Has shadow"), FieldStruct.UNUSED_INT4
 		};
 
-
-		
+		//TODO WIP
+		DB_UI_FORMS.fieldStructs = new FieldStruct[]{
+				FieldStruct.NAME, FieldStruct.NAME, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
+				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
+				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
+				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
+				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1
+		};
 		
 		DB_UI_HOTKEY.fieldStructs = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, FieldStruct.UNCHANGED_INT4,
