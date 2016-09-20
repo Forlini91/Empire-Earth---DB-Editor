@@ -20,8 +20,8 @@ public class DatWriter implements Closeable {
 	private DatFile datFile;
 	private ByteBuffer writer;
 	private boolean closed = false;
-
 	
+
 	/**
 	 * @param datFile		The datFile to write
 	 * @param entries		The entries to save
@@ -30,29 +30,29 @@ public class DatWriter implements Closeable {
 	public DatWriter(DatFile datFile, List<Entry> entries) throws IOException {
 		this.datFile = datFile;
 		int sizeSingle = datFile.datStructure.getNumBytes();
-
+		
 		//Adds all "numEntries" fields in the file (0 if the field is not present, 4*numEpochs in dbtechtree.dat, 4 in the others)
 		int alloc = datFile.datStructure.defineNumEntries ? 4 * datFile.entryGroups.size() : 0;
 		alloc += sizeSingle * entries.size();		//Adds the base size of an entry * the number of entries
-		
+
 		/* If the file contains extra fields, adds 4 for each one */
 		if (datFile.datStructure.extraField != null){
 			int indexExtra = datFile.datStructure.getIndexExtraFields();
-			alloc += 4 * entries.parallelStream().mapToInt(entry -> (int)entry.values.get(indexExtra)).sum();
+			alloc += 4 * entries.parallelStream().mapToInt(entry -> entry.get(indexExtra)).sum();
 		}
-		
+
 		alloc += Arrays
 				.stream(datFile.datStructure.fieldStructs)	//iterate all FieldStructs
 				.parallel()
 				.filter(fs -> fs.indexSize >= 0)			//only take the ones with indexSize >= 0
-				.mapToInt(fs -> entries.stream().mapToInt(entry -> (int)entry.values.get(fs.indexSize)).sum())	//take the size every entry declare in that field and sum it
+				.mapToInt(fs -> entries.stream().mapToInt(entry -> entry.get(fs.indexSize)).sum())	//take the size every entry declare in that field and sum it
 				.sum();
 		writer = ByteBuffer.allocate(alloc).order(ByteOrder.LITTLE_ENDIAN);
 	}
+
 	
-
-
-
+	
+	
 	/**
 	 * Write a 4 bytes integer
 	 * @param value the value to write
@@ -61,7 +61,7 @@ public class DatWriter implements Closeable {
 	public void writeInt(int value) throws IOException {
 		writer.putInt(value);
 	}
-	
+
 	/**
 	 * Write a single byte integer
 	 * @param value the value to write
@@ -69,7 +69,7 @@ public class DatWriter implements Closeable {
 	public void writeByte(int value){
 		writer.put((byte) value);
 	}
-
+	
 	/**
 	 * Write a 4 bytes float
 	 * @param value the value to write
@@ -78,7 +78,7 @@ public class DatWriter implements Closeable {
 	public void writeFloat(float value) throws IOException {
 		writer.putFloat(value);
 	}
-	
+
 	/**
 	 * Write a string of length numBytes
 	 * @param string the string to write
@@ -89,7 +89,7 @@ public class DatWriter implements Closeable {
 		byte[] str = Arrays.copyOf(string.getBytes(), numBytes);
 		writer.put(str);
 	}
-
+	
 	@Override
 	public void close() throws IOException {
 		if (!closed){

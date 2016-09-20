@@ -26,10 +26,10 @@ import gui.GUI;
  * @author MarcoForlini
  */
 public class DatStructure {
-
+	
 	@SuppressWarnings("javadoc")
 	public static final DatStructure
-	
+
 	DB_AI_UNIT_TARGETING	 = new DatStructure	("AI Unit Targeting", "dbaiunittargeting.dat", true, 0, 1, 0, 0, 1, 2, 4),
 	DB_AMBIENT_SOUNDS		 = new DatStructure	("Ambient sounds", "dbambientsounds.dat", true, 0, 1, 0, 0, 1, 2, 4),
 	DB_ANIMALS				 = new DatStructure	("Animals", "dbanimals.dat", true, 0, 1, 0, 0, 1, 2, 4),
@@ -67,7 +67,7 @@ public class DatStructure {
 	DB_WEAPON_TO_HIT		 = new DatStructure	("Weapons to hit", "dbweapontohit.dat", true, 0, 1, 0, 0, 1, 2, 3),
 	DB_WORLD				 = new DatStructure	("World", "dbworld.dat", true, 0, 1, 0, -1, 2, 3, 2)
 	;
-
+	
 	/** All structures used by Vanilla files */
 	public static final DatStructure[] ALL_VANILLA = {
 			DB_AI_UNIT_TARGETING, DB_AMBIENT_SOUNDS, DB_ANIMALS, DB_AREA_EFFECT, DB_BUTTONS,
@@ -78,7 +78,7 @@ public class DatStructure {
 			DB_UI_BACK, DB_UI_CONTROL_EVENTS, DB_UI_CONTROLS, DB_UI_FONT, DB_UI_HOTKEY,
 			DB_UNIT_BEHAVIOR, DB_UNIT_SET, DB_UPGRADE, DB_WEAPON_TO_HIT, DB_WORLD
 	};
-	
+
 	/** All structures used by AOC files */
 	public static final DatStructure[] ALL_AOC = {
 			DB_AI_UNIT_TARGETING, DB_AMBIENT_SOUNDS, DB_ANIMALS, DB_AREA_EFFECT, DB_BUTTONS,
@@ -89,9 +89,9 @@ public class DatStructure {
 			DB_UI_BACK, DB_UI_CONTROL_EVENTS, DB_UI_CONTROLS, DB_UI_FONT, DB_UI_HOTKEY,
 			DB_UNIT_BEHAVIOR, DB_UNIT_SET, DB_UPGRADE, DB_WEAPON_TO_HIT, DB_WORLD
 	};
-	
-	
-	
+
+
+
 	/** Unique field: A 4 bytes integer which point to an area effect's ID. */
 	public static final FieldStruct ID_AREA_EFFECT = new FieldStruct("Area Effect ID", DB_AREA_EFFECT, 0);
 	/** Unique field: A 4 bytes integer which point to a button's ID. */
@@ -129,17 +129,17 @@ public class DatStructure {
 	/** Initialize the structures after the user decided Vanilla or AOC */
 	public static void init(){
 		System.out.println("Check entries definitions:");
-
+		
 		DB_AI_UNIT_TARGETING.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNCHANGED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNCHANGED_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4
 		};
+
 		
-
-
-
+		
+		
 		DB_AMBIENT_SOUNDS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ID_SOUND,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_FLOAT,
@@ -150,10 +150,10 @@ public class DatStructure {
 				"<New ambient sound>", 0, -1, -1, 0f, 0f, 0f, 0f,
 				0f, 0f, 0f, 0f, 0, 0f,
 		};
+
 		
-
-
-
+		
+		
 		DB_ANIMALS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ID_OBJECT,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("Min gestation time", Type.INTEGER),
@@ -175,11 +175,11 @@ public class DatStructure {
 				0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0,
 		};
-		
 
 		
-		
-		
+
+
+
 		DB_AREA_EFFECT.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Effect type", AreaEffectType.values()),
 				FieldStruct.UNKNOWN_INT4, new FieldStruct("Effect on units", DB_GFX_EFFECTS, 0), new FieldStruct("Apply on unit set", DB_UNIT_SET, 0), FieldStruct.UNKNOWN_INT4,
@@ -193,10 +193,10 @@ public class DatStructure {
 				0, 0, 0, 0, 0, 0, 0, 0f,
 				0f, 0f, 0f, 0f, 0, 0, 0
 		};
+
 		
-
-
-
+		
+		
 		DB_BUTTONS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, new FieldStruct("Texture", Type.STRING, 100), FieldStruct.SEQ_NUMBER, FieldStruct.ID,
 				new FieldStruct("<only used by espionage center>", Type.INTEGER), new FieldStruct("<only used by farm and espionage center>", Type.INTEGER), new FieldStruct("Position", Type.INTEGER), FieldStruct.UNKNOWN_INT4
@@ -204,10 +204,10 @@ public class DatStructure {
 		DB_BUTTONS.newEntryValues = new Object[]{
 				"<New button>", "textures\\zut_smileyface_00T", 0, -1, 0, 0, 0, -1
 		};
-		
-		
 
 
+		
+		
 		DB_CALAMITY.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, new FieldStruct("Area damage", Type.FLOAT), FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.SEQ_NUMBER,
@@ -229,10 +229,10 @@ public class DatStructure {
 				0, 0, 0, -1, -1, 0, 0, 0,
 				0
 		};
+
 		
-
-
-
+		
+		
 		DB_CLIFF_TERRAIN.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ID_TERRAIN,
 				ID_TERRAIN, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4
@@ -240,10 +240,10 @@ public class DatStructure {
 		DB_CLIFF_TERRAIN.newEntryValues = new Object[]{
 				"<New cliff terrain>", 0, -1, 0, 0, 0, 1
 		};
-		
-		
-		
-		
+
+
+
+
 		DB_COLOR_TABLE.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct ("Player - Red", Type.FLOAT),
 				new FieldStruct ("Player - Green", Type.FLOAT), new FieldStruct ("Player - Blue", Type.FLOAT), new FieldStruct ("Model - Red", Type.FLOAT), new FieldStruct ("Model - Green", Type.FLOAT),
@@ -251,20 +251,20 @@ public class DatStructure {
 				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
 				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
 		};
+
 		
-
-
-
+		
+		
 		DB_CP_BEHAVIOR.fieldStructs = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_INT4
 		};
+
 		
-
-
-
+		
+		
 		DB_EVENTS.extraField = new FieldStruct("Effect", DB_EFFECTS, 0);
 		DB_EVENTS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, new FieldStruct("Num effects", Type.INTEGER, 4, false),
@@ -272,10 +272,10 @@ public class DatStructure {
 		DB_EVENTS.newEntryValues = new Object[]{
 				"<New event>", 0, -1
 		};
+
 		
-
-
-
+		
+		
 		DB_FAMILY.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Hovercraft, UFO, Rock thrower", Type.INTEGER),
 				new FieldStruct("Frigate", Type.INTEGER), new FieldStruct("Machine gun", Type.INTEGER), new FieldStruct("Galley", Type.INTEGER), new FieldStruct("Tank", Type.INTEGER),
@@ -307,10 +307,10 @@ public class DatStructure {
 				100, 100, 100, 100, 100, 100, 100, 100,
 				100, 100, 100, 100, 100, 100, 100,
 		};
+
 		
-
-
-
+		
+		
 		DB_GAME_VARIANT.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.ALTER_HEALTH_BY,
 				ID_UNIT_SET, FieldStruct.ALTER_HEALTH_BY, ID_UNIT_SET, FieldStruct.ALTER_HEALTH_BY,
@@ -333,10 +333,10 @@ public class DatStructure {
 				1.0f, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 1, 0
 		};
+
 		
-
-
-
+		
+		
 		DB_GFX_EFFECTS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("GFX Effect type", GFXEffectType.values()),
 				FieldStruct.UNKNOWN_INT4, ID_GRAPHIC, FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Size", Type.FLOAT),
@@ -355,10 +355,10 @@ public class DatStructure {
 				0f, 0f, 0f, 0f, 0f, 0f, 0f, 0,
 				0, 0
 		};
-		
-		
 
 
+		
+		
 		DB_GRAPHICS.fieldStructs = new FieldStruct[]{
 				FieldStruct.STRING_SIZE, new FieldStruct("Name 1", 0), FieldStruct.STRING_SIZE, new FieldStruct("Model path", 2),
 				FieldStruct.STRING_SIZE, new FieldStruct("Texture path", 4), FieldStruct.STRING_SIZE, new FieldStruct("Texture path", 6),
@@ -447,10 +447,10 @@ public class DatStructure {
 				0, -1, 0, 0, -1, -1, 0, 1f,
 				0, 0f, 0, 0, 0
 		};
-		
-		
 
 
+		
+		
 		DB_MUSIC.fieldStructs = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, new FieldStruct("Another name", Type.STRING, 56),
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Time", Type.FLOAT), FieldStruct.UNCHANGED_INT4,
@@ -463,18 +463,18 @@ public class DatStructure {
 				0, -1, "<New music>", "<New music>", 0f, 0f, 0f, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 204
 		};
-		
-		
 
 
+		
+		
 		DB_PREMADE_CIVS.fieldStructs = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.ID_LANGUAGE, FieldStruct.ID_LANGUAGE,
 		};
-		
-		
 
 
+		
+		
 		DB_SOUNDS.fieldStructs = new FieldStruct[]{
 				FieldStruct.STRING_SIZE, new FieldStruct("Pathname", 0), FieldStruct.NAME, FieldStruct.SEQ_NUMBER,
 				FieldStruct.ID, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
@@ -484,10 +484,10 @@ public class DatStructure {
 				0, "", "<New sound>", 0, -1, 0, 0, 0,
 				0, 0, 0
 		};
+
 		
-
-
-
+		
+		
 		DB_STARTING_RESOURCHES.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.ID_LANGUAGE,
 				new FieldStruct("Starting food", Type.INTEGER), new FieldStruct("Starting wood", Type.INTEGER), new FieldStruct("Starting stone", Type.INTEGER), new FieldStruct("Starting gold", Type.INTEGER),
@@ -496,10 +496,10 @@ public class DatStructure {
 		DB_STARTING_RESOURCHES.newEntryValues = new Object[]{
 				"<New starting resourches>", -1, -1, -1, 600, 600, 200, 400, 400
 		};
-		
-		
 
 
+		
+		
 		DB_TERRAIN.fieldStructs = new FieldStruct[]{
 				FieldStruct.STRING_SIZE, new FieldStruct("Pathname", 0), FieldStruct.NAME, FieldStruct.SEQ_NUMBER,
 				FieldStruct.ID, new FieldStruct("Terrain gray type", DB_TERRAIN_GRAY_TEXTURES, 0), FieldStruct.ID_LANGUAGE, new FieldStruct("Valid", Type.BOOLEAN, 0),
@@ -516,10 +516,10 @@ public class DatStructure {
 				0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0f, 0f, 0
 		};
+
 		
-
-
-
+		
+		
 		DB_TERRAIN_GRAY_TEXTURES.fieldStructs = new FieldStruct[]{
 				FieldStruct.STRING_SIZE, new FieldStruct("Pathname", 0), FieldStruct.NAME, FieldStruct.SEQ_NUMBER,
 				FieldStruct.ID, new FieldStruct("Color: Red", Type.INTEGER), new FieldStruct("Color: Green", Type.INTEGER),
@@ -528,10 +528,10 @@ public class DatStructure {
 		DB_TERRAIN_GRAY_TEXTURES.newEntryValues = new Object[]{
 				0, "", "<New terrain gray>", 0, -1, 0, 0, 0
 		};
-		
-
 
 		
+		
+
 		DB_TERRAIN_TYPE.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.ID_LANGUAGE, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4
@@ -539,10 +539,10 @@ public class DatStructure {
 		DB_TERRAIN_TYPE.newEntryValues = new Object[]{
 				"<New terrain type>", -1, -1, 0, -1, 0, 0, 0
 		};
-		
 
 		
-		
+
+
 		DB_UI_BACK.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.NAME, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
@@ -553,18 +553,18 @@ public class DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT4,
 		};
-		
 
 		
-		
+
+
 		DB_UI_CONTROL_EVENTS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Control", DB_UI_CONTROLS, 0),
 				new FieldStruct("Control event type", ControlType.values())
 		};
-		
 
 		
-		
+
+
 		DB_UI_CONTROLS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, new FieldStruct("Sub", Type.STRING, 100), new FieldStruct("Sub", Type.STRING, 100), new FieldStruct("Sub", Type.STRING, 100),
 				new FieldStruct("Sub", Type.STRING, 100), new FieldStruct("Sub", Type.STRING, 100), FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
@@ -586,37 +586,37 @@ public class DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT4,
 		};
-		
 
 		
 
+		
 		DB_UI_FONT.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Font type", Type.INTEGER),
 				new FieldStruct("Font size", Type.INTEGER), new FieldStruct("Quality", Type.INTEGER), new FieldStruct("Bold"), new FieldStruct("Italic"),
 				new FieldStruct("Underline"), new FieldStruct("Has shadow"), FieldStruct.UNUSED_INT4
 		};
-		
-		
 
 
+		
+		
 		DB_UI_HOTKEY.fieldStructs = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, FieldStruct.UNCHANGED_INT4,
 				FieldStruct.UNCHANGED_INT4, FieldStruct.UNCHANGED_INT4, new FieldStruct("Key scan code", Type.INTEGER)
 		};
-		
-		
 
 
+		
+		
 		DB_UNIT_BEHAVIOR.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Run away from enemy"),
 				new FieldStruct("Ignore enemy outside LOS"), new FieldStruct("Attack enemy"), new FieldStruct("Follow enemy"), new FieldStruct("Run away if attacked"),
 				new FieldStruct("Return to initial location"), FieldStruct.UNUSED_BOOL1, FieldStruct.UNUSED_BOOL1, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4
 		};
-		
-		
 
 
+		
+		
 		DB_UNIT_SET.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ID_FAMILY,
 				ID_FAMILY, ID_FAMILY, ID_FAMILY, ID_FAMILY,
@@ -630,10 +630,10 @@ public class DatStructure {
 				0, 0, 0, -1, -1, -1, -1, -1,
 				-1, -1, -1, -1, -1, 0
 		};
-		
-		
 
 
+		
+		
 		DB_UPGRADE.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, new FieldStruct("Attack mult", Type.FLOAT), new FieldStruct("Health mult", Type.FLOAT), new FieldStruct("Speed mult", Type.FLOAT),
 				new FieldStruct("Range mult", Type.FLOAT), new FieldStruct("Shock armor mult", Type.FLOAT), new FieldStruct("Arrow armor mult", Type.FLOAT), new FieldStruct("Pierce armor mult", Type.FLOAT),
@@ -652,32 +652,32 @@ public class DatStructure {
 				0f, 0f, 0, 0f, 0f, 0, 0, 0,
 				0, 0, 0, 0
 		};
-		
-		
 
 
+		
+		
 		DB_WEAPON_TO_HIT.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Shock mult", Type.INTEGER),
 				new FieldStruct("Arrow mult", Type.INTEGER), new FieldStruct("Pierce mult", Type.INTEGER), new FieldStruct("Gun mult", Type.INTEGER), new FieldStruct("Laser mult", Type.INTEGER),
 				new FieldStruct("Missile mult", Type.INTEGER)
 		};
-		
-		
-		
-		
+
+
+
+
 		DB_WORLD.fieldStructs = new FieldStruct[]{
 				new FieldStruct("Float/Min float", Type.FLOAT), new FieldStruct("Max float", Type.FLOAT), FieldStruct.SEQ_NUMBER, new FieldStruct("ID", WorldID.values(), GUI.COLOR_FIELD_ID),
 				new FieldStruct("Int/Min int", Type.INTEGER), new FieldStruct("Max int", Type.INTEGER), FieldStruct.UNKNOWN_INT4
 		};
 		DB_WORLD.nameBuilder = (entry) -> {
-			WorldID wID = WorldID.C00_NULL.parseValue(entry.ID);
+			WorldID wID = WorldID.C00_NULL.parseValue(entry.getID());
 			return (wID != null) ? wID.name : "<Unknown>";
 		};
+
 		
-
-
-
-
+		
+		
+		
 		if (!Core.AOC){
 			DB_CIVILIZATION.fieldStructs = new FieldStruct[]{
 					FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, FieldStruct.ID_LANGUAGE,
@@ -713,11 +713,11 @@ public class DatStructure {
 					0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
 					0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
 			};
+
 			
-
-
-
-			DB_EFFECTS.nameBuilder = (entry) -> EffectCode.C01_SET_BUTTON.parseValue((int) entry.values.get(8)).nameBuilder.apply(entry);
+			
+			
+			DB_EFFECTS.nameBuilder = (entry) -> EffectCode.C01_SET_BUTTON.parseValue((int) entry.get(8)).nameBuilder.apply(entry);
 			DB_EFFECTS.fieldStructs = new FieldStruct[]{
 					FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Set base attribute", Type.FLOAT), new FieldStruct("Alter base attribute", Type.FLOAT),
 					new FieldStruct("Alter attribute multiplier", Type.FLOAT), new FieldStruct("Upgrade these objects...", DB_OBJECTS, 0), new FieldStruct("... to these objects", DB_OBJECTS, 0), ID_UNIT_SET,
@@ -730,10 +730,10 @@ public class DatStructure {
 					-1, -1, -1, -1, -1, -1, -1, 0,
 					0,
 			};
+
 			
-
-
-
+			
+			
 			DB_OBJECTS.fieldStructs = new FieldStruct[]{
 					FieldStruct.NAME, FieldStruct.SEQ_NUMBER, ID_FAMILY, FieldStruct.UNKNOWN_INT4,
 					FieldStruct.UNKNOWN_INT4, FieldStruct.ID, new FieldStruct("Health", Type.INTEGER), FieldStruct.UNKNOWN_INT4,
@@ -908,10 +908,10 @@ public class DatStructure {
 					-1, -1, -1, -1, -1, -1, -1, -1,
 					-1, -1, -1, -1, -1, -1, -1, -1,
 			};
+
 			
-
-
-
+			
+			
 			DB_TECH_TREE.extraField = ID_TECH_FROM_OBJECT;
 			DB_TECH_TREE.fieldStructs = new FieldStruct[]{
 					FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Starting epoch", Type.INTEGER),
@@ -936,14 +936,14 @@ public class DatStructure {
 					0, 0f, 0f, 0f, 0f, 0, 0, 1,
 					1, 0, 0, 0, -1, 0
 			};
+
 			
-
-
-
+			
+			
 		} else {
-
-
-
+			
+			
+			
 			DB_CIVILIZATION.fieldStructs = new FieldStruct[]{
 					FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, FieldStruct.ID_LANGUAGE,
 					new FieldStruct("Cost increment", Type.INTEGER), ID_UNIT_SET, new FieldStruct("Attack bonus", Type.FLOAT), new FieldStruct("Attack bonus cost", Type.FLOAT),
@@ -996,20 +996,20 @@ public class DatStructure {
 					0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
 					0f, 0f, 0f, 0f, 0f, 0f,
 			};
+
 			
-
-
-
+			
+			
 			DB_CIV_POWER.fieldStructs = new FieldStruct[]{
 					FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Cost", Type.FLOAT),
 					ID_UNIT_SET, ID_TECH, new FieldStruct("Set amount", Type.INTEGER), new FieldStruct("GFX Effect", DB_GFX_EFFECTS, 0),
 					FieldStruct.UNUSED_INT4, new FieldStruct("Mod amount", Type.FLOAT), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 					FieldStruct.UNUSED_INT4, ID_OBJECT
 			};
+
 			
-
-
-			DB_EFFECTS.nameBuilder = (entry) -> EffectCode.C01_SET_BUTTON.parseValue((int) entry.values.get(8)).nameBuilder.apply(entry);
+			
+			DB_EFFECTS.nameBuilder = (entry) -> EffectCode.C01_SET_BUTTON.parseValue((int) entry.get(8)).nameBuilder.apply(entry);
 			DB_EFFECTS.fieldStructs = new FieldStruct[]{
 					FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Set base attribute", Type.FLOAT), new FieldStruct("Alter base attribute", Type.FLOAT),
 					new FieldStruct("Alter attribute multiplier", Type.FLOAT), new FieldStruct("Object 1", DB_OBJECTS, 0), new FieldStruct("Object 2", DB_OBJECTS, 0), ID_UNIT_SET,
@@ -1023,10 +1023,10 @@ public class DatStructure {
 					-1, -1, -1, -1, -1, -1, -1, 0,
 					0, 0, 0, 0, 0, 0,
 			};
+
 			
-
-
-
+			
+			
 			DB_OBJECTS.fieldStructs = new FieldStruct[]{
 					FieldStruct.NAME, FieldStruct.SEQ_NUMBER, ID_FAMILY, FieldStruct.UNKNOWN_INT4,
 					FieldStruct.UNKNOWN_INT4, FieldStruct.ID, new FieldStruct("Health", Type.INTEGER), FieldStruct.UNKNOWN_INT4,
@@ -1203,10 +1203,10 @@ public class DatStructure {
 					-1, -1, -1, -1, -1, -1, -1, -1,
 					0
 			};
+
 			
-
-
-
+			
+			
 			DB_TECH_TREE.extraField = ID_TECH_FROM_OBJECT;
 			DB_TECH_TREE.fieldStructs = new FieldStruct[]{
 					FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Starting epoch", Type.INTEGER),
@@ -1221,7 +1221,7 @@ public class DatStructure {
 					FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 					FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_BOOL1, new FieldStruct("Only in scenario"), new FieldStruct("<All powers and power techs use 0>"),
 					new FieldStruct("<All powers and power techs use 0>"), FieldStruct.UNUSED_INT4, new FieldStruct("Epoch number", Type.INTEGER), new FieldStruct("Buildings to advance epoch", Type.INTEGER),
-					new FieldStruct("(Epochs) ID starts from...", Type.INTEGER), new FieldStruct("Last build object", DB_OBJECTS, 0), new FieldStruct("Num of tech builders", Type.INTEGER, 4, false)
+					new FieldStruct("(Epochs) ID starts from...", Type.INTEGER), new FieldStruct("Last build object", DB_OBJECTS, 0, false), new FieldStruct("Num of tech builders", Type.INTEGER, 4, false)
 			};
 			DB_TECH_TREE.newEntryValues = new Object[]{
 					"<New technology>", -1, 0, 0, 15, -1, -1, 0,
@@ -1231,18 +1231,18 @@ public class DatStructure {
 					0, 0f, 0f, 0f, 0f, 0, 0, 1,
 					1, 0, 0, 0, 0, -1, 0
 			};
-			
+
 		}
-
-
 		
+		
+
 		if (!Core.AOC) {
 			printData(ALL_VANILLA);
 		} else {
 			printData(ALL_AOC);
 		}
 	}
-
+	
 	private static void printData(DatStructure[] datStructures){
 		int count;
 		for (DatStructure datStructure : datStructures){
@@ -1253,71 +1253,71 @@ public class DatStructure {
 			System.out.println("\t\t" + datStructure.fileName + ':' + ' ' + count + "  >  fields: " + datStructure.fieldStructs.length + "  |  defaults: " + (datStructure.newEntryValues != null ? datStructure.newEntryValues.length : "null"));
 		}
 	}
-
-
-
-
-
-
-
+	
+	
+	
+	
+	
+	
+	
 	/** DatFile associated with this DatStructure */
 	public DatFile datFile = null;
-
+	
 	/** Name of the structure. Used for GUI purposes. */
 	public String name;
-
+	
 	/** Name of the file. It must match exactly the dat filename. */
 	public String fileName;
-
+	
 	/** Define the number of elements at the beginning? */
 	public boolean defineNumEntries;
-
+	
 	/** The game define a counter "num entries" at the beginning of each group in the file.
 	 *  This field alter the counter when reading and writing, to adjust the real number of entries in the file.
 	 * For now, only dbtechtree.dat require this, due to its particular structure.
 	 * In dbtechtree there is more than one group, and each counter says N, but there are actually N+1 entries (because there's also the "Epoch" entry, which is not counted). */
 	public int adjustNumEntries;
-
+	
 	/** Min SequenceNumber for defined objects */
 	public int minSeq;
-
+	
 	/** Min ID for defined objects */
 	public int minID;
-
+	
 	/** Index of the field which hold the entry name. It's -1 if entries have no name. */
 	public int indexName;
-
+	
 	/** Index of the field which hold the entry sequence number. It's -1 entries have no sequence number. */
 	public int indexSequence;
-
+	
 	/** Index of the field which hold the entry ID. It's -1 if entries have no ID. */
 	public int indexID;
-
+	
 	/** This field define the type/size of extra fields, which are all identical (if the entry size can be dynamic).
 	 * Only dbtechtree.dat and dbevent.dat use this.
 	 * It's null if not used. */
 	public FieldStruct extraField = null;
-
+	
 	/** This array define the description/type/size of all fields of a single entry in the file.
 	 * You can expect the sum of the sizes of these entries must match the size of an entry in the file. */
 	public FieldStruct[] fieldStructs;
-
+	
 	/** Default values used by Unknown/New entries. */
 	public Object[] newEntryValues = null;
-
+	
 	/** Optional function to calculate the name */
 	public Function<Entry, String> nameBuilder = null;
-
+	
 	/** Default number of columns for the UI */
 	public int defaultColumns;
-	
+
 	/** All fields with links */
 	public FieldStruct[] linkFields;
-
-
-
-
-
+	
+	
+	
+	
+	
 	/**
 	 * Create a new DatStructure
 	 * @param name				Displayed name
@@ -1343,9 +1343,9 @@ public class DatStructure {
 		this.indexID = indexID;
 		this.defaultColumns = defaultColumns;
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Gets the index of the field which hold the number of extra fields in the entry
 	 * @return	The index of the field which hold the number of extra fields in the entry
@@ -1353,8 +1353,8 @@ public class DatStructure {
 	public int getIndexExtraFields (){
 		return extraField != null ? fieldStructs.length - 1 : -1;
 	}
-
-
+	
+	
 	/**
 	 * Compare this object with the passed object
 	 * @param datStructure	The other object
@@ -1363,7 +1363,7 @@ public class DatStructure {
 	public int compareTo(DatStructure datStructure){
 		return Integer.signum(name.compareTo(datStructure.name));
 	}
-
+	
 	/**
 	 * Gets the number of bytes for each entry
 	 * @return	The number of bytes for each entry
@@ -1371,11 +1371,11 @@ public class DatStructure {
 	public int getNumBytes (){
 		return Arrays.stream(fieldStructs).parallel().mapToInt(x -> x.size).sum();
 	}
-
-
+	
+	
 	@Override
 	public String toString(){
 		return name;
 	}
-
+	
 }

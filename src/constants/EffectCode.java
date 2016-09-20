@@ -14,7 +14,7 @@ import datstructure.Link;
  * @author MarcoForlini
  */
 public enum EffectCode implements EnumValue {
-
+	
 	/** Do nothing */
 	NONE ("None", -1),
 	/** Assign a new dbbutton entry to this object */
@@ -62,21 +62,21 @@ public enum EffectCode implements EnumValue {
 	/** Replace the current object with an object from the given class (it will inherit health and power, but not the upgrades) */
 	C22_REPLACE_OBJECTS ("Replace objects", 22),
 	;
-
 	
 
-
-
+	
+	
+	
 	/** Name to be shown in the UI */
 	public final String name;
-	
+
 	/** Code used in the dat files */
 	public final int code;
-	
+
 	/** Function which build the name of the entry */
 	public Function<Entry, String> nameBuilder;
-
 	
+
 	EffectCode(String effectName, int effectCode){
 		name = effectName;
 		code = effectCode;
@@ -84,41 +84,41 @@ public enum EffectCode implements EnumValue {
 			case -1:
 				nameBuilder = entry -> name; break;
 			case 1:
-				nameBuilder = entry -> name + ":  " + getObjectSetTech(entry).target + "  >  " + getButton(entry).target; break;
+				nameBuilder = entry -> name + ":  " + getObjectSetTech(entry) + "  >  " + getButton(entry); break;
 			case 2:
 				nameBuilder = entry -> name + ":  " + getAttribute(entry); break;
 			case 6:
-				nameBuilder = entry -> name + ":  " + getObjectSetTech(entry).target + "  >  " + getGraphic(entry).target; break;
+				nameBuilder = entry -> name + ":  " + getObjectSetTech(entry) + "  >  " + getGraphic(entry); break;
 			case 8: case 9:
-				nameBuilder = entry -> name + ":  " + getTech(entry).target; break;
+				nameBuilder = entry -> name + ":  " + getTech(entry);
 			case 12:
-				nameBuilder = entry -> name + ":  " + getGraphic(entry).target; break;
+				nameBuilder = entry -> name + ":  " + getGraphic(entry); break;
 			case 15: case 17: case 18: case 20: case 21:
-				nameBuilder = entry -> name +  ":  " + getObjectSetTech(entry).target + "  >  " + getSound(entry).target; break;
+				nameBuilder = entry -> name +  ":  " + getObjectSetTech(entry) + "  >  " + getSound(entry); break;
 			case 19: case 22:
-				nameBuilder = entry -> name + ":  " + getObjectSetTech(entry).target + "  >  " + getObject2(entry).target; break;
+				nameBuilder = entry -> name + ":  " + getObjectSetTech(entry) + "  >  " + getObject2(entry); break;
 			default:
 				nameBuilder = entry -> name;
 		}
 	}
-
+	
 	@Override
 	public String getName(){
 		return name;
 	}
-	
+
 	@Override
 	public int getCode () {
 		return code;
 	}
-
+	
 	@Override
 	public boolean isValid (int code) {
 		return code >= -1 && code <= 22;
 	}
+	
 
-	
-	
+
 	@Override
 	public EffectCode parseValue(int code){
 		switch (code){
@@ -148,124 +148,137 @@ public enum EffectCode implements EnumValue {
 			default: return null;
 		}
 	}
-	
+
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-
-
-
-
+	
+	
+	
+	
 	/**
 	 * Extract the object/set/tech from the given entry
 	 * @param entry		The entry
-	 * @return			The object from/set/tech link
+	 * @return			The object from/set/tech
 	 */
-	public static Link getObjectSetTech(Entry entry){
+	public static Entry getObjectSetTech(Entry entry){
 		Link link;
-		link = (Link) entry.values.get(5);
+		link = entry.get(5);
 		if (link.target.isDefined()) {
-			return link;
+			return link.target;
 		}
-		link = (Link) entry.values.get(7);
+		link = entry.get(7);
 		if (link.target.isDefined()){
-			return link;
+			return link.target;
 		}
-		link = (Link) entry.values.get(10);
+		link = entry.get(10);
 		if (link.target.isDefined()){
-			return link;
+			return link.target;
 		}
-		return Link.NULL;
+		return Entry.nullEntry;
 	}
-
+	
 	/**
 	 * Extract the object 1 from the given entry
 	 * @param entry		The entry
-	 * @return			The object 1 link
+	 * @return			The object 1
 	 */
-	public static Link getObject1(Entry entry){
-		Link link = (Link) entry.values.get(5);
+	public static Entry getObject1(Entry entry){
+		Link link = entry.get(5);
 		if (link.target.isDefined()) {
-			return link;
+			return link.target;
 		}
-		return Link.NULL;
+		return Entry.nullEntry;
 	}
-	
+
 	/**
 	 * Extract the object 2 from the given entry
 	 * @param entry		The entry
-	 * @return			The object 2 link
+	 * @return			The object 2
 	 */
-	public static Link getObject2(Entry entry){
-		Link link = (Link) entry.values.get(6);
+	public static Entry getObject2(Entry entry){
+		Link link = entry.get(6);
 		if (link.target.isDefined()) {
-			return link;
+			return link.target;
 		}
-		return Link.NULL;
+		return Entry.nullEntry;
 	}
-	
+
 	/**
 	 * Extract the graphic from the given entry
 	 * @param entry		The entry
-	 * @return			The graphic link
+	 * @return			The graphic
 	 */
-	public static Link getGraphic(Entry entry){
-		Link link = (Link) entry.values.get(9);
+	public static Entry getGraphic(Entry entry){
+		Link link = entry.get(9);
 		if (link.target.isDefined()){
-			return link;
+			return link.target;
 		}
-		return Link.NULL;
-	}
-
-	/**
-	 * Extract the tech from the given entry
-	 * @param entry		The entry
-	 * @return			The tech link
-	 */
-	public static Link getTech(Entry entry){
-		Link link = (Link) entry.values.get(10);
-		if (link.target.isDefined()){
-			return link;
-		}
-		return Link.NULL;
-	}
-
-	/**
-	 * Extract the sound from the given entry
-	 * @param entry		The entry
-	 * @return			The sound link
-	 */
-	public static Link getSound(Entry entry){
-		Link link = (Link) entry.values.get(12);
-		if (link.target.isDefined()){
-			return link;
-		}
-		return Link.NULL;
+		return Entry.nullEntry;
 	}
 	
 	/**
-	 * Extract the button from the given entry
+	 * Extract the tech from the given entry
 	 * @param entry		The entry
-	 * @return			The button link
+	 * @return			The tech
 	 */
-	public static Link getButton(Entry entry){
-		Link link = (Link) entry.values.get(13);
+	public static Entry getTech(Entry entry){
+		Link link = entry.get(10);
 		if (link.target.isDefined()){
-			return link;
+			return link.target;
 		}
-		return Link.NULL;
+		return Entry.nullEntry;
+	}
+	
+	/**
+	 * Extract the sound from the given entry
+	 * @param entry		The entry
+	 * @return			The sound
+	 */
+	public static Entry getSound(Entry entry){
+		Link link = entry.get(12);
+		if (link.target.isDefined()){
+			return link.target;
+		}
+		return Entry.nullEntry;
 	}
 
-
-
+	/**
+	 * Extract the button from the given entry
+	 * @param entry		The entry
+	 * @return			The button
+	 */
+	public static Entry getButton(Entry entry){
+		Link link = entry.get(13);
+		if (link.target.isDefined()){
+			return link.target;
+		}
+		return Entry.nullEntry;
+	}
+	
+	/**
+	 * Extract the area effect from the given entry
+	 * @param entry		The entry
+	 * @return			The area effect
+	 */
+	public static Entry getAreaEffect(Entry entry){
+		Link link = entry.get(14);
+		if (link.target.isDefined()){
+			return link.target;
+		}
+		return Entry.nullEntry;
+	}
+	
+	
+	
 	/**
 	 * Get the attribute name/code
 	 * @param entry	The entry
 	 * @return		The attribute name/code
 	 */
 	public static Object getAttribute(Entry entry){
-		int attributeCode = (int) entry.values.get(11);
+		int attributeCode = (int) entry.get(11);
 		AttributeCode attribute = AttributeCode.C01_ATTACK.parseValue(attributeCode);
 		if (attribute != null){
 			switch (attribute){
@@ -273,44 +286,44 @@ public enum EffectCode implements EnumValue {
 				case C38_COMMERCIAL_TAXES:
 					return attribute.name + ' ' + getAttributeValue(entry);
 				case C40_AREA_EFFECT:
-					return getObjectSetTech(entry).target + "  >  " + attribute.name + " = " + ((Link) entry.values.get(14)).target;
+					return getObjectSetTech(entry) + "  >  " + attribute.name + " = " + getAreaEffect(entry);
 				case C45_NAME:
-					Float langID = (Float) entry.values.get(2);
+					Float langID = entry.get(2);
 					if (langID > 0){
-						return getObjectSetTech(entry).target + "  >  " + attribute.name + " = " + Language.MAP.get(langID.intValue());
+						return getObjectSetTech(entry) + "  >  " + attribute.name + " = " + Language.MAP.get(langID.intValue());
 					}
-					return getObjectSetTech(entry).target + "  >  " + attribute.name + " = (" + langID + ')';
+					return getObjectSetTech(entry) + "  >  " + attribute.name + " = (" + langID + ')';
 				default:
-					return getObjectSetTech(entry).target + "  >  " + attribute.name + getAttributeValue(entry);
+					return getObjectSetTech(entry) + "  >  " + attribute.name + getAttributeValue(entry);
 			}
 		}
-		return getObjectSetTech(entry).target + "  >  " + attributeCode;
+		return getObjectSetTech(entry) + "  >  " + attributeCode;
 	}
-	
-	
+
+
 	private static DecimalFormat df = new DecimalFormat("#.##");
 	static{
 		df.setRoundingMode(RoundingMode.HALF_DOWN);
 		df.setDecimalSeparatorAlwaysShown(false);
 		df.setPositivePrefix("+");
 	}
-	
+
 	/**
 	 * Build and return a string which represents the attribute's set/alter/alter mult value
 	 * @param entry	The entry
 	 * @return		The string for the attribute's value
 	 */
 	public static String getAttributeValue(Entry entry){
-		float val = (float) entry.values.get(2);
+		float val = entry.get(2);			//Set value to "val"
 		if (val != 0){
 			return " = " + val;
 		}
-		val = (float) entry.values.get(3);
+		val = entry.get(3);					//Alter value by "val"
 		if (val != 0){
 			return (val > 0 ? " + " + val : " - " + -val);
 		}
-		val = 100 * (float) entry.values.get(4);
+		val = 100 * (Float) entry.get(4);	//Alter multiplier by "val"
 		return ' ' + df.format(val) + '%';
 	}
-
+	
 }

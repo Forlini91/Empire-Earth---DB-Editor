@@ -41,7 +41,7 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 	private JTextComponent textEditor = ((JTextComponent) getEditor().getEditorComponent());
 	private FieldStruct fieldStruct;
 	private int index;
-	private List<Entry> allEntries = null;
+	@SuppressWarnings ("javadoc") public List<Entry> allEntries = null;
 	@SuppressWarnings ("javadoc") public DatStructure linkToStruct;
 	private Object defaultVal = null;
 	private boolean altered = false;
@@ -55,13 +55,8 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 		this.fieldStruct = fieldStruct;
 		this.index = index;
 		linkToStruct = fieldStruct.getLinkToStruct();
-		if (linkToStruct != null){
-			DatFile datFile = linkToStruct.datFile;
-			if (datFile != null){
-				allEntries = datFile.getAllEntries(true);
-				setModel(new DefaultComboBoxModel<>(new Vector<>(allEntries)));
-			}
-		}
+		allEntries = linkToStruct.datFile.getAllEntries(true);
+		setModel(new DefaultComboBoxModel<>(new Vector<>(allEntries)));
 		setEditable(true);
 		addMouseListener(this);
 		addItemListener(this);
@@ -119,7 +114,7 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 		//System.out.println("Getting: " + fieldStruct + " = " + obj + '(' + fieldStruct.defaultValue + '/' + defaultVal + ')');
 		if (obj != null) {
 			if (obj instanceof Entry){
-				return ((Entry) obj).ID;
+				return ((Entry) obj).getID();
 			} else if (obj instanceof String){
 				return Integer.valueOf((String) obj);
 			} else if (defaultVal != null){

@@ -17,7 +17,7 @@ import datmanager.Core;
  * @author MarcoForlini
  */
 public class EESplashScreen extends JFrame {
-	
+
 	private static final long serialVersionUID = -5296485583875576204L;
 	private static final BufferedImage image;
 	private static final String[] buttons = new String[]{"Vanilla", "Art of Conquest", "Exit"};
@@ -32,8 +32,8 @@ public class EESplashScreen extends JFrame {
 		}
 		image = img;
 	}
-	
-	
+
+
 	/**
 	 * Creates a new {@link EESplashScreen}
 	 */
@@ -48,7 +48,7 @@ public class EESplashScreen extends JFrame {
 		}
 		setUndecorated(true);
 	}
-
+	
 	/**
 	 * Ask for the editor type
 	 * @return	true if AOC, false for vanilla, null to exit
@@ -60,27 +60,27 @@ public class EESplashScreen extends JFrame {
 		switch (answer){
 			case 0: return false;
 			case 1: return true;
-			default: return null;
+			default: System.exit(0); return null;
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * A panel which display an image
 	 * @author MarcoForlini
 	 */
 	public class JImagePanel extends JPanel {
-		
+
 		private static final long serialVersionUID = 8333910792059819240L;
-		
+
 		@SuppressWarnings ("synthetic-access")
 		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.drawImage(image, 0, 0, null);
 		}
-		
+
 	}
-	
+
 }

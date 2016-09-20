@@ -63,7 +63,7 @@ public class JPanelEntry extends JPanel {
 				field = new JComboBoxArray(fieldStruct, index);
 				break;
 			case ID:
-				if (fieldStruct.linkToStruct.datFile != null && Core.LINK_SYSTEM){
+				if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Core.LINK_SYSTEM){
 					field = new JComboBoxField(fieldStruct, index);
 				} else {
 					disable = true;
@@ -108,7 +108,7 @@ public class JPanelEntry extends JPanel {
 	 */
 	public void setVal(Object val){
 		if (val instanceof Link){
-			field.setVal(((Link) val).target.ID);
+			field.setVal(((Link) val).target.getID());
 		} else {
 			field.setVal(val);
 		}
