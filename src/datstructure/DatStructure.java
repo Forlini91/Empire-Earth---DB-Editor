@@ -114,6 +114,8 @@ public class DatStructure {
 	/** Unique field: A 4 bytes integer which point to an hotkey's ID. */
 	public static final FieldStruct ID_UI_FORM = new FieldStruct("Form ID", DB_UI_FORMS, 0);
 	/** Unique field: A 4 bytes integer which point to an unit set's ID. */
+	public static final FieldStruct ID_UI_FONT = new FieldStruct("Font ID", DB_UI_FONT, 0);
+	/** Unique field: A 4 bytes integer which point to an unit set's ID. */
 	public static final FieldStruct ID_UNIT_SET = new FieldStruct("Unit set ID", DB_UNIT_SET, 0);
 	/** Unique field: A 4 bytes integer which point to an upgrade's ID. */
 	public static final FieldStruct ID_UPGRADE = new FieldStruct("Updrade ID", DB_UPGRADE, 0);
@@ -580,7 +582,7 @@ public class DatStructure {
 				ID_UI_FORM, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.ID_LANGUAGE, FieldStruct.ID_LANGUAGE, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.ID_LANGUAGE, FieldStruct.ID_LANGUAGE, ID_UI_FONT, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
