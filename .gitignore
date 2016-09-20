@@ -27,7 +27,10 @@
 /dbupgrade.dat.orig
 /dbweapontohit.dat
 /dbweapontohit.dat.orig
-/Thumbs.db
 /bin/
+/DB - AOC.lnk
+/DB - Vanilla.lnk
 /Empire Earth - DB Editor.jar
-/Language.dll
+/EE Hex Editing Guide.pdf
+/Empire Earth - DB Editor - Manual.pdf
+/.gitignore
