@@ -559,7 +559,7 @@ public class DatStructure {
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ID_UI_FORM,
 				new FieldStruct("Min Y pixel coord" , Type.INTEGER), new FieldStruct("Min X pixel coord", Type.INTEGER), new FieldStruct("Max (inclusive) Y pixel coord", Type.INTEGER), new FieldStruct("Max (inclusive) X pixel coord", Type.INTEGER),
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				new FieldStruct("X axis tiles", Type.INTEGER), new FieldStruct("Y axis tiles", Type.INTEGER), FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				new FieldStruct("X axis tiles", Type.INTEGER), new FieldStruct("Y axis tiles", Type.INTEGER), FieldStruct.UNKNOWN_INT4, new FieldStruct("Background index in form", Type.INTEGER),
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT4,
 		};
@@ -579,7 +579,7 @@ public class DatStructure {
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
 				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, new FieldStruct("Screen height from...", Type.FLOAT), new FieldStruct("... to", Type.FLOAT),
 				new FieldStruct("Screen width from... ", Type.FLOAT), new FieldStruct("... to", Type.FLOAT), FieldStruct.SEQ_NUMBER, FieldStruct.ID,
-				ID_UI_FORM, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				ID_UI_FORM, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("Control index in form", Type.INTEGER),
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.ID_LANGUAGE, FieldStruct.ID_LANGUAGE, ID_UI_FONT, FieldStruct.UNKNOWN_INT4,
@@ -607,8 +607,8 @@ public class DatStructure {
 		//TODO WIP
 		DB_UI_FORMS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Width", Type.INTEGER), new FieldStruct("Height", Type.INTEGER),
+				new FieldStruct("Controls", Type.INTEGER), new FieldStruct("Backgrounds", Type.INTEGER), FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
+				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Viewport Width", Type.INTEGER), new FieldStruct("Viewport Height", Type.INTEGER),
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1
