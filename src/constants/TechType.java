@@ -9,7 +9,7 @@ package constants;
 public enum TechType implements EnumValue {
 	
 	/** Technology which improve the civilization (+15% food gather rate) */
-	C0_Research ("Research", 0),
+	C0_Improvement ("Improvement", 0),
 	/** Technology which allow to create/build an object */
 	C1_Object ("Object", 1),
 	/** Technology which allow to advance to a new epoch */
@@ -61,7 +61,7 @@ public enum TechType implements EnumValue {
 	@Override
 	public TechType parseValue(int code){
 		switch (code){
-			case 0: return C0_Research;
+			case 0: return C0_Improvement;
 			case 1: return C1_Object;
 			case 2: return C2_Epoch;
 			case 3: return C3_Replace;

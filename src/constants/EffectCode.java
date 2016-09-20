@@ -14,7 +14,7 @@ import datstructure.Link;
  * @author MarcoForlini
  */
 public enum EffectCode implements EnumValue {
-	
+
 	/** Do nothing */
 	NONE ("None", -1),
 	/** Assign a new dbbutton entry to this object */
@@ -62,21 +62,21 @@ public enum EffectCode implements EnumValue {
 	/** Replace the current object with an object from the given class (it will inherit health and power, but not the upgrades) */
 	C22_REPLACE_OBJECTS ("Replace objects", 22),
 	;
-	
 
 	
-	
-	
+
+
+
 	/** Name to be shown in the UI */
 	public final String name;
-
+	
 	/** Code used in the dat files */
 	public final int code;
-
+	
 	/** Function which build the name of the entry */
 	public Function<Entry, String> nameBuilder;
-	
 
+	
 	EffectCode(String effectName, int effectCode){
 		name = effectName;
 		code = effectCode;
@@ -90,7 +90,7 @@ public enum EffectCode implements EnumValue {
 			case 6:
 				nameBuilder = entry -> name + ":  " + getObjectSetTech(entry) + "  >  " + getGraphic(entry); break;
 			case 8: case 9:
-				nameBuilder = entry -> name + ":  " + getTech(entry);
+				nameBuilder = entry -> name + ":  " + getTech(entry); break;
 			case 12:
 				nameBuilder = entry -> name + ":  " + getGraphic(entry); break;
 			case 15: case 17: case 18: case 20: case 21:
@@ -101,24 +101,24 @@ public enum EffectCode implements EnumValue {
 				nameBuilder = entry -> name;
 		}
 	}
-	
+
 	@Override
 	public String getName(){
 		return name;
 	}
-
+	
 	@Override
 	public int getCode () {
 		return code;
 	}
-	
+
 	@Override
 	public boolean isValid (int code) {
 		return code >= -1 && code <= 22;
 	}
+
 	
-
-
+	
 	@Override
 	public EffectCode parseValue(int code){
 		switch (code){
@@ -148,15 +148,15 @@ public enum EffectCode implements EnumValue {
 			default: return null;
 		}
 	}
-
+	
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Extract the object/set/tech from the given entry
 	 * @param entry		The entry
@@ -178,7 +178,7 @@ public enum EffectCode implements EnumValue {
 		}
 		return Entry.nullEntry;
 	}
-	
+
 	/**
 	 * Extract the object 1 from the given entry
 	 * @param entry		The entry
@@ -191,7 +191,7 @@ public enum EffectCode implements EnumValue {
 		}
 		return Entry.nullEntry;
 	}
-
+	
 	/**
 	 * Extract the object 2 from the given entry
 	 * @param entry		The entry
@@ -204,7 +204,7 @@ public enum EffectCode implements EnumValue {
 		}
 		return Entry.nullEntry;
 	}
-
+	
 	/**
 	 * Extract the graphic from the given entry
 	 * @param entry		The entry
@@ -217,7 +217,7 @@ public enum EffectCode implements EnumValue {
 		}
 		return Entry.nullEntry;
 	}
-	
+
 	/**
 	 * Extract the tech from the given entry
 	 * @param entry		The entry
@@ -230,7 +230,7 @@ public enum EffectCode implements EnumValue {
 		}
 		return Entry.nullEntry;
 	}
-	
+
 	/**
 	 * Extract the sound from the given entry
 	 * @param entry		The entry
@@ -243,7 +243,7 @@ public enum EffectCode implements EnumValue {
 		}
 		return Entry.nullEntry;
 	}
-
+	
 	/**
 	 * Extract the button from the given entry
 	 * @param entry		The entry
@@ -256,7 +256,7 @@ public enum EffectCode implements EnumValue {
 		}
 		return Entry.nullEntry;
 	}
-	
+
 	/**
 	 * Extract the area effect from the given entry
 	 * @param entry		The entry
@@ -269,9 +269,9 @@ public enum EffectCode implements EnumValue {
 		}
 		return Entry.nullEntry;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Get the attribute name/code
 	 * @param entry	The entry
@@ -299,15 +299,15 @@ public enum EffectCode implements EnumValue {
 		}
 		return getObjectSetTech(entry) + "  >  " + attributeCode;
 	}
-
-
+	
+	
 	private static DecimalFormat df = new DecimalFormat("#.##");
 	static{
 		df.setRoundingMode(RoundingMode.HALF_DOWN);
 		df.setDecimalSeparatorAlwaysShown(false);
 		df.setPositivePrefix("+");
 	}
-
+	
 	/**
 	 * Build and return a string which represents the attribute's set/alter/alter mult value
 	 * @param entry	The entry
@@ -325,5 +325,5 @@ public enum EffectCode implements EnumValue {
 		val = 100 * (Float) entry.get(4);	//Alter multiplier by "val"
 		return ' ' + df.format(val) + '%';
 	}
-	
+
 }

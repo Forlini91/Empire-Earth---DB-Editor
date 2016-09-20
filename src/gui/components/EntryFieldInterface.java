@@ -1,9 +1,11 @@
 package gui.components;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 
 import datstructure.FieldStruct;
+import gui.PopupMenuHandler;
 
 
 /**
@@ -116,5 +118,13 @@ public interface EntryFieldInterface {
 	 * @see java.awt.Component#getForeground
 	 */
 	void setForeground (Color fg);
+	
+	/**
+	 * Sets the popup menu handler
+	 * @param popupMenuHandler the popup menu handler
+	 */
+	default void setPopupMenu(PopupMenuHandler popupMenuHandler){
+		((Component) this).addMouseListener(popupMenuHandler);
+	}
 	
 }

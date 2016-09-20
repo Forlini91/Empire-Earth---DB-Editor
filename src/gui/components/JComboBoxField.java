@@ -27,25 +27,29 @@ import datstructure.Entry;
 import datstructure.EntryGroup;
 import datstructure.FieldStruct;
 import gui.FrameEditor;
+import gui.PopupMenuHandler;
 
 
 /**
  * A JComboBox which can hold the value of a field
  * @author MarcoForlini
  */
-public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInterface, MouseListener, KeyListener, ItemListener {
-
+public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInterface, MouseListener, KeyListener, ItemListener, FocusListener {
+	
 	private static final long serialVersionUID = -5787229930995728192L;
-
+	
+	/** The list of entries */
+	public List<Entry> allEntries;
+	/** The linked DatStructure */
+	public final DatStructure linkToStruct;
+	
 	private ListSearcher <Entry> searcher = new ListSearcher<>(ListSearcher.ENTRY_NAME_MATCHER, ListSearcher.ENTRY_ID_MATCHER);
 	private JTextComponent textEditor = ((JTextComponent) getEditor().getEditorComponent());
-	private FieldStruct fieldStruct;
-	private int index;
-	@SuppressWarnings ("javadoc") public List<Entry> allEntries = null;
-	@SuppressWarnings ("javadoc") public DatStructure linkToStruct;
+	private final int index;
+	private final FieldStruct fieldStruct;
 	private Object defaultVal = null;
 	private boolean altered = false;
-	
+
 	/**
 	 * Create a new {@link JComboBoxField}
 	 * @param fieldStruct	The field structure
@@ -57,57 +61,40 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 		linkToStruct = fieldStruct.getLinkToStruct();
 		allEntries = linkToStruct.datFile.getAllEntries(true);
 		setModel(new DefaultComboBoxModel<>(new Vector<>(allEntries)));
-		setEditable(true);
 		addMouseListener(this);
+		textEditor.addMouseListener(this);
 		addItemListener(this);
-		textEditor.addFocusListener(new FocusListener() {
-			@SuppressWarnings ("synthetic-access")
-			@Override
-			public void focusLost (FocusEvent e) {
-				ComboPopup cp = (ComboPopup) getUI().getAccessibleChild(JComboBoxField.this, 0);
-				Object item = null;
-				item = cp.getList().getSelectedValue();
-				if (item == null){
-					item = searcher.getCurrent();
-				}
-				if (item != null){
-					setSelectedItem(item);
-				}
-			}
-			
-			@SuppressWarnings ("synthetic-access")
-			@Override
-			public void focusGained (FocusEvent e) {
-				textEditor.setCaretPosition(textEditor.getText().length());
-				textEditor.moveCaretPosition(0);
-			}
-		});
-		textEditor.addKeyListener(this);
-	}
-
-	@Override
-	public synchronized void addMouseListener (MouseListener l) {
-		super.addMouseListener(l);
-		if (textEditor != null){
-			textEditor.addMouseListener(l);
+		if (fieldStruct.editable){
+			setEnabled(true);
+			setEditable(true);
+			textEditor.addFocusListener(this);
+			textEditor.addKeyListener(this);
+		} else {
+			setEnabled(false);
 		}
 	}
-
+	
+	@Override
+	public void setPopupMenu (PopupMenuHandler l) {
+		addMouseListener(l);
+		textEditor.addMouseListener(l);
+	}
+	
 	@Override
 	public void resetColor () {
 		setForeground(null);
 	}
-
+	
 	@Override
 	public FieldStruct getEntryStruct () {
 		return fieldStruct;
 	}
-
+	
 	@Override
 	public int getIndex(){
 		return index;
 	}
-
+	
 	@Override
 	public Object getVal(){
 		Object obj = getSelectedItem();
@@ -125,7 +112,7 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 		}
 		return fieldStruct.defaultValue;
 	}
-
+	
 	@Override
 	public void setVal(Object value){
 		defaultVal = value;
@@ -143,7 +130,7 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 		textEditor.setCaretPosition(0);
 		altered = false;
 	}
-	
+
 	@Override
 	public void refreshField () {
 		Object sel = getSelectedItem();
@@ -156,19 +143,19 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 		}
 		setSelectedItem(sel);
 	}
-
+	
 	@Override
 	public boolean isAltered () {
 		return altered;
 	}
-
+	
 	@Override
 	public Object getDefaultVal () {
 		return defaultVal;
 	}
-	
-	
 
+
+	
 	@Override public void keyTyped (KeyEvent e) {/*Do nothing*/}
 	@Override public void keyPressed (KeyEvent e) {/*Do nothing*/}
 	@Override public void keyReleased (KeyEvent e) {
@@ -221,7 +208,7 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 			}
 		});
 	}
-
+	
 	@Override
 	public void mouseClicked (MouseEvent e) {
 		Object selectedItem = getSelectedItem();
@@ -238,22 +225,40 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 					frameEditor.goToEntry(entryGroup, selectedEntry);
 				}
 			}
-		} else if (SwingUtilities.isLeftMouseButton(e)){
+		} else if (fieldStruct.editable && SwingUtilities.isLeftMouseButton(e)){
 			showPopup();
 		}
 	}
-
+	
 	@Override public void mousePressed (MouseEvent e) {/*Do nothing*/}
 	@Override public void mouseReleased (MouseEvent e) {/*Do nothing*/}
 	@Override public void mouseEntered (MouseEvent e) {/*Do nothing*/}
 	@Override public void mouseExited (MouseEvent e) {/*Do nothing*/}
-	
+
 	@Override
 	public void itemStateChanged (ItemEvent e) {
 		altered = true;
 	}
+
+	@Override
+	public void focusLost (FocusEvent e) {
+		ComboPopup cp = (ComboPopup) getUI().getAccessibleChild(JComboBoxField.this, 0);
+		Object item = null;
+		item = cp.getList().getSelectedValue();
+		if (item == null){
+			item = searcher.getCurrent();
+		}
+		if (item != null){
+			setSelectedItem(item);
+		}
+	}
+
+	@Override
+	public void focusGained (FocusEvent e) {
+		textEditor.setCaretPosition(textEditor.getText().length());
+		textEditor.moveCaretPosition(0);
+	}
 	
 
-	
-	
+
 }

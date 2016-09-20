@@ -197,7 +197,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @return the entry's ID
 	 */
 	public int getID () {
-		if (datStructure.indexID >= 0){
+		if (datStructure.indexID >= 0 && datStructure.indexID < values.size()){
 			return (Integer)values.get(datStructure.indexID);
 		}
 		return ID;
@@ -208,7 +208,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @param ID	The new ID
 	 */
 	public void setID(int ID){
-		if (datStructure.indexID >= 0){
+		if (datStructure.indexID >= 0 && datStructure.indexID < values.size()){
 			values.set(datStructure.indexID, ID);
 		}
 	}
@@ -218,7 +218,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @return the entry's sequence number
 	 */
 	public int getSequenceNumber() {
-		if (datStructure.indexSequence >= 0){
+		if (datStructure.indexSequence >= 0 && datStructure.indexSequence < values.size()){
 			return (Integer)values.get(datStructure.indexSequence);
 		}
 		return sequenceNumber;
@@ -229,7 +229,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @param sequenceNumber	The new sequence number
 	 */
 	public void setSequenceNumber(int sequenceNumber) {
-		if (datStructure.indexSequence >= 0){
+		if (datStructure.indexSequence >= 0 && datStructure.indexSequence < values.size()){
 			values.set(datStructure.indexSequence, sequenceNumber);
 		}
 	}
@@ -252,9 +252,8 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 			if (datStructure.nameBuilder != null){
 				return "(" + ID + ") " + datStructure.nameBuilder.apply(this);
 			}
-			int indexName = datStructure.indexName;
-			if (indexName >= 0){
-				return "(" + ID + ") " + ((String) values.get(indexName)).trim();
+			if (datStructure.indexName >= 0 && datStructure.indexName < values.size()){
+				return "(" + ID + ") " + ((String) values.get(datStructure.indexName)).trim();
 			}
 			return NAME_NONE;
 		}
