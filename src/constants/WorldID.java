@@ -7,7 +7,7 @@ import java.util.Arrays;
  * @author MarcoForlini
  */
 public enum WorldID implements EnumValue {
-	
+
 	/** Nothing */
 	C_01_NULL ("<Undefined>", -1),
 	/** Nothing */
@@ -35,43 +35,45 @@ public enum WorldID implements EnumValue {
 	/** Powers cost increase for every power already bought */
 	C86_POWER_CIV_POINTS ("Power increase civilization points cost", 86)
 	;
-
-	private static final int[] codes = new int[values().length];
+	
+	private static final int[] codes;
 	static {
-		int i = 0;
-		for (WorldID worldID : values()){
-			codes[i] = worldID.code;
+		WorldID[] values = values();
+		int n = values.length;
+		codes = new int[n];
+		for (int i = 0; i < n; i++){
+			codes[i] = values[i].code;
 		}
 		Arrays.sort(codes);
 	}
-
+	
 	/** Name to be shown in the UI */
 	public final String name;
-
+	
 	/** Code used in the dat files */
 	public final int code;
-	
 
+	
 	WorldID(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-	
+
 	@Override
 	public String getName(){
 		return name;
 	}
-
+	
 	@Override
 	public int getCode () {
 		return code;
 	}
-	
+
 	@Override
 	public boolean isValid (int code) {
 		return code >= -1 && code <= 86;
 	}
-	
+
 	@Override
 	public WorldID parseValue(int code){
 		int index = Arrays.binarySearch(codes, code);
@@ -80,10 +82,10 @@ public enum WorldID implements EnumValue {
 		}
 		return null;
 	}
-
+	
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-	
+
 }

@@ -102,7 +102,7 @@ public class DatStructure {
 	/** Unique field: A 4 bytes integer which point to a graphic's ID. */
 	public static final FieldStruct ID_GRAPHIC = new FieldStruct("Graphic ID", DB_GRAPHICS, 0);
 	/** Unique field: A 4 bytes integer which point to an object's ID. */
-	public static final FieldStruct ID_OBJECT = new FieldStruct("Object ID", DB_OBJECTS, 0, 0);
+	public static final FieldStruct ID_OBJECT = new FieldStruct("Object ID", DB_OBJECTS, 0);
 	/** Unique field: A 4 bytes integer which point to a sound ID. */
 	public static final FieldStruct ID_SOUND = new FieldStruct("Sound ID", DB_SOUNDS, 0);
 	/** Unique field: A 4 bytes integer which point to a tech's ID. */
@@ -396,26 +396,26 @@ public class DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
-				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
+				ID_SOUND, ID_SOUND, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,	//FF FF FF FF
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, ID_SOUND, ID_SOUND,	//FF FF FF FF
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
+				ID_SOUND, ID_SOUND, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, ID_SOUND, ID_SOUND,	//FF FF FF FF
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
+				ID_SOUND, ID_SOUND, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, ID_SOUND, ID_SOUND,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
+				ID_SOUND, ID_SOUND, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,	//FF FF FF FF
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, ID_SOUND, ID_SOUND,	//FF FF FF FF
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNUSED_INT4, new FieldStruct("<Some entries have link to themselves", DB_GRAPHICS, 0), FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT,	//FF FF FF FF
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4
@@ -669,7 +669,7 @@ public class DatStructure {
 		
 		
 		DB_WORLD.fieldStructs = new FieldStruct[]{
-				new FieldStruct("Float/Min float", Type.FLOAT), new FieldStruct("Max float", Type.FLOAT), FieldStruct.SEQ_NUMBER, new FieldStruct("ID", WorldID.values(), GUI.COLOR_FIELD_ID),
+				new FieldStruct("Float/Min float", Type.FLOAT), new FieldStruct("Max float", Type.FLOAT), FieldStruct.SEQ_NUMBER, new FieldStruct("ID", WorldID.values(), false),
 				new FieldStruct("Int/Min int", Type.INTEGER), new FieldStruct("Max int", Type.INTEGER), FieldStruct.UNKNOWN_INT4
 		};
 		DB_WORLD.nameBuilder = (entry) -> {
