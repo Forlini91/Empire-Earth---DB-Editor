@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
@@ -33,8 +34,6 @@ import javax.swing.JSlider;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
-
-import com.sun.glass.events.KeyEvent;
 
 import datmanager.Core;
 import datmanager.DatFile;
@@ -474,7 +473,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 					if (datFile != null){
 						EntryGroup entryGroup = datFile.findGroup(selectedEntry);
 						if (entryGroup != null){
-							FrameEditor frameEditor = Core.openFile(this, datFile, (e.getModifiers() & KeyEvent.MODIFIER_SHIFT) != 0);
+							FrameEditor frameEditor = Core.openFile(this, datFile, (e.getModifiers() & KeyEvent.VK_SHIFT) != 0);
 							frameEditor.goToEntry(entryGroup, selectedEntry);
 						}
 					}

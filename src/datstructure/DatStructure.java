@@ -61,6 +61,7 @@ public class DatStructure {
 	DB_UI_CONTROL_EVENTS	 = new DatStructure	("UI Control events", "dbuicontrolevents.dat", true, 0, 1, 0, 0, 1, 2, 3),
 	DB_UI_CONTROLS			 = new DatStructure	("UI Controls", "dbuicontrols.dat", true, 0, 1, 0, 0, 18, 19, 4),
 	DB_UI_FONT				 = new DatStructure	("UI Fonts", "dbuifonts.dat", true, 0, 1, 0, 0, 1, 2, 3),
+	DB_UI_FORMS				 = new DatStructure	("UI Forms", "dbuiforms.dat", true, 0, 0, 0, 0, 2, 3, 4),//TODO: Check this
 	DB_UI_HOTKEY			 = new DatStructure	("UI Hotkeys", "dbuihotkey.dat", true, 0, 1, 0, 2, 0, 1, 4),
 	DB_UNIT_BEHAVIOR		 = new DatStructure	("Unit behavior", "dbunitbehavior.dat", true, 0, 1, 0, 0, 1, 2, 3),
 	DB_UNIT_SET				 = new DatStructure	("Unit sets", "dbunitset.dat", true, 0, 1, 0, 0, 1, 2, 3),
@@ -76,7 +77,7 @@ public class DatStructure {
 			DB_EFFECTS, DB_EVENTS, DB_FAMILY, DB_GAME_VARIANT, DB_GFX_EFFECTS,
 			DB_GRAPHICS, DB_MUSIC, DB_OBJECTS, DB_PREMADE_CIVS, DB_SOUNDS,
 			DB_STARTING_RESOURCHES, DB_TECH_TREE, DB_TERRAIN, DB_TERRAIN_GRAY_TEXTURES, DB_TERRAIN_TYPE,
-			DB_UI_BACK, DB_UI_CONTROL_EVENTS, DB_UI_CONTROLS, DB_UI_FONT, DB_UI_HOTKEY,
+			DB_UI_BACK, DB_UI_CONTROL_EVENTS, DB_UI_CONTROLS, DB_UI_FONT, DB_UI_FORMS, DB_UI_HOTKEY,
 			DB_UNIT_BEHAVIOR, DB_UNIT_SET, DB_UPGRADE, DB_WEAPON_TO_HIT, DB_WORLD
 	};
 	
@@ -87,7 +88,7 @@ public class DatStructure {
 			DB_EFFECTS, DB_EVENTS, DB_FAMILY, DB_GAME_VARIANT, DB_GFX_EFFECTS,
 			DB_GRAPHICS, DB_MUSIC, DB_OBJECTS, DB_PREMADE_CIVS, DB_SOUNDS,
 			DB_STARTING_RESOURCHES, DB_TECH_TREE, DB_TERRAIN, DB_TERRAIN_GRAY_TEXTURES, DB_TERRAIN_TYPE,
-			DB_UI_BACK, DB_UI_CONTROL_EVENTS, DB_UI_CONTROLS, DB_UI_FONT, DB_UI_HOTKEY,
+			DB_UI_BACK, DB_UI_CONTROL_EVENTS, DB_UI_CONTROLS, DB_UI_FONT, DB_UI_FORMS,DB_UI_HOTKEY,
 			DB_UNIT_BEHAVIOR, DB_UNIT_SET, DB_UPGRADE, DB_WEAPON_TO_HIT, DB_WORLD
 	};
 	
@@ -111,6 +112,10 @@ public class DatStructure {
 	public static final FieldStruct ID_TERRAIN = new FieldStruct("Terrain ID", DB_TERRAIN, 0);
 	/** Unique field: A 4 bytes integer which point to an hotkey's ID. */
 	public static final FieldStruct ID_UI_HOTKEY = new FieldStruct("Hotkey ID", DB_UI_HOTKEY, 0);
+	/** Unique field: A 4 bytes integer which point to an hotkey's ID. */
+	public static final FieldStruct ID_UI_FORM = new FieldStruct("Form ID", DB_UI_FORMS, 0);
+	/** Unique field: A 4 bytes integer which point to an unit set's ID. */
+	public static final FieldStruct ID_UI_FONT = new FieldStruct("Font ID", DB_UI_FONT, 0);
 	/** Unique field: A 4 bytes integer which point to an unit set's ID. */
 	public static final FieldStruct ID_UNIT_SET = new FieldStruct("Unit set ID", DB_UNIT_SET, 0);
 	/** Unique field: A 4 bytes integer which point to an upgrade's ID. */
@@ -547,19 +552,17 @@ public class DatStructure {
 		
 		
 		DB_UI_BACK.fieldStructs = new FieldStruct[]{
-				FieldStruct.NAME, FieldStruct.NAME, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct("Height", Type.INTEGER), new FieldStruct("Width", Type.INTEGER),
+				FieldStruct.NAME, new FieldStruct("Texture atlas", Type.STRING, 100), new FieldStruct("Screen height from...", Type.FLOAT), new FieldStruct("... to", Type.FLOAT),
+				new FieldStruct("Screen width from... ", Type.FLOAT), new FieldStruct("... to", Type.FLOAT), FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
+				FieldStruct.UNKNOWN_FLOAT, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ID_UI_FORM,
+				new FieldStruct("Min Y pixel coord" , Type.INTEGER), new FieldStruct("Min X pixel coord", Type.INTEGER), new FieldStruct("Max (inclusive) Y pixel coord", Type.INTEGER), new FieldStruct("Max (inclusive) X pixel coord", Type.INTEGER),
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				new FieldStruct("X axis tiles", Type.INTEGER), new FieldStruct("Y axis tiles", Type.INTEGER), FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT4,
 		};
-		
 
-		
-		
+
 		DB_UI_CONTROL_EVENTS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Control", DB_UI_CONTROLS, 0),
 				new FieldStruct("Control event type", ControlType.values())
@@ -572,18 +575,18 @@ public class DatStructure {
 				FieldStruct.NAME, new FieldStruct("Sub", Type.STRING, 100), new FieldStruct("Sub", Type.STRING, 100), new FieldStruct("Sub", Type.STRING, 100),
 				new FieldStruct("Sub", Type.STRING, 100), new FieldStruct("Sub", Type.STRING, 100), FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
 				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT,
-				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.SEQ_NUMBER, FieldStruct.ID,
+				FieldStruct.UNUSED_FLOAT, FieldStruct.UNUSED_FLOAT, new FieldStruct("Screen height from...", Type.FLOAT), new FieldStruct("... to", Type.FLOAT),
+				new FieldStruct("Screen width from... ", Type.FLOAT), new FieldStruct("... to", Type.FLOAT), FieldStruct.SEQ_NUMBER, FieldStruct.ID,
+				ID_UI_FORM, new FieldStruct("Belongs to tab (0=all)", Type.INTEGER), new FieldStruct("Type", Type.INTEGER), new FieldStruct("Control index in form", Type.INTEGER),
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.ID_LANGUAGE, FieldStruct.ID_LANGUAGE, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, new FieldStruct("Red", Type.INTEGER), new FieldStruct("Green", Type.INTEGER), new FieldStruct("Blue", Type.INTEGER),
+				FieldStruct.ID_LANGUAGE, FieldStruct.ID_LANGUAGE, ID_UI_FONT, new FieldStruct("Red", Type.INTEGER), 
+				new FieldStruct("Green", Type.INTEGER), new FieldStruct("Blue", Type.INTEGER), FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				new FieldStruct("Red", Type.INTEGER), new FieldStruct("Green", Type.INTEGER), new FieldStruct("Blue", Type.INTEGER), FieldStruct.UNUSED_INT4,
+				new FieldStruct("Red", Type.INTEGER), new FieldStruct("Green", Type.INTEGER), new FieldStruct("Blue", Type.INTEGER), FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.ID_LANGUAGE,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
@@ -598,9 +601,16 @@ public class DatStructure {
 				new FieldStruct("Font size", Type.INTEGER), new FieldStruct("Quality", Type.INTEGER), new FieldStruct("Bold"), new FieldStruct("Italic"),
 				new FieldStruct("Underline"), new FieldStruct("Has shadow"), FieldStruct.UNUSED_INT4
 		};
-		
-		
 
+		//TODO WIP
+		DB_UI_FORMS.fieldStructs = new FieldStruct[]{
+				FieldStruct.NAME, FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID,
+				new FieldStruct("Controls", Type.INTEGER), new FieldStruct("Tabs", Type.INTEGER), FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
+				FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, new FieldStruct("Viewport Width", Type.INTEGER), new FieldStruct("Viewport Height", Type.INTEGER),
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
+				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1
+		};
 
 		DB_UI_HOTKEY.fieldStructs = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, FieldStruct.UNCHANGED_INT4,
