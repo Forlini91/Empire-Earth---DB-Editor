@@ -561,15 +561,8 @@ public class DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT4,
 		};
-<<<<<<< HEAD
 
 
-=======
-		
-
-		
-		
->>>>>>> c925134ca22fd6b5cb0cd62d5e60e2e3374198e7
 		DB_UI_CONTROL_EVENTS.fieldStructs = new FieldStruct[]{
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct("Control", DB_UI_CONTROLS, 0),
 				new FieldStruct("Control event type", ControlType.values())
@@ -608,7 +601,6 @@ public class DatStructure {
 				new FieldStruct("Font size", Type.INTEGER), new FieldStruct("Quality", Type.INTEGER), new FieldStruct("Bold"), new FieldStruct("Italic"),
 				new FieldStruct("Underline"), new FieldStruct("Has shadow"), FieldStruct.UNUSED_INT4
 		};
-<<<<<<< HEAD
 
 		//TODO WIP
 		DB_UI_FORMS.fieldStructs = new FieldStruct[]{
@@ -619,11 +611,6 @@ public class DatStructure {
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
 				FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1
 		};
-=======
-		
->>>>>>> c925134ca22fd6b5cb0cd62d5e60e2e3374198e7
-		
-
 
 		DB_UI_HOTKEY.fieldStructs = new FieldStruct[]{
 				FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, FieldStruct.UNCHANGED_INT4,
