@@ -7,7 +7,7 @@ package constants;
  * @author MarcoForlini
  */
 public enum UnitType implements EnumValue {
-
+	
 	/** Ambient */
 	C00_AMBIENT ("Ambient", 0),
 	/** Resource */
@@ -79,41 +79,37 @@ public enum UnitType implements EnumValue {
 	/** Space fighter */
 	C34_SPACE_FIGHTER ("Space fighter", 34)
 	;
-	
-	
+
+
 	/** Name to be shown in the UI */
 	public final String name;
-
+	
 	/** Code used in the dat files */
 	public final int code;
-	
 
+	
 	UnitType(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-	
+
 	@Override
 	public String getName(){
 		return name;
 	}
-	
+
 	@Override
 	public int getCode () {
 		return code;
 	}
-	
+
 	@Override
 	public boolean isValid (int code) {
 		return code >= 0 && code <= 34;
 	}
-
-	/**
-	 * Parse the code and return the relative enum.
-	 * @param code	The code
-	 * @return		The relative enum
-	 */
-	public static UnitType parseValue(int code){
+	
+	@Override
+	public UnitType parseValue(int code){
 		switch (code){
 			case 0: return C00_AMBIENT;
 			case 1: return C01_RESOURCE;
@@ -153,10 +149,10 @@ public enum UnitType implements EnumValue {
 			default: return null;
 		}
 	}
-	
+
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-
+	
 }

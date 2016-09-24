@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import datmanager.DatFile;
 
@@ -18,57 +19,55 @@ import datmanager.DatFile;
  *
  */
 public class Entry implements Comparable<Entry>, Iterable <Object> {
-	
-	/** A dummy Entry field used for null/invalid links */
-	public static final Entry NULL = new Entry(null, true, -1, -1);
 
-	/** A dummy Entry field used for null/invalid links */
-	public static final Entry NULL0 = new Entry(null, true, 0, 0);
-	
-	static {
-		NULL.name = "Null (-1)";
-		NULL.sequenceNumber = -1;
-		NULL.ID = -1;
-		NULL0.name = "Null (0)";
-	}
-
+	/** Null target entry */
+	public static final Entry nullEntry = new Entry(null, true, "Null", -2, -2);
 	/** Used by fields without name. */
 	public static final String NAME_NONE = "<No name>";
 	/** Used by undefined fields. */
 	public static final String NAME_UNDEFINED = "<Undefined>";
-
 	
+
 	/** Name of the entry. If null, the name is calculated basing on the fields */
-	public String name = null;
+	private final String name;
 	/** The structure of this entry. */
 	public final DatStructure datStructure;
 	/** The values of this entry. They are in the same order as the fiels defined in the structure. */
-	public List<Object> values;
+	private final List<Object> values;
 	/** The entry's sequence number. This is a redundant value which can be found in values[indexSequence]. */
-	public int sequenceNumber;
+	private int sequenceNumber;
 	/** The entry's ID. This is a redundant value which can be found in values[indexID]. */
-	public int ID;
+	private int ID;
 	/** If true, this entry is just for Link purposes and must be ignored anywhere except in Links */
-	public boolean dummyEntry = false;
-
-
-
+	public final boolean dummyEntry;
+	
+	
+	
 	/**
-	 * Create a new entry with the given DatStructure, sequence number, ID and values.
+	 * Create a new entry with the given DatStructure, name, sequence number, ID and values.
 	 * @param datStructure		The dat file structure
 	 * @param dummyEntry		If true, this entry is just for Link purposes and must be ignored anywhere except in Links
+	 * @param name				The name
 	 * @param sequenceNumber	The sequence number
 	 * @param ID				The ID
 	 * @param values			The values for this entry
 	 */
-	public Entry(DatStructure datStructure, boolean dummyEntry, int sequenceNumber, int ID, List<Object> values){
+	public Entry(DatStructure datStructure, boolean dummyEntry, String name, int sequenceNumber, int ID, List<Object> values){
 		this.datStructure = datStructure;
 		this.dummyEntry = dummyEntry;
 		this.values = values;
 		if (values.size() > 0){
 			try {
-				this.sequenceNumber = datStructure.indexSequence < 0 ? sequenceNumber : (int) values.get(datStructure.indexSequence);
-				this.ID = datStructure.indexID < 0 ? ID :(int) values.get(datStructure.indexID);
+				if (datStructure.indexName < 0){
+					if (name != null){
+						values.set(datStructure.indexName, name);
+					} else if (datStructure.indexName >= 0){
+						name = (String) values.get(datStructure.indexName);
+					}
+				}
+				this.name = name;
+				this.sequenceNumber = datStructure.indexSequence < 0 ? sequenceNumber : get(datStructure.indexSequence);
+				this.ID = datStructure.indexID < 0 ? ID : get(datStructure.indexID);
 			} catch (Exception e){
 				StringBuilder sb = new StringBuilder("Error with entry: " + sequenceNumber + "/" + ID + " of " + datStructure + '\n');
 				values.forEach(x -> sb.append("\tValue: ").append(x).append('\n'));
@@ -76,22 +75,24 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 				throw e;
 			}
 		} else {
+			this.name = name;
 			this.ID = ID;
 			this.sequenceNumber = sequenceNumber;
 		}
 	}
-	
+
 	/**
-	 * Create a new Entry with the given DatStructure, sequence number and ID. Assign default values to all other fields.
+	 * Create a new Entry with the given DatStructure, name, sequence number and ID. Assign default values to all other fields.
 	 * @param datStructure		The dat file structure
 	 * @param dummyEntry		If true, this entry is just for Link purposes and must be ignored anywhere except in Links
+	 * @param name				The name
 	 * @param sequenceNumber	The sequence number
 	 * @param ID				The ID
 	 */
-	public Entry(DatStructure datStructure, boolean dummyEntry, int sequenceNumber, int ID){
-		this(datStructure, dummyEntry, sequenceNumber, ID, getDefaultValues(datStructure, sequenceNumber, ID));
+	public Entry(DatStructure datStructure, boolean dummyEntry, String name, int sequenceNumber, int ID){
+		this(datStructure, dummyEntry, name, sequenceNumber, ID, getDefaultValues(datStructure, sequenceNumber, ID));
 	}
-	
+
 	/**
 	 * Duplicate the current entry and assign the given seqNum and ID to the clone.
 	 * @param sequenceNumber	The clone's sequence number
@@ -106,9 +107,9 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		if (datStructure.indexID >= 0){
 			valuesCopy.set(datStructure.indexID, ID);
 		}
-		return new Entry(datStructure, dummyEntry, sequenceNumber, ID, valuesCopy);
+		return new Entry(datStructure, dummyEntry, null, sequenceNumber, ID, valuesCopy);
 	}
-
+	
 	/**
 	 * Return a list of default values for all fields. Useful when adding a new entry in the file.
 	 * @param datStructure	The new entry's structure
@@ -133,7 +134,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		}
 		return values;
 	}
-
+	
 	/**
 	 * Get a printable name of the entry.
 	 * @return	A printable name for the entry
@@ -153,7 +154,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		}
 		return NAME_UNDEFINED;
 	}
-
+	
 	/**
 	 * Get a printable name of the entry.
 	 * @return	A printable name for the entry
@@ -173,7 +174,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		}
 		return NAME_UNDEFINED;
 	}
-	
+
 	/**
 	 * Check if this entry is a valid target you can jump in the GUI
 	 * @return	true if you can jump here, false otherwise
@@ -181,13 +182,35 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	public boolean isValidLinkTarget(){
 		return !dummyEntry && isDefined();
 	}
+
+	
+	/**
+	 * Gets the values of this entry
+	 * @return	the values of this entry
+	 */
+	public List<Object> getValues(){
+		return values;
+	}
 	
 	/**
 	 * Get the entry's ID.
 	 * @return the entry's ID
 	 */
 	public int getID () {
+		if (datStructure.indexID >= 0 && datStructure.indexID < values.size()){
+			return (Integer)values.get(datStructure.indexID);
+		}
 		return ID;
+	}
+
+	/**
+	 * Sets the entry's ID
+	 * @param ID	The new ID
+	 */
+	public void setID(int ID){
+		if (datStructure.indexID >= 0 && datStructure.indexID < values.size()){
+			values.set(datStructure.indexID, ID);
+		}
 	}
 
 	/**
@@ -195,19 +218,32 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 	 * @return the entry's sequence number
 	 */
 	public int getSequenceNumber() {
+		if (datStructure.indexSequence >= 0 && datStructure.indexSequence < values.size()){
+			return (Integer)values.get(datStructure.indexSequence);
+		}
 		return sequenceNumber;
 	}
-
+	
+	/**
+	 * Set the entry's sequence number.
+	 * @param sequenceNumber	The new sequence number
+	 */
+	public void setSequenceNumber(int sequenceNumber) {
+		if (datStructure.indexSequence >= 0 && datStructure.indexSequence < values.size()){
+			values.set(datStructure.indexSequence, sequenceNumber);
+		}
+	}
+	
 	/**
 	 * Check and return if the entry is defined and usable.
 	 * @return	true if defined, false otherwise
 	 */
 	public boolean isDefined(){
 		return datStructure != null
-				&& ID >= datStructure.minID
-				&& sequenceNumber >= datStructure.minSeq;
+				&& getID() >= datStructure.minID
+				&& getSequenceNumber() >= datStructure.minSeq;
 	}
-	
+
 	@Override
 	public String toString(){
 		if (name != null){
@@ -216,15 +252,14 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 			if (datStructure.nameBuilder != null){
 				return "(" + ID + ") " + datStructure.nameBuilder.apply(this);
 			}
-			int indexName = datStructure.indexName;
-			if (indexName >= 0){
-				return "(" + ID + ") " + ((String) values.get(indexName)).trim();
+			if (datStructure.indexName >= 0 && datStructure.indexName < values.size()){
+				return "(" + ID + ") " + ((String) values.get(datStructure.indexName)).trim();
 			}
 			return NAME_NONE;
 		}
 		return NAME_UNDEFINED;
 	}
-
+	
 	@Override
 	public int compareTo (Entry o) {
 		if (o == null || o.datStructure == null){
@@ -238,12 +273,12 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 			default: return Integer.compare(ID, o.ID);
 		}
 	}
-	
+
 	@Override
 	public Iterator <Object> iterator () {
 		return values.iterator();
 	}
-	
+
 	/**
 	 * Find and return all links to this entry
 	 * @param ordered	If true, order the list
@@ -259,7 +294,7 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 				if (fieldStructs[i].linkToStruct == datStructure) {
 					for (EntryGroup entryGroup : datFile) {
 						for (Entry entry : entryGroup) {
-							link = (Link) entry.values.get(i);
+							link = entry.get(i);
 							if (link.target == this){
 								linksToEntrySet.add(link);
 							}
@@ -273,9 +308,9 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 				int n2;
 				for (EntryGroup entryGroup : datFile) {
 					for (Entry entry : entryGroup) {
-						n2 = n + (Integer) entry.values.get(indexExtra);
+						n2 = n + (Integer) entry.get(indexExtra);
 						for (int i = indexExtra+1; i < n2; i++){
-							link = (Link) entry.values.get(i);
+							link = entry.get(i);
 							if (link.target == this){
 								linksToEntrySet.add(link);
 							}
@@ -290,64 +325,102 @@ public class Entry implements Comparable<Entry>, Iterable <Object> {
 		}
 		return linksToEntry;
 	}
-
-
-
 	
+	
+	
+
 	/**
-	 * Get the Link value at the given index
-	 * @param index	The index
-	 * @return		The Link value
-	 * @throws IndexOutOfBoundsException	If there's no value with the given index
-	 * @throws ClassCastException			If the value was not a Link
+	 * Gets the number of values in this entry
+	 * @return the number of values
 	 */
-	public Link getLink(int index) throws IndexOutOfBoundsException, ClassCastException {
-		Object obj = values.get(index);
-		if (obj instanceof Link){
-			return (Link) obj;
-		}
-		throw new ClassCastException("The field was not a link");
+	public int size(){
+		return values.size();
 	}
 	
 	/**
-	 * Get the int value at the given index
+	 * Sets the value at the given index
 	 * @param index	The index
-	 * @return		The int value
-	 * @throws IndexOutOfBoundsException	If there's no value with the given index
-	 * @throws ClassCastException			If the value was not an integer
+	 * @param value	The value to set
 	 */
-	public Integer getInt(int index) throws IndexOutOfBoundsException, ClassCastException {
-		Object obj = values.get(index);
-		if (obj instanceof Integer){
-			return (Integer) obj;
-		}
-		throw new ClassCastException("The field was not an integer");
-	}
-
-	/**
-	 * Get the float value at the given index
-	 * @param index	The index
-	 * @return		The float value
-	 * @throws IndexOutOfBoundsException	If there's no value with the given index
-	 * @throws ClassCastException			If the value was not a float
-	 */
-	public Float getFloat(int index) throws IndexOutOfBoundsException, ClassCastException {
-		Object obj = values.get(index);
-		if (obj instanceof Float){
-			return (Float) obj;
-		}
-		throw new ClassCastException("The field was not a float");
-	}
-
-	/**
-	 * Get the String value at the given index
-	 * Convert the value to string if not already a string
-	 * @param index	The index
-	 * @return		The String value
-	 * @throws IndexOutOfBoundsException	If there's no value with the given index
-	 */
-	public String getString(int index) throws IndexOutOfBoundsException {
-		return values.get(index).toString();
+	public <T> void set(int index, T value){
+		values.set(index, value);
 	}
 	
+	/**
+	 * Adds the value to the entry, in the given index
+	 * @param index	The index
+	 * @param value	The value to add
+	 */
+	public <T> void add(int index, T value){
+		values.add(index, value);
+	}
+	
+	/**
+	 * Adds the value to the entry
+	 * @param value	The value to add
+	 */
+	public <T> void add(T value){
+		values.add(value);
+	}
+	
+	/**
+	 * Remove the value to the entry, at the given index
+	 * @param index	The index
+	 */
+	public void remove(int index){
+		values.remove(index);
+	}
+	
+	/**
+	 * Gets the value at the given index
+	 * @param index	The index
+	 * @return		The value in the index
+	 * @throws IndexOutOfBoundsException	If there's no value with the given index
+	 * @throws ClassCastException			If the value type is different than expected
+	 */
+	@SuppressWarnings ("unchecked")
+	public <T> T get(int index) throws IndexOutOfBoundsException, ClassCastException {
+		return (T) values.get(index);
+	}
+
+	/**
+	 * Returns a sequential {@code Stream} with this collection as its source.
+	 *
+	 * <p>This method should be overridden when the {@link #spliterator()}
+	 * method cannot return a spliterator that is {@code IMMUTABLE},
+	 * {@code CONCURRENT}, or <em>late-binding</em>. (See {@link #spliterator()}
+	 * for details.)
+	 *
+	 * @implSpec
+	 * The default implementation creates a sequential {@code Stream} from the
+	 * collection's {@code Spliterator}.
+	 *
+	 * @return a sequential {@code Stream} over the elements in this collection
+	 * @since 1.8
+	 */
+	public Stream <Object> stream(){
+		return values.stream();
+	}
+	
+	/**
+	 * Returns a possibly parallel {@code Stream} with this collection as its
+	 * source.  It is allowable for this method to return a sequential stream.
+	 *
+	 * <p>This method should be overridden when the {@link #spliterator()}
+	 * method cannot return a spliterator that is {@code IMMUTABLE},
+	 * {@code CONCURRENT}, or <em>late-binding</em>. (See {@link #spliterator()}
+	 * for details.)
+	 *
+	 * @implSpec
+	 * The default implementation creates a parallel {@code Stream} from the
+	 * collection's {@code Spliterator}.
+	 *
+	 * @return a possibly parallel {@code Stream} over the elements in this
+	 * collection
+	 * @since 1.8
+	 */
+	public Stream <Object> parallelStream(){
+		return values.parallelStream();
+	}
+
 }

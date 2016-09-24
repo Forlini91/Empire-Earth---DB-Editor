@@ -59,7 +59,7 @@ public class EntryGroup implements Iterable <Entry> {
 			name = entries.get(0).toString();
 		}
 		if (datStructure.indexID >= 0 || !datStructure.defineNumEntries){
-			map = entries.stream().filter(Entry::isDefined).collect(Collectors.toMap(t -> t.ID, Function.identity()));
+			map = entries.stream().filter(Entry::isDefined).collect(Collectors.toMap(Entry::getID, Function.identity()));
 		} else {
 			map = new HashMap<>();
 		}

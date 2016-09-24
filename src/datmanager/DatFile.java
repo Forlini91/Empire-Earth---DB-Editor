@@ -129,7 +129,7 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 	 */
 	public EntryGroup findGroup (Entry entry){
 		if (isLoaded()){
-			int ID = entry.ID;
+			int ID = entry.getID();
 			if (entryGroups.size() > 1){
 				return entryGroups
 						.parallelStream()
@@ -168,34 +168,6 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 			}
 			for (EntryGroup entryGroup : entryGroups){
 				allEntries.addAll(entryGroup.entries);
-			}
-			return allEntries;
-		}
-		return null;
-	}
-	
-	/**
-	 * Build and return the list of entries in this file
-	 * @param includeDummy	If true, include the dummy entries
-	 * @return	The list of entries in this file
-	 */
-	public Map<Integer, Entry> getAllEntriesMap(boolean includeDummy){
-		if (isLoaded()){
-			int size = includeDummy ? dummyEntryMap.size() : 0;
-			if (entryGroups.size() > 1) {
-				size += entryGroups
-						.parallelStream()
-						.mapToInt(x->x.map.size())
-						.sum();
-			} else {
-				size += entryGroups.get(0).map.size();
-			}
-			Map<Integer, Entry> allEntries = new HashMap<>(size);
-			if (includeDummy){
-				allEntries.putAll(dummyEntryMap);
-			}
-			for (EntryGroup entryGroup : entryGroups){
-				allEntries.putAll(entryGroup.map);
 			}
 			return allEntries;
 		}

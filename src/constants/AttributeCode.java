@@ -7,7 +7,7 @@ package constants;
  * @author MarcoForlini
  */
 public enum AttributeCode implements EnumValue {
-	
+
 	/** No attribute */
 	C_1_NONE ("None", -1),
 	/** Attack damage */
@@ -101,43 +101,39 @@ public enum AttributeCode implements EnumValue {
 	/** Name */
 	C45_NAME ("Name", 45),
 	;
-
-
+	
+	
 	/** Name to be shown in the UI */
 	public final String name;
-
+	
 	/** Code used in the dat files */
 	public final int code;
-	
 
+	
 	AttributeCode(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-
+	
 	@Override
 	public String getName(){
 		return name;
 	}
-
+	
 	@Override
 	public int getCode () {
 		return code;
 	}
-	
+
 	@Override
 	public boolean isValid (int code) {
 		return code >= -1 && code <= 45;
 	}
-	
 
 	
-	/**
-	 * Parse the code and return the relative enum.
-	 * @param code	The code
-	 * @return		The relative enum
-	 */
-	public static AttributeCode parseValue(int code){
+
+	@Override
+	public AttributeCode parseValue(int code){
 		switch (code){
 			case -1: return C_1_NONE;
 			case 1: return C01_ATTACK;
@@ -188,10 +184,10 @@ public enum AttributeCode implements EnumValue {
 			default: return null;
 		}
 	}
-
+	
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-	
+
 }

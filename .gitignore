@@ -1,33 +1,8 @@
 /Db - collegamento.lnk
-/dbareaeffect.dat
-/dbareaeffect.dat.bak
-/dbareaeffect.dat.orig
-/dbbuttons.dat
-/dbbuttons.dat.bak
-/dbbuttons.dat.orig
-/dbcivilization.dat
-/dbcivilization.dat.orig
-/dbfamily.dat
-/dbfamily.dat.bak
-/dbfamily.dat.orig
-/dbgamevariant.dat
-/dbgamevariant.dat.orig
-/dbmusic.dat
-/dbmusic.dat.orig
-/dbobjects.dat
-/dbpremadecivs.dat
-/dbstartingresources.dat
-/dbstartingresources.dat.orig
-/dbtechtree.dat
-/dbtechtree.dat.bak
-/dbtechtree.dat.orig
-/dbuihotkey.dat
-/dbuihotkey.dat.orig
-/dbupgrade.dat
-/dbupgrade.dat.orig
-/dbweapontohit.dat
-/dbweapontohit.dat.orig
-/Thumbs.db
 /bin/
+/DB - AOC.lnk
+/DB - Vanilla.lnk
 /Empire Earth - DB Editor.jar
-/Language.dll
+/EE Hex Editing Guide.pdf
+/Empire Earth - DB Editor - Manual.pdf
+/.gitignore

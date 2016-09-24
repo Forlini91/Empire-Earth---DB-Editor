@@ -27,12 +27,12 @@ import gui.ui.GridBagLayoutExtended;
  * @author MarcoForlini
  */
 public class DialogMoveEntryToGroup extends JDialog {
-	
+
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = -8547149058851208651L;
-
+	
 	/**
 	 * Create a new {@link DialogMoveEntryToGroup}
 	 * @param parent			The parent window
@@ -57,20 +57,17 @@ public class DialogMoveEntryToGroup extends JDialog {
 				return;
 			}
 			try {
-				Integer maxID = targetGroup.entries.parallelStream().mapToInt(x -> x.ID).max().getAsInt() + 1;
-				int previousID = entry.ID;
-				if (entry.datStructure.indexID >= 0){
-					entry.values.set(entry.datStructure.indexID, maxID);
-				}
-				entry.ID = maxID;
+				int newID = targetGroup.entries.parallelStream().mapToInt(x -> x.getID()).max().getAsInt();
+				int oldID = entry.getID();
+				entry.setID(newID);
 				sourceGroup.entries.remove(entry);
 				targetGroup.entries.add(entry);
-				sourceGroup.map.remove(entry.ID);
-				targetGroup.map.put(entry.ID, entry);
+				sourceGroup.map.remove(oldID);
+				targetGroup.map.put(newID, entry);
 				entryList.setList(sourceGroup.entries);
 				entryGroupList.setSelectedElement(targetGroup);
 				entryList.setSelectedElement(entry);
-				JOptionPane.showMessageDialog(this, "The entry \"" + entry.getTrimmedName() + "\" changed its ID from " + previousID + " to " + maxID + "\nAll links have been automatically updated", "Operation completed", JOptionPane.INFORMATION_MESSAGE, GUI.IMAGE_ICON);
+				JOptionPane.showMessageDialog(this, "The entry \"" + entry.getTrimmedName() + "\" changed its ID from " + oldID + " to " + newID + "\nAll links have been automatically updated", "Operation completed", JOptionPane.INFORMATION_MESSAGE, GUI.IMAGE_ICON);
 				onChange.run();
 				entry.getLinksToEntry(false).parallelStream().forEach(link -> link.source.datStructure.datFile.setUnsaved(true));
 			} catch (Exception e){
@@ -79,9 +76,9 @@ public class DialogMoveEntryToGroup extends JDialog {
 			dispose();
 		});
 		dlgCancel.addActionListener(al -> dispose());
-		
+
 		getRootPane().registerKeyboardAction((e) -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
-		
+
 		setTitle("Move entry to another group");
 		setBounds(Core.getBounds(this, 0.3, 0.6));
 		getContentPane().setBackground(GUI.COLOR_UI_BACKGROUND);
@@ -90,5 +87,5 @@ public class DialogMoveEntryToGroup extends JDialog {
 		add(dlgConfirm, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
 		add(dlgCancel, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 2));
 	}
-	
+
 }

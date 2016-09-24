@@ -32,9 +32,9 @@ import gui.ui.GridBagLayoutExtended;
  * @author MarcoForlini
  */
 public class DialogListEntries extends JDialog {
-
-	private static final long serialVersionUID = 8712716194082493065L;
 	
+	private static final long serialVersionUID = 8712716194082493065L;
+
 	/**
 	 * Create a new {@link DialogSearchFieldResults}
 	 * @param parent		The parent frame
@@ -43,12 +43,12 @@ public class DialogListEntries extends JDialog {
 	 */
 	public DialogListEntries (Frame parent, List<Entry> entries, List<Entry> entriesClean) {
 		super(parent, ModalityType.DOCUMENT_MODAL);
-
+		
 		JTextArea textArea = new JTextArea();
 		textArea.setLineWrap(false);
 		textArea.setEditable(false);
 		textArea.setInheritsPopupMenu(true);
-
+		
 		JScrollPane dlgScrollPane = new JScrollPaneRed(textArea, "All entries");
 		getContentPane().setBackground(GUI.COLOR_UI_BACKGROUND);
 		dlgScrollPane.getViewport().setInheritsPopupMenu(true);
@@ -57,7 +57,7 @@ public class DialogListEntries extends JDialog {
 		dlgScrollPane.getVerticalScrollBar().setInheritsPopupMenu(true);
 		dlgScrollPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
 		dlgScrollPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
-
+		
 		JPopupMenu popupMenu = new JPopupMenu();
 		JMenuItem menuSelectAll = new JMenuItem("Select all");
 		menuSelectAll.addActionListener(e -> {textArea.selectAll(); SwingUtilities.invokeLater(() -> dlgScrollPane.getVerticalScrollBar().setValue(0));});
@@ -66,7 +66,7 @@ public class DialogListEntries extends JDialog {
 		popupMenu.add(menuSelectAll);
 		popupMenu.add(menuCopy);
 		SwingUtilities.invokeLater(() -> textArea.setComponentPopupMenu(popupMenu));
-		
+
 		JCheckBoxExtended hideUndefined = new JCheckBoxExtended("Hide undefined fields", true);
 		JCheckBoxExtended hideID = new JCheckBoxExtended("Hide ID");
 		JCheckBoxExtended hideName = new JCheckBoxExtended("Hide name");
@@ -81,7 +81,7 @@ public class DialogListEntries extends JDialog {
 		});
 		JButton dlgClose = new JButtonRed("Close");
 		dlgClose.addActionListener(al -> dispose());
-
+		
 		setTitle("All entries");
 		setBounds(Core.getBounds(this, 0.6, 0.8));
 		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{400, 25, 25, 25, 40}, new double[]{1.0}, new double[]{1.0, 0, 0, 0, 0, 0}));
@@ -91,10 +91,10 @@ public class DialogListEntries extends JDialog {
 		add(hideName, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 3));
 		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 4));
 		getRootPane().registerKeyboardAction((e) -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
-		
+
 		buildList(textArea, hideUndefined, hideID, hideName, entries, entriesClean);
 	}
-
+	
 	/**
 	 * Build the list of entries
 	 * @param textArea		The text area
@@ -110,9 +110,9 @@ public class DialogListEntries extends JDialog {
 		if (hideID.isSelected()){
 			builder = entry -> sb.append(entry.getTrimmedName());
 		} else if (hideName.isSelected()){
-			builder = entry -> sb.append(entry.ID);
+			builder = entry -> sb.append(entry.getID());
 		} else {
-			builder = entry -> sb.append("(" + entry.ID + ") " + entry.getTrimmedName());
+			builder = entry -> sb.append("(" + entry.getID() + ") " + entry.getTrimmedName());
 		}
 		List<Entry> entries = hideUndefined.isSelected() ? entriesClean : entriesAll;
 		int n = entries.size();

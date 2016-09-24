@@ -7,7 +7,7 @@ package constants;
  * @author MarcoForlini
  */
 public enum ControlType implements EnumValue {
-
+	
 	/** No condition */
 	NONE ("None", -1),
 	/** Unknown event */
@@ -35,41 +35,37 @@ public enum ControlType implements EnumValue {
 	/** Type in the chat box */
 	C1012_Chat ("Chat", 1012),
 	;
-	
-	
+
+
 	/** Name to be shown in the UI */
 	public final String name;
-
+	
 	/** Code used in the dat files */
 	public final int code;
-
-
+	
+	
 	ControlType(String name, int code){
 		this.name = name;
 		this.code = code;
 	}
-
+	
 	@Override
 	public String getName(){
 		return name;
 	}
-	
+
 	@Override
 	public int getCode () {
 		return code;
 	}
-
+	
 	@Override
 	public boolean isValid (int code) {
 		return code >= -1 && code <= 1012;
 	}
-
-	/**
-	 * Parse the code and return the relative enum.
-	 * @param code	The code
-	 * @return		The relative enum
-	 */
-	public static ControlType parseValue(int code){
+	
+	@Override
+	public ControlType parseValue(int code){
 		switch (code){
 			case -1: return NONE;
 			case 0: return C0_Update_Controls;
@@ -87,10 +83,10 @@ public enum ControlType implements EnumValue {
 			default: return null;
 		}
 	}
-	
+
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-
+	
 }

@@ -7,7 +7,8 @@ package constants;
  */
 @SuppressWarnings ("javadoc")
 public enum GFXEffectType implements EnumValue {
-	
+
+	C_1_NONE ("None", -1),
 	C00_FIRETRAIL ("Fire trail", 0),
 	C01_UNKNOWN ("Unknown", 1),
 	C02_ICON ("Icon", 2),
@@ -80,46 +81,43 @@ public enum GFXEffectType implements EnumValue {
 	C69_SHIELD ("Shield", 69),
 	C70_SCREENFLASH ("Screen flash", 70),
 	C71_CLOAK ("Cloack", 71)
-	
-	;
 
+	;
 	
-	
-	
+
+
+
 	/** Name to be shown in the UI */
 	public final String name;
-
+	
 	/** Code used in the dat files */
 	public final int code;
-	
 
+	
 	GFXEffectType(String effectName, int effectCode){
 		name = effectName;
 		code = effectCode;
 	}
-	
+
 	@Override
 	public String getName(){
 		return name;
 	}
-
+	
 	@Override
 	public int getCode () {
 		return code;
 	}
-
+	
 	@Override
 	public boolean isValid (int code) {
 		return code >= 0 && code <= 71;
 	}
-
-	/**
-	 * Parse the code and return the relative enum.
-	 * @param code	The code
-	 * @return		The relative enum
-	 */
-	public static GFXEffectType parseValue(int code){
+	
+	@Override
+	public GFXEffectType parseValue(int code){
 		switch (code){
+			case -1: return C_1_NONE;
 			case 0: return C00_FIRETRAIL;
 			case 1: return C01_UNKNOWN;
 			case 2: return C02_ICON;
@@ -195,10 +193,10 @@ public enum GFXEffectType implements EnumValue {
 			default: return null;
 		}
 	}
-
+	
 	@Override
 	public String toString(){
 		return buildUIName();
 	}
-	
+
 }

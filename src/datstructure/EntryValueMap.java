@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import constants.ControlType;
+import constants.EnumValue;
 import constants.WorldID;
 
 /**
@@ -41,6 +41,7 @@ public class EntryValueMap{
 	 * @param filterUndefined		If true, also create a second map which only contains fully defined entries
 	 * @return an EntryValueMap		A new EntryValueMap which hold the results
 	 */
+	@SuppressWarnings ("null")
 	public static EntryValueMap getValuesMap(List<EntryGroup> entryGroups, int index, boolean filterUndefined){
 		Map<Object, List<Entry>> valueEntryMap = new HashMap<>();
 		Map<Object, List<Entry>> valueEntryMapClean = new HashMap<>();
@@ -55,29 +56,24 @@ public class EntryValueMap{
 		Object value;
 		int counter = 0;
 		boolean enumType = fieldStruct.enumValues != null;
-		int size = enumType ? fieldStruct.enumValues.length : 0;
+		EnumValue enum0 = enumType ? fieldStruct.enumValues[0] : null;
+		boolean worldEnumType = enumType && enum0 instanceof WorldID;
 		for (EntryGroup entryGroup : entryGroups){
 			for (Entry entry : entryGroup){
 				counter++;
-				if (index < entry.values.size()){
-					value = entry.values.get(index);
+				if (index < entry.size()){
+					value = entry.get(index);
 					if (value instanceof Link){
 						value = ((Link) value).target;
 					} else if (value instanceof Integer){
 						if (enumType){
 							int intVal = (Integer) value;
-							if (fieldStruct.enumValues instanceof ControlType[] && intVal > 0){
-								intVal -= 1000;
-							}
-							if (fieldStruct.enumValues instanceof WorldID[]){
-								value = WorldID.parseValue(intVal);
-								if (value == null){
+							value = enum0.parseValue(intVal);
+							if (value == null){
+								if (worldEnumType){
 									continue;
 								}
-							} else if (intVal >= 0 && intVal < size) {
-								value = fieldStruct.enumValues[intVal];
-							} else {
-								value = intVal;
+								throw new IllegalArgumentException("Can't find this code: " + intVal);
 							}
 						}
 					}

@@ -48,7 +48,7 @@ import gui.components.JScrollPaneRed;
 public class Core {
 	
 	/** The editor version/revision */
-	public static final float VERSION = 1.5f;
+	public static final float VERSION = 1.51f;
 
 	/** Max time (milliseconds) it will wait for loading to complete. If time exceed this value, the load is considered failed. */
 	private static final int LOAD_MAX_WAIT = 15000;
@@ -61,24 +61,17 @@ public class Core {
 	
 	/** If true, the editor is in AOC mode */
 	public static Boolean AOC = new EESplashScreen().askEditorType();
-	static {
-		if (AOC == null){
-			System.exit(0);
-		}
-	}
 
-	@SuppressWarnings ("javadoc")
+	/** Convert a float number to string with a specific number of decimals and round */
 	public static final NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
-	static {
-		numberFormat.setMaximumFractionDigits(6);
-		numberFormat.setGroupingUsed(false);
-		numberFormat.setRoundingMode(RoundingMode.HALF_UP);
-	}
 	
 
 	
 	@SuppressWarnings ({ "javadoc" })
 	public static void main (String[] args) {
+		numberFormat.setMaximumFractionDigits(6);
+		numberFormat.setGroupingUsed(false);
+		numberFormat.setRoundingMode(RoundingMode.HALF_UP);
 		new Thread(Language.LIST::size).start();  //This makes the Language class initialize... SSSHHH!!!
 		new Thread(DatStructure::init).start();
 		FrameMain.instance.setVisible(true);
@@ -216,18 +209,17 @@ public class Core {
 					for (EntryGroup entryGroup : datFileLoaded){
 						for (int j = 0; j < entryGroup.entries.size(); j++){
 							sourceEntry = entryGroup.entries.get(j);
-							if (i < sourceEntry.values.size()){
-								value = sourceEntry.values.get(i);
+							if (i < sourceEntry.size()){
+								value = sourceEntry.get(i);
 								if (value instanceof Integer){
 									targetEntry = datFile.findEntry(value);
 									if (targetEntry == null){
-										targetEntry = new Entry(datFile.datStructure, true, -2, (int) value);
-										targetEntry.name = '(' + value.toString() + ") Null/Invalid entry";
-										datFile.dummyEntryGroup.add(0, targetEntry);
-										datFile.dummyEntryMap.put((int) value, targetEntry);
+										targetEntry = new Entry(datFile.datStructure, true, '(' + value.toString() + ") Null/Invalid entry", -2, (int) value);
+										datFile.dummyEntryGroup.add(targetEntry);
+										datFile.dummyEntryMap.put((Integer) value, targetEntry);
 										System.out.println("Create dummy entry: " + datFileLoaded.datStructure + " (" + fieldStruct + ") -> " + datFile.datStructure + "  =  " + targetEntry);
 									}
-									sourceEntry.values.set(i, new Link(sourceEntry, fieldStruct, targetEntry));
+									sourceEntry.set(i, new Link(sourceEntry, fieldStruct, targetEntry));
 								}
 							}
 						}
@@ -242,25 +234,26 @@ public class Core {
 				for (EntryGroup entryGroup : datFileLoaded){
 					for (int j = 0; j < entryGroup.entries.size(); j++){
 						sourceEntry = entryGroup.entries.get(j);
-						if (indexExtra < sourceEntry.values.size()){
-							n2 = n + (Integer) sourceEntry.values.get(indexExtra);
+						if (indexExtra < sourceEntry.size()){
+							n2 = n + (Integer)sourceEntry.get(indexExtra);
 							for (int i = indexExtra+1; i < n2; i++){
-								value = sourceEntry.values.get(i);
+								value = sourceEntry.get(i);
 								targetEntry = datFile.findEntry(value);
 								if (targetEntry == null){
-									targetEntry = new Entry(datFile.datStructure, true, -2, (int) value);
-									targetEntry.name = '(' + value.toString() + ") Null/Invalid entry";
-									datFile.dummyEntryGroup.add(0, targetEntry);
-									datFile.dummyEntryMap.put((int) value, targetEntry);
+									targetEntry = new Entry(datFile.datStructure, true, '(' + value.toString() + ") Null/Invalid entry", -2, (int) value);
+									datFile.dummyEntryGroup.add(targetEntry);
+									datFile.dummyEntryMap.put((Integer) value, targetEntry);
 									System.out.println("Create dummy entry: " + datFileLoaded.datStructure + " (" + fieldStruct + ") -> " + datFile.datStructure + "  =  " + targetEntry);
 								}
-								sourceEntry.values.set(i, new Link(sourceEntry, fieldStruct, targetEntry));
+								sourceEntry.set(i, new Link(sourceEntry, fieldStruct, targetEntry));
 							}
 						}
 					}
 				}
 			}
 		}
+		
+		DatFile.LOADED.forEach(df -> df.dummyEntryGroup.sort(null));
 	}
 
 
@@ -359,6 +352,18 @@ public class Core {
 		return new String(baos.toByteArray(), StandardCharsets.UTF_8);
 	}
 	
+	
+	/**
+	 * Show a message about an error
+	 * @param parent	The parent component
+	 * @param message	Message to display
+	 * @param title		Title of the message
+	 */
+	public static void printError(Component parent, String message, String title){
+		JOptionPane.showMessageDialog(parent, message, title, JOptionPane.ERROR_MESSAGE);
+	}
+	
+	
 	/**
 	 * Show a message about an error and ask the user to see the stack trace of the given exception
 	 * @param parent	The parent component
@@ -378,6 +383,7 @@ public class Core {
 	 * @param e			The exception
 	 */
 	public static void printException(Component parent, Throwable e){
+		e.printStackTrace();
 		JTextArea area = new JTextArea(buildStackTrace(e));
 		area.setForeground(Color.RED);
 		JScrollPane scrollPane = new JScrollPaneRed(area);

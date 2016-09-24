@@ -36,11 +36,13 @@ public enum WorldID implements EnumValue {
 	C86_POWER_CIV_POINTS ("Power increase civilization points cost", 86)
 	;
 	
-	private static final int[] codes = new int[values().length];
+	private static final int[] codes;
 	static {
-		int i = 0;
-		for (WorldID worldID : values()){
-			codes[i] = worldID.code;
+		WorldID[] values = values();
+		int n = values.length;
+		codes = new int[n];
+		for (int i = 0; i < n; i++){
+			codes[i] = values[i].code;
 		}
 		Arrays.sort(codes);
 	}
@@ -72,12 +74,8 @@ public enum WorldID implements EnumValue {
 		return code >= -1 && code <= 86;
 	}
 
-	/**
-	 * Parse the code and return the relative enum.
-	 * @param code	The code
-	 * @return		The relative enum
-	 */
-	public static WorldID parseValue(int code){
+	@Override
+	public WorldID parseValue(int code){
 		int index = Arrays.binarySearch(codes, code);
 		if (index >= 0){
 			return values()[index];

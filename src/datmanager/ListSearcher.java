@@ -21,13 +21,13 @@ public class ListSearcher<T> {
 	public static final BiPredicate<String, Entry> ENTRY_NAME_MATCHER = (text, entry) -> entry.isDefined() && entry.toString().toLowerCase().contains(text);
 
 	/** Default ID matcher for entries */
-	public static final BiPredicate<Integer, Entry> ENTRY_ID_MATCHER = (val, entry) -> entry.ID == val;
+	public static final BiPredicate<Integer, Entry> ENTRY_ID_MATCHER = (val, entry) -> entry.getID() == val;
 
 	/** Default name matcher for links */
 	public static final BiPredicate<String, Link> LINK_NAME_MATCHER = (text, link) -> link.target.isDefined() && link.target.toString().toLowerCase().contains(text);
 	
 	/** Default ID matcher for links */
-	public static final BiPredicate<Integer, Link> LINK_ID_MATCHER = (val, link) -> link.target.ID == val;
+	public static final BiPredicate<Integer, Link> LINK_ID_MATCHER = (val, link) -> link.target.getID() == val;
 
 	
 
