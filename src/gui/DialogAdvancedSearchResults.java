@@ -13,7 +13,6 @@ import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
-import datmanager.Core;
 import datmanager.DatFile;
 import datstructure.Entry;
 import datstructure.EntryGroup;
@@ -42,7 +41,6 @@ public class DialogAdvancedSearchResults extends JDialog {
 	 */
 	public DialogAdvancedSearchResults (Window parent, List<Entry> entries, DatFile datFile) {
 		super(parent, ModalityType.DOCUMENT_MODAL);
-
 		List<Entry> entriesClean = entries.parallelStream().filter(entry -> entry.isDefined()).collect(Collectors.toList());
 		JListDouble<Entry> dlgList = new JListDouble<>(entries, entriesClean);
 		JScrollPane dlgScrollPane = new JScrollPaneRed(dlgList, "Results:");
@@ -58,7 +56,7 @@ public class DialogAdvancedSearchResults extends JDialog {
 		dlgClose.addActionListener(al -> dispose());
 
 		setTitle("Search result in file " + datFile.datStructure);
-		setBounds(Core.getBounds(this, 0.6, 0.8));
+		setBounds(GUI.getBounds(this, 0.6, 0.8));
 		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{400, 30, 25, 50}, new double[]{1.0}, new double[]{1.0, 0, 0, 0}));
 		add(dlgScrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 0));
 		add(dlgSearch, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
@@ -76,7 +74,7 @@ public class DialogAdvancedSearchResults extends JDialog {
 						if (datFile != null){
 							EntryGroup entryGroup = datFile.findGroup(selEntry);
 							if (entryGroup != null){
-								FrameEditor frameEditor = Core.openFile(DialogAdvancedSearchResults.this, datFile, true);
+								FrameEditor frameEditor = datFile.openInEditor(DialogAdvancedSearchResults.this, true);
 								frameEditor.goToEntry(entryGroup, selEntry);
 							}
 						}

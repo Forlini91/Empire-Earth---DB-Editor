@@ -16,6 +16,7 @@ import javax.swing.text.JTextComponent;
 
 import constants.EnumValue;
 import datmanager.ListSearcher;
+import datmanager.Settings;
 import datstructure.FieldStruct;
 
 
@@ -24,18 +25,18 @@ import datstructure.FieldStruct;
  * @author MarcoForlini
  */
 public class JComboBoxEnum extends JComboBox <EnumValue> implements EntryFieldInterface, ItemListener, MouseListener, KeyListener {
-	
+
 	private static final long serialVersionUID = -5787229930995728192L;
 	private static final BiPredicate<String, EnumValue> NAME_MATCHER = (text, enumValue) -> enumValue.getName().toLowerCase().contains(text);
 	private static final BiPredicate<Integer, EnumValue> ID_MATCHER = (val, enumValue) -> enumValue.getCode() == val || NAME_MATCHER.test(val.toString(), enumValue);
-
+	
 	private ListSearcher <EnumValue> searcher = new ListSearcher<>(NAME_MATCHER, ID_MATCHER);
 	private JTextComponent textEditor = ((JTextComponent) getEditor().getEditorComponent());
 	private FieldStruct fieldStruct;
 	private int index;
 	private Object defaultVal = null;
 	private boolean altered = false;
-
+	
 	/**
 	 * Create a new {@link JComboBoxEnum}
 	 * @param fieldStruct	The field structure
@@ -50,7 +51,7 @@ public class JComboBoxEnum extends JComboBox <EnumValue> implements EntryFieldIn
 		addMouseListener(this);
 		textEditor.addKeyListener(this);
 	}
-
+	
 	@Override
 	public synchronized void addMouseListener (MouseListener l) {
 		super.addMouseListener(l);
@@ -58,26 +59,28 @@ public class JComboBoxEnum extends JComboBox <EnumValue> implements EntryFieldIn
 			textEditor.addMouseListener(l);
 		}
 	}
-	
+
 	@Override
 	public void resetColor () {
 		setForeground(null);
 	}
-	
+
 	@Override
 	public FieldStruct getEntryStruct () {
 		return fieldStruct;
 	}
-	
+
 	@Override
 	public int getIndex(){
 		return index;
 	}
-	
+
 	@Override
 	public Object getVal(){
 		Object obj = getSelectedItem();
-		//		System.out.println("Getting: " + fieldStruct + " = " + obj + '(' + fieldStruct.defaultValue + '/' + defaultVal + ')');
+		if (Settings.DEBUG) {
+			System.out.println("Getting: " + fieldStruct + " = " + obj + " (Defaults: " + fieldStruct.defaultValue + '/' + defaultVal + ')');
+		}
 		if (obj != null) {
 			if (obj instanceof EnumValue){
 				return ((EnumValue) obj).getCode();
@@ -91,7 +94,7 @@ public class JComboBoxEnum extends JComboBox <EnumValue> implements EntryFieldIn
 		}
 		return fieldStruct.defaultValue;
 	}
-	
+
 	@Override
 	public void setVal(Object value){
 		defaultVal = value;
@@ -107,33 +110,35 @@ public class JComboBoxEnum extends JComboBox <EnumValue> implements EntryFieldIn
 		textEditor.setCaretPosition(0);
 		altered = false;
 	}
-	
+
 	@Override
 	public void refreshField() {/*Do nothing*/}
-	
+
 	@Override
 	public boolean isAltered () {
 		return altered;
 	}
-	
+
 	@Override
 	public Object getDefaultVal () {
 		return defaultVal;
 	}
-
+	
 	@Override
 	public void itemStateChanged (ItemEvent e) {
 		altered = true;
 	}
-	
-	
+
+
 	@Override public void keyTyped (KeyEvent e) {/*Do nothing*/}
 	@Override public void keyPressed (KeyEvent e) {/*Do nothing*/}
 	@Override public void keyReleased (KeyEvent e) {
 		SwingUtilities.invokeLater(() -> {
 			String text = textEditor.getText();
 			if (text == null || text.isEmpty()){
-				System.out.println("Select: null");
+				if (Settings.DEBUG) {
+					System.out.println("Select: null");
+				}
 				setSelectedItem(null);
 			} else if (e.getKeyCode() == KeyEvent.VK_TAB && isPopupVisible()){
 				ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);
@@ -153,17 +158,17 @@ public class JComboBoxEnum extends JComboBox <EnumValue> implements EntryFieldIn
 			}
 		});
 	}
-	
+
 	@Override
 	public void mouseClicked (MouseEvent e) {
 		if (SwingUtilities.isLeftMouseButton(e)){
 			showPopup();
 		}
 	}
-	
+
 	@Override public void mousePressed (MouseEvent e) {/*Do nothing*/}
 	@Override public void mouseReleased (MouseEvent e) {/*Do nothing*/}
 	@Override public void mouseEntered (MouseEvent e) {/*Do nothing*/}
 	@Override public void mouseExited (MouseEvent e) {/*Do nothing*/}
-	
+
 }

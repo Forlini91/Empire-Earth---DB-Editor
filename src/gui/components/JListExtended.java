@@ -1,5 +1,6 @@
 package gui.components;
 
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -7,87 +8,87 @@ import java.util.Vector;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
+
 /**
  * JList which keep the reference to the passed list.
- * You can change the list from outside this class, then use the command refresh() to update the list.
+ * You can change the list from outside this class, then use the command
+ * refresh() to update the list.
  * @author MarcoForlini
- * @param <E>	The type of elements
+ * @param <E> The type of elements
  */
-public class JListExtended<E> extends JList<E> implements AbstractJListExtended <E> {
+public class JListExtended <E> extends JList <E> implements AbstractJListExtended <E> {
 
 	private static final long serialVersionUID = -1460528354644591567L;
 
 	/** The list of elements in the list */
-	public List<E> list;
-	
+	public List <E> list;
 
-	JListExtended(){}
-	
 	/**
-	 * Create a new {@link JListExtended}
-	 * @param list	The list of elements
+	 * Creates a new {@link JListExtended}
 	 */
-	public JListExtended (List<E> list){
-		this.list = list;
-		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		setVisibleRowCount(10);
-		refresh();
-	}
-	
+	JListExtended () {
+		/* Nothing to do */}
 
-	
+	/**
+	 * Creates a new {@link JListExtended}
+	 * @param list The list of elements
+	 */
+	public JListExtended (List <E> list) {
+		this.list = list;
+		setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
+		setVisibleRowCount (10);
+		refresh ();
+	}
+
 	@Override
-	public List<E> getList(){
+	public List <E> getList () {
 		return list;
 	}
 
 	@Override
-	public void setList(E[] newList){
-		setList(Arrays.asList(newList));
+	public void setList (E[] newList) {
+		setList (Arrays.asList (newList));
 	}
-	
 
 	@Override
-	public void setList(List<E> newList){
+	public void setList (List <E> newList) {
 		list = newList;
-		refresh();
+		refresh ();
 	}
 
 	@Override
-	public int getLength(){
-		return list.size();
-	}
-
-	
-	@Override
-	public E getSelectedElement(){
-		return getSelectedValue();
-	}
-	
-	@Override
-	public void setSelectedElement(E element){
-		setSelectedValue(element, true);
+	public int getLength () {
+		return list.size ();
 	}
 
 	@Override
-	public void setSelectedElement(int index){
-		setSelectedValue(list.get(index), true);
+	public E getSelectedElement () {
+		return getSelectedValue ();
 	}
 
-	
 	@Override
-	public E get(int index){
-		return list.get(index);
+	public void setSelectedElement (E element) {
+		setSelectedValue (element, true);
 	}
-	
+
 	@Override
-	public int indexOf(E element){
-		return list.indexOf(element);
+	public void setSelectedElement (int index) {
+		setSelectedValue (list.get (index), true);
 	}
-	
+
 	@Override
-	public void refresh(){
-		setListData(new Vector<>(list));
+	public E get (int index) {
+		return list.get (index);
+	}
+
+	@Override
+	public int indexOf (E element) {
+		return list.indexOf (element);
+	}
+
+	@Override
+	public void refresh () {
+		setListData (new Vector<> (list));
 	}
 
 }

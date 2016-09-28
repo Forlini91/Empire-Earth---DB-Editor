@@ -16,6 +16,7 @@ import javax.swing.text.JTextComponent;
 
 import datmanager.Language;
 import datmanager.ListSearcher;
+import datmanager.Settings;
 import datstructure.FieldStruct;
 
 
@@ -81,7 +82,9 @@ public class JComboBoxLanguage extends JComboBox <Language> implements EntryFiel
 	@Override
 	public Object getVal(){
 		Object obj = getSelectedItem();
-		//		System.out.println("Getting: " + fieldStruct + " = " + obj + '(' + fieldStruct.defaultValue + '/' + defaultVal + ')');
+		if (Settings.DEBUG) {
+			System.out.println("Getting: " + fieldStruct + " = " + obj + " (Defaults: " + fieldStruct.defaultValue + '/' + defaultVal + ')');
+		}
 		if (obj != null){
 			if (obj instanceof Language) {
 				return ((Language) obj).ID;
@@ -138,7 +141,9 @@ public class JComboBoxLanguage extends JComboBox <Language> implements EntryFiel
 		SwingUtilities.invokeLater(() -> {
 			String text = textComponent.getText();
 			if (text == null || text.isEmpty()){
-				System.out.println("Select: null");
+				if (Settings.DEBUG) {
+					System.out.println("Select: null");
+				}
 				setSelectedItem(null);
 			} else if (e.getKeyCode() == KeyEvent.VK_TAB && isPopupVisible()){
 				ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);

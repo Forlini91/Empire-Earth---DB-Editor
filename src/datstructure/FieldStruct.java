@@ -352,7 +352,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	 */
 	public FieldStruct (String name, int indexSize){
 		this.name = name;
-		size = 0;
+		size = 0;		//Size is defined as 0, but the real size depends on the field at index "indexSize"
 		this.indexSize = indexSize;
 		type = Type.STRING;
 		knowledge = Knowledge.KNOWN;

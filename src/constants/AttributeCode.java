@@ -93,7 +93,7 @@ public enum AttributeCode implements EnumValue {
 	/** Power recover rate */
 	C41_POWER_RECOVER_RATE ("Power recover rate", 41),
 	/** Used by path finding power */
-	C42_PATH_FINDING ("<Used by path finding power>", 42),
+	C42_TERRAIN_FAMILY ("Allowed terrain family", 42),
 	/** Health recover rate */
 	C43_HEALTH_RECOVER_RATE ("Health recover rate", 43),
 	/** Power amount */
@@ -177,7 +177,7 @@ public enum AttributeCode implements EnumValue {
 			case 39: return C39_UNKNOWN;
 			case 40: return C40_AREA_EFFECT;
 			case 41: return C41_POWER_RECOVER_RATE;
-			case 42: return C42_PATH_FINDING;
+			case 42: return C42_TERRAIN_FAMILY;
 			case 43: return C43_HEALTH_RECOVER_RATE;
 			case 44: return C44_POWER_AMOUNT;
 			case 45: return C45_NAME;

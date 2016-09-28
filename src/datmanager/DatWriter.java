@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import datstructure.Entry;
+import datstructure.FieldStruct;
 
 /**
  * A class which can convert the integer, float and string values to array of bytes and save them in a *.dat file.
@@ -20,8 +21,8 @@ public class DatWriter implements Closeable {
 	private DatFile datFile;
 	private ByteBuffer writer;
 	private boolean closed = false;
-	
 
+	
 	/**
 	 * @param datFile		The datFile to write
 	 * @param entries		The entries to save
@@ -29,30 +30,39 @@ public class DatWriter implements Closeable {
 	 */
 	public DatWriter(DatFile datFile, List<Entry> entries) throws IOException {
 		this.datFile = datFile;
-		int sizeSingle = datFile.datStructure.getNumBytes();
-		
-		//Adds all "numEntries" fields in the file (0 if the field is not present, 4*numEpochs in dbtechtree.dat, 4 in the others)
-		int alloc = datFile.datStructure.defineNumEntries ? 4 * datFile.entryGroups.size() : 0;
-		alloc += sizeSingle * entries.size();		//Adds the base size of an entry * the number of entries
 
-		/* If the file contains extra fields, adds 4 for each one */
+		int alloc = datFile.datStructure.entrySize * entries.size(); //the base size of an entry * the number of entries
+
+		//If the file define the field(s) "numEntries", adds 4 bytes for each group, as every group define its number (epoch)
+		if (datFile.datStructure.defineNumEntries){
+			alloc += 4 * datFile.entryGroups.size();
+		}
+		
+		// If the entries in the file may contains extra fields, adds 4 bytes for each extra entry
 		if (datFile.datStructure.extraField != null){
-			int indexExtra = datFile.datStructure.getIndexExtraFields();
+			int indexExtra = datFile.datStructure.indexExtraFields();
 			alloc += 4 * entries.parallelStream().mapToInt(entry -> entry.get(indexExtra)).sum();
 		}
-
-		alloc += Arrays
-				.stream(datFile.datStructure.fieldStructs)	//iterate all FieldStructs
-				.parallel()
-				.filter(fs -> fs.indexSize >= 0)			//only take the ones with indexSize >= 0
-				.mapToInt(fs -> entries.stream().mapToInt(entry -> entry.get(fs.indexSize)).sum())	//take the size every entry declare in that field and sum it
-				.sum();
+		
+		// If there are fields with dynamic size, add their size
+		if (datFile.datStructure.dynamicSizeFields.length >= 0){
+			FieldStruct[] dynamicSizeFields = datFile.datStructure.dynamicSizeFields;
+			int[] dsfIndexes = Arrays.stream(dynamicSizeFields).parallel().mapToInt(dsf -> dsf.indexSize).toArray();
+			alloc += entries
+					.parallelStream()
+					.mapToInt(entry -> Arrays
+							.stream(dsfIndexes)
+							.map(entry::get)
+							.sum())
+					.sum();
+		}
+		
 		writer = ByteBuffer.allocate(alloc).order(ByteOrder.LITTLE_ENDIAN);
 	}
+	
 
-	
-	
-	
+
+
 	/**
 	 * Write a 4 bytes integer
 	 * @param value the value to write
@@ -61,7 +71,7 @@ public class DatWriter implements Closeable {
 	public void writeInt(int value) throws IOException {
 		writer.putInt(value);
 	}
-
+	
 	/**
 	 * Write a single byte integer
 	 * @param value the value to write
@@ -69,7 +79,7 @@ public class DatWriter implements Closeable {
 	public void writeByte(int value){
 		writer.put((byte) value);
 	}
-	
+
 	/**
 	 * Write a 4 bytes float
 	 * @param value the value to write
@@ -78,7 +88,7 @@ public class DatWriter implements Closeable {
 	public void writeFloat(float value) throws IOException {
 		writer.putFloat(value);
 	}
-
+	
 	/**
 	 * Write a string of length numBytes
 	 * @param string the string to write
@@ -89,7 +99,7 @@ public class DatWriter implements Closeable {
 		byte[] str = Arrays.copyOf(string.getBytes(), numBytes);
 		writer.put(str);
 	}
-	
+
 	@Override
 	public void close() throws IOException {
 		if (!closed){

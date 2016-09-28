@@ -17,7 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
 
-import datmanager.Core;
 import datmanager.DatFile;
 import datstructure.Entry;
 import datstructure.EntryGroup;
@@ -35,9 +34,9 @@ import gui.ui.GridBagLayoutExtended;
  * Each value may be used by many entries, and the user can double click on a result to get the full list of entries.
  */
 public class DialogSearchValuesResults extends JDialog {
-	
-	private static final long serialVersionUID = 4717671766146876755L;
 
+	private static final long serialVersionUID = 4717671766146876755L;
+	
 	/**
 	 * Create a new {@link DialogSearchValuesResults}
 	 * @param parent			The parent window
@@ -46,7 +45,7 @@ public class DialogSearchValuesResults extends JDialog {
 	 */
 	public DialogSearchValuesResults (Window parent, EntryValueMap entryValueMap, EntryFieldInterface field) {
 		super(parent, ModalityType.DOCUMENT_MODAL);
-
+		
 		JLabel dlgLabel = new JLabel("All values and entries which use them (double click for full list or open links):");
 		JListDouble<List<Entry>> dlgList = new JListDouble<>(new ArrayList<>(entryValueMap.map.values()), new ArrayList<>(entryValueMap.mapClean.values()));
 		JListDouble<Object> rowHeaderList = new JListDouble<>(new ArrayList<>(entryValueMap.map.keySet()), new ArrayList<>(entryValueMap.mapClean.keySet()), dlgList.switchList);
@@ -60,7 +59,7 @@ public class DialogSearchValuesResults extends JDialog {
 		DefaultListCellRenderer x = (DefaultListCellRenderer) rowHeaderList.getCellRenderer();
 		x.setBackground(GUI.COLOR_UI_ELEMENT);
 		rowHeaderList.setForeground(Color.WHITE);
-		
+
 		dlgLabel.setOpaque(false);
 		dlgScrollPane.setOpaque(false);
 		dlgScrollPane.getViewport().setOpaque(false);
@@ -88,7 +87,7 @@ public class DialogSearchValuesResults extends JDialog {
 								if (datFile != null){
 									EntryGroup entryGroup = datFile.findGroup(selEntry);
 									if (entryGroup != null){
-										FrameEditor frameEditor = Core.openFile(DialogSearchValuesResults.this, datFile, true);
+										FrameEditor frameEditor = datFile.openInEditor(DialogSearchValuesResults.this, true);
 										frameEditor.goToEntry(entryGroup, selEntry);
 									}
 								}
@@ -125,7 +124,7 @@ public class DialogSearchValuesResults extends JDialog {
 								if (datFile != null){
 									EntryGroup entryGroup = datFile.findGroup(selEntry);
 									if (entryGroup != null){
-										FrameEditor frameEditor = Core.openFile(DialogSearchValuesResults.this, datFile, true);
+										FrameEditor frameEditor = datFile.openInEditor(DialogSearchValuesResults.this, true);
 										frameEditor.goToEntry(entryGroup, selEntry);
 									}
 								}
@@ -140,17 +139,17 @@ public class DialogSearchValuesResults extends JDialog {
 				rowHeaderList.setSelectedIndex(index);
 			}
 		});
-
+		
 		getRootPane().registerKeyboardAction((e) -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 		dlgClose.addActionListener(al -> dispose());
-		
+
 		setTitle("For field: " + field.getIndex() + " - " + field.getEntryStruct());
-		setBounds(Core.getBounds(this, 0.6, 0.8));
+		setBounds(GUI.getBounds(this, 0.6, 0.8));
 		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{30, 400, 25, 50}, new double[]{1.0}, new double[]{0, 1.0, 0, 0}));
 		add(dlgLabel, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 0));
 		add(dlgScrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
 		add(dlgList.switchList, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 2));
 		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 3));
 	}
-
+	
 }

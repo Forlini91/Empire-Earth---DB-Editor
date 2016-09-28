@@ -16,7 +16,6 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import datmanager.Core;
 import datmanager.DatFile;
 import gui.components.JButtonRed;
 import gui.components.JToggleButtonRed;
@@ -42,7 +41,7 @@ public class DialogSelectFiles extends JDialog {
 
 	{
 		setContentPane(contentPane);
-		setBounds(Core.getBounds(this, 0.6, 0.7));
+		setBounds(GUI.getBounds(this, 0.6, 0.7));
 		JLabel label = new JLabel("Select which files to load");
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		JButton selectAllButton = new JButtonRed("Select all");

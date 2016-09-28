@@ -22,14 +22,14 @@ import datstructure.Link;
  * @author MarcoForlini
  */
 public class DatFileManager {
-
+	
 	/** The file to read. */
 	private DatFile datFile;
 	/** The structure of the file. */
 	private DatStructure datStructure;
 	/** The size of the file. */
 	private long fileSize;
-	
+
 	/**
 	 * Create a new DatFileManager to read or write the given datFile.
 	 * @param datFile	The file to load with the relative structure
@@ -39,7 +39,7 @@ public class DatFileManager {
 		this.datFile = datFile;
 		datStructure = datFile.datStructure;
 	}
-	
+
 	/**
 	 * Read the whole file, perform regular updates of the progress on the GUI and return the content read.
 	 * Support multi-thread loadings: you can load many files at once and display a single progress bar for them all.
@@ -63,13 +63,15 @@ public class DatFileManager {
 		if (entryGroups.size() == 1){
 			entryGroups.get(0).name = datStructure.fileName;
 		}
-		for (EntryGroup entryGroup : entryGroups){
-			System.out.println("Load file: " + datFile.getName() + "  >  Group: " + entryGroup + "  >  Num entries: " + entryGroup.entries.size());
+		if (Settings.DEBUG) {
+			for (EntryGroup entryGroup : entryGroups){
+				System.out.println("Load file: " + datFile.getName() + "  >  Group: " + entryGroup + "  >  Num entries: " + entryGroup.entries.size());
+			}
 		}
 		datFile.loadData(entryGroups);
 		return datFile;
 	}
-
+	
 	/**
 	 * Read a single EntryGroup from the file, perform regular updates on of the progress on the GUI and return the list of entries.
 	 * Support multi-thread loadings: you can load many files at once and display a single progress bar for them all.
@@ -108,10 +110,10 @@ public class DatFileManager {
 		try{
 			for (i = 0; (defineNumEntries && i < numEntries) || (!defineNumEntries && reader.getRemaining() > 0); i++) {	//<= because dbTechTree works differently...
 				List<Object> values = new ArrayList<>(numFields);
-				
+
 				for (int j = 0; j < numFields; j++){
 					fieldStruct = datStructure.fieldStructs[j];
-					
+
 					switch(fieldStruct.getType()){
 						case STRING:
 							if (fieldStruct.getIndexSize() >= 0){
@@ -139,7 +141,7 @@ public class DatFileManager {
 				}
 				fieldStruct = datStructure.extraField;
 				if (fieldStruct != null){
-					int numExtra = (int) values.get(datStructure.getIndexExtraFields());
+					int numExtra = (int) values.get(datStructure.indexExtraFields());
 					for (int j = 0; j < numExtra; j++){
 						read = reader.readInt();
 						values.add(read);
@@ -154,8 +156,8 @@ public class DatFileManager {
 		}
 		return new EntryGroup(datStructure, entries);
 	}
-	
-	
+
+
 	/**
 	 * Save the given list of EntryGroup to the file and perform regular updates of the progress on the GUI.
 	 * @param update		The method to call to update the state on the GUI
@@ -170,7 +172,7 @@ public class DatFileManager {
 			File newBackup = new File(datFile.getAbsolutePath() + ".tempbak");
 			Files.deleteIfExists(newBackup.toPath());
 			Files.move(datFile.toPath(), newBackup.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
+			
 			int numBaseFields = datStructure.fieldStructs.length;
 			Entry entry;
 			FieldStruct fieldStruct;
@@ -179,7 +181,7 @@ public class DatFileManager {
 			int numFields;
 			int size;
 			boolean defineNumEntries = datStructure.defineNumEntries;
-
+			
 			List<Entry> allEntries = datFile.getAllEntries(false);
 			try (DatWriter writer = new DatWriter(datFile, allEntries)) {
 				for (EntryGroup entryGroup : datFile){
@@ -188,7 +190,7 @@ public class DatFileManager {
 						writer.writeInt(numEntries - datStructure.adjustNumEntries);
 					}
 					System.out.println("Save file: " + datFile.getName() + "  >  Group: " + entryGroup + "  >  Num entries: " + numEntries);
-
+					
 					//				StringBuilder sb;
 					for (int i = 0; i < numEntries; i++){
 						update.run();
@@ -218,7 +220,7 @@ public class DatFileManager {
 									default:
 										if (fieldStruct.getSize() == 1) {
 											writer.writeByte(entry.get(j));
-										} else if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Core.LINK_SYSTEM){
+										} else if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Settings.LINK_SYSTEM){
 											link = entry.get(j);
 											writer.writeInt(link.target.getID());
 										} else {
@@ -226,14 +228,10 @@ public class DatFileManager {
 										}
 								}
 							} catch (Exception e){
-								System.out.println("Error while writing entry: " + entry + "   | Field: (" + j + ") " + fieldStruct + "   >   " + entry.get(j));
+								Core.printException(null, e, "Error while writing entry: " + entry + "   | Field: (" + j + ") " + fieldStruct + "   >   " + entry.get(j), "Error while saving");
 								throw e;
 							}
-							//						sb = new StringBuilder().append('\t').append('\t').append('(').append(field.type).append(' ').append(field.size).append(')');
-							//						sb.append(' ').append(field.name != null ? field.name : "Unknown").append(':').append(' ').append(entry.values.get(j));
-							//						System.out.println(sb);
 						}
-						//					System.out.println('\n');
 					}
 				}
 			} catch (Exception e){
@@ -241,13 +239,13 @@ public class DatFileManager {
 				Files.deleteIfExists(newBackup.toPath());
 				throw new IOException(e);
 			}
-
+			
 			File oldBackup = new File(datFile.getAbsolutePath() + ".bak");
 			Files.move(newBackup.toPath(), oldBackup.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			Files.deleteIfExists(newBackup.toPath());
 		}
 	}
+
 	
-
-
+	
 }

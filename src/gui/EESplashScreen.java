@@ -42,10 +42,11 @@ public class EESplashScreen extends JFrame {
 		setIconImage(IMAGE_ICON.getImage());
 		if (image != null){
 			setContentPane(new JImagePanel());
-			setBounds(Core.getBounds(this, 600, 237));
+			setSize(600, 237);
 		} else {
-			setBounds(Core.getBounds(this, 5, 5));
+			setSize(5, 5);
 		}
+		setLocationRelativeTo(null);
 		setUndecorated(true);
 	}
 	

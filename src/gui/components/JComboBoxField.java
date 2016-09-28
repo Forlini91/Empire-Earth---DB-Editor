@@ -19,9 +19,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.text.JTextComponent;
 
-import datmanager.Core;
 import datmanager.DatFile;
 import datmanager.ListSearcher;
+import datmanager.Settings;
 import datstructure.DatStructure;
 import datstructure.Entry;
 import datstructure.EntryGroup;
@@ -98,7 +98,9 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 	@Override
 	public Object getVal(){
 		Object obj = getSelectedItem();
-		//System.out.println("Getting: " + fieldStruct + " = " + obj + '(' + fieldStruct.defaultValue + '/' + defaultVal + ')');
+		if (Settings.DEBUG) {
+			System.out.println("Getting: " + fieldStruct + " = " + obj + " (Defaults: " + fieldStruct.defaultValue + '/' + defaultVal + ')');
+		}
 		if (obj != null) {
 			if (obj instanceof Entry){
 				return ((Entry) obj).getID();
@@ -166,7 +168,9 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 			}
 			String text = textEditor.getText();
 			if (text == null || text.isEmpty()){
-				System.out.println("Select: null");
+				if (Settings.DEBUG) {
+					System.out.println("Select: null");
+				}
 				setSelectedItem(null);
 				return;
 			}
@@ -197,7 +201,9 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 				List<Entry> results = searcher.find(allEntries, null, text);
 				if (results != null){
 					Entry entry = isEnter && e.isShiftDown() ? searcher.findPrevious() : searcher.findNext();
-					System.out.println("Find: " + entry);
+					if (Settings.DEBUG) {
+						System.out.println("Find: " + entry);
+					}
 					if (entry != null){
 						ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);
 						popup.getList().setSelectedValue(entry, true);
@@ -221,7 +227,7 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 			if (datFile != null){
 				EntryGroup entryGroup = datFile.findGroup(selectedEntry);
 				if (entryGroup != null){
-					FrameEditor frameEditor = Core.openFile(this, datFile, e.isShiftDown());
+					FrameEditor frameEditor = datFile.openInEditor(this, e.isShiftDown());
 					frameEditor.goToEntry(entryGroup, selectedEntry);
 				}
 			}

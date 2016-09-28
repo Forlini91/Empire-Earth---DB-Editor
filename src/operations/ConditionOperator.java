@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 
 import datmanager.Core;
 import datmanager.DatFile;
+import datmanager.Settings;
 import datstructure.DatStructure;
 import datstructure.Entry;
 import datstructure.Link;
@@ -16,24 +17,24 @@ import datstructure.Type;
  * @author MarcoForlini
  */
 public class ConditionOperator implements Condition {
-
+	
 	/** {@link DatFile} of the entry */
 	public DatFile datFile;
-	
+
 	/** Index of the field to compare */
 	public int index;
-	
+
 	/** The operator */
 	public Operator operator;
-	
+
 	/** The value to compare */
 	public Object value;
-	
-	
+
+
 	private String name;
 	private Condition condition;
-	
-	
+
+
 	@Override
 	public boolean match (Entry entry) {
 		try {
@@ -42,8 +43,8 @@ public class ConditionOperator implements Condition {
 			return false;
 		}
 	}
-	
 
+	
 	/**
 	 * Creates a new {@link ConditionOperator}
 	 * @param datFile		{@link DatFile} of the entry
@@ -53,9 +54,9 @@ public class ConditionOperator implements Condition {
 	 */
 	public ConditionOperator(DatFile datFile, int index, Operator operator, Object value){
 		setData(datFile, index, operator, value);
-
+		
 	}
-	
+
 	/**
 	 * Set the fields and build a new name
 	 * @param datFile		{@link DatFile} of the entry
@@ -79,9 +80,9 @@ public class ConditionOperator implements Condition {
 		}
 		condition = buildCondition(datFile.datStructure, index, operator, value);
 	}
-
 	
 
+	
 	/**
 	 * Build a condition which check if the given entry satisfy the comparison
 	 * @param datStructure	{@link DatStructure} of the entry
@@ -96,7 +97,7 @@ public class ConditionOperator implements Condition {
 		}
 		return buildSingleFieldCondition(datStructure, index, operator, value);
 	}
-
+	
 	private static Condition buildSingleFieldCondition(DatStructure datStructure, int index, Operator operator, Object value){
 		Type type;
 		boolean extraIndexes = false;
@@ -108,7 +109,7 @@ public class ConditionOperator implements Condition {
 		} else {
 			return ALWAYS_FALSE;
 		}
-		
+
 		if (type == Type.STRING){
 			String text = value instanceof Float ? Core.numberFormat.format(((Float) value).doubleValue()) : Integer.toString((Integer) value);
 			switch (operator){
@@ -123,19 +124,19 @@ public class ConditionOperator implements Condition {
 		} else if (value instanceof String){
 			return ALWAYS_FALSE;
 		} else {
-			DoublePredicate checkBuild;
+			FloatPredicate checkBuild;
 			float floatValue = ((Float) value).floatValue();
 			switch (operator){
-				case EQUAL:				checkBuild = (double entryValue) -> entryValue == floatValue; break;
-				case DIFFERENT:			checkBuild = (double entryValue) -> entryValue != floatValue; break;
-				case GREATER:			checkBuild = (double entryValue) -> entryValue > floatValue; break;
-				case GREATHER_EQUAL:	checkBuild = (double entryValue) -> entryValue >= floatValue; break;
-				case LESS:				checkBuild = (double entryValue) -> entryValue < floatValue; break;
-				case LESS_EQUAL:		checkBuild = (double entryValue) -> entryValue <= floatValue; break;
-				default:				checkBuild = (double entryValue) -> true;
+				case EQUAL:				checkBuild = (float entryValue) -> entryValue == floatValue; break;
+				case DIFFERENT:			checkBuild = (float entryValue) -> entryValue != floatValue; break;
+				case GREATER:			checkBuild = (float entryValue) -> entryValue > floatValue; break;
+				case GREATHER_EQUAL:	checkBuild = (float entryValue) -> entryValue >= floatValue; break;
+				case LESS:				checkBuild = (float entryValue) -> entryValue < floatValue; break;
+				case LESS_EQUAL:		checkBuild = (float entryValue) -> entryValue <= floatValue; break;
+				default:				checkBuild = (float entryValue) -> true;
 			}
-			DoublePredicate check = checkBuild;	//This fucking idiot fucking requires the fucking variable to fucking be effectively fucking final, FUCK!...
-			if (Core.LINK_SYSTEM && type == Type.ID){
+			FloatPredicate check = checkBuild;	//This fucking idiot fucking requires the fucking variable to fucking be effectively fucking final, FUCK!...
+			if (Settings.LINK_SYSTEM && type == Type.ID){
 				if (extraIndexes){
 					return (Entry entry) -> IntStream
 							.range(index, entry.size())
@@ -144,16 +145,16 @@ public class ConditionOperator implements Condition {
 				}
 				return (Entry entry) -> check.test(((Link)entry.get(index)).target.getID());
 			} else if (type == Type.FLOAT) {
-				return (Entry entry) -> check.test(entry.get(index));
+				return (Entry entry) -> check.test(((Float)entry.get(index)).floatValue());
 			} else {
-				return (Entry entry) -> check.test(entry.get(index));
+				return (Entry entry) -> check.test(((Integer)entry.get(index)).floatValue());
 			}
 		}
 	}
-
-
-
-
+	
+	
+	
+	
 	private static Condition buildAllFieldsCondition(DatStructure datStructure, Operator operator, Object value){
 		if (value instanceof Float){
 			DoublePredicate checkBuild;
@@ -178,7 +179,7 @@ public class ConditionOperator implements Condition {
 				}
 			});
 		}
-
+		
 		String text = value instanceof Float ? Core.numberFormat.format(((Float) value).doubleValue()) : Integer.toString((Integer) value);
 		switch (operator){
 			case EQUAL:				return (Entry entry) -> entry.stream().anyMatch(text::equals);
@@ -190,12 +191,16 @@ public class ConditionOperator implements Condition {
 			default:				return ALWAYS_TRUE;
 		}
 	}
+
 	
-
-
+	
 	@Override
 	public String toString () {
 		return name;
 	}
-
+	
+	private interface FloatPredicate {
+		boolean test(float value);
+	}
+	
 }

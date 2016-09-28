@@ -3,7 +3,8 @@ package gui.components;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 
-import datmanager.Core;
+import javax.swing.border.Border;
+
 import datmanager.DatFile;
 
 /**
@@ -15,6 +16,11 @@ public class JButtonDat extends JButtonRed {
 	private static final long serialVersionUID = -1271897565206154222L;
 
 	/**
+	 * The default border of this button
+	 */
+	public final Border defaultBorder = getBorder();
+	
+	/**
 	 * Create a new {@link JButtonDat}
 	 * @param parent		The parent window
 	 * @param datFile		The datFile to load
@@ -23,7 +29,8 @@ public class JButtonDat extends JButtonRed {
 		super (datFile.datStructure.name);
 		datFile.datButton = this;
 		addActionListener(e -> {
-			Core.openFile(parent, datFile, (e.getModifiers() & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK);
+			datFile.openInEditor(parent, (e.getModifiers() & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK);
 		});
 	}
+	
 }

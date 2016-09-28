@@ -80,7 +80,7 @@ public class DialogMoveEntryToGroup extends JDialog {
 		getRootPane().registerKeyboardAction((e) -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
 		setTitle("Move entry to another group");
-		setBounds(Core.getBounds(this, 0.3, 0.6));
+		setBounds(GUI.getBounds(this, 0.3, 0.6));
 		getContentPane().setBackground(GUI.COLOR_UI_BACKGROUND);
 		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{400, 50, 50}, new double[]{1.0}, new double[]{0.8, 0.1, 0.1}));
 		add(scrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 0));

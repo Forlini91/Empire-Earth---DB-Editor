@@ -86,7 +86,9 @@ public class ListSearcher<T> {
 		this.updateFunction = updateFunction;
 		if (text != null && text.length() > 0) {
 			if (list != currentList || !text.equalsIgnoreCase(currentSearch)){
-				System.out.print("Search: " + currentSearch + "   >   " + text);
+				if (Settings.DEBUG) {
+					System.out.print("Search: " + currentSearch + "   >   " + text);
+				}
 				clearResult();
 				currentList = list;
 				currentSearch = text;
@@ -105,7 +107,9 @@ public class ListSearcher<T> {
 		} else {
 			clearResult();
 		}
-		System.out.println("Results: " + results);
+		if (Settings.DEBUG) {
+			System.out.println("Results: " + results);
+		}
 		return results;
 	}
 

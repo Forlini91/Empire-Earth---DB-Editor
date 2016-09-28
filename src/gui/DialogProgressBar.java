@@ -10,8 +10,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 
-import datmanager.Core;
-
 /**
  * This dialog show a progress bar with a label.
  * It's used to display the progress of an operation and support multi-thread operations.
@@ -34,7 +32,7 @@ public class DialogProgressBar extends JWindow {
 	 * @param multiThread	If true, the bar is used in a multiThread operation
 	 */
 	public DialogProgressBar(String text, int max, boolean multiThread){
-		setBounds(Core.getBounds(this, 400, 60));
+		setBounds(GUI.getBounds(this, 400, 60));
 		setAlwaysOnTop(true);
 		setEnabled(false);
 		JPanel contentPane = new JPanel();

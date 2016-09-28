@@ -17,7 +17,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultEditorKit;
 
-import datmanager.Core;
 import datstructure.Entry;
 import gui.components.JButtonRed;
 import gui.components.JCheckBoxExtended;
@@ -83,7 +82,7 @@ public class DialogListEntries extends JDialog {
 		dlgClose.addActionListener(al -> dispose());
 		
 		setTitle("All entries");
-		setBounds(Core.getBounds(this, 0.6, 0.8));
+		setBounds(GUI.getBounds(this, 0.6, 0.8));
 		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{400, 25, 25, 25, 40}, new double[]{1.0}, new double[]{1.0, 0, 0, 0, 0, 0}));
 		add(dlgScrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 0));
 		add(hideUndefined, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));

@@ -19,7 +19,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import datmanager.Core;
 import datmanager.DatFile;
 import datstructure.DatStructure;
 import gui.components.JButtonRed;
@@ -71,7 +70,7 @@ public class DialogConditionBuilder extends JDialog {
 
 
 	{
-		setBounds(Core.getBounds(this, 450, 225));
+		setBounds(GUI.getBounds(this, 450, 225));
 		setResizable(false);
 		comboBoxOperator.setModel(new DefaultComboBoxModel <>(Operator.values()));
 		lblName.setHorizontalAlignment(SwingConstants.CENTER);

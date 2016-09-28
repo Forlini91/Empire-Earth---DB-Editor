@@ -7,23 +7,24 @@ import datstructure.Entry;
  * A condition used to match the entries
  * @author MarcoForlini
  */
+@FunctionalInterface
 public interface Condition {
-
+	
 	/** Condition which always return true */
 	Condition ALWAYS_TRUE = (Entry entry) -> true;
-	
+
 	/** Condition which always return false */
 	Condition ALWAYS_FALSE = (Entry entry) -> false;
-
+	
 	/**
 	 * Check if the given entry match the condition
 	 * @param entry		The entry to check
 	 * @return			true if the entry match the condition, false otherwise
 	 */
 	boolean match(Entry entry);
-
-
-
+	
+	
+	
 	/**
 	 * Build a condition which checks if the given entry satisfy both condition
 	 * @param c1	The first condition
@@ -33,7 +34,7 @@ public interface Condition {
 	static Condition and(Condition c1, Condition c2){
 		return (Entry entry) -> c1.match(entry) && c2.match(entry);
 	}
-
+	
 	/**
 	 * Build a condition which checks if the given entry satisfy all conditions
 	 * @param conditions	The conditions
@@ -49,7 +50,7 @@ public interface Condition {
 			return true;
 		};
 	}
-
+	
 	/**
 	 * Build a condition which checks if the given entry satisfy either condition
 	 * @param c1	The first condition
@@ -59,8 +60,8 @@ public interface Condition {
 	static Condition or(Condition c1, Condition c2){
 		return (Entry entry) -> c1.match(entry) || c2.match(entry);
 	}
-	
-	
+
+
 	/**
 	 * Build a condition which checks if the given entry satisfy at least one condition
 	 * @param conditions	The conditions
@@ -76,9 +77,9 @@ public interface Condition {
 			return false;
 		};
 	}
-	
-	
 
+
+	
 	/**
 	 * Build a condition which checks if the given entry satisfy exactly one condition
 	 * @param c1	The first condition
@@ -91,8 +92,8 @@ public interface Condition {
 			return (b1 && !b2) || (!b1 && b2);
 		};
 	}
-
-
+	
+	
 	/**
 	 * Build a condition which checks if the given entry satisfy exactly one condition
 	 * @param conditions	The conditions
@@ -112,5 +113,5 @@ public interface Condition {
 			return sat;
 		};
 	}
-
+	
 }

@@ -1,7 +1,10 @@
 package datmanager;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Window;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,11 +14,16 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
 
 import datstructure.DatStructure;
 import datstructure.Entry;
 import datstructure.EntryGroup;
+import datstructure.FieldStruct;
+import datstructure.Link;
+import gui.DialogProgressBar;
 import gui.FrameEditor;
+import gui.GUI;
 import gui.components.JButtonDat;
 
 /**
@@ -212,9 +220,145 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 	public void setUnsaved (boolean unsaved) {
 		this.unsaved = unsaved;
 		if (datButton != null){
-			datButton.setBorder(unsaved ? BorderFactory.createLineBorder(Color.GREEN.darker(), 4) : null);
+			datButton.setBorder(unsaved ? BorderFactory.createLineBorder(Color.GREEN.darker(), 4) : datButton.defaultBorder);
 		}
 	}
+	
+	
+	
+	/**
+	 * Try to open this file in the editor or show an error message to the calling component.
+	 * The file must be already loaded.
+	 * @param parent The calling component
+	 * @param newWindow If true, force open in a new window
+	 * @return	The editor window associated to the datContent
+	 */
+	public FrameEditor openInEditor(Component parent, boolean newWindow){
+		try{
+			if (Settings.DEBUG) {
+				System.out.println("Open: " + getName());
+			}
+			FrameEditor selWindow;
+			if (frameEditors.isEmpty() || newWindow) {
+				selWindow = new FrameEditor(this);
+				frameEditors.add(selWindow);
+			} else {
+				selWindow = frameEditors.get(0);
+			}
+			selWindow.setVisible(true);
+			return selWindow;
+		} catch (Exception e){
+			Core.printException(parent, e, "Error while opening the window for DatFile: " + this, "Error");
+			throw e;
+		}
+	}
+
+
+
+	/**
+	 * Save the file. Disable (but not freeze) the calling window until finished.
+	 * @param parent	The parent window
+	 */
+	public void saveFile(Window parent){
+		if (Settings.DEBUG) {
+			System.out.println("Save file: " + this);
+		}
+		if (parent != null){
+			parent.setEnabled(false);
+		}
+		new Thread(() -> {
+			int count = 0;
+			for(EntryGroup entryGroup : entryGroups){
+				count += entryGroup.entries.size();
+			}
+			DialogProgressBar progressBar = new DialogProgressBar("Saving...", count, false);
+			new Thread(() -> {
+				try {
+					DatFileManager dbManager = new DatFileManager(this);
+					dbManager.save(progressBar::update);
+					setUnsaved(false);
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(parent, "An error occurred during the saving of " + this + '\n' + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE, GUI.IMAGE_ICON);
+				} finally {
+					progressBar.dispose();
+					if (parent != null) {
+						parent.setEnabled(true);
+					}
+				}
+			}).start();
+		}).start();
+	}
+
+
+
+	/**
+	 * Convert the ID fields into Links objects.
+	 */
+	public void buildLinks(){
+		FieldStruct[] fieldStructs = datStructure.fieldStructs;
+		int n = fieldStructs.length, n2, indexExtra;
+		FieldStruct fieldStruct;
+		DatFile datFile;
+		Entry sourceEntry, targetEntry;
+		Object value;
+
+		for (int i = 0; i < n; i++){
+			fieldStruct = fieldStructs[i];
+			if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null) {
+				datFile = fieldStruct.linkToStruct.datFile;
+				for (EntryGroup entryGroup : entryGroups){
+					for (int j = 0; j < entryGroup.entries.size(); j++){
+						sourceEntry = entryGroup.entries.get(j);
+						if (i < sourceEntry.size()){
+							value = sourceEntry.get(i);
+							if (value instanceof Integer){
+								targetEntry = datFile.findEntry(value);
+								if (targetEntry == null){
+									targetEntry = new Entry(datFile.datStructure, true, '(' + value.toString() + ") Null/Invalid entry", -2, (int) value);
+									datFile.dummyEntryGroup.add(targetEntry);
+									datFile.dummyEntryMap.put((Integer) value, targetEntry);
+									if (Settings.DEBUG) {
+										System.out.println("Create dummy entry: " + datStructure + " (" + fieldStruct + ") -> " + datFile.datStructure + "  =  " + targetEntry);
+									}
+								}
+								sourceEntry.set(i, new Link(sourceEntry, fieldStruct, targetEntry));
+							}
+						}
+					}
+				}
+			}
+		}
+
+		fieldStruct = datStructure.extraField;
+		if (fieldStruct != null && fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null) {
+			indexExtra = datStructure.indexExtraFields();
+			datFile = fieldStruct.linkToStruct.datFile;
+			for (EntryGroup entryGroup : entryGroups){
+				for (int j = 0; j < entryGroup.entries.size(); j++){
+					sourceEntry = entryGroup.entries.get(j);
+					if (indexExtra < sourceEntry.size()){
+						n2 = n + (Integer)sourceEntry.get(indexExtra);
+						for (int i = indexExtra+1; i < n2; i++){
+							value = sourceEntry.get(i);
+							targetEntry = datFile.findEntry(value);
+							if (targetEntry == null){
+								targetEntry = new Entry(datFile.datStructure, true, '(' + value.toString() + ") Null/Invalid entry", -2, (int) value);
+								datFile.dummyEntryGroup.add(targetEntry);
+								datFile.dummyEntryMap.put((Integer) value, targetEntry);
+								if (Settings.DEBUG) {
+									System.out.println("Create dummy entry: " + datStructure + " (" + fieldStruct + ") -> " + datFile.datStructure + "  =  " + targetEntry);
+								}
+							}
+							sourceEntry.set(i, new Link(sourceEntry, fieldStruct, targetEntry));
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+
 
 
 

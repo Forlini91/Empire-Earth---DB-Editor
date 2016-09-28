@@ -1,6 +1,11 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 import javax.swing.ImageIcon;
 
@@ -13,10 +18,10 @@ import datmanager.Core;
 public class GUI {
 	
 	/** Icon used in the top-left corner in all frames/dialog */
-	public static final ImageIcon IMAGE_ICON = new ImageIcon(GUI.class.getResource("EE_Icon" + (Core.AOC ? "_AOC" : "") + ".png"));
+	public static final ImageIcon IMAGE_ICON = new ImageIcon(GUI.class.getResource(Core.AOC ? "EE_Icon_AOC.png" : "EE_Icon.png"));
 	
 	/** EE logo used in the frame {@code FrameMain} */
-	public static final ImageIcon IMAGE_LOGO = new ImageIcon(GUI.class.getResource("EE_Logo" + (Core.AOC ? "_AOC" : "") + ".png"));
+	public static final ImageIcon IMAGE_LOGO = new ImageIcon(GUI.class.getResource(Core.AOC ? "EE_Logo_AOC.png" : "EE_Logo.png"));
 	
 	/** EE-Heaven logo used in the ABOUT dialog */
 	public static final ImageIcon IMAGE_EE_HEAVEN_LOGO = new ImageIcon(GUI.class.getResource("EE_Heaven.png"));
@@ -51,5 +56,22 @@ public class GUI {
 
 	/** Color used by "strange" fields */
 	public static final Color COLOR_FIELD_UNCERTAIN = new Color(180, 180, 0);
+
+	
+	
+	/**
+	 * Calculate the bounds of the given component
+	 * @param component		The component
+	 * @param width			The width in pixels. If &le; 1, it will be read as fraction of the screen size
+	 * @param height		The height in pixels. If &le; 1, it will be read as fraction of the screen size
+	 * @return	The bounds for the passed component.
+	 */
+	public static Rectangle getBounds(Component component, double width, double height){
+		GraphicsConfiguration gc = component.getGraphicsConfiguration();
+		Rectangle rBounds = gc.getBounds();
+		Dimension dimension = new Dimension((int) (width <= 1 ? (rBounds.width*width) : width), (int) (height <= 1 ? (rBounds.height*height) : height));
+		Point point = new Point((rBounds.width / 2) - (dimension.width / 2), (rBounds.height / 2) - (dimension.height / 2) - 25);
+		return new Rectangle(point, dimension);
+	}
 
 }
