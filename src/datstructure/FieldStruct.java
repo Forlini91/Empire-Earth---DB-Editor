@@ -8,60 +8,59 @@ import gui.GUI;
 
 /**
  * This object define a single field data: description, type, size, ...
- * @author MarcoForlini
  *
+ * @author MarcoForlini
  */
-public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
+public class FieldStruct implements Comparable <FieldStruct>, Cloneable {
 
 	/** Common field: A 100 chars String which define the entry's name. */
-	public static final FieldStruct NAME = new FieldStruct("Name", Type.STRING, 100, Knowledge.KNOWN, GUI.COLOR_FIELD_ID);
+	public static final FieldStruct NAME = new FieldStruct ("Name", Type.STRING, 100, Knowledge.KNOWN, GUI.COLOR_FIELD_ID);
 	/** Common field: A 4 bytes integer which define the entry's sequence number. */
-	public static final FieldStruct SEQ_NUMBER = new FieldStruct("Sequence number", Type.INTEGER, 4, Knowledge.KNOWN, GUI.COLOR_FIELD_ID);
+	public static final FieldStruct SEQ_NUMBER = new FieldStruct ("Sequence number", Type.INTEGER, 4, Knowledge.KNOWN, GUI.COLOR_FIELD_ID);
 	/** Common field: A 4 bytes integer which define the entry's ID. */
-	public static final FieldStruct ID = new FieldStruct("ID", Type.INTEGER, 4, Knowledge.KNOWN, GUI.COLOR_FIELD_ID);
+	public static final FieldStruct ID = new FieldStruct ("ID", Type.INTEGER, 4, Knowledge.KNOWN, GUI.COLOR_FIELD_ID);
 	/** Unique field: A 4 bytes integer which point to an entry in the file Language.dll */
-	public static final FieldStruct ID_LANGUAGE = new FieldStruct("Language ID", Type.LANGUAGE);
+	public static final FieldStruct ID_LANGUAGE = new FieldStruct ("Language ID", Type.LANGUAGE);
 	/** Common field: A 4 bytes integer which alter the lenght of a string field */
-	public static final FieldStruct STRING_SIZE = new FieldStruct("String size", Type.INTEGER, 4, false);
+	public static final FieldStruct STRING_SIZE = new FieldStruct ("String size", Type.INTEGER, 4, false);
 	/** Alter health percent, for Game Variant */
-	public static final FieldStruct ALTER_HEALTH_BY = new FieldStruct("Alter health percent", Type.FLOAT, 4);
 
 
 
 	/** Special field: A 1 byte boolean which define an unknown field which always hold the same value. */
-	public static final FieldStruct UNCHANGED_BOOL1 = new FieldStruct("Never changes", Type.BOOLEAN, 1, Knowledge.NEVER_CHANGE, Color.GRAY);
+	public static final FieldStruct UNCHANGED_BOOL1 = new FieldStruct ("Never changes", Type.BOOLEAN, 1, Knowledge.NEVER_CHANGE, Color.GRAY);
 	/** Special field: A 4 bytes boolean which define an unknown field which always hold the same value. */
-	public static final FieldStruct UNCHANGED_BOOL4 = new FieldStruct("Never changes", Type.BOOLEAN, 4, Knowledge.NEVER_CHANGE, Color.GRAY);
+	public static final FieldStruct UNCHANGED_BOOL4 = new FieldStruct ("Never changes", Type.BOOLEAN, 4, Knowledge.NEVER_CHANGE, Color.GRAY);
 	/** Special field: A 1 byte integer which define an unknown field which always hold the same value. */
-	public static final FieldStruct UNCHANGED_INT1 = new FieldStruct("Never changes", Type.INTEGER, 1, Knowledge.NEVER_CHANGE, Color.GRAY);
+	public static final FieldStruct UNCHANGED_INT1 = new FieldStruct ("Never changes", Type.INTEGER, 1, Knowledge.NEVER_CHANGE, Color.GRAY);
 	/** Special field: A 4 bytes integer which define an unknown field which always hold the same value. */
-	public static final FieldStruct UNCHANGED_INT4 = new FieldStruct("Never changes", Type.INTEGER, 4, Knowledge.NEVER_CHANGE, Color.GRAY);
+	public static final FieldStruct UNCHANGED_INT4 = new FieldStruct ("Never changes", Type.INTEGER, 4, Knowledge.NEVER_CHANGE, Color.GRAY);
 	/** Special field: A 4 bytes float which define an unknown field which always hold the same value. */
-	public static final FieldStruct UNCHANGED_FLOAT = new FieldStruct("Never changes", Type.FLOAT, 4, Knowledge.NEVER_CHANGE, Color.GRAY);
+	public static final FieldStruct UNCHANGED_FLOAT = new FieldStruct ("Never changes", Type.FLOAT, 4, Knowledge.NEVER_CHANGE, Color.GRAY);
 
 	/** Special field: A 1 byte boolean which define an unknown and never used field. */
-	public static final FieldStruct UNUSED_BOOL1 = new FieldStruct("Never used", Type.BOOLEAN, 1, Knowledge.NEVER_USED, Color.GRAY);
+	public static final FieldStruct UNUSED_BOOL1 = new FieldStruct ("Never used", Type.BOOLEAN, 1, Knowledge.NEVER_USED, Color.GRAY);
 	/** Special field: A 4 bytes boolean which define an unknown and never used field. */
-	public static final FieldStruct UNUSED_BOOL4 = new FieldStruct("Never used", Type.BOOLEAN, 4, Knowledge.NEVER_USED, Color.GRAY);
+	public static final FieldStruct UNUSED_BOOL4 = new FieldStruct ("Never used", Type.BOOLEAN, 4, Knowledge.NEVER_USED, Color.GRAY);
 	/** Special field: A 1 byte integer which define an unknown and never used field. */
-	public static final FieldStruct UNUSED_INT1 = new FieldStruct("Never used", Type.INTEGER, 1, Knowledge.NEVER_USED, Color.GRAY);
+	public static final FieldStruct UNUSED_INT1 = new FieldStruct ("Never used", Type.INTEGER, 1, Knowledge.NEVER_USED, Color.GRAY);
 	/** Special field: A 4 bytes integer which define an unknown and never used field. */
-	public static final FieldStruct UNUSED_INT4 = new FieldStruct("Never used", Type.INTEGER, 4, Knowledge.NEVER_USED, Color.GRAY);
+	public static final FieldStruct UNUSED_INT4 = new FieldStruct ("Never used", Type.INTEGER, 4, Knowledge.NEVER_USED, Color.GRAY);
 	/** Special field: A 4 bytes float which define an unknown and never used field. */
-	public static final FieldStruct UNUSED_FLOAT = new FieldStruct("Never used", Type.FLOAT, 4, Knowledge.NEVER_USED, Color.GRAY);
+	public static final FieldStruct UNUSED_FLOAT = new FieldStruct ("Never used", Type.FLOAT, 4, Knowledge.NEVER_USED, Color.GRAY);
 
 	/** Special field: A 1 byte boolean which define a (still) unknown field. */
-	public static final FieldStruct UNKNOWN_BOOL1 = new FieldStruct("Unknown", Type.BOOLEAN, 1, Knowledge.UNKNOWN, Color.RED);
+	public static final FieldStruct UNKNOWN_BOOL1 = new FieldStruct ("Unknown", Type.BOOLEAN, 1, Knowledge.UNKNOWN, Color.RED);
 	/** Special field: A 4 bytes boolean which define a (still) unknown field. */
-	public static final FieldStruct UNKNOWN_BOOL4 = new FieldStruct("Unknown", Type.BOOLEAN, 4, Knowledge.UNKNOWN, Color.RED);
+	public static final FieldStruct UNKNOWN_BOOL4 = new FieldStruct ("Unknown", Type.BOOLEAN, 4, Knowledge.UNKNOWN, Color.RED);
 	/** Special field: A 1 byte integer which define a (still) unknown field. */
-	public static final FieldStruct UNKNOWN_INT1 = new FieldStruct("Unknown", Type.INTEGER, 1,  Knowledge.UNKNOWN, Color.RED);
+	public static final FieldStruct UNKNOWN_INT1 = new FieldStruct ("Unknown", Type.INTEGER, 1, Knowledge.UNKNOWN, Color.RED);
 	/** Special field: A 4 bytes integer which define a (still) unknown field. */
-	public static final FieldStruct UNKNOWN_INT4 = new FieldStruct("Unknown", Type.INTEGER, 4,  Knowledge.UNKNOWN, Color.RED);
+	public static final FieldStruct UNKNOWN_INT4 = new FieldStruct ("Unknown", Type.INTEGER, 4, Knowledge.UNKNOWN, Color.RED);
 	/** Special field: A 4 bytes float which define a (still) unknown field. */
-	public static final FieldStruct UNKNOWN_FLOAT = new FieldStruct("Unknown", Type.FLOAT, 4,  Knowledge.UNKNOWN, Color.RED);
-	
-	
+	public static final FieldStruct UNKNOWN_FLOAT = new FieldStruct ("Unknown", Type.FLOAT, 4, Knowledge.UNKNOWN, Color.RED);
+
+
 
 	/** Name or description of the field. */
 	public final String name;
@@ -85,18 +84,17 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	public final Object defaultValue;
 	/** Index of the field which hold the size of the string field. (Yeah... some strings length is not a fixed 100) */
 	public final int indexSize;
-	
-	
-	
 
-	
-	
+
+
+
 
 	/**
 	 * Create a new boolean FieldStruct with the given name
-	 * @param name	Name of the field
+	 *
+	 * @param name Name of the field
 	 */
-	public FieldStruct (String name){
+	public FieldStruct (String name) {
 		this.name = name;
 		type = Type.BOOLEAN;
 		size = 1;
@@ -109,12 +107,13 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 		defaultValue = -1;
 	}
-	
-	
+
+
 	/**
 	 * Create a new 4 bytes FieldStruct with the given name and type
-	 * @param name	Name of the field
-	 * @param type	Type of the field
+	 *
+	 * @param name Name of the field
+	 * @param type Type of the field
 	 */
 	public FieldStruct (String name, Type type) {
 		this.name = name;
@@ -129,13 +128,14 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		defaultValue = -1;
 		indexSize = -1;
 	}
-	
-	
+
+
 	/**
 	 * Create a new FieldStruct with the given name, type and size
-	 * @param name	Name of the field
-	 * @param type	Type of the field
-	 * @param size	Size of the field
+	 *
+	 * @param name Name of the field
+	 * @param type Type of the field
+	 * @param size Size of the field
 	 */
 	public FieldStruct (String name, Type type, int size) {
 		this.name = name;
@@ -150,14 +150,15 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		defaultValue = -1;
 		indexSize = -1;
 	}
-	
-	
+
+
 	/**
 	 * Create a new FieldStruct with the given name, type and size
-	 * @param name	Name of the field
-	 * @param type	Type of the field
-	 * @param size	Size of the field
-	 * @param editable	If false, the field can't be edited
+	 *
+	 * @param name Name of the field
+	 * @param type Type of the field
+	 * @param size Size of the field
+	 * @param editable If false, the field can't be edited
 	 */
 	public FieldStruct (String name, Type type, int size, boolean editable) {
 		this.name = name;
@@ -172,14 +173,15 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		defaultValue = -1;
 		indexSize = -1;
 	}
-	
-	
+
+
 	/**
 	 * Create a new FieldStruct with the given name, type and size
-	 * @param name	Name of the field
-	 * @param type	Type of the field
-	 * @param size	Size of the field
-	 * @param knowledge		The current knowledge we have about this field
+	 *
+	 * @param name Name of the field
+	 * @param type Type of the field
+	 * @param size Size of the field
+	 * @param knowledge The current knowledge we have about this field
 	 */
 	public FieldStruct (String name, Type type, int size, Knowledge knowledge) {
 		this.name = name;
@@ -194,15 +196,16 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		defaultValue = -1;
 		indexSize = -1;
 	}
-	
-	
+
+
 	/**
 	 * Create a new FieldStruct with the given name, type and size
-	 * @param name	Name of the field
-	 * @param type	Type of the field
-	 * @param size	Size of the field
-	 * @param knowledge		The current knowledge we have about this field
-	 * @param color			The color used by the field
+	 *
+	 * @param name Name of the field
+	 * @param type Type of the field
+	 * @param size Size of the field
+	 * @param knowledge The current knowledge we have about this field
+	 * @param color The color used by the field
 	 */
 	public FieldStruct (String name, Type type, int size, Knowledge knowledge, Color color) {
 		this.name = name;
@@ -218,12 +221,13 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 	}
 
-	
+
 	/**
 	 * Create a new FieldStruct with the given name, which is a link to another entry
-	 * @param name			Name of the field
-	 * @param linkToStruct	Link to this dat
-	 * @param defaultValue	Default value if the link can't be found
+	 *
+	 * @param name Name of the field
+	 * @param linkToStruct Link to this dat
+	 * @param defaultValue Default value if the link can't be found
 	 */
 	public FieldStruct (String name, DatStructure linkToStruct, Object defaultValue) {
 		this.name = name;
@@ -239,13 +243,14 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 	}
 
-	
+
 	/**
 	 * Create a new FieldStruct with the given name, which is a link to another entry
-	 * @param name			Name of the field
-	 * @param linkToStruct	Link to this dat
-	 * @param defaultValue	Default value if the link can't be found
-	 * @param editable	If false, the field can't be edited
+	 *
+	 * @param name Name of the field
+	 * @param linkToStruct Link to this dat
+	 * @param defaultValue Default value if the link can't be found
+	 * @param editable If false, the field can't be edited
 	 */
 	public FieldStruct (String name, DatStructure linkToStruct, Object defaultValue, boolean editable) {
 		this.name = name;
@@ -260,14 +265,15 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		arrValues = null;
 		indexSize = -1;
 	}
-	
-	
+
+
 	/**
 	 * Create a new FieldStruct with the given name and knowledge, which is a link to another entry
-	 * @param name			Name of the field
-	 * @param linkToStruct	Link to this dat
-	 * @param defaultValue	Default value if the link can't be found
-	 * @param knowledge		The current knowledge we have about this field
+	 *
+	 * @param name Name of the field
+	 * @param linkToStruct Link to this dat
+	 * @param defaultValue Default value if the link can't be found
+	 * @param knowledge The current knowledge we have about this field
 	 */
 	public FieldStruct (String name, DatStructure linkToStruct, Object defaultValue, Knowledge knowledge) {
 		this.name = name;
@@ -282,12 +288,13 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		arrValues = null;
 		indexSize = -1;
 	}
-	
+
 
 	/**
 	 * Create a new FieldStruct with the given name and list of values
-	 * @param name			Name of the field
-	 * @param enumValues	Array with all available values for this field
+	 *
+	 * @param name Name of the field
+	 * @param enumValues Array with all available values for this field
 	 */
 	public FieldStruct (String name, EnumValue[] enumValues) {
 		this.name = name;
@@ -302,13 +309,14 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		defaultValue = -1;
 		indexSize = -1;
 	}
-	
-	
+
+
 	/**
 	 * Create a new FieldStruct with the given name and list of values
-	 * @param name			Name of the field
-	 * @param enumValues	Array with all available values for this field
-	 * @param editable	If false, the field can't be edited
+	 *
+	 * @param name Name of the field
+	 * @param enumValues Array with all available values for this field
+	 * @param editable If false, the field can't be edited
 	 */
 	public FieldStruct (String name, EnumValue[] enumValues, boolean editable) {
 		this.name = name;
@@ -324,11 +332,12 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		indexSize = -1;
 	}
 
-	
+
 	/**
 	 * Create a new FieldStruct with the given name and list of values
-	 * @param name			Name of the field
-	 * @param arrValues		Array with all integer values available for this field
+	 *
+	 * @param name Name of the field
+	 * @param arrValues Array with all integer values available for this field
 	 */
 	public FieldStruct (String name, Integer[] arrValues) {
 		this.name = name;
@@ -347,12 +356,13 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 
 	/**
 	 * Create a new FieldStruct with the given name and index of the field with the size.
-	 * @param name			Name of the field
-	 * @param indexSize 	Index of field which hold the size of this field
+	 *
+	 * @param name Name of the field
+	 * @param indexSize Index of field which hold the size of this field
 	 */
-	public FieldStruct (String name, int indexSize){
+	public FieldStruct (String name, int indexSize) {
 		this.name = name;
-		size = 0;		//Size is defined as 0, but the real size depends on the field at index "indexSize"
+		size = 0; // Size is defined as 0, but the real size depends on the field at index "indexSize"
 		this.indexSize = indexSize;
 		type = Type.STRING;
 		knowledge = Knowledge.KNOWN;
@@ -365,31 +375,31 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	}
 
 
-	
-	
-	
-	
 
-	
+
+
 	/**
 	 * Gets the name of the field
-	 * @return	The name of the field
+	 *
+	 * @return The name of the field
 	 */
 	public String getName () {
 		return name;
 	}
-	
+
 	/**
 	 * Gets the type of the field
-	 * @return	The type of the field
+	 *
+	 * @return The type of the field
 	 */
 	public Type getType () {
 		return type;
 	}
-	
+
 	/**
 	 * Gets the size of the field
-	 * @return	The size of the field
+	 *
+	 * @return The size of the field
 	 */
 	public int getSize () {
 		return size;
@@ -397,61 +407,66 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 
 	/**
 	 * Gets the knowledge about this field
-	 * @return	The knowledge about this field
+	 *
+	 * @return The knowledge about this field
 	 */
 	public Knowledge getKnowledge () {
 		return knowledge;
 	}
-	
+
 	/**
 	 * Check if the field is editable
-	 * @return	true if it's editable, false otherwise
+	 *
+	 * @return true if it's editable, false otherwise
 	 */
 	public boolean isEditable () {
 		return editable;
 	}
-	
+
 	/**
 	 * Gets the color of the field
-	 * @return	The color of the field
+	 *
+	 * @return The color of the field
 	 */
 	public Color getColor () {
 		return color;
 	}
-	
+
 	/**
 	 * Gets the link to the other file
-	 * @return	The link to the other file
+	 *
+	 * @return The link to the other file
 	 */
 	public DatStructure getLinkToStruct () {
 		return linkToStruct;
 	}
-	
+
 	/**
 	 * Gets the index of field which hold the size of this field
-	 * @return	The index of field which hold the size of this field
+	 *
+	 * @return The index of field which hold the size of this field
 	 */
 	public int getIndexSize () {
 		return indexSize;
 	}
 
 	@Override
-	public String toString(){
+	public String toString () {
 		return name + ' ' + '(' + type + ' ' + size + ')';
 	}
-	
-	
+
+
 	@Override
 	public int compareTo (FieldStruct o) {
-		return Integer.signum(name.compareTo(o.name));
+		return Integer.signum (name.compareTo (o.name));
 	}
 
 	@Override
 	protected FieldStruct clone () {
 		try {
-			return (FieldStruct) super.clone();
-		} catch (CloneNotSupportedException e) {	/* Won't happen...*/
-			Core.printException(null, e, "You should not see this error...", "Error");
+			return (FieldStruct) super.clone ();
+		} catch (CloneNotSupportedException e) { /* Won't happen... */
+			Core.printException (null, e, "You should not see this error...", "Error");
 			return null;
 		}
 	}

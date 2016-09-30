@@ -15,14 +15,16 @@ import datstructure.Entry;
 import datstructure.EntryGroup;
 import datstructure.FieldStruct;
 import datstructure.Link;
+import datstructure.structures.RandomMap;
 
 
 /**
  * Manage a single DatFile with save/load methods
+ *
  * @author MarcoForlini
  */
 public class DatFileManager {
-	
+
 	/** The file to read. */
 	private DatFile datFile;
 	/** The structure of the file. */
@@ -32,10 +34,11 @@ public class DatFileManager {
 
 	/**
 	 * Create a new DatFileManager to read or write the given datFile.
-	 * @param datFile	The file to load with the relative structure
-	 * @throws IOException	If any IO exception occur
+	 *
+	 * @param datFile The file to load with the relative structure
+	 * @throws IOException If any IO exception occur
 	 */
-	public DatFileManager(DatFile datFile) throws IOException {
+	public DatFileManager (DatFile datFile) throws IOException {
 		this.datFile = datFile;
 		datStructure = datFile.datStructure;
 	}
@@ -43,136 +46,143 @@ public class DatFileManager {
 	/**
 	 * Read the whole file, perform regular updates of the progress on the GUI and return the content read.
 	 * Support multi-thread loadings: you can load many files at once and display a single progress bar for them all.
-	 * @param update	The method to call to update the state on the GUI
-	 * @param threadIndex	Which thread is this
-	 * @return	The list of EntryGroup read from the file, if any
-	 * @throws IOException					If a problem occurs while reading
-	 * @throws BufferUnderflowException		If loading the wrong/encrypted files
+	 *
+	 * @param update The method to call to update the state on the GUI
+	 * @param threadIndex Which thread is this
+	 * @return The list of EntryGroup read from the file, if any
+	 * @throws IOException If a problem occurs while reading
+	 * @throws BufferUnderflowException If loading the wrong/encrypted files
 	 */
-	public DatFile read(BiConsumer<Float, Integer> update, int threadIndex) throws IOException, BufferUnderflowException {
-		if (!datFile.exists()){
-			throw new FileNotFoundException(datFile.toString());
+	public DatFile read (BiConsumer <Float, Integer> update, int threadIndex) throws IOException, BufferUnderflowException {
+		if (!datFile.exists ()) {
+			throw new FileNotFoundException (datFile.toString ());
 		}
-		List<EntryGroup> entryGroups = new ArrayList<>();
-		try (DatReader reader = new DatReader(datFile)) {
-			fileSize = reader.getRemaining();
-			while (reader.getRemaining() > 0) {
-				entryGroups.add(readGroup(reader, update, threadIndex));
+		List <EntryGroup> entryGroups = new ArrayList<> ();
+		try (DatReader reader = new DatReader (datFile)) {
+			fileSize = reader.getRemaining ();
+			while (reader.getRemaining () > 0) {
+				entryGroups.add (readGroup (reader, update, threadIndex));
 			}
 		}
-		if (entryGroups.size() == 1){
-			entryGroups.get(0).name = datStructure.fileName;
+		if (entryGroups.size () == 1) {
+			entryGroups.get (0).name = datStructure.fileName;
 		}
 		if (Settings.DEBUG) {
-			for (EntryGroup entryGroup : entryGroups){
-				System.out.println("Load file: " + datFile.getName() + "  >  Group: " + entryGroup + "  >  Num entries: " + entryGroup.entries.size());
+			for (EntryGroup entryGroup : entryGroups) {
+				System.out.println ("Load file: " + datFile.getName () + "  >  Group: " + entryGroup + "  >  Num entries: " + entryGroup.entries.size ());
 			}
 		}
-		datFile.loadData(entryGroups);
+		datFile.loadData (entryGroups);
 		return datFile;
 	}
-	
+
 	/**
 	 * Read a single EntryGroup from the file, perform regular updates on of the progress on the GUI and return the list of entries.
 	 * Support multi-thread loadings: you can load many files at once and display a single progress bar for them all.
-	 * @param reader	The reader used to read the file
-	 * @param update	The method to call to update the state on the GUI
-	 * @param threadIndex	Which thread is this
-	 * @return	The list of Entry read from the file, if any
-	 * @throws IOException					If a problem occurs while reading
-	 * @throws BufferUnderflowException		If loading the wrong/encrypted files
+	 *
+	 * @param reader The reader used to read the file
+	 * @param update The method to call to update the state on the GUI
+	 * @param threadIndex Which thread is this
+	 * @return The list of Entry read from the file, if any
+	 * @throws IOException If a problem occurs while reading
+	 * @throws BufferUnderflowException If loading the wrong/encrypted files
 	 */
-	public EntryGroup readGroup(DatReader reader, BiConsumer<Float, Integer> update, int threadIndex) throws IOException, BufferUnderflowException {
+	public EntryGroup readGroup (DatReader reader, BiConsumer <Float, Integer> update, int threadIndex) throws IOException, BufferUnderflowException {
 		boolean defineNumEntries = datStructure.defineNumEntries;
 		int numEntries;
-		if (datStructure.defineNumEntries){
-			numEntries = reader.readInt() + datStructure.adjustNumEntries;
+		if (datStructure == RandomMap.instance) {
+			reader.readInt ();
+		}
+		if (datStructure.defineNumEntries) {
+			numEntries = reader.readInt () + datStructure.adjustNumEntries;
 		} else {
 			numEntries = -1;
 		}
+
 		int numFields = datStructure.fieldStructs.length;
-		List<Entry> entries;
+		List <Entry> entries;
 		if (defineNumEntries) {
-			try{
-				entries = new ArrayList<>(numEntries);
-			} catch (OutOfMemoryError e){
-				throw new IOException(e);
+			try {
+				entries = new ArrayList<> (numEntries);
+			} catch (OutOfMemoryError e) {
+				throw new IOException (e);
 			}
 		} else {
-			entries = new ArrayList<>();
+			entries = new ArrayList<> ();
 		}
 		Entry entry;
 		FieldStruct fieldStruct;
 		Object read;
 		int size;
-		//		StringBuilder sb;
+		// StringBuilder sb;
 		int i = 0;
-		try{
-			for (i = 0; (defineNumEntries && i < numEntries) || (!defineNumEntries && reader.getRemaining() > 0); i++) {	//<= because dbTechTree works differently...
-				List<Object> values = new ArrayList<>(numFields);
+		try {
+			for (i = 0; (defineNumEntries && i < numEntries) || (!defineNumEntries && reader.getRemaining () > 0); i++) { // <= because dbTechTree works differently...
+				List <Object> values = new ArrayList<> (numFields);
 
-				for (int j = 0; j < numFields; j++){
+				for (int j = 0; j < numFields; j++) {
 					fieldStruct = datStructure.fieldStructs[j];
 
-					switch(fieldStruct.getType()){
+					switch (fieldStruct.getType ()) {
 						case STRING:
-							if (fieldStruct.getIndexSize() >= 0){
-								size = (int) values.get(fieldStruct.getIndexSize());
+							if (fieldStruct.getIndexSize () >= 0) {
+								size = (int) values.get (fieldStruct.getIndexSize ());
 							} else {
-								size = fieldStruct.getSize();
+								size = fieldStruct.getSize ();
 							}
-							if (size > 0){
-								read = reader.readString(size);
+							if (size > 0) {
+								read = reader.readString (size);
 							} else {
 								read = "";
 							}
 							break;
 						case FLOAT:
-							read = reader.readFloat();
+							read = reader.readFloat ();
 							break;
 						default:
-							if (fieldStruct.getSize() == 1){
-								read = reader.readByte();
+							if (fieldStruct.getSize () == 1) {
+								read = reader.readByte ();
 							} else {
-								read = reader.readInt();
+								read = reader.readInt ();
 							}
 					}
-					values.add(read);
+					values.add (read);
 				}
 				fieldStruct = datStructure.extraField;
-				if (fieldStruct != null){
-					int numExtra = (int) values.get(datStructure.indexExtraFields());
-					for (int j = 0; j < numExtra; j++){
-						read = reader.readInt();
-						values.add(read);
+				if (fieldStruct != null) {
+					int numExtra = (int) values.get (datStructure.indexExtraFields ());
+					for (int j = 0; j < numExtra; j++) {
+						read = reader.readInt ();
+						values.add (read);
 					}
 				}
-				entry = new Entry(datStructure, false, null, i, i, values);
-				entries.add(entry);
-				update.accept((float) (1.0 - (double) reader.getRemaining() / fileSize), threadIndex);
+				entry = new Entry (datStructure, false, null, i, i, values);
+				entries.add (entry);
+				update.accept ((float) (1.0 - (double) reader.getRemaining () / fileSize), threadIndex);
 			}
-		} catch (Exception e){
-			throw new IOException(e);
+		} catch (Exception e) {
+			throw new IOException (e);
 		}
-		return new EntryGroup(datStructure, entries);
+		return new EntryGroup (datStructure, entries);
 	}
 
 
 	/**
 	 * Save the given list of EntryGroup to the file and perform regular updates of the progress on the GUI.
-	 * @param update		The method to call to update the state on the GUI
-	 * @throws IOException	If a problem occurs while saving
+	 *
+	 * @param update The method to call to update the state on the GUI
+	 * @throws IOException If a problem occurs while saving
 	 */
-	public void save(Runnable update) throws IOException {
-		if (datFile.isLoaded()){
-			File origFile = new File(datFile.getAbsolutePath() + ".orig");
-			if (!origFile.exists()) {
-				Files.copy(datFile.toPath(), origFile.toPath());
+	public void save (Runnable update) throws IOException {
+		if (datFile.isLoaded ()) {
+			File origFile = new File (datFile.getAbsolutePath () + ".orig");
+			if (!origFile.exists ()) {
+				Files.copy (datFile.toPath (), origFile.toPath ());
 			}
-			File newBackup = new File(datFile.getAbsolutePath() + ".tempbak");
-			Files.deleteIfExists(newBackup.toPath());
-			Files.move(datFile.toPath(), newBackup.toPath(), StandardCopyOption.REPLACE_EXISTING);
-			
+			File newBackup = new File (datFile.getAbsolutePath () + ".tempbak");
+			Files.deleteIfExists (newBackup.toPath ());
+			Files.move (datFile.toPath (), newBackup.toPath (), StandardCopyOption.REPLACE_EXISTING);
+
 			int numBaseFields = datStructure.fieldStructs.length;
 			Entry entry;
 			FieldStruct fieldStruct;
@@ -181,71 +191,80 @@ public class DatFileManager {
 			int numFields;
 			int size;
 			boolean defineNumEntries = datStructure.defineNumEntries;
-			
-			List<Entry> allEntries = datFile.getAllEntries(false);
-			try (DatWriter writer = new DatWriter(datFile, allEntries)) {
-				for (EntryGroup entryGroup : datFile){
-					numEntries = entryGroup.entries.size();
-					if (defineNumEntries){
-						writer.writeInt(numEntries - datStructure.adjustNumEntries);
+
+			List <Entry> allEntries = datFile.getAllEntries (false);
+			try (DatWriter writer = new DatWriter (datFile, allEntries)) {
+				if (datFile.datStructure == RandomMap.instance) {
+					int numGroups = (int) datFile.getAllEntries (false)
+							.stream ()
+							.mapToInt (entry2 -> entry2.get (1))
+							.distinct ()
+							.count ();
+					writer.writeInt (numGroups);
+				}
+
+				for (EntryGroup entryGroup : datFile) {
+					numEntries = entryGroup.entries.size ();
+					if (defineNumEntries) {
+						writer.writeInt (numEntries - datStructure.adjustNumEntries);
 					}
-					System.out.println("Save file: " + datFile.getName() + "  >  Group: " + entryGroup + "  >  Num entries: " + numEntries);
-					
-					//				StringBuilder sb;
-					for (int i = 0; i < numEntries; i++){
-						update.run();
-						entry = entryGroup.entries.get(i);
-						numFields = entry.size();
-						for (int j = 0; j < numFields; j++){
+					System.out.println ("Save file: " + datFile.getName () + "  >  Group: " + entryGroup + "  >  Num entries: " + numEntries);
+
+					// StringBuilder sb;
+					for (int i = 0; i < numEntries; i++) {
+						update.run ();
+						entry = entryGroup.entries.get (i);
+						numFields = entry.size ();
+						for (int j = 0; j < numFields; j++) {
 							if (j < numBaseFields) {
 								fieldStruct = datStructure.fieldStructs[j];
 							} else {
 								fieldStruct = datStructure.extraField;
 							}
-							try{
-								switch (fieldStruct.getType()){
+							try {
+								switch (fieldStruct.getType ()) {
 									case STRING:
-										if (fieldStruct.getIndexSize() >= 0){
-											size = entry.get(fieldStruct.getIndexSize());
+										if (fieldStruct.getIndexSize () >= 0) {
+											size = entry.get (fieldStruct.getIndexSize ());
 										} else {
-											size = fieldStruct.getSize();
+											size = fieldStruct.getSize ();
 										}
-										if (size > 0){
-											writer.writeString(entry.get(j), size);
+										if (size > 0) {
+											writer.writeString (entry.get (j), size);
 										}
 										break;
 									case FLOAT:
-										writer.writeFloat(entry.get(j));
+										writer.writeFloat (entry.get (j));
 										break;
 									default:
-										if (fieldStruct.getSize() == 1) {
-											writer.writeByte(entry.get(j));
-										} else if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Settings.LINK_SYSTEM){
-											link = entry.get(j);
-											writer.writeInt(link.target.getID());
+										if (fieldStruct.getSize () == 1) {
+											writer.writeByte (entry.get (j));
+										} else if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Settings.LINK_SYSTEM) {
+											link = entry.get (j);
+											writer.writeInt (link.target.getID ());
 										} else {
-											writer.writeInt(entry.get(j));
+											writer.writeInt (entry.get (j));
 										}
 								}
-							} catch (Exception e){
-								Core.printException(null, e, "Error while writing entry: " + entry + "   | Field: (" + j + ") " + fieldStruct + "   >   " + entry.get(j), "Error while saving");
+							} catch (Exception e) {
+								Core.printException (null, e, "Error while writing entry: " + entry + "   | Field: (" + j + ") " + fieldStruct + "   >   " + entry.get (j), "Error while saving");
 								throw e;
 							}
 						}
 					}
 				}
-			} catch (Exception e){
-				Files.move(newBackup.toPath(), datFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-				Files.deleteIfExists(newBackup.toPath());
-				throw new IOException(e);
+			} catch (Exception e) {
+				Files.move (newBackup.toPath (), datFile.toPath (), StandardCopyOption.REPLACE_EXISTING);
+				Files.deleteIfExists (newBackup.toPath ());
+				throw new IOException (e);
 			}
-			
-			File oldBackup = new File(datFile.getAbsolutePath() + ".bak");
-			Files.move(newBackup.toPath(), oldBackup.toPath(), StandardCopyOption.REPLACE_EXISTING);
-			Files.deleteIfExists(newBackup.toPath());
+
+			File oldBackup = new File (datFile.getAbsolutePath () + ".bak");
+			Files.move (newBackup.toPath (), oldBackup.toPath (), StandardCopyOption.REPLACE_EXISTING);
+			Files.deleteIfExists (newBackup.toPath ());
 		}
 	}
 
-	
-	
+
+
 }

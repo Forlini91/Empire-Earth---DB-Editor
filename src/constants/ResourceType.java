@@ -23,53 +23,55 @@ public enum ResourceType implements EnumValue {
 	/** Can have/receive iron */
 	C6_Iron ("Iron", 6),
 	;
-	
-	
+
+
 	/** Name to be shown in the UI */
 	public final String name;
-	
+
 	/** Code used in the dat files */
 	public final int code;
 
-	
-	ResourceType(String name, int code){
+
+	ResourceType (String name, int code) {
 		this.name = name;
 		this.code = code;
 	}
-	
+
 	@Override
-	public String getName(){
+	public String getName () {
 		return name;
 	}
-	
+
 	@Override
 	public int getCode () {
 		return code;
 	}
-	
-	@Override
-	public boolean isValid (int code) {
-		return code >= 0 && code <= 6;
-	}
-
 
 	@Override
-	public ResourceType parseValue(int code){
-		switch (code){
-			case 0: return C0_None;
-			case 1: return C1_All;
-			case 2: return C2_Food;
-			case 3: return C3_Wood;
-			case 4: return C4_Stone;
-			case 5: return C5_Gold;
-			case 6: return C6_Iron;
-			default: return null;
+	public ResourceType parseValue (int code) {
+		switch (code) {
+			case 0:
+				return C0_None;
+			case 1:
+				return C1_All;
+			case 2:
+				return C2_Food;
+			case 3:
+				return C3_Wood;
+			case 4:
+				return C4_Stone;
+			case 5:
+				return C5_Gold;
+			case 6:
+				return C6_Iron;
+			default:
+				return null;
 		}
 	}
-	
+
 	@Override
-	public String toString(){
-		return buildUIName();
+	public String toString () {
+		return buildUIName ();
 	}
 
 }

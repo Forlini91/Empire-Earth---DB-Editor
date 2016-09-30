@@ -21,6 +21,7 @@ import datmanager.DatFile;
  * Undefined/Unused fields usually have a negative ID and sequence number.
  * Sometimes there's an undefined field used as "null" element by other objects
  * and must not be altered.
+ *
  * @author MarcoForlini
  */
 public class Entry implements Comparable <Entry>, Iterable <Object> {
@@ -62,6 +63,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	/**
 	 * Create a new entry with the given DatStructure, name, sequence number, ID
 	 * and values.
+	 *
 	 * @param datStructure The dat file structure
 	 * @param dummyEntry If true, this entry is just for Link purposes and must
 	 *            be ignored anywhere except in Links
@@ -70,8 +72,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 * @param ID The ID
 	 * @param values The values for this entry
 	 */
-	public Entry (DatStructure datStructure, boolean dummyEntry, String name, int sequenceNumber, int ID,
-			List <Object> values) {
+	public Entry (DatStructure datStructure, boolean dummyEntry, String name, int sequenceNumber, int ID, List <Object> values) {
 		this.datStructure = datStructure;
 		this.dummyEntry = dummyEntry;
 		this.values = values;
@@ -85,12 +86,10 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 					}
 				}
 				this.name = name;
-				this.sequenceNumber = datStructure.indexSequence < 0 ? sequenceNumber
-						: get (datStructure.indexSequence);
+				this.sequenceNumber = datStructure.indexSequence < 0 ? sequenceNumber : get (datStructure.indexSequence);
 				this.ID = datStructure.indexID < 0 ? ID : get (datStructure.indexID);
 			} catch (Exception e) {
-				StringBuilder sb = new StringBuilder (
-						"Error with entry: " + sequenceNumber + "/" + ID + " of " + datStructure + '\n');
+				StringBuilder sb = new StringBuilder ("Error with entry: " + sequenceNumber + "/" + ID + " of " + datStructure + '\n');
 				values.forEach (x -> sb.append ("\tValue: ").append (x).append ('\n'));
 				System.err.println (sb);
 				throw e;
@@ -105,6 +104,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	/**
 	 * Create a new Entry with the given DatStructure, name, sequence number and
 	 * ID. Assign default values to all other fields.
+	 *
 	 * @param datStructure The dat file structure
 	 * @param dummyEntry If true, this entry is just for Link purposes and must
 	 *            be ignored anywhere except in Links
@@ -119,6 +119,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	/**
 	 * Duplicate the current entry and assign the given seqNum and ID to the
 	 * clone.
+	 *
 	 * @param sequenceNumber The clone's sequence number
 	 * @param ID The clone's ID
 	 * @return A duplicate of this Entry
@@ -137,6 +138,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	/**
 	 * Return a list of default values for all fields. Useful when adding a new
 	 * entry in the file.
+	 *
 	 * @param datStructure The new entry's structure
 	 * @param sequenceNumber The new entry's sequence number
 	 * @param ID The new entry's ID
@@ -159,6 +161,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Get a printable name of the entry.
+	 *
 	 * @return A printable name for the entry
 	 */
 	public String getName () {
@@ -179,6 +182,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Get a printable name of the entry.
+	 *
 	 * @return A printable name for the entry
 	 */
 	public String getTrimmedName () {
@@ -199,6 +203,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Check if this entry is a valid target you can jump in the GUI
+	 *
 	 * @return true if you can jump here, false otherwise
 	 */
 	public boolean isValidLinkTarget () {
@@ -207,6 +212,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Gets the values of this entry
+	 *
 	 * @return the values of this entry
 	 */
 	public List <Object> getValues () {
@@ -215,6 +221,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Get the entry's ID.
+	 *
 	 * @return the entry's ID
 	 */
 	public int getID () {
@@ -226,16 +233,19 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Sets the entry's ID
+	 *
 	 * @param ID The new ID
 	 */
 	public void setID (int ID) {
 		if (datStructure.indexID >= 0 && datStructure.indexID < values.size ()) {
 			values.set (datStructure.indexID, ID);
 		}
+		this.ID = ID;
 	}
 
 	/**
 	 * Get the entry's sequence number.
+	 *
 	 * @return the entry's sequence number
 	 */
 	public int getSequenceNumber () {
@@ -247,16 +257,19 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Set the entry's sequence number.
+	 *
 	 * @param sequenceNumber The new sequence number
 	 */
 	public void setSequenceNumber (int sequenceNumber) {
 		if (datStructure.indexSequence >= 0 && datStructure.indexSequence < values.size ()) {
 			values.set (datStructure.indexSequence, sequenceNumber);
 		}
+		this.sequenceNumber = sequenceNumber;
 	}
 
 	/**
 	 * Check and return if the entry is defined and usable.
+	 *
 	 * @return true if defined, false otherwise
 	 */
 	public boolean isDefined () {
@@ -269,10 +282,10 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 			return name;
 		} else if (isDefined ()) {
 			if (datStructure.nameBuilder != null) {
-				return "(" + ID + ") " + datStructure.nameBuilder.apply (this);
+				return "(" + getID () + ") " + datStructure.nameBuilder.apply (this);
 			}
 			if (datStructure.indexName >= 0 && datStructure.indexName < values.size ()) {
-				return "(" + ID + ") " + ((String) values.get (datStructure.indexName)).trim ();
+				return "(" + getID () + ") " + ((String) values.get (datStructure.indexName)).trim ();
 			}
 			return NAME_NONE;
 		}
@@ -292,7 +305,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 			case 1:
 				return 1;
 			default:
-				return Integer.compare (ID, o.ID);
+				return Integer.compare (getID (), o.getID ());
 		}
 	}
 
@@ -303,6 +316,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Find and return all links to this entry
+	 *
 	 * @param ordered If true, order the list
 	 * @return All links to this entry
 	 */
@@ -350,6 +364,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Gets the number of values in this entry
+	 *
 	 * @return the number of values
 	 */
 	public int size () {
@@ -358,6 +373,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Sets the value at the given index
+	 *
 	 * @param index The index
 	 * @param value The value to set
 	 */
@@ -367,6 +383,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Adds the value to the entry, in the given index
+	 *
 	 * @param index The index
 	 * @param value The value to add
 	 */
@@ -376,6 +393,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Adds the value to the entry
+	 *
 	 * @param value The value to add
 	 */
 	public void add (Object value) {
@@ -384,6 +402,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Remove the value to the entry, at the given index
+	 *
 	 * @param index The index
 	 */
 	public void remove (int index) {
@@ -392,6 +411,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 
 	/**
 	 * Gets the value at the given index
+	 *
 	 * @param <T> Type of object returned
 	 * @param index The index
 	 * @return The value in the index
@@ -411,6 +431,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 * method cannot return a spliterator that is {@code IMMUTABLE},
 	 * {@code CONCURRENT}, or <em>late-binding</em>. (See {@link #spliterator()}
 	 * for details.)
+	 *
 	 * @implSpec
 	 * 			The default implementation creates a sequential {@code Stream}
 	 *           from the
@@ -430,6 +451,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 * method cannot return a spliterator that is {@code IMMUTABLE},
 	 * {@code CONCURRENT}, or <em>late-binding</em>. (See {@link #spliterator()}
 	 * for details.)
+	 *
 	 * @implSpec
 	 * 			The default implementation creates a parallel {@code Stream}
 	 *           from the

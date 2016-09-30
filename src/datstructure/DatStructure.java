@@ -27,6 +27,7 @@ import datstructure.structures.Graphics;
 import datstructure.structures.Music;
 import datstructure.structures.Objects;
 import datstructure.structures.PremadeCivs;
+import datstructure.structures.RandomMap;
 import datstructure.structures.Sounds;
 import datstructure.structures.StartingResourches;
 import datstructure.structures.TechTree;
@@ -37,6 +38,7 @@ import datstructure.structures.UIBack;
 import datstructure.structures.UIControlEvents;
 import datstructure.structures.UIControls;
 import datstructure.structures.UIFonts;
+import datstructure.structures.UIFormEvents;
 import datstructure.structures.UIForms;
 import datstructure.structures.UIHotkey;
 import datstructure.structures.UnitBehavior;
@@ -47,6 +49,7 @@ import datstructure.structures.World;
 
 /**
  * Represents the structure of the entries of a file
+ *
  * @author MarcoForlini
  */
 public abstract class DatStructure {
@@ -54,12 +57,28 @@ public abstract class DatStructure {
 	/** All structures used by Vanilla files */
 	public static final DatStructure[] ALL_FILES;
 	static {
-		if ( !Core.AOC) {
-			ALL_FILES = new DatStructure[] { AIUnitTargeting.instance, AmbientSounds.instance, Animals.instance, AreaEffect.instance, Buttons.instance, Calamity.instance, Civilization.instance, CliffTerrain.instance, ColorTable.instance, CPBehavior.instance, Effects.instance, Events.instance, Family.instance, GameVariant.instance, GFXEffects.instance, Graphics.instance, Music.instance, Objects.instance, PremadeCivs.instance, Sounds.instance, StartingResourches.instance, TechTree.instance, Terrain.instance, TerrainGrayTextures.instance, TerrainType.instance, UIBack.instance,
-					UIControlEvents.instance, UIControls.instance, UIFonts.instance, UIForms.instance, UIHotkey.instance, UnitBehavior.instance, UnitSet.instance, Upgrade.instance, WeaponToHit.instance, World.instance };
+		if (!Core.AOC) {
+			ALL_FILES = new DatStructure[] {
+					AIUnitTargeting.instance, AmbientSounds.instance, Animals.instance, AreaEffect.instance, Buttons.instance,
+					Calamity.instance, Civilization.instance, CliffTerrain.instance, ColorTable.instance, CPBehavior.instance,
+					Effects.instance, Events.instance, Family.instance, GameVariant.instance, GFXEffects.instance,
+					Graphics.instance, Music.instance, Objects.instance, PremadeCivs.instance, RandomMap.instance,
+					Sounds.instance, StartingResourches.instance, TechTree.instance, Terrain.instance, TerrainGrayTextures.instance,
+					TerrainType.instance, UIBack.instance, UIControlEvents.instance, UIControls.instance, UIFonts.instance,
+					UIFormEvents.instance, UIForms.instance, UIHotkey.instance, UnitBehavior.instance, UnitSet.instance,
+					Upgrade.instance, WeaponToHit.instance, World.instance
+			};
 		} else {
-			ALL_FILES = new DatStructure[] { AIUnitTargeting.instance, AmbientSounds.instance, Animals.instance, AreaEffect.instance, Buttons.instance, Calamity.instance, Civilization.instance, CivPower.instance, CliffTerrain.instance, ColorTable.instance, CPBehavior.instance, Effects.instance, Events.instance, Family.instance, GameVariant.instance, GFXEffects.instance, Graphics.instance, Music.instance, Objects.instance, PremadeCivs.instance, Sounds.instance, StartingResourches.instance, TechTree.instance, Terrain.instance, TerrainGrayTextures.instance, TerrainType.instance, UIBack.instance,
-					UIControlEvents.instance, UIControls.instance, UIFonts.instance, UIForms.instance, UIHotkey.instance, UnitBehavior.instance, UnitSet.instance, Upgrade.instance, WeaponToHit.instance, World.instance };
+			ALL_FILES = new DatStructure[] {
+					AIUnitTargeting.instance, AmbientSounds.instance, Animals.instance, AreaEffect.instance, Buttons.instance,
+					Calamity.instance, Civilization.instance, CivPower.instance, CliffTerrain.instance, ColorTable.instance,
+					CPBehavior.instance, Effects.instance, Events.instance, Family.instance, GameVariant.instance,
+					GFXEffects.instance, Graphics.instance, Music.instance, Objects.instance, PremadeCivs.instance,
+					RandomMap.instance, Sounds.instance, StartingResourches.instance, TechTree.instance, Terrain.instance,
+					TerrainGrayTextures.instance, TerrainType.instance, UIBack.instance, UIControlEvents.instance, UIControls.instance,
+					UIFonts.instance, UIFormEvents.instance, UIForms.instance, UIHotkey.instance, UnitBehavior.instance,
+					UnitSet.instance, Upgrade.instance, WeaponToHit.instance, World.instance
+			};
 		}
 	}
 
@@ -232,9 +251,9 @@ public abstract class DatStructure {
 
 
 
-
 	/**
 	 * Create a new DatStructure
+	 *
 	 * @param name Displayed name
 	 * @param fileName File name
 	 * @param defineNumEntries If true, the file contains the number of entries.
@@ -268,6 +287,7 @@ public abstract class DatStructure {
 	/**
 	 * Gets the index of the field which hold the number of extra fields in the
 	 * entry
+	 *
 	 * @return The index of the field which hold the number of extra fields in
 	 *         the entry
 	 */
@@ -329,7 +349,7 @@ public abstract class DatStructure {
 				break;
 
 			case MISSING_UNKNOWN:
-				if ( !Arrays.stream (fieldStructs).anyMatch (fs -> fs.knowledge == Knowledge.UNKNOWN)) {
+				if (!Arrays.stream (fieldStructs).anyMatch (fs -> fs.knowledge == Knowledge.UNKNOWN)) {
 					if (Arrays.stream (fieldStructs).anyMatch (fs -> fs.knowledge != Knowledge.KNOWN)) {
 						if (noAnnotation) {
 							Core.printWarning (null, "The file " + this + " should be marked as \"unknown parsed\".\nAdd the annotation \"@DatStructureParse\" to the class definition", "Missing definition");
@@ -351,6 +371,7 @@ public abstract class DatStructure {
 
 	/**
 	 * Compare this object with the passed object
+	 *
 	 * @param datStructure The other object
 	 * @return The result of the comparation
 	 */

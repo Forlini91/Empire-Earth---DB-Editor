@@ -4,6 +4,7 @@ package constants;
 /**
  * Area type codes used in an Area entry.
  * They define the effect applied to objects within the area.
+ * 
  * @author MarcoForlini
  */
 public enum AreaEffectType implements EnumValue {
@@ -25,55 +26,59 @@ public enum AreaEffectType implements EnumValue {
 	/** Gatherers receive an economy bonus on the resources they bring to a gather point */
 	C7_ECON_BONUS ("Economic bonus", 7),
 	/** Objects are cloaked */
-	C8_CLOAK ("Cloaking", 8)
-	;
-	
+	C8_CLOAK ("Cloaking", 8);
+
 
 	/** Name to be shown in the UI */
 	public final String name;
-	
+
 	/** Code used in the dat files */
 	public final int code;
-	
-	AreaEffectType(String name, int code){
+
+	AreaEffectType (String name, int code) {
 		this.name = name;
 		this.code = code;
 	}
-	
+
 	@Override
-	public String getName(){
+	public String getName () {
 		return name;
 	}
-	
+
 	@Override
 	public int getCode () {
 		return code;
 	}
-	
+
 	@Override
-	public boolean isValid (int code) {
-		return code >= 0 && code <= 8;
+	public AreaEffectType parseValue (int code) {
+		switch (code) {
+			case 0:
+				return NONE;
+			case 1:
+				return C1_HEALING;
+			case 2:
+				return C2_FIXED_MORALE;
+			case 3:
+				return C3_ANTI_CALAMITY;
+			case 4:
+				return C4_ANTI_CONVERSION;
+			case 5:
+				return C5_DYNAMIC_MORALE;
+			case 6:
+				return C6_HERO_MORALE;
+			case 7:
+				return C7_ECON_BONUS;
+			case 8:
+				return C8_CLOAK;
+			default:
+				return null;
+		}
 	}
 
 	@Override
-	public AreaEffectType parseValue(int code){
-		switch (code){
-			case 0: return NONE;
-			case 1: return C1_HEALING;
-			case 2: return C2_FIXED_MORALE;
-			case 3: return C3_ANTI_CALAMITY;
-			case 4: return C4_ANTI_CONVERSION;
-			case 5: return C5_DYNAMIC_MORALE;
-			case 6: return C6_HERO_MORALE;
-			case 7: return C7_ECON_BONUS;
-			case 8: return C8_CLOAK;
-			default: return null;
-		}
+	public String toString () {
+		return buildUIName ();
 	}
-	
-	@Override
-	public String toString(){
-		return buildUIName();
-	}
-	
+
 }

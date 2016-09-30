@@ -7,7 +7,7 @@ package constants;
  * @author MarcoForlini
  */
 public enum TerrainFamily implements EnumValue {
-	
+
 	/** Ambient */
 	C00_AMBIENT ("Ambient", 0),
 	/** Unknown */
@@ -34,27 +34,26 @@ public enum TerrainFamily implements EnumValue {
 	C11_SANDY ("Sandy", 11),
 	/** Space terrain */
 	C12_SPACE ("Space", 12),
-	/**Unknown */
+	/** Unknown */
 	C13_UNKNOWN ("Unknown", 13),
 	/** Trees */
-	C14_TREE ("Trees", 14)
-	;
+	C14_TREE ("Trees", 14);
 
 
 	/** Name to be shown in the UI */
 	public final String name;
-	
+
 	/** Code used in the dat files */
 	public final int code;
 
-	
-	TerrainFamily(String name, int code){
+
+	TerrainFamily (String name, int code) {
 		this.name = name;
 		this.code = code;
 	}
 
 	@Override
-	public String getName(){
+	public String getName () {
 		return name;
 	}
 
@@ -62,37 +61,48 @@ public enum TerrainFamily implements EnumValue {
 	public int getCode () {
 		return code;
 	}
-	
+
 	@Override
-	public boolean isValid (int code) {
-		return code >= 0 && code <= 12;
-	}
-	
-	@Override
-	public TerrainFamily parseValue(int code){
-		switch (code){
-			case 0: return C00_AMBIENT;
-			case 1: return C01_UNKNOWN;
-			case 2: return C02_ROCKY;
-			case 3: return C03_UNKNOWN;
-			case 4: return C04_MUDDY;
-			case 5: return C05_FROSTY;
-			case 6: return C06_GRASSY;
-			case 7: return C07_UNKNOWN;
-			case 8: return C08_ARTIFICIAL;
-			case 9: return C09_CLIFF;
-			case 10: return C10_UNKNOWN;
-			case 11: return C11_SANDY;
-			case 12: return C12_SPACE;
-			case 13: return C13_UNKNOWN;
-			case 14: return C14_TREE;
-			default: return null;
+	public TerrainFamily parseValue (int code) {
+		switch (code) {
+			case 0:
+				return C00_AMBIENT;
+			case 1:
+				return C01_UNKNOWN;
+			case 2:
+				return C02_ROCKY;
+			case 3:
+				return C03_UNKNOWN;
+			case 4:
+				return C04_MUDDY;
+			case 5:
+				return C05_FROSTY;
+			case 6:
+				return C06_GRASSY;
+			case 7:
+				return C07_UNKNOWN;
+			case 8:
+				return C08_ARTIFICIAL;
+			case 9:
+				return C09_CLIFF;
+			case 10:
+				return C10_UNKNOWN;
+			case 11:
+				return C11_SANDY;
+			case 12:
+				return C12_SPACE;
+			case 13:
+				return C13_UNKNOWN;
+			case 14:
+				return C14_TREE;
+			default:
+				return null;
 		}
 	}
 
 	@Override
-	public String toString(){
-		return buildUIName();
+	public String toString () {
+		return buildUIName ();
 	}
-	
+
 }

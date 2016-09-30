@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import constants.EnumValue;
-import constants.WorldID;
 
 
 /**
@@ -60,7 +59,6 @@ public class EntryValueMap {
 		int counter = 0;
 		boolean enumType = fieldStruct.enumValues != null;
 		EnumValue enum0 = enumType ? fieldStruct.enumValues[0] : null;
-		boolean worldEnumType = enumType && enum0 instanceof WorldID;
 		for (EntryGroup entryGroup : entryGroups) {
 			for (Entry entry : entryGroup) {
 				counter++;
@@ -73,10 +71,7 @@ public class EntryValueMap {
 							int intVal = (Integer) value;
 							value = enum0.parseValue (intVal);
 							if (value == null) {
-								if (worldEnumType) {
-									continue;
-								}
-								throw new IllegalArgumentException ("Can't find this code: " + intVal);
+								continue;
 							}
 						}
 					}

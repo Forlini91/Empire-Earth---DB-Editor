@@ -132,11 +132,6 @@ public enum EffectCode implements EnumValue {
 	}
 
 	@Override
-	public boolean isValid (int code) {
-		return code >= -1 && code <= 22;
-	}
-
-	@Override
 	public EffectCode parseValue (int code) {
 		switch (code) {
 			case -1:

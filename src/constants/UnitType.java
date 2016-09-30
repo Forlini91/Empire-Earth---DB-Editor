@@ -7,7 +7,7 @@ package constants;
  * @author MarcoForlini
  */
 public enum UnitType implements EnumValue {
-	
+
 	/** Ambient */
 	C00_AMBIENT ("Ambient", 0),
 	/** Resource */
@@ -77,24 +77,23 @@ public enum UnitType implements EnumValue {
 	/** Space transport */
 	C33_SPACE_TRANSPORT ("Space transport", 33),
 	/** Space fighter */
-	C34_SPACE_FIGHTER ("Space fighter", 34)
-	;
+	C34_SPACE_FIGHTER ("Space fighter", 34);
 
 
 	/** Name to be shown in the UI */
 	public final String name;
-	
+
 	/** Code used in the dat files */
 	public final int code;
 
-	
-	UnitType(String name, int code){
+
+	UnitType (String name, int code) {
 		this.name = name;
 		this.code = code;
 	}
 
 	@Override
-	public String getName(){
+	public String getName () {
 		return name;
 	}
 
@@ -104,55 +103,86 @@ public enum UnitType implements EnumValue {
 	}
 
 	@Override
-	public boolean isValid (int code) {
-		return code >= 0 && code <= 34;
-	}
-	
-	@Override
-	public UnitType parseValue(int code){
-		switch (code){
-			case 0: return C00_AMBIENT;
-			case 1: return C01_RESOURCE;
-			case 2: return C02_BUILDING;
-			case 3: return C03_AIR_UNIT;
-			case 4: return C04_SEA_UNIT;
-			case 5: return C05_LAND_UNIT;
-			case 6: return C06_WORKER_UNIT;
-			case 7: return C07_HELICOPTER;
-			case 8: return C08_UNKNOWN;
-			case 9: return C09_PROJECTILE;
-			case 10: return C10_UNIT_UNDERWATER;
-			case 11: return C11_BOMB;
-			case 12: return C12_MISSILE;
-			case 13: return C13_HERO_HEALER;
-			case 14: return C14_UNKNOWN;
-			case 15: return C15_UNKNOWN;
-			case 16: return C16_LAND_TRANSPORT;
-			case 17: return C17_HELI_TRANSPORT;
-			case 18: return C18_SHIP_TRANSPORT;
-			case 19: return C19_UNKNOWN;
-			case 20: return C20_MISSILE_UNDERWATER;
-			case 21: return C21_CARRIER;
-			case 22: return C22_SHIP_FISHING;
-			case 23: return C23_HERO_MORALE;
-			case 24: return C24_UNKNOWN;
-			case 25: return C25_GATE;
-			case 26: return C26_CYBORG_MEDIC;
-			case 27: return C27_ANIMAL_SEA;
-			case 28: return C28_ANIMAL_AIR;
-			case 29: return C29_FORTRESS;
-			case 30: return C30_PRIEST_TOWER;
-			case 31: return C31_SPACE_BATTLESHIP;
-			case 32: return C32_SPACE_CARRIER;
-			case 33: return C33_SPACE_TRANSPORT;
-			case 34: return C34_SPACE_FIGHTER;
-			default: return null;
+	public UnitType parseValue (int code) {
+		switch (code) {
+			case 0:
+				return C00_AMBIENT;
+			case 1:
+				return C01_RESOURCE;
+			case 2:
+				return C02_BUILDING;
+			case 3:
+				return C03_AIR_UNIT;
+			case 4:
+				return C04_SEA_UNIT;
+			case 5:
+				return C05_LAND_UNIT;
+			case 6:
+				return C06_WORKER_UNIT;
+			case 7:
+				return C07_HELICOPTER;
+			case 8:
+				return C08_UNKNOWN;
+			case 9:
+				return C09_PROJECTILE;
+			case 10:
+				return C10_UNIT_UNDERWATER;
+			case 11:
+				return C11_BOMB;
+			case 12:
+				return C12_MISSILE;
+			case 13:
+				return C13_HERO_HEALER;
+			case 14:
+				return C14_UNKNOWN;
+			case 15:
+				return C15_UNKNOWN;
+			case 16:
+				return C16_LAND_TRANSPORT;
+			case 17:
+				return C17_HELI_TRANSPORT;
+			case 18:
+				return C18_SHIP_TRANSPORT;
+			case 19:
+				return C19_UNKNOWN;
+			case 20:
+				return C20_MISSILE_UNDERWATER;
+			case 21:
+				return C21_CARRIER;
+			case 22:
+				return C22_SHIP_FISHING;
+			case 23:
+				return C23_HERO_MORALE;
+			case 24:
+				return C24_UNKNOWN;
+			case 25:
+				return C25_GATE;
+			case 26:
+				return C26_CYBORG_MEDIC;
+			case 27:
+				return C27_ANIMAL_SEA;
+			case 28:
+				return C28_ANIMAL_AIR;
+			case 29:
+				return C29_FORTRESS;
+			case 30:
+				return C30_PRIEST_TOWER;
+			case 31:
+				return C31_SPACE_BATTLESHIP;
+			case 32:
+				return C32_SPACE_CARRIER;
+			case 33:
+				return C33_SPACE_TRANSPORT;
+			case 34:
+				return C34_SPACE_FIGHTER;
+			default:
+				return null;
 		}
 	}
 
 	@Override
-	public String toString(){
-		return buildUIName();
+	public String toString () {
+		return buildUIName ();
 	}
-	
+
 }

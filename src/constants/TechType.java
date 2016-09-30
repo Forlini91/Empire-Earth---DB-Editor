@@ -7,7 +7,7 @@ package constants;
  * @author MarcoForlini
  */
 public enum TechType implements EnumValue {
-	
+
 	/** Technology which improve the civilization (+15% food gather rate) */
 	C0_Improvement ("Improvement", 0),
 	/** Technology which allow to create/build an object */
@@ -33,18 +33,18 @@ public enum TechType implements EnumValue {
 
 	/** Name to be shown in the UI */
 	public final String name;
-	
+
 	/** Code used in the dat files */
 	public final int code;
 
-	
-	TechType(String name, int code){
+
+	TechType (String name, int code) {
 		this.name = name;
 		this.code = code;
 	}
-	
+
 	@Override
-	public String getName(){
+	public String getName () {
 		return name;
 	}
 
@@ -52,32 +52,38 @@ public enum TechType implements EnumValue {
 	public int getCode () {
 		return code;
 	}
-	
+
 	@Override
-	public boolean isValid (int code) {
-		return code >= 0 && code <= 9;
-	}
-	
-	@Override
-	public TechType parseValue(int code){
-		switch (code){
-			case 0: return C0_Improvement;
-			case 1: return C1_Object;
-			case 2: return C2_Epoch;
-			case 3: return C3_Replace;
-			case 4: return C4_Wonder;
-			case 5: return C5_Calamity;
-			case 6: return C6_Wall;
-			case 7: return C7_Upgrade;
-			case 8: return C8_Unknown;
-			case 9: return C9_Garrison_Upgrade;
-			default: return null;
+	public TechType parseValue (int code) {
+		switch (code) {
+			case 0:
+				return C0_Improvement;
+			case 1:
+				return C1_Object;
+			case 2:
+				return C2_Epoch;
+			case 3:
+				return C3_Replace;
+			case 4:
+				return C4_Wonder;
+			case 5:
+				return C5_Calamity;
+			case 6:
+				return C6_Wall;
+			case 7:
+				return C7_Upgrade;
+			case 8:
+				return C8_Unknown;
+			case 9:
+				return C9_Garrison_Upgrade;
+			default:
+				return null;
 		}
 	}
 
 	@Override
-	public String toString(){
-		return buildUIName();
+	public String toString () {
+		return buildUIName ();
 	}
-	
+
 }

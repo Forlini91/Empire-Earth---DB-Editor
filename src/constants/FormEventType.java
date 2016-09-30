@@ -4,21 +4,17 @@ package constants;
 /**
  * Tech type codes used in a Technology entry.
  * They defines the technology type.
+ *
  * @author MarcoForlini
  */
-public enum CalamityTargetType implements EnumValue {
+@SuppressWarnings ("javadoc")
+public enum FormEventType implements EnumValue {
 
-	/** No target */
-	C0_None ("None", 0),
-
-	/** Self target */
-	C1_NoTarget ("Self", 1),
-
-	/** Cast on the selected area */
-	C2_Area ("Select area", 2),
-
-	/** Cast on the selected target */
-	C3_Target ("Select target", 3),
+	C0_OPEN ("Open", 0),
+	C1_CLOSE ("Close", 1),
+	C2_LEFT_CLICK ("Mouse: Left click", 2),
+	C4_MIDDLE_CLICK ("Mouse: Middle click", 4),
+	C8_RIGHT_CLICK ("Mouse: Right click", 8),
 	;
 
 
@@ -29,7 +25,7 @@ public enum CalamityTargetType implements EnumValue {
 	public final int code;
 
 
-	CalamityTargetType (String name, int code) {
+	FormEventType (String name, int code) {
 		this.name = name;
 		this.code = code;
 	}
@@ -45,16 +41,18 @@ public enum CalamityTargetType implements EnumValue {
 	}
 
 	@Override
-	public CalamityTargetType parseValue (int code) {
+	public FormEventType parseValue (int code) {
 		switch (code) {
 			case 0:
-				return C0_None;
+				return C0_OPEN;
 			case 1:
-				return C1_NoTarget;
+				return C1_CLOSE;
 			case 2:
-				return C2_Area;
-			case 3:
-				return C3_Target;
+				return C2_LEFT_CLICK;
+			case 4:
+				return C4_MIDDLE_CLICK;
+			case 8:
+				return C8_RIGHT_CLICK;
 			default:
 				return null;
 		}

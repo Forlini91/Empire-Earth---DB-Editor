@@ -7,7 +7,7 @@ package constants;
  * @author MarcoForlini
  */
 public enum WonderType implements EnumValue {
-	
+
 	/** No power */
 	C0_NONE ("None", 0),
 	/** Power which allow multiple conversion */
@@ -27,18 +27,18 @@ public enum WonderType implements EnumValue {
 
 	/** Name to be shown in the UI */
 	public final String name;
-	
+
 	/** Code used in the dat files */
 	public final int code;
 
-	
-	WonderType(String name, int code){
+
+	WonderType (String name, int code) {
 		this.name = name;
 		this.code = code;
 	}
-	
+
 	@Override
-	public String getName(){
+	public String getName () {
 		return name;
 	}
 
@@ -46,29 +46,32 @@ public enum WonderType implements EnumValue {
 	public int getCode () {
 		return code;
 	}
-	
+
 	@Override
-	public boolean isValid (int code) {
-		return code >= 0 && code <= 9;
-	}
-	
-	@Override
-	public WonderType parseValue(int code){
-		switch (code){
-			case 0: return C0_NONE;
-			case 1: return C1_MULTIPLE_CONVERSIONS;
-			case 2: return C2_BUILDING_RESISTANCE;
-			case 3: return C3_REVEAL_SEA;
-			case 4: return C4_MORE_POPULATION;
-			case 5: return C5_REVEAL_BUILDINGS;
-			case 6: return C6_REGENERATION;
-			default: return null;
+	public WonderType parseValue (int code) {
+		switch (code) {
+			case 0:
+				return C0_NONE;
+			case 1:
+				return C1_MULTIPLE_CONVERSIONS;
+			case 2:
+				return C2_BUILDING_RESISTANCE;
+			case 3:
+				return C3_REVEAL_SEA;
+			case 4:
+				return C4_MORE_POPULATION;
+			case 5:
+				return C5_REVEAL_BUILDINGS;
+			case 6:
+				return C6_REGENERATION;
+			default:
+				return null;
 		}
 	}
 
 	@Override
-	public String toString(){
-		return buildUIName();
+	public String toString () {
+		return buildUIName ();
 	}
-	
+
 }

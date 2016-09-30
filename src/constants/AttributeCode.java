@@ -101,93 +101,135 @@ public enum AttributeCode implements EnumValue {
 	/** Name */
 	C45_NAME ("Name", 45),
 	;
-	
-	
+
+
 	/** Name to be shown in the UI */
 	public final String name;
-	
+
 	/** Code used in the dat files */
 	public final int code;
 
-	
-	AttributeCode(String name, int code){
+
+	AttributeCode (String name, int code) {
 		this.name = name;
 		this.code = code;
 	}
-	
+
 	@Override
-	public String getName(){
+	public String getName () {
 		return name;
 	}
-	
+
 	@Override
 	public int getCode () {
 		return code;
 	}
 
-	@Override
-	public boolean isValid (int code) {
-		return code >= -1 && code <= 45;
-	}
 
-	
 
 	@Override
-	public AttributeCode parseValue(int code){
-		switch (code){
-			case -1: return C_1_NONE;
-			case 1: return C01_ATTACK;
-			case 2: return C02_UNKNOWN;
-			case 3: return C03_RANGE;
-			case 4: return C04_LOS;
-			case 5: return C05_UNKNOWN;
-			case 6: return C06_HEALTH;
-			case 7: return C07_UNKNOWN;
-			case 8: return C08_UNKNOWN;
-			case 9: return C09_SPEED;
-			case 10: return C10_UNKNOWN;
-			case 11: return C11_UNKNOWN;
-			case 12: return C12_UNKNOWN;
-			case 13: return C13_UNKNOWN;
-			case 14: return C14_UNKNOWN;
-			case 15: return C15_UNKNOWN;
-			case 16: return C16_UNKNOWN;
-			case 17: return C17_UNKNOWN;
-			case 18: return C18_UNKNOWN;
-			case 19: return C19_UNKNOWN;
-			case 20: return C20_UNKNOWN;
-			case 21: return C21_UNKNOWN;
-			case 22: return C22_UNKNOWN;
-			case 23: return C23_POP_LIMIT;
-			case 24: return C24_UNKNOWN;
-			case 25: return C25_UNKNOWN;
-			case 26: return C26_WOOD_GATHER;
-			case 27: return C27_STONE_GATHER;
-			case 28: return C28_GOLD_GATHER;
-			case 29: return C29_IRON_GATHER;
-			case 30: return C30_UNKNOWN;
-			case 31: return C31_HUNT_GATHER;
-			case 32: return C32_FORAGE_GATHER;
-			case 33: return C33_FARM_GATHER;
-			case 34: return C34_UNKNOWN;
-			case 35: return C35_UNKNOWN;
-			case 36: return C36_CONVERT_PRIEST;
-			case 37: return C37_CONVERT_BUILDING;
-			case 38: return C38_COMMERCIAL_TAXES;
-			case 39: return C39_UNKNOWN;
-			case 40: return C40_AREA_EFFECT;
-			case 41: return C41_POWER_RECOVER_RATE;
-			case 42: return C42_TERRAIN_FAMILY;
-			case 43: return C43_HEALTH_RECOVER_RATE;
-			case 44: return C44_POWER_AMOUNT;
-			case 45: return C45_NAME;
-			default: return null;
+	public AttributeCode parseValue (int code) {
+		switch (code) {
+			case -1:
+				return C_1_NONE;
+			case 1:
+				return C01_ATTACK;
+			case 2:
+				return C02_UNKNOWN;
+			case 3:
+				return C03_RANGE;
+			case 4:
+				return C04_LOS;
+			case 5:
+				return C05_UNKNOWN;
+			case 6:
+				return C06_HEALTH;
+			case 7:
+				return C07_UNKNOWN;
+			case 8:
+				return C08_UNKNOWN;
+			case 9:
+				return C09_SPEED;
+			case 10:
+				return C10_UNKNOWN;
+			case 11:
+				return C11_UNKNOWN;
+			case 12:
+				return C12_UNKNOWN;
+			case 13:
+				return C13_UNKNOWN;
+			case 14:
+				return C14_UNKNOWN;
+			case 15:
+				return C15_UNKNOWN;
+			case 16:
+				return C16_UNKNOWN;
+			case 17:
+				return C17_UNKNOWN;
+			case 18:
+				return C18_UNKNOWN;
+			case 19:
+				return C19_UNKNOWN;
+			case 20:
+				return C20_UNKNOWN;
+			case 21:
+				return C21_UNKNOWN;
+			case 22:
+				return C22_UNKNOWN;
+			case 23:
+				return C23_POP_LIMIT;
+			case 24:
+				return C24_UNKNOWN;
+			case 25:
+				return C25_UNKNOWN;
+			case 26:
+				return C26_WOOD_GATHER;
+			case 27:
+				return C27_STONE_GATHER;
+			case 28:
+				return C28_GOLD_GATHER;
+			case 29:
+				return C29_IRON_GATHER;
+			case 30:
+				return C30_UNKNOWN;
+			case 31:
+				return C31_HUNT_GATHER;
+			case 32:
+				return C32_FORAGE_GATHER;
+			case 33:
+				return C33_FARM_GATHER;
+			case 34:
+				return C34_UNKNOWN;
+			case 35:
+				return C35_UNKNOWN;
+			case 36:
+				return C36_CONVERT_PRIEST;
+			case 37:
+				return C37_CONVERT_BUILDING;
+			case 38:
+				return C38_COMMERCIAL_TAXES;
+			case 39:
+				return C39_UNKNOWN;
+			case 40:
+				return C40_AREA_EFFECT;
+			case 41:
+				return C41_POWER_RECOVER_RATE;
+			case 42:
+				return C42_TERRAIN_FAMILY;
+			case 43:
+				return C43_HEALTH_RECOVER_RATE;
+			case 44:
+				return C44_POWER_AMOUNT;
+			case 45:
+				return C45_NAME;
+			default:
+				return null;
 		}
 	}
-	
+
 	@Override
-	public String toString(){
-		return buildUIName();
+	public String toString () {
+		return buildUIName ();
 	}
 
 }
