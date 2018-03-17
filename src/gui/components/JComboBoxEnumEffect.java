@@ -24,25 +24,27 @@ import gui.FrameEditor;
 
 /**
  * A JComboBox which hold the content of an enum
+ *
  * @author MarcoForlini
  */
 public class JComboBoxEnumEffect extends JComboBox <EffectCode> implements EntryFieldInterface, ItemListener, MouseListener, KeyListener {
 
-	private static final long serialVersionUID = -5787229930995728192L;
-	private static final BiPredicate <String, EffectCode> NAME_MATCHER = (text, effectCode) -> effectCode.name.toLowerCase ().contains (text);
-	private static final BiPredicate <Integer, EffectCode> ID_MATCHER = (val, effectCode) -> effectCode.code == val || NAME_MATCHER.test (val.toString (), effectCode);
+	private static final long								serialVersionUID	= -5787229930995728192L;
+	private static final BiPredicate <String, EffectCode>	NAME_MATCHER		= (text, effectCode) -> effectCode.name.toLowerCase ().contains (text);
+	private static final BiPredicate <Integer, EffectCode>	ID_MATCHER			= (val, effectCode) -> effectCode.code == val || NAME_MATCHER.test (val.toString (), effectCode);
 
-	private FieldStruct fieldStruct;
-	private int index;
-	private FrameEditor frameEditor;
+	private FieldStruct										fieldStruct;
+	private int												index;
+	private FrameEditor										frameEditor;
 
-	private ListSearcher <EffectCode> searcher = new ListSearcher<> (NAME_MATCHER, ID_MATCHER);
-	private JTextComponent textEditor = ((JTextComponent) getEditor ().getEditorComponent ());
-	private Object defaultVal = null;
-	private boolean altered = false;
+	private ListSearcher <EffectCode>						searcher			= new ListSearcher<> (NAME_MATCHER, ID_MATCHER);
+	private JTextComponent									textEditor			= ((JTextComponent) getEditor ().getEditorComponent ());
+	private Object											defaultVal			= null;
+	private boolean											altered				= false;
 
 	/**
 	 * Create a new {@link JComboBoxEnumEffect}
+	 *
 	 * @param fieldStruct The field structure
 	 * @param index Index of the field
 	 * @param frameEditor The FrameEditor object
@@ -52,6 +54,7 @@ public class JComboBoxEnumEffect extends JComboBox <EffectCode> implements Entry
 		this.fieldStruct = fieldStruct;
 		this.index = index;
 		this.frameEditor = frameEditor;
+		setToolTipText (fieldStruct.getDescription ());
 		setEditable (true);
 		addItemListener (this);
 		addMouseListener (this);
@@ -195,7 +198,7 @@ public class JComboBoxEnumEffect extends JComboBox <EffectCode> implements Entry
 				ComboPopup popup = (ComboPopup) getUI ().getAccessibleChild (this, 0);
 				setSelectedItem (popup.getList ().getSelectedValue ());
 			} else {
-				if ( !isPopupVisible ()) {
+				if (!isPopupVisible ()) {
 					showPopup ();
 				}
 				List <EffectCode> results = searcher.find (EffectCode.values (), null, text);

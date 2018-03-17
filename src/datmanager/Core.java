@@ -19,99 +19,111 @@ import gui.EESplashScreen;
 import gui.FrameMain;
 import gui.components.JScrollPaneRed;
 
+
 /**
  * Core class. Contains the method main, the main data loaded by the program and some useful methods
- * @author MarcoForlini
  *
+ * @author MarcoForlini
  */
 public class Core {
 
 	/** If true, the editor is in AOC mode */
-	public static Boolean AOC = new EESplashScreen().askEditorType();
+	public static Boolean				AOC				= new EESplashScreen ().askEditorType ();
 
 	/** Convert a float number to string with a specific number of decimals and round */
-	public static final NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
+	public static final NumberFormat	numberFormat	= NumberFormat.getInstance (Locale.ENGLISH);
 	static {
-		numberFormat.setMaximumFractionDigits(6);
-		numberFormat.setGroupingUsed(false);
-		numberFormat.setRoundingMode(RoundingMode.HALF_UP);
+		numberFormat.setMinimumFractionDigits (6);
+		numberFormat.setMaximumFractionDigits (6);
+		numberFormat.setGroupingUsed (false);
+		numberFormat.setRoundingMode (RoundingMode.HALF_UP);
 	}
-	
-	
 
-	@SuppressWarnings ({ "javadoc" })
+
+
 	public static void main (String[] args) {
-		new Thread(Language.LIST::size).start();  //This makes the Language class initialize... SSSHHH!!!
-		new Thread(DatStructure::initAllStructures).start();
-		FrameMain.instance.setVisible(true);
+		new Thread (Language.LIST::size).start (); // This makes the Language class initialize... SSSHHH!!!
+		new Thread (DatStructure::initAllStructures).start ();
+		FrameMain.instance.setVisible (true);
 	}
 
 
 	/**
 	 * Convert a throwable's stack trace to String
-	 * @param e		The throwable
-	 * @return		Its stack trace
+	 *
+	 * @param e The throwable
+	 * @return Its stack trace
 	 */
-	public static String buildStackTrace(Throwable e){
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		PrintStream ps = new PrintStream(baos);
-		e.printStackTrace(ps);
-		return new String(baos.toByteArray(), StandardCharsets.UTF_8);
-	}
-
-
-	/**
-	 * Show a message about an error
-	 * @param parent	The parent component
-	 * @param message	Message to display
-	 * @param title		Title of the message
-	 */
-	public static void printError(Component parent, String message, String title){
-		JOptionPane.showMessageDialog(parent, message, title, JOptionPane.ERROR_MESSAGE);
-	}
-	
-	
-	/**
-	 * Show a message about a warning
-	 * @param parent	The parent component
-	 * @param message	Message to display
-	 * @param title		Title of the message
-	 */
-	public static void printWarning(Component parent, String message, String title){
-		JOptionPane.showMessageDialog(parent, message, title, JOptionPane.WARNING_MESSAGE);
+	public static String buildStackTrace (Throwable e) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream ();
+		PrintStream ps = new PrintStream (baos);
+		e.printStackTrace (ps);
+		return new String (baos.toByteArray (), StandardCharsets.UTF_8);
 	}
 
 
 	/**
 	 * Show a message about an error and ask the user to see the stack trace of the given exception
-	 * @param parent	The parent component
-	 * @param e			The exception
-	 * @param message	Message to display
-	 * @param title		Title of the message
+	 *
+	 * @param parent The parent component
+	 * @param e The exception
+	 * @param message Message to display
+	 * @param title Title of the message
+	 * @param alsoPrintToConsole if <code>true</code>, also print the stack trace to console
 	 */
-	public static void printException(Component parent, Throwable e, String message, String title){
-		String[] exceptionChoices = {"Close", "Show stack trace"};
-		if (JOptionPane.showOptionDialog(parent, message, title, 0, JOptionPane.ERROR_MESSAGE, null, exceptionChoices, exceptionChoices[0]) == 1) {
-			printException(parent, e);
+	public static void printException (Component parent, Throwable e, String message, String title, boolean alsoPrintToConsole) {
+		String[] exceptionChoices = { "Close", "Show stack trace" };
+		if (JOptionPane.showOptionDialog (parent, message, title, 0, JOptionPane.ERROR_MESSAGE, null, exceptionChoices, exceptionChoices[0]) == 1) {
+			printException (parent, e, alsoPrintToConsole);
 		}
 	}
 
 	/**
 	 * Show a message with the stack trace of the given exception
-	 * @param parent	The parent component
-	 * @param e			The exception
+	 *
+	 * @param parent The parent component
+	 * @param e The exception
+	 * @param alsoPrintToConsole if <code>true</code>, also print the stack trace to console
 	 */
-	public static void printException(Component parent, Throwable e){
-		e.printStackTrace();
-		JTextArea area = new JTextArea(buildStackTrace(e));
-		area.setForeground(Color.RED);
-		JScrollPane scrollPane = new JScrollPaneRed(area);
-		scrollPane.setPreferredSize(new Dimension(800, 500));
-		JOptionPane.showMessageDialog(null, scrollPane, "Exception: stack trace", JOptionPane.ERROR_MESSAGE);
+	public static void printException (Component parent, Throwable e, boolean alsoPrintToConsole) {
+		if (alsoPrintToConsole) {
+			e.printStackTrace ();
+		}
+		JTextArea area = new JTextArea (buildStackTrace (e));
+		area.setForeground (Color.RED);
+		JScrollPane scrollPane = new JScrollPaneRed (area);
+		scrollPane.setPreferredSize (new Dimension (800, 500));
+		printError (parent, scrollPane, "Exception: stack trace");
+	}
+
+	/**
+	 * Show a message about an error
+	 *
+	 * @param parent The parent component
+	 * @param message Message to display
+	 * @param title Title of the message
+	 */
+	public static void printError (Component parent, Object message, String title) {
+		JOptionPane.showMessageDialog (parent, message, title, JOptionPane.ERROR_MESSAGE);
 	}
 
 
+	/**
+	 * Show a message about a warning
+	 *
+	 * @param parent The parent component
+	 * @param message Message to display
+	 * @param title Title of the message
+	 */
+	public static void printWarning (Component parent, Object message, String title) {
+		JOptionPane.showMessageDialog (parent, message, title, JOptionPane.WARNING_MESSAGE);
+	}
+
+
+
+
+
 	/** No need to instantiate this */
-	private Core(){}
+	private Core () {}
 
 }

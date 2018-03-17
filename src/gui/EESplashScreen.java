@@ -28,7 +28,7 @@ public class EESplashScreen extends JFrame {
 			img = ImageIO.read(EESplashScreen.class.getResource("EE_SplashScreen.jpg"));
 		} catch (IOException e) {
 			img = null;
-			Core.printException(null, e, "Error while loading the splash screen", "Error");
+			Core.printException(null, e, "Error while loading the splash screen", "Error", true);
 		}
 		image = img;
 	}

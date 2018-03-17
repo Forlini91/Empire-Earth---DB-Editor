@@ -22,23 +22,25 @@ import datstructure.FieldStruct;
 
 /**
  * A JComboBox which hold the content of an enum
+ * 
  * @author MarcoForlini
  */
 public class JComboBoxEnum extends JComboBox <EnumValue> implements EntryFieldInterface, ItemListener, MouseListener, KeyListener {
 
-	private static final long serialVersionUID = -5787229930995728192L;
-	private static final BiPredicate <String, EnumValue> NAME_MATCHER = (text, enumValue) -> enumValue.getName ().toLowerCase ().contains (text);
-	private static final BiPredicate <Integer, EnumValue> ID_MATCHER = (val, enumValue) -> enumValue.getCode () == val || NAME_MATCHER.test (val.toString (), enumValue);
+	private static final long								serialVersionUID	= -5787229930995728192L;
+	private static final BiPredicate <String, EnumValue>	NAME_MATCHER		= (text, enumValue) -> enumValue.getName ().toLowerCase ().contains (text);
+	private static final BiPredicate <Integer, EnumValue>	ID_MATCHER			= (val, enumValue) -> enumValue.getCode () == val || NAME_MATCHER.test (val.toString (), enumValue);
 
-	private ListSearcher <EnumValue> searcher = new ListSearcher<> (NAME_MATCHER, ID_MATCHER);
-	private JTextComponent textEditor = ((JTextComponent) getEditor ().getEditorComponent ());
-	private FieldStruct fieldStruct;
-	private int index;
-	private Object defaultVal = null;
-	private boolean altered = false;
+	private ListSearcher <EnumValue>						searcher			= new ListSearcher<> (NAME_MATCHER, ID_MATCHER);
+	private JTextComponent									textEditor			= ((JTextComponent) getEditor ().getEditorComponent ());
+	private FieldStruct										fieldStruct;
+	private int												index;
+	private Object											defaultVal			= null;
+	private boolean											altered				= false;
 
 	/**
 	 * Create a new {@link JComboBoxEnum}
+	 * 
 	 * @param fieldStruct The field structure
 	 * @param index Index of the field
 	 */
@@ -46,6 +48,7 @@ public class JComboBoxEnum extends JComboBox <EnumValue> implements EntryFieldIn
 		super (fieldStruct.enumValues);
 		this.fieldStruct = fieldStruct;
 		this.index = index;
+		setToolTipText (fieldStruct.getDescription ());
 		if (fieldStruct.editable) {
 			setEditable (true);
 			addItemListener (this);
@@ -153,7 +156,7 @@ public class JComboBoxEnum extends JComboBox <EnumValue> implements EntryFieldIn
 				ComboPopup popup = (ComboPopup) getUI ().getAccessibleChild (this, 0);
 				setSelectedItem (popup.getList ().getSelectedValue ());
 			} else {
-				if ( !isPopupVisible ()) {
+				if (!isPopupVisible ()) {
 					showPopup ();
 				}
 				List <EnumValue> results = searcher.find (fieldStruct.enumValues, null, text);

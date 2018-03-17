@@ -22,25 +22,27 @@ import datstructure.FieldStruct;
 
 /**
  * A JComboBox which hold the content of an array
+ * 
  * @author MarcoForlini
  */
 public class JComboBoxArray extends JComboBox <Integer> implements EntryFieldInterface, ItemListener, MouseListener, KeyListener {
 
-	private static final long serialVersionUID = -5787229930995728192L;
+	private static final long							serialVersionUID	= -5787229930995728192L;
 
-	private static final BiPredicate <String, Integer> NAME_MATCHER = (text, code) -> text.contentEquals (Integer.toString (code));
-	private static final BiPredicate <Integer, Integer> ID_MATCHER = (val, code) -> code == val || NAME_MATCHER.test (Integer.toString (val), code);
+	private static final BiPredicate <String, Integer>	NAME_MATCHER		= (text, code) -> text.contentEquals (Integer.toString (code));
+	private static final BiPredicate <Integer, Integer>	ID_MATCHER			= (val, code) -> code == val || NAME_MATCHER.test (Integer.toString (val), code);
 
-	private ListSearcher <Integer> searcher = new ListSearcher<> (NAME_MATCHER, ID_MATCHER);
-	private JTextComponent textEditor = ((JTextComponent) getEditor ().getEditorComponent ());
-	private FieldStruct fieldStruct;
-	private int index;
-	private Object defaultVal = null;
-	private boolean altered = false;
+	private ListSearcher <Integer>						searcher			= new ListSearcher<> (NAME_MATCHER, ID_MATCHER);
+	private JTextComponent								textEditor			= ((JTextComponent) getEditor ().getEditorComponent ());
+	private FieldStruct									fieldStruct;
+	private int											index;
+	private Object										defaultVal			= null;
+	private boolean										altered				= false;
 
 
 	/**
 	 * Create a new {@link JComboBoxArray}
+	 * 
 	 * @param fieldStruct The structure of the field
 	 * @param index Index of the field
 	 */
@@ -48,6 +50,7 @@ public class JComboBoxArray extends JComboBox <Integer> implements EntryFieldInt
 		super (fieldStruct.arrValues);
 		this.fieldStruct = fieldStruct;
 		this.index = index;
+		setToolTipText (fieldStruct.getDescription ());
 		setEditable (false);
 		addItemListener (this);
 		addMouseListener (this);
@@ -138,7 +141,7 @@ public class JComboBoxArray extends JComboBox <Integer> implements EntryFieldInt
 				ComboPopup popup = (ComboPopup) getUI ().getAccessibleChild (this, 0);
 				setSelectedItem (popup.getList ().getSelectedValue ());
 			} else {
-				if ( !isPopupVisible ()) {
+				if (!isPopupVisible ()) {
 					showPopup ();
 				}
 				List <Integer> results = searcher.find (fieldStruct.arrValues, null, text);

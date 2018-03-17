@@ -1,37 +1,42 @@
 package datstructure.structures;
 
+import java.util.List;
+
 import datstructure.DatStructure;
 import datstructure.DatStructureParse;
 import datstructure.DatStructureParse.ParseState;
+import datstructure.Entry;
 import datstructure.FieldStruct;
+
 
 /**
  * Represents the file dbcliffterrain.dat
+ *
  * @author MarcoForlini
  */
-@DatStructureParse(Vanilla = ParseState.UNKNOWN_PARSED, AOC = ParseState.UNKNOWN_PARSED)
+@DatStructureParse (Vanilla = ParseState.UNKNOWN_PARSED, AOC = ParseState.UNKNOWN_PARSED)
 public class CliffTerrain extends DatStructure {
-	
+
 	/**
 	 * Unique instance of this structure
 	 */
-	public static final CliffTerrain instance = new CliffTerrain();
+	public static final CliffTerrain instance = new CliffTerrain ();
 
 	/**
 	 * Creates a new {@link CliffTerrain}
 	 */
 	private CliffTerrain () {
-		super("Cliff terrain", "dbcliffterrain.dat", true, 0, 1, 0, 0, 1, 2, 4, 125, 175);
+		super ("Cliff terrain", "dbcliffterrain.dat", true, 0, 1, 0, 0, 1, 2, 4, 125, 175);
 	}
-	
-	//COMPLETED
+
+	// COMPLETED
 	@Override
 	public void init () {
-		fieldStructs = new FieldStruct[]{
+		fieldStructs = new FieldStruct[] {
 				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ID_TERRAIN,
 				ID_TERRAIN, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4
 		};
-		newEntryValues = new Object[]{
+		newEntryValues = new Object[] {
 				"<New cliff terrain>", 0, -1, 0, 0, 0, 1
 		};
 	}
@@ -39,6 +44,21 @@ public class CliffTerrain extends DatStructure {
 	@Override
 	public int indexExtraFields () {
 		return -1;
+	}
+
+	@Override
+	public boolean hasCustomEntryName () {
+		return false;
+	}
+
+	@Override
+	public String getCustomEntryName (int index, List <Object> values) {
+		return null;
+	}
+
+	@Override
+	public String getEntryDescription (Entry entry) {
+		return null;
 	}
 
 }

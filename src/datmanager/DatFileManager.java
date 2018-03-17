@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 import datstructure.DatStructure;
 import datstructure.Entry;
@@ -16,6 +15,7 @@ import datstructure.EntryGroup;
 import datstructure.FieldStruct;
 import datstructure.Link;
 import datstructure.structures.RandomMap;
+import gui.DialogProgressBar.ProgressUpdater;
 
 
 /**
@@ -26,11 +26,11 @@ import datstructure.structures.RandomMap;
 public class DatFileManager {
 
 	/** The file to read. */
-	private DatFile datFile;
+	private DatFile			datFile;
 	/** The structure of the file. */
-	private DatStructure datStructure;
+	private DatStructure	datStructure;
 	/** The size of the file. */
-	private long fileSize;
+	private long			fileSize;
 
 	/**
 	 * Create a new DatFileManager to read or write the given datFile.
@@ -47,21 +47,20 @@ public class DatFileManager {
 	 * Read the whole file, perform regular updates of the progress on the GUI and return the content read.
 	 * Support multi-thread loadings: you can load many files at once and display a single progress bar for them all.
 	 *
-	 * @param update The method to call to update the state on the GUI
+	 * @param progressUpdater The method to call to update the state on the GUI
 	 * @param threadIndex Which thread is this
-	 * @return The list of EntryGroup read from the file, if any
 	 * @throws IOException If a problem occurs while reading
 	 * @throws BufferUnderflowException If loading the wrong/encrypted files
 	 */
-	public DatFile read (BiConsumer <Float, Integer> update, int threadIndex) throws IOException, BufferUnderflowException {
+	public void read (ProgressUpdater progressUpdater, int threadIndex) throws IOException, BufferUnderflowException {
 		if (!datFile.exists ()) {
 			throw new FileNotFoundException (datFile.toString ());
 		}
-		List <EntryGroup> entryGroups = new ArrayList<> ();
+		List <EntryGroup> entryGroups = new ArrayList <> ();
 		try (DatReader reader = new DatReader (datFile)) {
 			fileSize = reader.getRemaining ();
 			while (reader.getRemaining () > 0) {
-				entryGroups.add (readGroup (reader, update, threadIndex));
+				entryGroups.add (readGroup (reader, progressUpdater, threadIndex));
 			}
 		}
 		if (entryGroups.size () == 1) {
@@ -73,7 +72,6 @@ public class DatFileManager {
 			}
 		}
 		datFile.loadData (entryGroups);
-		return datFile;
 	}
 
 	/**
@@ -81,13 +79,13 @@ public class DatFileManager {
 	 * Support multi-thread loadings: you can load many files at once and display a single progress bar for them all.
 	 *
 	 * @param reader The reader used to read the file
-	 * @param update The method to call to update the state on the GUI
+	 * @param progressUpdater The method to call to update the state on the GUI
 	 * @param threadIndex Which thread is this
 	 * @return The list of Entry read from the file, if any
 	 * @throws IOException If a problem occurs while reading
 	 * @throws BufferUnderflowException If loading the wrong/encrypted files
 	 */
-	public EntryGroup readGroup (DatReader reader, BiConsumer <Float, Integer> update, int threadIndex) throws IOException, BufferUnderflowException {
+	public EntryGroup readGroup (DatReader reader, ProgressUpdater progressUpdater, int threadIndex) throws IOException, BufferUnderflowException {
 		boolean defineNumEntries = datStructure.defineNumEntries;
 		int numEntries;
 		if (datStructure == RandomMap.instance) {
@@ -103,12 +101,12 @@ public class DatFileManager {
 		List <Entry> entries;
 		if (defineNumEntries) {
 			try {
-				entries = new ArrayList<> (numEntries);
+				entries = new ArrayList <> (numEntries);
 			} catch (OutOfMemoryError e) {
 				throw new IOException (e);
 			}
 		} else {
-			entries = new ArrayList<> ();
+			entries = new ArrayList <> ();
 		}
 		Entry entry;
 		FieldStruct fieldStruct;
@@ -118,7 +116,7 @@ public class DatFileManager {
 		int i = 0;
 		try {
 			for (i = 0; (defineNumEntries && i < numEntries) || (!defineNumEntries && reader.getRemaining () > 0); i++) { // <= because dbTechTree works differently...
-				List <Object> values = new ArrayList<> (numFields);
+				List <Object> values = new ArrayList <> (numFields);
 
 				for (int j = 0; j < numFields; j++) {
 					fieldStruct = datStructure.fieldStructs[j];
@@ -156,9 +154,13 @@ public class DatFileManager {
 						values.add (read);
 					}
 				}
-				entry = new Entry (datStructure, false, null, i, i, values);
+				String name = null;
+				if (datStructure.hasCustomEntryName ()) {
+					name = datStructure.getCustomEntryName (i, values);
+				}
+				entry = new Entry (datStructure, false, name, i, i, values);
 				entries.add (entry);
-				update.accept ((float) (1.0 - (double) reader.getRemaining () / fileSize), threadIndex);
+				progressUpdater.update (1.0 - (double) reader.getRemaining () / fileSize, threadIndex);
 			}
 		} catch (Exception e) {
 			throw new IOException (e);
@@ -200,7 +202,7 @@ public class DatFileManager {
 							.mapToInt (entry2 -> entry2.get (1))
 							.distinct ()
 							.count ();
-					writer.writeInt (numGroups);
+					writer.writeInt (numGroups); // First 4 bytes are for value "Num groups"
 				}
 
 				for (EntryGroup entryGroup : datFile) {
@@ -210,7 +212,6 @@ public class DatFileManager {
 					}
 					System.out.println ("Save file: " + datFile.getName () + "  >  Group: " + entryGroup + "  >  Num entries: " + numEntries);
 
-					// StringBuilder sb;
 					for (int i = 0; i < numEntries; i++) {
 						update.run ();
 						entry = entryGroup.entries.get (i);
@@ -239,7 +240,7 @@ public class DatFileManager {
 									default:
 										if (fieldStruct.getSize () == 1) {
 											writer.writeByte (entry.get (j));
-										} else if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Settings.LINK_SYSTEM) {
+										} else if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null) {
 											link = entry.get (j);
 											writer.writeInt (link.target.getID ());
 										} else {
@@ -247,7 +248,7 @@ public class DatFileManager {
 										}
 								}
 							} catch (Exception e) {
-								Core.printException (null, e, "Error while writing entry: " + entry + "   | Field: (" + j + ") " + fieldStruct + "   >   " + entry.get (j), "Error while saving");
+								Core.printException (null, e, "Error while writing entry: " + entry + "   | Field: (" + j + ") " + fieldStruct + "   >   " + entry.get (j), "Error while saving", true);
 								throw e;
 							}
 						}

@@ -1,10 +1,14 @@
 package datstructure.structures;
 
+import java.util.List;
+
 import datstructure.DatStructure;
 import datstructure.DatStructureParse;
 import datstructure.DatStructureParse.ParseState;
+import datstructure.Entry;
 import datstructure.FieldStruct;
-import datstructure.Type;
+import datstructure.FieldType;
+
 
 /**
  * Represents the file dbrandommap.dat
@@ -33,7 +37,7 @@ public class RandomMap extends DatStructure {
 	@Override
 	public void init () {
 		fieldStructs = new FieldStruct[] {
-				FieldStruct.ID, new FieldStruct ("Group ID", Type.INTEGER), FieldStruct.NAME, FieldStruct.UNKNOWN_INT4,
+				FieldStruct.ID, new FieldStruct ("Group ID", FieldType.INTEGER), FieldStruct.NAME, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
 				FieldStruct.UNKNOWN_INT4
 		};
@@ -42,6 +46,21 @@ public class RandomMap extends DatStructure {
 	@Override
 	public int indexExtraFields () {
 		return -1;
+	}
+
+	@Override
+	public boolean hasCustomEntryName () {
+		return false;
+	}
+
+	@Override
+	public String getCustomEntryName (int index, List <Object> values) {
+		return null;
+	}
+
+	@Override
+	public String getEntryDescription (Entry entry) {
+		return null;
 	}
 
 }

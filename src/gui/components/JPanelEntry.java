@@ -12,34 +12,36 @@ import constants.AttributeCode;
 import constants.EffectCode;
 import datmanager.DatFile;
 import datmanager.Language;
-import datmanager.Settings;
 import datstructure.Entry;
 import datstructure.FieldStruct;
 import datstructure.Link;
 import gui.FrameEditor;
 import gui.GUI;
 
+
 /**
  * A panel which contains a label and a field
+ *
  * @author MarcoForlini
  */
 public class JPanelEntry extends JPanel {
 
-	private static final long serialVersionUID = -8432430218424230659L;
+	private static final long	serialVersionUID	= -8432430218424230659L;
 
 	/** Index of the field */
-	public final int index;
+	public final int			index;
 	/** Field structure */
-	public final FieldStruct fieldStruct;
+	public final FieldStruct	fieldStruct;
 	/** The label */
-	public JLabelField label;
+	public JLabelField			label;
 	/** The field */
-	public EntryFieldInterface field = null;
+	public EntryFieldInterface	field				= null;
 	/** A supplier which get the current entry */
-	public Supplier <Entry> currentEntry;
+	public Supplier <Entry>		currentEntry;
 
 	/**
 	 * Create a new JPanelEntry
+	 *
 	 * @param frameEditor The parent window
 	 * @param fieldStruct The field structure
 	 * @param index Index of the field
@@ -51,6 +53,7 @@ public class JPanelEntry extends JPanel {
 		this.currentEntry = currentEntry;
 
 		label = new JLabelField (fieldStruct, index);
+		label.setToolTipText (fieldStruct.getDescription ());
 		label.setPreferredSize (new Dimension (100, 25));
 		label.setMaximumSize (new Dimension (300, 30));
 		boolean disable = false;
@@ -70,8 +73,8 @@ public class JPanelEntry extends JPanel {
 			case RANGE:
 				field = new JComboBoxArray (fieldStruct, index);
 				break;
-			case ID:
-				if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Settings.LINK_SYSTEM) {
+			case LINK:
+				if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null) {
 					field = new JComboBoxField (fieldStruct, index);
 				} else {
 					disable = true;
@@ -112,6 +115,7 @@ public class JPanelEntry extends JPanel {
 
 	/**
 	 * Sets the value of the field
+	 *
 	 * @param val The value of the field
 	 */
 	public void setVal (Object val) {
@@ -124,6 +128,7 @@ public class JPanelEntry extends JPanel {
 
 	/**
 	 * Gets the value of the field
+	 *
 	 * @return the value of the field
 	 */
 	public Object getVal () {
@@ -133,7 +138,7 @@ public class JPanelEntry extends JPanel {
 		} else {
 			val = field.getDefaultVal ();
 		}
-		if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null && Settings.LINK_SYSTEM) {
+		if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null) {
 			DatFile datFile = fieldStruct.linkToStruct.datFile;
 			Entry target = datFile.findEntry (val);
 			return new Link (currentEntry.get (), fieldStruct, target);

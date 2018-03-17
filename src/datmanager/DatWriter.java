@@ -15,7 +15,7 @@ import datstructure.structures.RandomMap;
 
 /**
  * A class which can convert the integer, float and string values to array of bytes and save them in a *.dat file.
- * 
+ *
  * @author MarcoForlini
  */
 public class DatWriter implements Closeable {
@@ -39,7 +39,7 @@ public class DatWriter implements Closeable {
 			alloc += 4 * datFile.entryGroups.size ();
 		}
 		if (datFile.datStructure == RandomMap.instance) {
-			alloc += 4;
+			alloc += 4; // 4 bytes for Group ID
 		}
 
 		// If the entries in the file may contains extra fields, adds 4 bytes for each extra entry
@@ -69,7 +69,7 @@ public class DatWriter implements Closeable {
 
 	/**
 	 * Write a 4 bytes integer
-	 * 
+	 *
 	 * @param value the value to write
 	 * @throws IOException If any IO exception occur
 	 */
@@ -79,7 +79,7 @@ public class DatWriter implements Closeable {
 
 	/**
 	 * Write a single byte integer
-	 * 
+	 *
 	 * @param value the value to write
 	 */
 	public void writeByte (int value) {
@@ -88,7 +88,7 @@ public class DatWriter implements Closeable {
 
 	/**
 	 * Write a 4 bytes float
-	 * 
+	 *
 	 * @param value the value to write
 	 * @throws IOException If any IO exception occur
 	 */
@@ -98,7 +98,7 @@ public class DatWriter implements Closeable {
 
 	/**
 	 * Write a string of length numBytes
-	 * 
+	 *
 	 * @param string the string to write
 	 * @param numBytes the length of the string (trim the string or put extra \0 chars if string length is different than this value)
 	 * @throws IOException If any IO exception occur

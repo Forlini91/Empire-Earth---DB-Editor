@@ -25,25 +25,27 @@ import gui.FrameEditor;
 
 /**
  * A JComboBox which hold the content of an enum
+ * 
  * @author MarcoForlini
  */
 public class JComboBoxEnumAttribute extends JComboBox <AttributeCode> implements EntryFieldInterface, ItemListener, MouseListener, KeyListener {
 
-	private static final long serialVersionUID = -5787229930995728192L;
-	private static final BiPredicate <String, AttributeCode> NAME_MATCHER = (text, attributeCode) -> attributeCode.name.toLowerCase ().contains (text);
-	private static final BiPredicate <Integer, AttributeCode> ID_MATCHER = (val, attributeCode) -> attributeCode.code == val || NAME_MATCHER.test (val.toString (), attributeCode);
+	private static final long									serialVersionUID	= -5787229930995728192L;
+	private static final BiPredicate <String, AttributeCode>	NAME_MATCHER		= (text, attributeCode) -> attributeCode.name.toLowerCase ().contains (text);
+	private static final BiPredicate <Integer, AttributeCode>	ID_MATCHER			= (val, attributeCode) -> attributeCode.code == val || NAME_MATCHER.test (val.toString (), attributeCode);
 
-	private FieldStruct fieldStruct;
-	private int index;
-	private FrameEditor frameEditor;
+	private FieldStruct											fieldStruct;
+	private int													index;
+	private FrameEditor											frameEditor;
 
-	private ListSearcher <AttributeCode> searcher = new ListSearcher<> (NAME_MATCHER, ID_MATCHER);
-	private JTextComponent textEditor = ((JTextComponent) getEditor ().getEditorComponent ());
-	private Object defaultVal = null;
-	private boolean altered = false;
+	private ListSearcher <AttributeCode>						searcher			= new ListSearcher<> (NAME_MATCHER, ID_MATCHER);
+	private JTextComponent										textEditor			= ((JTextComponent) getEditor ().getEditorComponent ());
+	private Object												defaultVal			= null;
+	private boolean												altered				= false;
 
 	/**
 	 * Create a new {@link JComboBoxEnumAttribute}
+	 * 
 	 * @param fieldStruct The field structure
 	 * @param index Index of the field
 	 * @param frameEditor The FrameEditor object
@@ -53,6 +55,7 @@ public class JComboBoxEnumAttribute extends JComboBox <AttributeCode> implements
 		this.fieldStruct = fieldStruct;
 		this.index = index;
 		this.frameEditor = frameEditor;
+		setToolTipText (fieldStruct.getDescription ());
 		setEditable (true);
 		addItemListener (this);
 		addMouseListener (this);
@@ -156,7 +159,7 @@ public class JComboBoxEnumAttribute extends JComboBox <AttributeCode> implements
 				ComboPopup popup = (ComboPopup) getUI ().getAccessibleChild (this, 0);
 				setSelectedItem (popup.getList ().getSelectedValue ());
 			} else {
-				if ( !isPopupVisible ()) {
+				if (!isPopupVisible ()) {
 					showPopup ();
 				}
 				List <AttributeCode> results = searcher.find (AttributeCode.values (), null, text);

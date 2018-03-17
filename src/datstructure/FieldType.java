@@ -2,11 +2,11 @@ package datstructure;
 
 /**
  * Type of the fields.
+ * 
  * @author MarcoForlini
- *
  */
-public enum Type {
-	
+public enum FieldType {
+
 	/** Either 0 or 1 */
 	BOOLEAN,
 	/** A restricted set of values */
@@ -15,8 +15,8 @@ public enum Type {
 	RANGE,
 	/** The language field */
 	LANGUAGE,
-	/** An ID value, which link to an Entry in another file Dat */
-	ID,
+	/** A link value, which link to an Entry in another file Dat */
+	LINK,
 	/** An integer value */
 	INTEGER,
 	/** A float value */
@@ -24,5 +24,5 @@ public enum Type {
 	/** A string value */
 	STRING,
 	;
-	
+
 }

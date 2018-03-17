@@ -3,6 +3,7 @@ package gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -71,109 +72,112 @@ import gui.ui.GridLayoutExtended;
 
 /**
  * The main editor windows, with all entries and their fields.
+ *
  * @author MarcoForlini
  */
 public class FrameEditor extends JFrame implements WindowListener, WindowFocusListener {
 
 
-	private static final long serialVersionUID = -3426470254615698936L;
+	private static final long			serialVersionUID		= -3426470254615698936L;
 
-	private final GridBagLayoutExtended gbl_contentPane = new GridBagLayoutExtended (new int[] { 0, 0, 100, 200, 200, 100 }, new int[] { 400, 30, 30 }, new double[] { 0, 0, 0.5, 0, 0, 0.5 }, new double[] { 1.0, 0.0, 0 });
-	private final GridLayout gridLayout = new GridLayoutExtended (false, false, 0, 4, 0, 0);
-	private final GridBagConstraints gbc_entryGroupListPane = new GridBagConstraintsExtended (4, 4, 0, 0, 0, 0);
-	private final GridBagConstraints gbc_entryListPane = new GridBagConstraintsExtended (4, 4, 0, 0, 1, 0);
-	private final GridBagConstraints gbc_entrySearchField = new GridBagConstraintsExtended (4, 4, 0, 0, 1, 1);
-	private final GridBagConstraints gbc_scrollPaneFields = new GridBagConstraintsExtended (4, 4, 0, 4, 2, 0, 4, 2);
-	private final GridBagConstraints gbc_switchList = new GridBagConstraintsExtended (4, 4, 4, 0, 0, 1);
-	private final GridBagConstraints gbc_resetButton = new GridBagConstraintsExtended (4, 4, 4, 0, 0, 2);
-	private final GridBagConstraints gbc_saveButton = new GridBagConstraintsExtended (4, 4, 4, 0, 1, 2);
-	private final GridBagConstraints gbc_removeID = new GridBagConstraintsExtended (4, 4, 4, 0, 3, 2);
-	private final GridBagConstraints gbc_addID = new GridBagConstraintsExtended (4, 4, 4, 4, 4, 2);
-	private static final int GRID_MIN_ENTRY_SLOTS = 32;
+	private final GridBagLayoutExtended	gbl_contentPane			= new GridBagLayoutExtended (new int[] { 0, 0, 100, 200, 200, 100 }, new int[] { 400, 32, 32 }, new double[] { 0, 0, 0.5, 0, 0, 0.5 }, new double[] { 1.0, 0.0, 0 });
+	private final GridLayout			gridLayout				= new GridLayoutExtended (false, false, 0, 4, 0, 0);
+	private final GridBagConstraints	gbc_entryGroupListPane	= new GridBagConstraintsExtended (4, 4, 0, 0, 0, 0);
+	private final GridBagConstraints	gbc_entryListPane		= new GridBagConstraintsExtended (4, 4, 0, 0, 1, 0);
+	private final GridBagConstraints	gbc_entrySearchField	= new GridBagConstraintsExtended (4, 4, 0, 0, 1, 1);
+	private final GridBagConstraints	gbc_scrollPaneFields	= new GridBagConstraintsExtended (4, 4, 0, 4, 2, 0, 4, 1);
+	private final GridBagConstraints	gbc_entryDescription	= new GridBagConstraintsExtended (4, 4, 0, 4, 2, 1, 4, 1);
+	private final GridBagConstraints	gbc_switchList			= new GridBagConstraintsExtended (4, 4, 4, 0, 0, 1);
+	private final GridBagConstraints	gbc_resetButton			= new GridBagConstraintsExtended (4, 4, 4, 0, 0, 2);
+	private final GridBagConstraints	gbc_saveButton			= new GridBagConstraintsExtended (4, 4, 4, 0, 1, 2);
+	private final GridBagConstraints	gbc_removeID			= new GridBagConstraintsExtended (4, 4, 4, 0, 3, 2);
+	private final GridBagConstraints	gbc_addID				= new GridBagConstraintsExtended (4, 4, 4, 4, 4, 2);
+	private static final int			GRID_MIN_ENTRY_SLOTS	= 32;
 
-	private final DatFile techFile = TechTree.instance.datFile;
-	private final DatFile familyFile = Family.instance.datFile;
-	private final DatFile upgradeFile = Upgrade.instance.datFile;
-	private final DatFile graphicFile = Graphics.instance.datFile;
-	private final boolean isDbObject, isDbUnitSet, isDbTechTree, isDbEvents;
+	private final DatFile				techFile				= TechTree.instance.datFile;
+	private final DatFile				familyFile				= Family.instance.datFile;
+	private final DatFile				upgradeFile				= Upgrade.instance.datFile;
+	private final DatFile				graphicFile				= Graphics.instance.datFile;
+	private final boolean				isDbObject, isDbUnitSet, isDbTechTree, isDbEvents;
 
 
 	/** The data loaded */
-	public DatFile datFile;
+	public DatFile				datFile;
 
 	/** Base fields */
-	public List <JPanelEntry> baseFields;
+	public List <JPanelEntry>	baseFields;
 
 	/** Extra fields (dbtechtree.dat and dbevents.dat) */
-	public List <JPanelEntry> extraFields;
+	public List <JPanelEntry>	extraFields;
 
 	/** Selected entry group */
-	public EntryGroup currentEntryGroup;
+	public EntryGroup			currentEntryGroup;
 
 	/** Selected entry */
-	public Entry currentEntry = null;
+	public Entry				currentEntry	= null;
 
 	/** Copied entry */
-	public Entry copyEntry = null;
+	public Entry				copyEntry		= null;
 
 
 
-	private Component rightClicked = null;
-	private Set <JPanelEntry> marked = new HashSet<> (30);
+	private Component					rightClicked		= null;
+	private Set <JPanelEntry>			marked				= new HashSet<> (80);
 
-	private JPanel contentPane = new JPanel ();
-	private JListDouble <EntryGroup> entryGroupList = new JListDouble<> (false);
-	private JListEntry entryList = new JListEntry ();
-	private JScrollPane entryGroupListPane = new JScrollPaneRed (entryGroupList, "Epochs");
-	private JScrollPane entryListPane = new JScrollPaneRed (entryList, "Entries");
-	private JPanel panelFields = new JPanel ();
-	private JScrollPane scrollPaneFields = new JScrollPaneRed (panelFields, "Fields");
-	private JSearchFieldEntry entrySearchField = new JSearchFieldEntry (entryList);
-
-
-
-	private JButton menuBarSaveFile = new JButtonRed ("Save to file");
-	private JMenu menuBarNumColumns = new JMenu ("Num columns");
-	private JPanel menuBarNumColumnsPanel = new JPanel ();
-	private JLabel numColumnsLabel = new JLabel ("Columns: 4");
-	private JSlider numColumnsSlider = new JSlider ();
-	private JButton menuBarList = new JButtonRed ("List entries");
-	private JButton menuBarAdvancedSearch = new JButtonRed ("Advanced search");
-	private JButton reset = new JButtonRed ("Reset entry");
-	private JButton save = new JButtonRed ("Save entry");
-	private JButton addField = new JButtonRed ("Add field");
-	private JButton removeField = new JButtonRed ("Remove field");
+	private JPanel						contentPane			= new JPanel ();
+	private JListDouble <EntryGroup>	entryGroupList		= new JListDouble<> (false);
+	private JListEntry					entryList			= new JListEntry ();
+	private JScrollPane					entryGroupListPane	= new JScrollPaneRed (entryGroupList, "Epochs");
+	private JScrollPane					entryListPane		= new JScrollPaneRed (entryList, "Entries");
+	private JPanel						panelFields			= new JPanel ();
+	private JScrollPane					scrollPaneFields	= new JScrollPaneRed (panelFields, "Fields");
+	private JSearchFieldEntry			entrySearchField	= new JSearchFieldEntry (entryList);
+	private JLabel						entryDescription	= new JLabel ("");
 
 
-	private final JPopupMenu fieldMenu = new JPopupMenu ();
-	private final JMenuItem fieldMenuSearchValues = new JMenuItem ("Show all values used for this field");
-	private final JMenuItem fieldMenuSearchFields = new JMenuItem ("Show all fields with the same value");
-	private final JMenuItem fieldMenuMarkUnusedFields = new JMenuItem ("Mark all unused/interesting fields");
-	private final JMenuItem fieldMenuUnmarkUnusedFields = new JMenuItem ("Remove marks");
-	private final JMenuItem fieldMenuRefreshList = new JMenuItem ("Refresh list");
-	private final JMenuItem fieldMenuOpenLink = new JMenuItem ("Open link");
-	private final JMenuItem fieldMenuNextFree = new JMenuItem ("Find next free ID/number");
 
-	private final JPopupMenu entryListMenu = new JPopupMenu ();
-	private final JMenuItem entryListMenuAdd = new JMenuItem ("Add entry");
-	private final JMenuItem entryListMenuRemove = new JMenuItem ("Remove entry");
-	private final JMenuItem entryListMenuDuplicate = new JMenuItem ("Duplicate entry");
-	private final JMenuItem entryListMenuCopyData = new JMenuItem ("Copy entry fields");
-	private final JMenuItem entryListMenuPasteData = new JMenuItem ("Paste entry fields");
-	private final JMenuItem entryListMenuMoveTo = new JMenuItem ("Move to epoch...");
-	private final JMenuItem entryListMenuShowLinks = new JMenuItem ("Show all links to this entry");
-	private final JMenuItem entryListMenuGoToFamily = new JMenuItem ("Go to Family");
-	private final JMenuItem entryListMenuGoToGraphic = new JMenuItem ("Go to Graphic");
-	private final JMenuItem entryListMenuGoToUpgrade = new JMenuItem ("Go to Upgrade");
-	private final JMenuItem entryListMenuGoToTech = new JMenuItem ("Go to Technology");
-	private final JMenuItem entryListMenuGoToParentSet = new JMenuItem ("Go to parent set");
+	private JButton	menuBarSaveFile			= new JButtonRed ("Save to file");
+	private JMenu	menuBarNumColumns		= new JMenu ("Num columns");
+	private JPanel	menuBarNumColumnsPanel	= new JPanel ();
+	private JLabel	numColumnsLabel			= new JLabel ("Columns: 4");
+	private JSlider	numColumnsSlider		= new JSlider ();
+	private JButton	menuBarList				= new JButtonRed ("List entries");
+	private JButton	menuBarAdvancedSearch	= new JButtonRed ("Advanced search");
+	private JButton	reset					= new JButtonRed ("Reset entry");
+	private JButton	save					= new JButtonRed ("Save entry");
+	private JButton	addField				= new JButtonRed ("Add field");
+	private JButton	removeField				= new JButtonRed ("Remove field");
 
-	private final JMenuBar menuBar = new JMenuBar ();
-	private int numBaseFields = 0;
-	private int numPlacedExtraFields = 0;
-	private int indexCountExtra = -1;
-	private JPanelEntry panelCountExtra = null;
-	private FieldStruct extraFieldStructure = null;
+
+	private final JPopupMenu	fieldMenu					= new JPopupMenu ();
+	private final JMenuItem		fieldMenuSearchValues		= new JMenuItem ("Show all values used for this field");
+	private final JMenuItem		fieldMenuSearchFields		= new JMenuItem ("Show all fields with the same value");
+	private final JMenuItem		fieldMenuMarkUnusedFields	= new JMenuItem ("Mark all unused/interesting fields");
+	private final JMenuItem		fieldMenuUnmarkUnusedFields	= new JMenuItem ("Remove marks");
+	private final JMenuItem		fieldMenuRefreshList		= new JMenuItem ("Refresh list");
+	private final JMenuItem		fieldMenuOpenLink			= new JMenuItem ("Open link");
+	private final JMenuItem		fieldMenuNextFree			= new JMenuItem ("Find next free ID/number");
+
+	private final JPopupMenu	entryListMenu				= new JPopupMenu ();
+	private final JMenuItem		entryListMenuAdd			= new JMenuItem ("Add entry");
+	private final JMenuItem		entryListMenuRemove			= new JMenuItem ("Remove entry");
+	private final JMenuItem		entryListMenuDuplicate		= new JMenuItem ("Duplicate entry");
+	private final JMenuItem		entryListMenuCopyData		= new JMenuItem ("Copy entry fields");
+	private final JMenuItem		entryListMenuPasteData		= new JMenuItem ("Paste entry fields");
+	private final JMenuItem		entryListMenuMoveTo			= new JMenuItem ("Move to epoch...");
+	private final JMenuItem		entryListMenuShowLinks		= new JMenuItem ("Show all links to this entry");
+	private final JMenuItem		entryListMenuGoToFamily		= new JMenuItem ("Go to Family");
+	private final JMenuItem		entryListMenuGoToGraphic	= new JMenuItem ("Go to Graphic");
+	private final JMenuItem		entryListMenuGoToUpgrade	= new JMenuItem ("Go to Upgrade");
+	private final JMenuItem		entryListMenuGoToTech		= new JMenuItem ("Go to Technology");
+	private final JMenuItem		entryListMenuGoToParentSet	= new JMenuItem ("Go to parent set");
+
+	private final JMenuBar		menuBar						= new JMenuBar ();
+	private int					numBaseFields				= 0;
+	private int					numPlacedExtraFields		= 0;
+	private int					indexCountExtra				= -1;
+	private JPanelEntry			panelCountExtra				= null;
+	private FieldStruct			extraFieldStructure			= null;
 
 
 
@@ -238,6 +242,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		contentPane.setLayout (gbl_contentPane);
 		contentPane.add (entryGroupListPane, gbc_entryGroupListPane);
 		contentPane.add (scrollPaneFields, gbc_scrollPaneFields);
+		contentPane.add (entryDescription, gbc_entryDescription);
 		contentPane.add (entrySearchField, gbc_entrySearchField);
 		contentPane.add (reset, gbc_resetButton);
 		contentPane.add (save, gbc_saveButton);
@@ -248,6 +253,11 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		scrollPaneFields.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
 		scrollPaneFields.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
 		panelFields.setBackground (GUI.COLOR_UI_BACKGROUND);
+		entryDescription.setHorizontalAlignment (SwingConstants.CENTER);
+		entryDescription.setVerticalAlignment (SwingConstants.CENTER);
+		Font font = entryDescription.getFont ();
+		font = new Font (font.getName (), font.getStyle (), font.getSize () - 2);
+		entryDescription.setFont (font);
 
 		entryGroupList.setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
 		entryGroupList.addListSelectionListener (e -> {
@@ -328,7 +338,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 				entryList.setList (currentEntryGroup.entries);
 				entryList.setSelectedElement (newEntry);
 			} catch (NoSuchElementException e1) {
-				Core.printException (this, e1, "An error occurred while adding the new entry. No data has been altered", "Error");
+				Core.printException (this, e1, "An error occurred while adding the new entry. No data has been altered", "Error", true);
 				return;
 			}
 		});
@@ -361,7 +371,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 					entryList.setList (currentEntryGroup.entries);
 					entryList.setSelectedElement (newEntry);
 				} catch (NoSuchElementException e1) {
-					Core.printException (this, e1, "An error occurred while adding the new entry. No data has been altered", "Error");
+					Core.printException (this, e1, "An error occurred while adding the new entry. No data has been altered", "Error", true);
 				}
 			}
 		});
@@ -393,7 +403,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			if (familyFile != null) {
 				Link link = currentEntry.get (2);
 				Entry entry = link.target;
-				if ( !entry.dummyEntry) {
+				if (!entry.dummyEntry) {
 					EntryGroup group = familyFile.findGroup (entry);
 					if (group != null) {
 						FrameEditor frameEditor = familyFile.openInEditor (this, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
@@ -406,7 +416,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			if (graphicFile != null) {
 				Link link = currentEntry.get (39);
 				Entry entry = link.target;
-				if ( !entry.dummyEntry) {
+				if (!entry.dummyEntry) {
 					EntryGroup group = graphicFile.findGroup (entry);
 					if (group != null) {
 						FrameEditor frameEditor = graphicFile.openInEditor (this, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
@@ -419,7 +429,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			if (upgradeFile != null) {
 				Link link = currentEntry.get (121);
 				Entry entry = link.target;
-				if ( !entry.dummyEntry) {
+				if (!entry.dummyEntry) {
 					EntryGroup group = upgradeFile.findGroup (entry);
 					if (group != null) {
 						FrameEditor frameEditor = upgradeFile.openInEditor (this, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
@@ -432,7 +442,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			if (techFile != null) {
 				Link link = currentEntry.get (225);
 				Entry entry = link.target;
-				if ( !entry.dummyEntry) {
+				if (!entry.dummyEntry) {
 					EntryGroup group = techFile.findGroup (entry);
 					if (group != null) {
 						FrameEditor frameEditor = techFile.openInEditor (this, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
@@ -460,11 +470,11 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		fieldMenuSearchValues.addActionListener (e -> {
 			try {
 				EntryFieldInterface field = (EntryFieldInterface) rightClicked;
-				EntryValueMap entryValueMap = EntryValueMap.getValuesMap (datFile.entryGroups, field.getIndex (), true);
+				EntryValueMap entryValueMap = EntryValueMap.getValuesMap (datFile.entryGroups, true, field.getIndex ());
 				JDialog d = new DialogSearchValuesResults (this, entryValueMap, field);
 				d.setVisible (true);
 			} catch (Exception exc) {
-				Core.printException (this, exc, "An error occurred while searching the values", "Error");
+				Core.printException (this, exc, "An error occurred while searching the values", "Error", true);
 			}
 		});
 		fieldMenuSearchFields.addActionListener (e -> showSearchFieldResults ());
@@ -498,7 +508,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			} else if (fieldStruct == FieldStruct.SEQ_NUMBER) {
 				highest = datFile.getAllEntries (false).parallelStream ().mapToInt (Entry::getSequenceNumber).max ().getAsInt () + 1;
 			} else {
-				Core.printException (this, new IllegalStateException ("This is not an ID or Sequence Number field"), "An error occurred while checking the max ID/Number", "Error");
+				Core.printException (this, new IllegalStateException ("This is not an ID or Sequence Number field"), "An error occurred while checking the max ID/Number", "Error", true);
 				return;
 			}
 			field.setVal (highest);
@@ -522,14 +532,9 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 
 
-
-
-
-
-
-
 	/**
 	 * Create a new FrameEditor
+	 *
 	 * @param datFile The data loaded
 	 */
 	public FrameEditor (DatFile datFile) {
@@ -631,7 +636,6 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 	@Override
 	public void windowLostFocus (WindowEvent e) {/* Do nothing */}
-
 
 
 
@@ -761,6 +765,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 	/**
 	 * Load the given entry
+	 *
 	 * @param entry The entry to load
 	 */
 	public void loadEntry (Entry entry) {
@@ -778,17 +783,20 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 				baseFields.get (i).setVal (entry.get (i));
 			} catch (IllegalArgumentException e) {
 				String message = "Error while writing value " + entry.get (i) + " in field (" + i + ") " + entry.datStructure.fieldStructs[i];
-				Core.printException (this, e, message, "Error");
+				Core.printException (this, e, message, "Error", true);
 				throw new IllegalArgumentException (message, e);
 			}
 		}
 		for (int i = 0, j = n - numBaseFields; i < j; i++) {
 			extraFields.get (i).setVal (entry.get (numBaseFields + i));
 		}
+		String description = entry.datStructure.getEntryDescription (entry);
+		entryDescription.setText (description != null ? "<HTML>" + description + "</HTML>" : null);
 	}
 
 	/**
 	 * Paste the given entry's values in the fields.
+	 *
 	 * @param entry The entry to load
 	 */
 	public void pasteEntry (Entry entry) {
@@ -819,7 +827,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	 */
 	public void saveEntry () {
 		DatStructure datStructure = datFile.datStructure;
-		DB_SPECIFIC : {
+		DB_SPECIFIC: {
 			if (isDbObject) {
 				int first = Core.AOC ? 253 : 251;
 				Link val;
@@ -843,7 +851,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 					}
 				}
 				JComboBoxField jcbf = ((JComboBoxField) baseFields.get (n - 2).field);
-				if ( !jcbf.allEntries.contains (selected)) {
+				if (!jcbf.allEntries.contains (selected)) {
 					jcbf.refreshField ();
 				}
 				jcbf.setSelectedItem (selected);
@@ -906,6 +914,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 	/**
 	 * Jump to the given entry in the given group
+	 *
 	 * @param entryGroup The group
 	 * @param entry The entry
 	 */
@@ -913,10 +922,10 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		if (Settings.DEBUG) {
 			System.out.println ("Go to: " + datFile.getName () + " > " + entryGroup + " > " + entry);
 		}
-		if ( !entry.isDefined () && entryList.switchList.isSelected ()) {
+		if (!entry.isDefined () && entryList.switchList.isSelected ()) {
 			entryList.switchList.doClick ();
 		}
-		if ( !isVisible ()) {
+		if (!isVisible ()) {
 			setVisible (true);
 		}
 		entryGroupList.setSelectedElement (entryGroup);
@@ -959,7 +968,6 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 
 
-
 	/**
 	 * Marks all fields which are either unused/unchanged (0/same value everywhere) or have up to 2 values (including flags/boolean).
 	 * This is very useful to identify many unknown fields.
@@ -972,7 +980,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			fieldStruct = entryPanel.fieldStruct;
 			try {
 				if (fieldStruct.getKnowledge () != Knowledge.KNOWN) {
-					entryValueMap = EntryValueMap.getValuesMap (datFile.entryGroups, entryPanel.index, true);
+					entryValueMap = EntryValueMap.getValuesMap (datFile.entryGroups, true, entryPanel.index);
 					size = entryValueMap.mapClean.size ();
 					if (size <= 2 || size == entryValueMap.counter) {
 						marked.add (entryPanel);
@@ -990,7 +998,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 					}
 				}
 			} catch (Exception e) {
-				Core.printException (this, e, "An error occurred while marking the field " + fieldStruct, "Error");
+				Core.printException (this, e, "An error occurred while marking the field " + fieldStruct, "Error", true);
 			}
 		}
 		if (marked.size () > 0) {
@@ -1020,6 +1028,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 	/**
 	 * Find the parent entry of the given entry, if any (an entry which contains this entry)
+	 *
 	 * @param datFile The datFile where to search
 	 * @param childEntry The child entry
 	 * @param indexLinkField Index of the field where to search the Link to the child entry.

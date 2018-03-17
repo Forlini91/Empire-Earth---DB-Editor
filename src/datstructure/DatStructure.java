@@ -1,7 +1,10 @@
 package datstructure;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import datmanager.Core;
 import datmanager.DatFile;
@@ -47,6 +50,7 @@ import datstructure.structures.Upgrade;
 import datstructure.structures.WeaponToHit;
 import datstructure.structures.World;
 
+
 /**
  * Represents the structure of the entries of a file
  *
@@ -85,43 +89,43 @@ public abstract class DatStructure {
 
 
 	/** Unique field: A 4 bytes integer which point to an area effect's ID. */
-	public static final FieldStruct ID_AREA_EFFECT = new FieldStruct ("Area Effect ID", AreaEffect.instance, 0);
+	public static final FieldStruct	ID_AREA_EFFECT			= new FieldStruct ("Area Effect ID", AreaEffect.instance, 0);
 	/** Unique field: A 4 bytes integer which point to a button's ID. */
-	public static final FieldStruct ID_BUTTON = new FieldStruct ("Button ID", Buttons.instance, 0);
+	public static final FieldStruct	ID_BUTTON				= new FieldStruct ("Button ID", Buttons.instance, 0);
 	/** Unique field: A 4 bytes integer which point to a family's ID. */
-	public static final FieldStruct ID_FAMILY = new FieldStruct ("Family ID", Family.instance, 0);
+	public static final FieldStruct	ID_FAMILY				= new FieldStruct ("Family ID", Family.instance, 0);
 	/** Unique field: A 4 bytes integer which point to a graphic's ID. */
-	public static final FieldStruct ID_GRAPHIC = new FieldStruct ("Graphic ID", Graphics.instance, 0);
+	public static final FieldStruct	ID_GRAPHIC				= new FieldStruct ("Graphic ID", Graphics.instance, 0);
 	/** Unique field: A 4 bytes integer which point to an object's ID. */
-	public static final FieldStruct ID_OBJECT = new FieldStruct ("Object ID", Objects.instance, 0);
+	public static final FieldStruct	ID_OBJECT				= new FieldStruct ("Object ID", Objects.instance, 0);
 	/** Unique field: A 4 bytes integer which point to a sound ID. */
-	public static final FieldStruct ID_SOUND = new FieldStruct ("Sound ID", Sounds.instance, 0);
+	public static final FieldStruct	ID_SOUND				= new FieldStruct ("Sound ID", Sounds.instance, 0);
 	/** Unique field: A 4 bytes integer which point to a tech's ID. */
-	public static final FieldStruct ID_TECH = new FieldStruct ("Tech ID", TechTree.instance, 0);
+	public static final FieldStruct	ID_TECH					= new FieldStruct ("Tech ID", TechTree.instance, 0);
 	/** Unique field: A 4 bytes integer which point to a terrain's ID. */
-	public static final FieldStruct ID_TERRAIN = new FieldStruct ("Terrain ID", Terrain.instance, 0);
+	public static final FieldStruct	ID_TERRAIN				= new FieldStruct ("Terrain ID", Terrain.instance, 0);
 	/** Unique field: A 4 bytes integer which point to an hotkey's ID. */
-	public static final FieldStruct ID_UI_HOTKEY = new FieldStruct ("Hotkey ID", UIHotkey.instance, 0);
+	public static final FieldStruct	ID_UI_HOTKEY			= new FieldStruct ("Hotkey ID", UIHotkey.instance, 0);
 	/** Unique field: A 4 bytes integer which point to an hotkey's ID. */
-	public static final FieldStruct ID_UI_FORM = new FieldStruct ("Form ID", UIForms.instance, 0);
+	public static final FieldStruct	ID_UI_FORM				= new FieldStruct ("Form ID", UIForms.instance, 0);
 	/** Unique field: A 4 bytes integer which point to an unit set's ID. */
-	public static final FieldStruct ID_UI_FONT = new FieldStruct ("Font ID", UIFonts.instance, 0);
+	public static final FieldStruct	ID_UI_FONT				= new FieldStruct ("Font ID", UIFonts.instance, 0);
 	/** Unique field: A 4 bytes integer which point to an unit set's ID. */
-	public static final FieldStruct ID_UNIT_SET = new FieldStruct ("Unit set ID", UnitSet.instance, 0);
+	public static final FieldStruct	ID_UNIT_SET				= new FieldStruct ("Unit set ID", UnitSet.instance, 0);
 	/** Unique field: A 4 bytes integer which point to an upgrade's ID. */
-	public static final FieldStruct ID_UPGRADE = new FieldStruct ("Updrade ID", Upgrade.instance, 0);
+	public static final FieldStruct	ID_UPGRADE				= new FieldStruct ("Updrade ID", Upgrade.instance, 0);
 	/** Unique field: A 4 bytes integer which point to a weapon to hit's ID. */
-	public static final FieldStruct ID_WEAPON_TO_HIT = new FieldStruct ("Weapon to hit ID", WeaponToHit.instance, 0);
+	public static final FieldStruct	ID_WEAPON_TO_HIT		= new FieldStruct ("Weapon to hit ID", WeaponToHit.instance, 0);
 	/** Unique field: A 4 bytes integer which point to an object's ID. */
-	public static final FieldStruct ID_TECH_FROM_OBJECT = new FieldStruct ("Build from object", Objects.instance, 0);
+	public static final FieldStruct	ID_TECH_FROM_OBJECT		= new FieldStruct ("Build from object", Objects.instance, 0);
 	/** Unique field: A 4 bytes integer which point to a tech's ID. */
-	public static final FieldStruct ID_OBJECT_BUILD_TECH = new FieldStruct ("Can build tech", TechTree.instance, 0);
+	public static final FieldStruct	ID_OBJECT_BUILD_TECH	= new FieldStruct ("Can build tech", TechTree.instance, 0);
 	/** Unique field: A 4 bytes integer which point to a button's ID. */
-	public static final FieldStruct ID_BUTTON_COMMAND = new FieldStruct ("Button/Command ID", Buttons.instance, 0);
+	public static final FieldStruct	ID_BUTTON_COMMAND		= new FieldStruct ("Button/Command ID", Buttons.instance, 0);
 	/** Special field: A 4 bytes float which define an unused ID. */
-	public static final FieldStruct ID_GFX_UNUSED = new FieldStruct ("Unused GFX effect", GFXEffects.instance, 0, Knowledge.NEVER_USED);
+	public static final FieldStruct	ID_GFX_UNUSED			= new FieldStruct ("Unused GFX effect", GFXEffects.instance, 0, Knowledge.NEVER_USED);
 	/** Special field: A 4 bytes float which define a (still) unknown ID. */
-	public static final FieldStruct ID_GFX_UNKNOWN = new FieldStruct ("Unknown GFX effect", GFXEffects.instance, 0, Knowledge.UNKNOWN);
+	public static final FieldStruct	ID_GFX_UNKNOWN			= new FieldStruct ("Unknown GFX effect", GFXEffects.instance, 0, Knowledge.UNKNOWN);
 
 
 
@@ -159,16 +163,16 @@ public abstract class DatStructure {
 
 
 	/** DatFile associated with this DatStructure */
-	public DatFile datFile = null;
+	public DatFile					datFile			= null;
 
 	/** Name of the structure. Used for GUI purposes. */
-	public final String name;
+	public final String				name;
 
 	/** Name of the file. It must match exactly the dat filename. */
-	public final String fileName;
+	public final String				fileName;
 
 	/** Define the number of elements at the beginning? */
-	public final boolean defineNumEntries;
+	public final boolean			defineNumEntries;
 
 	/**
 	 * The game define a counter "num entries" at the beginning of each group in
@@ -181,31 +185,31 @@ public abstract class DatStructure {
 	 * there are actually N+1 entries (because there's also the "Epoch" entry,
 	 * which is not counted).
 	 */
-	public final int adjustNumEntries;
+	public final int				adjustNumEntries;
 
 	/** Min SequenceNumber for defined objects */
-	public final int minSeq;
+	public final int				minSeq;
 
 	/** Min ID for defined objects */
-	public final int minID;
+	public final int				minID;
 
 	/**
 	 * Index of the field which hold the entry name. It's -1 if entries have no
 	 * name.
 	 */
-	public final int indexName;
+	public final int				indexName;
 
 	/**
 	 * Index of the field which hold the entry sequence number. It's -1 entries
 	 * have no sequence number.
 	 */
-	public final int indexSequence;
+	public final int				indexSequence;
 
 	/**
 	 * Index of the field which hold the entry ID. It's -1 if entries have no
 	 * ID.
 	 */
-	public final int indexID;
+	public final int				indexID;
 
 	/**
 	 * This field define the type/size of extra fields, which are all identical
@@ -213,7 +217,7 @@ public abstract class DatStructure {
 	 * Only dbtechtree.dat and dbevent.dat use this.
 	 * It's null if not used.
 	 */
-	public FieldStruct extraField = null;
+	public FieldStruct				extraField		= null;
 
 	/**
 	 * This array define the description/type/size of all fields of a single
@@ -221,31 +225,33 @@ public abstract class DatStructure {
 	 * You can expect the sum of the sizes of these entries must match the size
 	 * of an entry in the file.
 	 */
-	public FieldStruct[] fieldStructs;
+	public FieldStruct[]			fieldStructs;
 
 	/** Default values used by Unknown/New entries. */
-	public Object[] newEntryValues = null;
+	public Object[]					newEntryValues	= null;
 
 	/** Optional function to calculate the name */
-	public Function <Entry, String> nameBuilder = null;
+	public Function <Entry, String>	nameBuilder		= null;
 
 	/** Default number of columns for the UI */
-	public final int defaultColumns;
+	public final int				defaultColumns;
 
 	/** Size of the groups list and the Reset button in the editor */
-	public final int guiGroupsListSize;
+	public final int				guiGroupsListSize;
 
 	/** Size of the entries list and the Save Entry button in the editor */
-	public final int guiEntriesListSize;
+	public final int				guiEntriesListSize;
 
 
 
 	// Calculated fields
 	/** Base size of an entry in bytes */
-	public int entrySize;
+	public int					entrySize;
 
 	/** All fields with dynamic size */
-	public FieldStruct[] dynamicSizeFields;
+	public FieldStruct[]		dynamicSizeFields;
+
+	public Set <DatStructure>	requirements;
 
 
 
@@ -307,8 +313,8 @@ public abstract class DatStructure {
 	 */
 	public void afterInit () {
 		entrySize = Arrays.stream (fieldStructs).parallel ().mapToInt (x -> x.size).sum ();
-
 		dynamicSizeFields = Arrays.stream (fieldStructs).parallel ().filter (x -> x.indexSize >= 0).toArray (FieldStruct[]::new);
+		requirements = Arrays.stream (fieldStructs).parallel ().filter (x -> x.type == FieldType.LINK).map (x -> x.linkToStruct).collect (Collectors.toSet ());
 	}
 
 
@@ -385,5 +391,42 @@ public abstract class DatStructure {
 		return name;
 	}
 
+	/**
+	 * If true, the entries in this DatStructure use custom ways to show their name
+	 *
+	 * @return true if there's a custom way to show the name of the entries
+	 */
+	public abstract boolean hasCustomEntryName ();
+
+	/**
+	 * Calculates and return the custom name for this entry, if any
+	 *
+	 * @param index index of the entry
+	 * @param values values of the entry
+	 * @return the custom name, if any, null otherwise
+	 */
+	public abstract String getCustomEntryName (int index, List <Object> values);
+
+
+	/**
+	 * Calculates and return the custom description for this entry, if any
+	 *
+	 * @param entry the entry
+	 * @return the entry description, if any, null otherwise
+	 */
+	public abstract String getEntryDescription (Entry entry);
+
+
+	public FieldStruct getFieldStruct (int index) {
+		if (index < 0) {
+			return null;
+		} else if (index < fieldStructs.length) {
+			return fieldStructs[index];
+		} else if (extraField != null) {
+			return extraField;
+		} else {
+			throw new IllegalArgumentException ("Can't find the a field with this index > " + index);
+		}
+	}
 
 }

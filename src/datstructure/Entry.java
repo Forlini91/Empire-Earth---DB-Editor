@@ -4,6 +4,7 @@ package datstructure;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -26,39 +27,41 @@ import datmanager.DatFile;
  */
 public class Entry implements Comparable <Entry>, Iterable <Object> {
 
+	private static final List <Object>	emptyList		= Collections.unmodifiableList (new ArrayList <> ());
+
 	/** Null target entry */
-	public static final Entry nullEntry = new Entry (null, true, "Null", -2, -2);
+	public static final Entry			nullEntry		= new Entry (null, true, "Null", -2, -2);
 	/** Used by fields without name. */
-	public static final String NAME_NONE = "<No name>";
+	public static final String			NAME_NONE		= "<No name>";
 	/** Used by undefined fields. */
-	public static final String NAME_UNDEFINED = "<Undefined>";
+	public static final String			NAME_UNDEFINED	= "<Undefined>";
 
 	/**
 	 * Name of the entry. If null, the name is calculated basing on the fields
 	 */
-	private final String name;
+	private final String				name;
 	/** The structure of this entry. */
-	public final DatStructure datStructure;
+	public final DatStructure			datStructure;
 	/**
 	 * The values of this entry. They are in the same order as the fiels defined
 	 * in the structure.
 	 */
-	private final List <Object> values;
+	private final List <Object>			values;
 	/**
 	 * The entry's sequence number. This is a redundant value which can be found
 	 * in values[indexSequence].
 	 */
-	private int sequenceNumber;
+	private int							sequenceNumber;
 	/**
 	 * The entry's ID. This is a redundant value which can be found in
 	 * values[indexID].
 	 */
-	private int ID;
+	private int							ID;
 	/**
 	 * If true, this entry is just for Link purposes and must be ignored
 	 * anywhere except in Links
 	 */
-	public final boolean dummyEntry;
+	public final boolean				dummyEntry;
 
 	/**
 	 * Create a new entry with the given DatStructure, name, sequence number, ID
@@ -78,13 +81,6 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 		this.values = values;
 		if (values.size () > 0) {
 			try {
-				if (datStructure.indexName < 0) {
-					if (name != null) {
-						values.set (datStructure.indexName, name);
-					} else if (datStructure.indexName >= 0) {
-						name = (String) values.get (datStructure.indexName);
-					}
-				}
 				this.name = name;
 				this.sequenceNumber = datStructure.indexSequence < 0 ? sequenceNumber : get (datStructure.indexSequence);
 				this.ID = datStructure.indexID < 0 ? ID : get (datStructure.indexID);
@@ -125,7 +121,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 * @return A duplicate of this Entry
 	 */
 	public Entry duplicate (int sequenceNumber, int ID) {
-		List <Object> valuesCopy = new ArrayList<> (values);
+		List <Object> valuesCopy = new ArrayList <> (values);
 		if (datStructure.indexSequence >= 0) {
 			valuesCopy.set (datStructure.indexSequence, sequenceNumber);
 		}
@@ -147,9 +143,9 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 */
 	private static List <Object> getDefaultValues (DatStructure datStructure, int sequenceNumber, int ID) {
 		if (datStructure == null || datStructure.newEntryValues == null) {
-			return new ArrayList<> (0);
+			return new ArrayList <> (0);
 		}
-		List <Object> values = new ArrayList<> (Arrays.asList (datStructure.newEntryValues));
+		List <Object> values = new ArrayList <> (Arrays.asList (datStructure.newEntryValues));
 		if (datStructure.indexSequence >= 0) {
 			values.set (datStructure.indexSequence, sequenceNumber);
 		}
@@ -321,7 +317,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 * @return All links to this entry
 	 */
 	public List <Link> getLinksToEntry (boolean ordered) {
-		Collection <Link> linksToEntrySet = new HashSet<> ();
+		Collection <Link> linksToEntrySet = new HashSet <> ();
 		DatFile.LOADED.forEach (datFile -> {
 			FieldStruct[] fieldStructs = datFile.datStructure.fieldStructs;
 			Link link;
@@ -355,7 +351,7 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 				}
 			}
 		});
-		List <Link> linksToEntry = new ArrayList<> (linksToEntrySet);
+		List <Link> linksToEntry = new ArrayList <> (linksToEntrySet);
 		if (ordered) {
 			linksToEntry.sort (null);
 		}
@@ -423,6 +419,15 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	public <T> T get (int index) throws IndexOutOfBoundsException, ClassCastException {
 		return (T) values.get (index);
 	}
+
+
+	public List <Object> getExtraFields () {
+		if (datStructure.extraField != null) {
+			return values.subList (datStructure.fieldStructs.length, size ());
+		}
+		return emptyList;
+	}
+
 
 	/**
 	 * Returns a sequential {@code Stream} with this collection as its source.

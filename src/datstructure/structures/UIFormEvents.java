@@ -1,10 +1,14 @@
 package datstructure.structures;
 
+import java.util.List;
+
 import constants.FormEventType;
 import datstructure.DatStructure;
 import datstructure.DatStructureParse;
 import datstructure.DatStructureParse.ParseState;
+import datstructure.Entry;
 import datstructure.FieldStruct;
+
 
 /**
  * Represents the file dbuiformevents.dat
@@ -37,6 +41,21 @@ public class UIFormEvents extends DatStructure {
 	@Override
 	public int indexExtraFields () {
 		return -1;
+	}
+
+	@Override
+	public boolean hasCustomEntryName () {
+		return false;
+	}
+
+	@Override
+	public String getCustomEntryName (int index, List <Object> values) {
+		return null;
+	}
+
+	@Override
+	public String getEntryDescription (Entry entry) {
+		return null;
 	}
 
 }

@@ -71,7 +71,7 @@ public class DialogMoveEntryToGroup extends JDialog {
 				onChange.run();
 				entry.getLinksToEntry(false).parallelStream().forEach(link -> link.source.datStructure.datFile.setUnsaved(true));
 			} catch (Exception e){
-				Core.printException(null, e, "An error occurred while moving the entry. No data has been altered", "Error");
+				Core.printException(null, e, "An error occurred while moving the entry. No data has been altered", "Error", true);
 			}
 			dispose();
 		});

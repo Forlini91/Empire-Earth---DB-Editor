@@ -13,6 +13,7 @@ import datstructure.Link;
 /**
  * Effect codes used in an Effect entry.
  * They defines the action to execute.
+ *
  * @author MarcoForlini
  */
 public enum EffectCode implements EnumValue {
@@ -58,29 +59,23 @@ public enum EffectCode implements EnumValue {
 	C17_SET_DEATH_SOUND ("Set death sound", 17),
 	/** Assign a new selection sound in slot 1 */
 	C18_SET_SELECTION_SOUND_1 ("Set selection sound 1", 18),
-	/**
-	 * Replace all objects of the given class with objects of another given
-	 * class and tech (they will inherit health, power and upgrades)
-	 */
+	/** Replace all objects of the given class with objects of another given class and tech (they will inherit health, power and upgrades) */
 	C19_UPDGRADE_ALL_OBJECTS ("Upgrade objects", 19),
 	/** Assign a new action sound in slot 2 */
 	C20_SET_ACTION_SOUND_2 ("Set action sound 2", 20),
 	/** Assign a new selection sound in slot 2 */
 	C21_SET_SELECTION_SOUND_2 ("Set selection sound 2", 21),
-	/**
-	 * Replace the current object with an object from the given class (it will
-	 * inherit health and power, but not the upgrades)
-	 */
+	/** Replace the current object with an object from the given class (it will inherit health and power, but not the upgrades) */
 	C22_REPLACE_OBJECTS ("Replace objects", 22),;
 
 	/** Name to be shown in the UI */
-	public final String name;
+	public final String				name;
 
 	/** Code used in the dat files */
-	public final int code;
+	public final int				code;
 
 	/** Function which build the name of the entry */
-	public Function <Entry, String> nameBuilder;
+	public Function <Entry, String>	nameBuilder;
 
 	EffectCode (String effectName, int effectCode) {
 		name = effectName;
@@ -192,6 +187,7 @@ public enum EffectCode implements EnumValue {
 
 	/**
 	 * Extract the object/set from the given entry
+	 *
 	 * @param entry The entry
 	 * @return The object /set
 	 */
@@ -210,6 +206,7 @@ public enum EffectCode implements EnumValue {
 
 	/**
 	 * Extract the object/tech from the given entry
+	 *
 	 * @param entry The entry
 	 * @return The object from/tech
 	 */
@@ -228,6 +225,7 @@ public enum EffectCode implements EnumValue {
 
 	/**
 	 * Extract the object/set/tech from the given entry
+	 *
 	 * @param entry The entry
 	 * @return The object from/set/tech
 	 */
@@ -250,6 +248,7 @@ public enum EffectCode implements EnumValue {
 
 	/**
 	 * Extract the object 1 from the given entry
+	 *
 	 * @param entry The entry
 	 * @return The object 1
 	 */
@@ -263,6 +262,7 @@ public enum EffectCode implements EnumValue {
 
 	/**
 	 * Extract the object 2 from the given entry
+	 *
 	 * @param entry The entry
 	 * @return The object 2
 	 */
@@ -276,6 +276,7 @@ public enum EffectCode implements EnumValue {
 
 	/**
 	 * Extract the graphic from the given entry
+	 *
 	 * @param entry The entry
 	 * @return The graphic
 	 */
@@ -289,6 +290,7 @@ public enum EffectCode implements EnumValue {
 
 	/**
 	 * Extract the tech from the given entry
+	 *
 	 * @param entry The entry
 	 * @return The tech
 	 */
@@ -302,6 +304,7 @@ public enum EffectCode implements EnumValue {
 
 	/**
 	 * Extract the sound from the given entry
+	 *
 	 * @param entry The entry
 	 * @return The sound
 	 */
@@ -315,6 +318,7 @@ public enum EffectCode implements EnumValue {
 
 	/**
 	 * Extract the button from the given entry
+	 *
 	 * @param entry The entry
 	 * @return The button
 	 */
@@ -328,6 +332,7 @@ public enum EffectCode implements EnumValue {
 
 	/**
 	 * Extract the area effect from the given entry
+	 *
 	 * @param entry The entry
 	 * @return The area effect
 	 */
@@ -341,6 +346,7 @@ public enum EffectCode implements EnumValue {
 
 	/**
 	 * Extract the area effect from the given entry
+	 *
 	 * @param entry The entry
 	 * @return The area effect
 	 */
@@ -351,6 +357,7 @@ public enum EffectCode implements EnumValue {
 
 	/**
 	 * Get the attribute name/code
+	 *
 	 * @param entry The entry
 	 * @return The attribute name/code
 	 */
@@ -391,6 +398,7 @@ public enum EffectCode implements EnumValue {
 	/**
 	 * Build and return a string which represents the attribute's
 	 * set/alter/alter mult value
+	 *
 	 * @param entry The entry
 	 * @return The string for the attribute's value
 	 */

@@ -248,7 +248,7 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 			selWindow.setVisible(true);
 			return selWindow;
 		} catch (Exception e){
-			Core.printException(parent, e, "Error while opening the window for DatFile: " + this, "Error");
+			Core.printException(parent, e, "Error while opening the window for DatFile: " + this, "Error", true);
 			throw e;
 		}
 	}

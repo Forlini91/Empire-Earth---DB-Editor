@@ -7,7 +7,6 @@ package constants;
  *
  * @author MarcoForlini
  */
-@SuppressWarnings ("javadoc")
 public enum FormEventType implements EnumValue {
 
 	C0_OPEN ("Open", 0),
@@ -19,10 +18,10 @@ public enum FormEventType implements EnumValue {
 
 
 	/** Name to be shown in the UI */
-	public final String name;
+	public final String	name;
 
 	/** Code used in the dat files */
-	public final int code;
+	public final int	code;
 
 
 	FormEventType (String name, int code) {

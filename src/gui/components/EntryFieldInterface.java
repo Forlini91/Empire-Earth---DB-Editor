@@ -10,121 +10,135 @@ import gui.PopupMenuHandler;
 
 /**
  * Declares all methods used by fields
+ * 
  * @author MarcoForlini
  */
 public interface EntryFieldInterface {
 
 	/**
 	 * Gets the structure of the field
-	 * @return	the structure of the field
+	 * 
+	 * @return the structure of the field
 	 */
-	FieldStruct getEntryStruct();
+	FieldStruct getEntryStruct ();
 
 	/**
-	 * Gets the
-	 * @return	the
+	 * Gets the index of the field
+	 * 
+	 * @return the index of the field
 	 */
-	int getIndex();
+	int getIndex ();
 
 	/**
 	 * Sets the value of the field
-	 * @param value		the new value
-	 * @throws IllegalArgumentException		If the value can't be assigned
+	 * 
+	 * @param value the new value
+	 * @throws IllegalArgumentException If the value can't be assigned
 	 */
-	void setVal(Object value) throws IllegalArgumentException;
-	
+	void setVal (Object value) throws IllegalArgumentException;
+
 	/**
-	 * Gets the
-	 * @return	the
+	 * Gets the value of the field
+	 * 
+	 * @return the value of the field
 	 */
-	Object getVal();
-	
+	Object getVal ();
+
 	/**
 	 * Sets the visible state
-	 * @param visible	the new visible state
+	 * 
+	 * @param visible the new visible state
 	 */
-	public void setVisible(boolean visible);
+	public void setVisible (boolean visible);
 
 	/**
 	 * Sets the new minimum size
-	 * @param dimension 	the new miminum size
+	 * 
+	 * @param dimension the new miminum size
 	 */
-	public void setMinimumSize(Dimension dimension);
+	public void setMinimumSize (Dimension dimension);
 
 	/**
 	 * Sets the new preferred size
-	 * @param dimension 	the new preferred size
+	 * 
+	 * @param dimension the new preferred size
 	 */
-	public void setPreferredSize(Dimension dimension);
+	public void setPreferredSize (Dimension dimension);
 
 	/**
 	 * Sets the new maximum size
-	 * @param dimension 	the new minimum size
+	 * 
+	 * @param dimension the new minimum size
 	 */
-	public void setMaximumSize(Dimension dimension);
+	public void setMaximumSize (Dimension dimension);
 
 	/**
 	 * Sets the opaque state
-	 * @param opaque	the new opaque state
+	 * 
+	 * @param opaque the new opaque state
 	 */
-	public void setOpaque(boolean opaque);
-	
+	public void setOpaque (boolean opaque);
+
 	/**
 	 * Sets whether or not this component is enabled.
 	 * A component that is enabled may respond to user input,
 	 * while a component that is not enabled cannot respond to
-	 * user input.  Some components may alter their visual
+	 * user input. Some components may alter their visual
 	 * representation when they are disabled in order to
 	 * provide feedback to the user that they cannot take input.
-	 * <p>Note: Disabling a component does not disable its children.
-	 *
-	 * <p>Note: Disabling a lightweight component does not prevent it from
+	 * <p>
+	 * Note: Disabling a component does not disable its children.
+	 * <p>
+	 * Note: Disabling a lightweight component does not prevent it from
 	 * receiving MouseEvents.
 	 *
 	 * @param enabled true if this component should be enabled, false otherwise
 	 * @see java.awt.Component#isEnabled
 	 * @see java.awt.Component#isLightweight
 	 */
-	public void setEnabled(boolean enabled);
-	
+	public void setEnabled (boolean enabled);
+
 	/**
 	 * Reset the field color to the default one
 	 */
-	public void resetColor();
-	
+	public void resetColor ();
+
 	/**
 	 * Gets the default value
-	 * @return	the default value
+	 * 
+	 * @return the default value
 	 */
-	public Object getDefaultVal();
+	public Object getDefaultVal ();
 
 	/**
 	 * Check if the field content has been altered
-	 * @return	true if the field has been altered, false otherwise
+	 * 
+	 * @return true if the field has been altered, false otherwise
 	 */
 	boolean isAltered ();
 
 	/**
 	 * Refresh the field content
 	 */
-	void refreshField();
-	
+	void refreshField ();
+
 	/**
-	 * Sets the foreground color of this component.  It is up to the
+	 * Sets the foreground color of this component. It is up to the
 	 * look and feel to honor this property, some may choose to ignore
 	 * it.
 	 *
-	 * @param fg  the desired foreground <code>Color</code>
+	 * @param fg the desired foreground <code>Color</code>
 	 * @see java.awt.Component#getForeground
 	 */
 	void setForeground (Color fg);
-	
+
 	/**
 	 * Sets the popup menu handler
+	 * 
 	 * @param popupMenuHandler the popup menu handler
 	 */
-	default void setPopupMenu(PopupMenuHandler popupMenuHandler){
-		((Component) this).addMouseListener(popupMenuHandler);
+	default void setPopupMenu (PopupMenuHandler popupMenuHandler) {
+		((Component) this).addMouseListener (popupMenuHandler);
 	}
-	
+
 }

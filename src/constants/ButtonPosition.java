@@ -5,7 +5,6 @@ package constants;
  *
  * @author MarcoForlini
  */
-@SuppressWarnings ("javadoc")
 public enum ButtonPosition implements EnumValue {
 
 	C_1_NONE ("None", -1),
@@ -75,10 +74,10 @@ public enum ButtonPosition implements EnumValue {
 	C63_Row4_Pos16 ("Row 4, Position 16,", 63),;
 
 	/** Name to be shown in the UI */
-	public final String name;
+	public final String	name;
 
 	/** Code used in the dat files */
-	public final int code;
+	public final int	code;
 
 	ButtonPosition (String name, int code) {
 		this.name = name;
