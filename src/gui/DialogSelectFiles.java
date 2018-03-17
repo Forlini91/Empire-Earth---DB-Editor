@@ -3,6 +3,8 @@ package gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,8 +107,10 @@ public class DialogSelectFiles extends JDialog {
 	 */
 	public DialogSelectFiles (JFrame parent, List <DatFile> files, List <Boolean> loaded, boolean firstLoad) {
 		super (parent, ModalityType.DOCUMENT_MODAL);
+		JFileContainer.map = containersMap;
 		setTitle ("Load files");
 		checkBoxFiles = new JFileContainer[files.size ()];
+
 		int i;
 		scrollPanePanel.setLayout (new GridLayout ((int) Math.ceil (files.size () / 5f), 5, 5, 5));
 		for (i = 0; i < files.size (); i++) {
@@ -158,12 +162,14 @@ public class DialogSelectFiles extends JDialog {
 	 *
 	 * @author MarcoForlini
 	 */
-	public static class JFileContainer extends JToggleButtonRed {
+	public static class JFileContainer extends JToggleButtonRed implements MouseListener {
 
-		private static final long	serialVersionUID	= -5111891743368666332L;
+		private static final long							serialVersionUID	= 1L;
+
+		public static Map <DatStructure, JFileContainer>	map					= null;
 
 		/** The dat file */
-		public final DatFile		datFile;
+		public final DatFile								datFile;
 
 		/**
 		 * Create a new {@link JFileContainer}
@@ -184,6 +190,64 @@ public class DialogSelectFiles extends JDialog {
 			}
 			setPreferredSize (new Dimension (25, 25));
 			setOpaque (false);
+			addMouseListener (this);
+		}
+
+		@Override
+		public void mouseEntered (MouseEvent arg0) {
+			if (isSelected ()) {
+				highlightInverseRequirements (this);
+				highlight = GUI.COLOR_UI_ELEMENT_PRESSED_HIGHLIGHT;
+			} else {
+				highlightRequirements (this);
+				highlight = GUI.COLOR_UI_ELEMENT_HIGHLIGHT;
+			}
+			repaint ();
+		}
+
+		@Override
+		public void mouseExited (MouseEvent arg0) {
+			for (JFileContainer cont : map.values ()) {
+				if (cont.highlight != null) {
+					cont.highlight = null;
+					cont.repaint ();
+				}
+			}
+		}
+
+		@Override
+		public void mouseClicked (MouseEvent arg0) {
+			mouseExited (arg0);
+			mouseEntered (arg0);
+		}
+
+		@Override
+		public void mousePressed (MouseEvent arg0) {/* Do nothing */}
+
+		@Override
+		public void mouseReleased (MouseEvent arg0) {/* Do nothing */}
+
+
+		private void highlightRequirements (JFileContainer container) {
+			for (DatStructure structure : container.datFile.datStructure.requirements) {
+				JFileContainer cont = map.get (structure);
+				if (cont != null && !cont.isSelected () && cont.highlight != GUI.COLOR_UI_ELEMENT_HIGHLIGHT) {
+					cont.highlight = GUI.COLOR_UI_ELEMENT_HIGHLIGHT;
+					cont.repaint ();
+					highlightRequirements (cont);
+				}
+			}
+		}
+
+		private void highlightInverseRequirements (JFileContainer container) {
+			DatStructure required = container.datFile.datStructure;
+			for (JFileContainer cont : map.values ()) {
+				if (cont.isSelected () && cont.highlight != GUI.COLOR_UI_ELEMENT_PRESSED_HIGHLIGHT && cont.datFile.datStructure.requirements.contains (required)) {
+					cont.highlight = GUI.COLOR_UI_ELEMENT_PRESSED_HIGHLIGHT;
+					cont.repaint ();
+					highlightInverseRequirements (cont);
+				}
+			}
 		}
 
 	}

@@ -39,7 +39,7 @@ import operations.Operator;
  */
 public class DialogConditionBuilder extends JDialog {
 
-	private static final long			serialVersionUID	= 3920757751703086221L;
+	private static final long			serialVersionUID	= 1L;
 
 	private static GridBagLayout		gbl_contentPanel	= new GridBagLayout ();
 	private static GridBagConstraints	gbc_lblName			= new GridBagConstraints (),
@@ -304,10 +304,14 @@ public class DialogConditionBuilder extends JDialog {
 		}
 
 
-		if (condition == null) {
-			condition = new ConditionOperator (datFile, index, operator, value);
-		} else {
-			condition.setData (datFile, index, operator, value);
+		try {
+			if (condition == null) {
+				condition = new ConditionOperator (datFile, index, operator, value);
+			} else {
+				condition.setData (datFile, index, operator, value);
+			}
+		} catch (IllegalArgumentException e) {
+			Core.printException (this, e, "An error occurred while saving the condition", "Error", true);
 		}
 		setVisible (false);
 	}

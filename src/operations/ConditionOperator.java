@@ -4,6 +4,7 @@ import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 import constants.EnumValue;
+import datmanager.Core;
 import datmanager.DatFile;
 import datmanager.Language;
 import datstructure.DatStructure;
@@ -76,9 +77,9 @@ public class ConditionOperator implements Condition {
 
 		FieldStruct field = datFile.datStructure.getFieldStruct (index);
 		if (field == null) {
-			name = "<Any field> " + operator + ' ' + (value instanceof String ? '\"' + (String) value + '\"' : value);
+			name = "<Any field> " + operator + ' ' + (Core.isNumber (value.toString ()) ? '\"' + (String) value + '\"' : value);
 		} else {
-			name = "(" + index + ") " + field.name + ' ' + operator + ' ' + (value instanceof String ? '\"' + (String) value + '\"' : value);
+			name = "(" + index + ") " + field.name + ' ' + operator + ' ' + (field.type == FieldType.STRING ? '\"' + (String) value + '\"' : value);
 		}
 		condition = buildCondition (datFile.datStructure, index, operator, value);
 	}
@@ -104,19 +105,21 @@ public class ConditionOperator implements Condition {
 	private static Condition buildSingleFieldCondition (DatStructure datStructure, int index, Operator operator, Object value) {
 		FieldType type;
 		boolean extraIndexes = false;
-		if (index < datStructure.fieldStructs.length) {
+		if (index < 0) {
+			throw new IllegalArgumentException ("Invalid field: " + index);
+		} else if (index < datStructure.fieldStructs.length) {
 			type = datStructure.fieldStructs[index].type;
 		} else if (datStructure.extraField != null) {
 			type = datStructure.extraField.type;
 			extraIndexes = true;
 		} else {
-			return ALWAYS_FALSE;
+			throw new IllegalArgumentException ("Invalid field: " + index);
 		}
 
 
 		switch (type) {
 			case BOOLEAN:
-				int boolValue = (Boolean) value == (operator == Operator.EQUAL) ? 1 : 0;
+				int boolValue = (Boolean) value == (operator == Operator.EQUAL || operator == Operator.EQUAL_NC) ? 1 : 0;
 				return (Entry entry) -> boolValue == (Integer) entry.get (index);
 			case ENUM:
 				IntPredicate enumTester = getEnumCheck (operator, (EnumValue) value);
@@ -143,7 +146,7 @@ public class ConditionOperator implements Condition {
 					case INTEGER:
 						return (Entry entry) -> numberTester.test (((Integer) entry.get (index)).floatValue ());
 					default:
-						return ALWAYS_TRUE;
+						return (Entry entry) -> false;
 				}
 		}
 	}
@@ -180,8 +183,10 @@ public class ConditionOperator implements Condition {
 		int ordinalToSearch = valueToSearch.ordinal ();
 		switch (operator) {
 			case EQUAL:
+			case EQUAL_NC:
 				return (int entryValue) -> entryValue == ordinalToSearch;
 			case DIFFERENT:
+			case DIFFERENT_NC:
 				return (int entryValue) -> entryValue != ordinalToSearch;
 			case GREATER:
 				return (int entryValue) -> entryValue > ordinalToSearch;
@@ -201,8 +206,10 @@ public class ConditionOperator implements Condition {
 			float floatValueToSearch = Float.valueOf (valueToSearch);
 			switch (operator) {
 				case EQUAL:
+				case EQUAL_NC:
 					return (float entryValue) -> entryValue == floatValueToSearch;
 				case DIFFERENT:
+				case DIFFERENT_NC:
 					return (float entryValue) -> entryValue != floatValueToSearch;
 				case GREATER:
 					return (float entryValue) -> entryValue > floatValueToSearch;

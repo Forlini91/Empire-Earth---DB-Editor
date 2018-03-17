@@ -22,7 +22,7 @@ import datstructure.FieldStruct;
 
 /**
  * A JCheckBox which hold the list of languages
- * 
+ *
  * @author MarcoForlini
  */
 public class JComboBoxLanguage extends JComboBox <Language> implements EntryFieldInterface, ItemListener, MouseListener, KeyListener {
@@ -35,7 +35,7 @@ public class JComboBoxLanguage extends JComboBox <Language> implements EntryFiel
 																					return Integer.toString (lang.ID).contains (text) || NAME_MATCHER.test (text, lang);
 																				};
 
-	private ListSearcher <Language>							searcher			= new ListSearcher<> (NAME_MATCHER, ID_MATCHER);
+	private ListSearcher <Language>							searcher			= new ListSearcher <> (NAME_MATCHER, ID_MATCHER);
 	private JTextComponent									textComponent		= ((JTextComponent) getEditor ().getEditorComponent ());
 	private FieldStruct										fieldStruct;
 	private int												index;
@@ -44,12 +44,12 @@ public class JComboBoxLanguage extends JComboBox <Language> implements EntryFiel
 
 	/**
 	 * Create a new {@link JComboBoxLanguage}
-	 * 
+	 *
 	 * @param fieldStruct The field structure
 	 * @param index Index of the field
 	 */
 	public JComboBoxLanguage (FieldStruct fieldStruct, int index) {
-		super (Language.LIST);
+		super (Language.getList ());
 		this.fieldStruct = fieldStruct;
 		this.index = index;
 		setToolTipText (fieldStruct.getDescription ());
@@ -107,7 +107,7 @@ public class JComboBoxLanguage extends JComboBox <Language> implements EntryFiel
 		defaultVal = value;
 		if (value != null && value instanceof Integer) {
 			int code = (int) value;
-			Language le = Language.MAP.get (code);
+			Language le = Language.getMap ().get (code);
 			if (le != null) {
 				setSelectedItem (le);
 				textComponent.setCaretPosition (0);
@@ -160,7 +160,7 @@ public class JComboBoxLanguage extends JComboBox <Language> implements EntryFiel
 				if (!isPopupVisible ()) {
 					showPopup ();
 				}
-				List <Language> results = searcher.find (Language.LIST, null, text);
+				List <Language> results = searcher.find (Language.getList (), null, text);
 				if (results != null) {
 					Language enumValue = searcher.findNext ();
 					if (enumValue != null) {

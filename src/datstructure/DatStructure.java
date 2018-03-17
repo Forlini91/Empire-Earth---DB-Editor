@@ -59,9 +59,14 @@ import datstructure.structures.World;
 public abstract class DatStructure {
 
 	/** All structures used by Vanilla files */
-	public static final DatStructure[] ALL_FILES;
+	public static DatStructure[] ALL_FILES;
 	static {
-		if (!Core.AOC) {
+		updateAllFiles ();
+	}
+
+	public static void updateAllFiles () {
+		if (!Core.isAOC ()) {
+			// VANILLA
 			ALL_FILES = new DatStructure[] {
 					AIUnitTargeting.instance, AmbientSounds.instance, Animals.instance, AreaEffect.instance, Buttons.instance,
 					Calamity.instance, Civilization.instance, CliffTerrain.instance, ColorTable.instance, CPBehavior.instance,
@@ -73,6 +78,7 @@ public abstract class DatStructure {
 					Upgrade.instance, WeaponToHit.instance, World.instance
 			};
 		} else {
+			// AOC
 			ALL_FILES = new DatStructure[] {
 					AIUnitTargeting.instance, AmbientSounds.instance, Animals.instance, AreaEffect.instance, Buttons.instance,
 					Calamity.instance, Civilization.instance, CivPower.instance, CliffTerrain.instance, ColorTable.instance,
@@ -329,7 +335,7 @@ public abstract class DatStructure {
 		if (cl.isAnnotationPresent (DatStructureParse.class)) {
 			noAnnotation = true;
 			DatStructureParse parse = cl.getAnnotation (DatStructureParse.class);
-			parseState = Core.AOC ? parse.AOC () : parse.Vanilla ();
+			parseState = Core.isAOC () ? parse.AOC () : parse.Vanilla ();
 		} else {
 			parseState = ParseState.MISSING_UNKNOWN;
 		}

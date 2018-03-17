@@ -112,7 +112,7 @@ public class FrameMain extends JFrame implements WindowListener {
 	 * Create and show the new window
 	 */
 	public FrameMain () {
-		super ("Empire Earth - " + (Core.AOC ? "Art of Conquest -" : "") + "DB Editor");
+		super ("Empire Earth - " + (Core.isAOC () ? "Art of Conquest - " : "") + "DB Editor");
 	}
 
 
@@ -271,7 +271,7 @@ public class FrameMain extends JFrame implements WindowListener {
 
 	private void loadError (DatFile datFile, Throwable e) {
 		do {
-			switch (JOptionPane.showOptionDialog (this, "An error occurred during the loading of " + datFile + ".\nAre you sure this file has been extracted from " + (Core.AOC ? "Art of Conquest's (and not Vanilla game's)" : "Empire Earth's (and not Art of Conquest's)") + " archive Data.ssa?\nAlso, have you decrypted the files with \"Wofies Multidecompressor\"?\nYou know, the files you extract from Data.ssa must also be decrypted (and EE Studio doesn't correctly decrypt them).\nFirst decrypt the files you've extracted, then retry the loading", "Error", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, GUI.IMAGE_ICON, loadErrorChoices, loadErrorChoices[0])) {
+			switch (JOptionPane.showOptionDialog (this, "An error occurred during the loading of " + datFile + ".\nAre you sure this file has been extracted from " + (Core.isAOC () ? "Art of Conquest's (and not Vanilla game's)" : "Empire Earth's (and not Art of Conquest's)") + " archive Data.ssa?\nAlso, have you decrypted the files with \"Wofies Multidecompressor\"?\nYou know, the files you extract from Data.ssa must also be decrypted (and EE Studio doesn't correctly decrypt them).\nFirst decrypt the files you've extracted, then retry the loading", "Error", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, GUI.IMAGE_ICON, loadErrorChoices, loadErrorChoices[0])) {
 				case 1:
 					try {
 						final URI uri = new URI ("http://ee.heavengames.com/downloads/showfile.php?fileid=2543");

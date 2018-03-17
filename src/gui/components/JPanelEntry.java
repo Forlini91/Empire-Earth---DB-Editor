@@ -81,7 +81,7 @@ public class JPanelEntry extends JPanel {
 				}
 				break;
 			case LANGUAGE:
-				if (Language.MAP != null && !Language.MAP.isEmpty ()) {
+				if (Language.getMap () != null && !Language.getMap ().isEmpty ()) {
 					field = new JComboBoxLanguage (fieldStruct, index);
 				}
 				break;

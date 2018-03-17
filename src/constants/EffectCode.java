@@ -378,7 +378,7 @@ public enum EffectCode implements EnumValue {
 					Float langID = entry.get (2);
 					if (langID > 0) {
 						return getObjectSet (entry) + "  >  " + attribute.name + " = "
-								+ Language.MAP.get (langID.intValue ());
+								+ Language.getMap ().get (langID.intValue ());
 					}
 					return getObjectSet (entry) + "  >  " + attribute.name + " = (" + langID + ')';
 				default:

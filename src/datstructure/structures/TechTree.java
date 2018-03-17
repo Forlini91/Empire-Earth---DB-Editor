@@ -9,8 +9,8 @@ import datstructure.DatStructureParse;
 import datstructure.DatStructureParse.ParseState;
 import datstructure.Entry;
 import datstructure.FieldStruct;
-import datstructure.Knowledge;
 import datstructure.FieldType;
+import datstructure.Knowledge;
 
 
 /**
@@ -35,7 +35,7 @@ public class TechTree extends DatStructure {
 
 	@Override
 	public void init () {
-		if (!Core.AOC) { // File structure has been changed in AOC
+		if (!Core.isAOC ()) { // File structure has been changed in AOC
 			extraField = ID_TECH_FROM_OBJECT;
 			fieldStructs = new FieldStruct[] {
 					FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct ("Starting epoch", FieldType.INTEGER),

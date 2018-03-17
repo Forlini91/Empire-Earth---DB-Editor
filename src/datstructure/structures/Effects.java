@@ -36,7 +36,7 @@ public class Effects extends DatStructure {
 
 	@Override
 	public void init () {
-		if (!Core.AOC) { // File structure has been changed in AOC
+		if (!Core.isAOC ()) { // File structure has been changed in AOC
 			nameBuilder = (entry) -> EffectCode.C01_SET_BUTTON.parseValue ((int) entry.get (8)).nameBuilder.apply (entry);
 			fieldStructs = new FieldStruct[] {
 					FieldStruct.SEQ_NUMBER, FieldStruct.ID, new FieldStruct ("Set base attribute", "The given value will replace the base value", FieldType.FLOAT), new FieldStruct ("Alter base attribute", "The given value will add/subtract from the current base value", FieldType.FLOAT),

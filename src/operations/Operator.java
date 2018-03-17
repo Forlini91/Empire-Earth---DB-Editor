@@ -10,46 +10,46 @@ import java.util.Arrays;
  */
 public enum Operator {
 
-	/** Values are equals */
+	/** Value is equal to */
 	EQUAL ("==", true, true, true, true, true),
 
-	/** Values are different */
+	/** Value is different than */
 	DIFFERENT ("!=", true, true, true, true, true),
 
-	/** First is greater than second */
+	/** Value is greater than */
 	GREATER (">", false, true, true, true, true),
 
-	/** First is greater than or equal to second */
+	/** Value is greater than or equal to */
 	GREATER_EQUAL (">=", false, true, true, true, true),
 
-	/** First is less than second */
+	/** Value is less than */
 	LESS ("<", false, true, true, true, true),
 
-	/** First is less than or equal to second */
+	/** Value is less than or equal to */
 	LESS_EQUAL ("<=", false, true, true, true, true),
 
-	/** Strings are equals (ignore case) */
+	/** Value is equal to (ignore case) */
 	EQUAL_NC ("== (ignore case)", false, false, true, false, false),
 
-	/** String are different (ignore case) */
+	/** Value is different than (ignore case) */
 	DIFFERENT_NC ("!= (ignore case)", false, false, true, false, false),
 
-	/** String contains text */
+	/** Value contains text */
 	CONTAINS ("contains", false, false, true, false, false),
 
-	/** Strings doesn't contain text */
+	/** Value doesn't contain text */
 	CONTAINS_NOT ("doesn't contain", false, false, true, false, false),
 
-	/** String starts with */
+	/** Value starts with */
 	STARTS_WITH ("starts with", false, false, true, false, false),
 
-	/** String doesn't start with */
+	/** Value doesn't start with */
 	STARTS_WITH_NOT ("doesn't start with", false, false, true, false, false),
 
-	/** String ends with */
+	/** Value ends with */
 	ENDS_WITH ("ends with", false, false, true, false, false),
 
-	/** String doesn't end with */
+	/** Value doesn't end with */
 	ENDS_WITH_NOT ("doesn't end with", false, false, true, false, false);
 
 

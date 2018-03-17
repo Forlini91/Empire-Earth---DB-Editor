@@ -22,8 +22,11 @@ public interface EnumValue {
 	int getCode ();
 
 
-	String name ();
-
+	/**
+	 * Gets the ordinal number of the constant/enum
+	 *
+	 * @return the ordinal number
+	 */
 	int ordinal ();
 
 	/**

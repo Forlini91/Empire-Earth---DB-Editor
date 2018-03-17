@@ -33,7 +33,7 @@ public class CivPower extends DatStructure {
 
 	@Override
 	public void init () {
-		if (!Core.AOC) { // This file has been added in AOC
+		if (!Core.isAOC ()) { // This file has been added in AOC
 			throw new IllegalStateException ("Vanilla game doesn't have powers");
 		}
 

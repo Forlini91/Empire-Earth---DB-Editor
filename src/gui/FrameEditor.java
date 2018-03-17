@@ -122,10 +122,10 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 
 	private Component					rightClicked		= null;
-	private Set <JPanelEntry>			marked				= new HashSet<> (80);
+	private Set <JPanelEntry>			marked				= new HashSet <> (80);
 
 	private JPanel						contentPane			= new JPanel ();
-	private JListDouble <EntryGroup>	entryGroupList		= new JListDouble<> (false);
+	private JListDouble <EntryGroup>	entryGroupList		= new JListDouble <> (false);
 	private JListEntry					entryList			= new JListEntry ();
 	private JScrollPane					entryGroupListPane	= new JScrollPaneRed (entryGroupList, "Epochs");
 	private JScrollPane					entryListPane		= new JScrollPaneRed (entryList, "Entries");
@@ -538,13 +538,13 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	 * @param datFile The data loaded
 	 */
 	public FrameEditor (DatFile datFile) {
-		super ("Empire Earth - " + (Core.AOC ? "Art of Conquest - " : "") + datFile.getName ());
+		super ("Empire Earth - " + (Core.isAOC () ? "Art of Conquest - " : "") + datFile.getName ());
 		setVisible (false);
 
 		this.datFile = datFile;
 		int nFields = datFile.datStructure.fieldStructs.length;
-		baseFields = new ArrayList<> (nFields);
-		extraFields = new ArrayList<> (20);
+		baseFields = new ArrayList <> (nFields);
+		extraFields = new ArrayList <> (20);
 		indexCountExtra = datFile.datStructure.indexExtraFields ();
 		buildBaseFields (datFile.datStructure);
 		FieldStruct extraEntry = datFile.datStructure.extraField;
@@ -829,7 +829,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		DatStructure datStructure = datFile.datStructure;
 		DB_SPECIFIC: {
 			if (isDbObject) {
-				int first = Core.AOC ? 253 : 251;
+				int first = Core.isAOC () ? 253 : 251;
 				Link val;
 				for (int i = 0; i < 200; i++) {
 					val = (Link) baseFields.get (first + i).getVal ();
@@ -944,8 +944,8 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		int index = field.getIndex ();
 		Object value = field.getVal ();
 		Object entryValue;
-		List <Entry> entries = new ArrayList<> ();
-		List <Entry> entriesClean = new ArrayList<> ();
+		List <Entry> entries = new ArrayList <> ();
+		List <Entry> entriesClean = new ArrayList <> ();
 
 		for (EntryGroup entryGroup : datFile) {
 			for (Entry entry : entryGroup) {

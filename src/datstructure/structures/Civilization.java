@@ -8,8 +8,8 @@ import datstructure.DatStructureParse;
 import datstructure.DatStructureParse.ParseState;
 import datstructure.Entry;
 import datstructure.FieldStruct;
-import datstructure.Knowledge;
 import datstructure.FieldType;
+import datstructure.Knowledge;
 import gui.GUI;
 
 
@@ -35,7 +35,7 @@ public class Civilization extends DatStructure {
 
 	@Override
 	public void init () {
-		if (!Core.AOC) { // File structure has been changed in AOC
+		if (!Core.isAOC ()) { // File structure has been changed in AOC
 			fieldStructs = new FieldStruct[] {
 					FieldStruct.SEQ_NUMBER, FieldStruct.ID, FieldStruct.NAME, FieldStruct.ID_LANGUAGE,
 					new FieldStruct ("Cost increment", FieldType.INTEGER), ID_UNIT_SET, new FieldStruct ("Attack bonus", FieldType.FLOAT), new FieldStruct ("Attack bonus cost", FieldType.FLOAT),

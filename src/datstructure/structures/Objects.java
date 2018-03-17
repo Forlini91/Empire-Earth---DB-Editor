@@ -39,7 +39,7 @@ public class Objects extends DatStructure {
 
 	@Override
 	public void init () {
-		if (!Core.AOC) { // File structure has been changed in AOC
+		if (!Core.isAOC ()) { // File structure has been changed in AOC
 			fieldStructs = new FieldStruct[] {
 					FieldStruct.NAME, FieldStruct.SEQ_NUMBER, new FieldStruct ("Family ID", "Object belong to this family", Family.instance, 0), FieldStruct.UNKNOWN_INT4,
 					FieldStruct.UNKNOWN_INT4, FieldStruct.ID, new FieldStruct ("Health", FieldType.INTEGER), FieldStruct.UNKNOWN_INT4,

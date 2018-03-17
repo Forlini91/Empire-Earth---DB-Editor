@@ -3,13 +3,17 @@ package datmanager;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.math.RoundingMode;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -27,11 +31,23 @@ import gui.components.JScrollPaneRed;
  */
 public class Core {
 
-	/** If true, the editor is in AOC mode */
-	public static Boolean				AOC				= new EESplashScreen ().askEditorType ();
-
 	/** Convert a float number to string with a specific number of decimals and round */
-	public static final NumberFormat	numberFormat	= NumberFormat.getInstance (Locale.ENGLISH);
+	public static final NumberFormat numberFormat = NumberFormat.getInstance (Locale.ENGLISH);
+
+
+	/** If true, the editor is in AOC mode */
+	private static boolean AOC = false;
+
+	/**
+	 * Check if the editor is in AOC mode
+	 *
+	 * @return true if editor is in AOC mode, false otherwise
+	 */
+	public static Boolean isAOC () {
+		return AOC;
+	}
+
+
 	static {
 		numberFormat.setMinimumFractionDigits (1);
 		numberFormat.setMaximumFractionDigits (6);
@@ -42,10 +58,41 @@ public class Core {
 
 
 	public static void main (String[] args) {
-		new Thread (Language.LIST::size).start (); // This makes the Language class initialize... SSSHHH!!!
+		AOC = new EESplashScreen ().getEditorMode ();
+		new Thread (Language::getList).start (); // This makes the Language class initialize in background... SSSHHH!!!
 		new Thread (DatStructure::initAllStructures).start ();
 		FrameMain.instance.setVisible (true);
 	}
+
+
+
+	public static BufferedImage readBufferedImage (URL url) {
+		try {
+			return ImageIO.read (url);
+		} catch (IOException e) {
+			Core.printException (null, e, "Error while loading the image: " + url.getFile (), "Error", true);
+			return null;
+		}
+	}
+
+
+	public static boolean isNumber (String text) {
+		try {
+			Float.valueOf (text);
+			return true;
+		} catch (Throwable e) {
+			return false;
+		}
+	}
+
+	public static Float toNumber (String text) {
+		try {
+			return Float.valueOf (text);
+		} catch (Throwable e) {
+			return null;
+		}
+	}
+
 
 
 	/**

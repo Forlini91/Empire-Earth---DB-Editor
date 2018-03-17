@@ -6,21 +6,15 @@ import datstructure.Entry;
 
 /**
  * A condition used to match the entries
- * 
+ *
  * @author MarcoForlini
  */
 @FunctionalInterface
 public interface Condition {
 
-	/** Condition which always return true */
-	Condition	ALWAYS_TRUE		= (Entry entry) -> true;
-
-	/** Condition which always return false */
-	Condition	ALWAYS_FALSE	= (Entry entry) -> false;
-
 	/**
 	 * Check if the given entry match the condition
-	 * 
+	 *
 	 * @param entry The entry to check
 	 * @return true if the entry match the condition, false otherwise
 	 */
@@ -36,7 +30,7 @@ public interface Condition {
 
 	/**
 	 * Build a condition which checks if the given entry satisfy both condition
-	 * 
+	 *
 	 * @param c1 The first condition
 	 * @param c2 The second condition
 	 * @return a condition which return true if both condition are satisfied, false otherwise
@@ -47,7 +41,7 @@ public interface Condition {
 
 	/**
 	 * Build a condition which checks if the given entry satisfy all conditions
-	 * 
+	 *
 	 * @param conditions The conditions
 	 * @return a condition which return true if all conditions are satisfied, false otherwise
 	 */
@@ -64,7 +58,7 @@ public interface Condition {
 
 	/**
 	 * Build a condition which checks if the given entry satisfy either condition
-	 * 
+	 *
 	 * @param c1 The first condition
 	 * @param c2 The second condition
 	 * @return a condition which return true if either condition are satisfied, false otherwise
@@ -76,7 +70,7 @@ public interface Condition {
 
 	/**
 	 * Build a condition which checks if the given entry satisfy at least one condition
-	 * 
+	 *
 	 * @param conditions The conditions
 	 * @return a condition which return true if at least one condition is satisfied, false otherwise
 	 */
@@ -95,7 +89,7 @@ public interface Condition {
 
 	/**
 	 * Build a condition which checks if the given entry satisfy exactly one condition
-	 * 
+	 *
 	 * @param c1 The first condition
 	 * @param c2 The second condition
 	 * @return a condition which return true if one condition is true and one condition is false, false otherwise
@@ -110,7 +104,7 @@ public interface Condition {
 
 	/**
 	 * Build a condition which checks if the given entry satisfy exactly one condition
-	 * 
+	 *
 	 * @param conditions The conditions
 	 * @return a condition which return true if exactly one condition is satisfied, false if none or more than 1 condition are satisfied
 	 */
