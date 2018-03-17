@@ -315,6 +315,9 @@ public abstract class DatStructure {
 		entrySize = Arrays.stream (fieldStructs).parallel ().mapToInt (x -> x.size).sum ();
 		dynamicSizeFields = Arrays.stream (fieldStructs).parallel ().filter (x -> x.indexSize >= 0).toArray (FieldStruct[]::new);
 		requirements = Arrays.stream (fieldStructs).parallel ().filter (x -> x.type == FieldType.LINK).map (x -> x.linkToStruct).collect (Collectors.toSet ());
+		if (extraField != null && extraField.linkToStruct != null) {
+			requirements.add (extraField.linkToStruct);
+		}
 	}
 
 

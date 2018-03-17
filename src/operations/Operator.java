@@ -11,46 +11,46 @@ import java.util.Arrays;
 public enum Operator {
 
 	/** Values are equals */
-	EQUAL ("==", true, true, true, true),
+	EQUAL ("==", true, true, true, true, true),
 
 	/** Values are different */
-	DIFFERENT ("!=", false, true, true, true),
+	DIFFERENT ("!=", true, true, true, true, true),
 
 	/** First is greater than second */
-	GREATER (">", false, true, true, true),
+	GREATER (">", false, true, true, true, true),
 
 	/** First is greater than or equal to second */
-	GREATER_EQUAL (">=", false, true, true, true),
+	GREATER_EQUAL (">=", false, true, true, true, true),
 
 	/** First is less than second */
-	LESS ("<", false, true, true, true),
+	LESS ("<", false, true, true, true, true),
 
 	/** First is less than or equal to second */
-	LESS_EQUAL ("<=", false, true, true, true),
+	LESS_EQUAL ("<=", false, true, true, true, true),
 
 	/** Strings are equals (ignore case) */
-	EQUAL_NC ("== (ignore case)", false, false, true, false),
+	EQUAL_NC ("== (ignore case)", false, false, true, false, false),
 
 	/** String are different (ignore case) */
-	DIFFERENT_NC ("!= (ignore case)", false, false, true, false),
+	DIFFERENT_NC ("!= (ignore case)", false, false, true, false, false),
 
 	/** String contains text */
-	CONTAINS ("contains", false, false, true, false),
+	CONTAINS ("contains", false, false, true, false, false),
 
 	/** Strings doesn't contain text */
-	CONTAINS_NOT ("doesn't contain", false, false, true, false),
+	CONTAINS_NOT ("doesn't contain", false, false, true, false, false),
 
 	/** String starts with */
-	STARTS_WITH ("starts with", false, false, true, false),
+	STARTS_WITH ("starts with", false, false, true, false, false),
 
 	/** String doesn't start with */
-	STARTS_WITH_NOT ("doesn't start with", false, false, true, false),
+	STARTS_WITH_NOT ("doesn't start with", false, false, true, false, false),
 
 	/** String ends with */
-	ENDS_WITH ("ends with", false, false, true, false),
+	ENDS_WITH ("ends with", false, false, true, false, false),
 
 	/** String doesn't end with */
-	ENDS_WITH_NOT ("doesn't end with", false, false, true, false);
+	ENDS_WITH_NOT ("doesn't end with", false, false, true, false, false);
 
 
 
@@ -59,6 +59,7 @@ public enum Operator {
 	public static Operator[]	mathOperators	= Arrays.stream (allOperators).filter (oper -> oper.supportNumber).toArray (Operator[]::new);
 	public static Operator[]	strOperators	= Arrays.stream (allOperators).filter (oper -> oper.supportString).toArray (Operator[]::new);
 	public static Operator[]	enumOperators	= Arrays.stream (allOperators).filter (oper -> oper.supportEnum).toArray (Operator[]::new);
+	public static Operator[]	linkOperators	= Arrays.stream (allOperators).filter (oper -> oper.supportLinks).toArray (Operator[]::new);
 
 
 	private String	name;
@@ -66,15 +67,17 @@ public enum Operator {
 	public boolean	supportNumber;
 	public boolean	supportString;
 	public boolean	supportEnum;
+	public boolean	supportLinks;
 
 
 
-	Operator (String name, boolean supportBoolean, boolean supportNumber, boolean supportString, boolean supportEnum) {
+	Operator (String name, boolean supportBoolean, boolean supportNumber, boolean supportString, boolean supportEnum, boolean supportLinks) {
 		this.name = name;
 		this.supportBoolean = supportBoolean;
 		this.supportNumber = supportNumber;
 		this.supportString = supportString;
 		this.supportEnum = supportEnum;
+		this.supportLinks = supportLinks;
 	}
 
 	@Override

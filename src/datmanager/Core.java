@@ -33,10 +33,10 @@ public class Core {
 	/** Convert a float number to string with a specific number of decimals and round */
 	public static final NumberFormat	numberFormat	= NumberFormat.getInstance (Locale.ENGLISH);
 	static {
-		numberFormat.setMinimumFractionDigits (6);
+		numberFormat.setMinimumFractionDigits (1);
 		numberFormat.setMaximumFractionDigits (6);
 		numberFormat.setGroupingUsed (false);
-		numberFormat.setRoundingMode (RoundingMode.HALF_UP);
+		numberFormat.setRoundingMode (RoundingMode.HALF_EVEN);
 	}
 
 

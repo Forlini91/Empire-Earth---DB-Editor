@@ -1,5 +1,6 @@
 package operations;
 
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 import constants.EnumValue;
@@ -95,7 +96,7 @@ public class ConditionOperator implements Condition {
 	 */
 	private static Condition buildCondition (DatStructure datStructure, int index, Operator operator, Object value) {
 		if (index < 0) {
-			return buildAllFieldsCondition (datStructure, operator, value);
+			return buildAllFieldsCondition (datStructure, operator, (String) value);
 		}
 		return buildSingleFieldCondition (datStructure, index, operator, value);
 	}
@@ -115,24 +116,25 @@ public class ConditionOperator implements Condition {
 
 		switch (type) {
 			case BOOLEAN:
-				int boolValue = (Boolean) value ? 1 : 0;
+				int boolValue = (Boolean) value == (operator == Operator.EQUAL) ? 1 : 0;
 				return (Entry entry) -> boolValue == (Integer) entry.get (index);
 			case ENUM:
-				Predicate <Integer> enumTester = getEnumCheck (operator, (EnumValue) value);
+				IntPredicate enumTester = getEnumCheck (operator, (EnumValue) value);
 				return (Entry entry) -> enumTester.test ((Integer) entry.get (index));
 			case STRING:
 				Predicate <String> stringTester = getStringCheck (operator, (String) value);
 				return (Entry entry) -> stringTester.test (entry.get (index).toString ());
+			case LINK:
+				FloatPredicate linkTester = getNumericCheck (operator, (String) value);
+				if (extraIndexes) {
+					return (Entry entry) -> entry.getExtraFields ().stream ()
+							.map (val -> ((Link) val).target.getID ())
+							.anyMatch (linkTester::test);
+				}
+				return (Entry entry) -> linkTester.test (((Link) entry.get (index)).target.getID ());
 			default:
-				FloatPredicate numberTester = getNumericCheck (operator, (Float) value);
+				FloatPredicate numberTester = getNumericCheck (operator, (String) value);
 				switch (type) {
-					case LINK:
-						if (extraIndexes) {
-							return (Entry entry) -> entry.getExtraFields ().stream ()
-									.map (val -> ((Link) val).target.getID ())
-									.anyMatch (numberTester::test);
-						}
-						return (Entry entry) -> numberTester.test (((Link) entry.get (index)).target.getID ());
 					case LANGUAGE:
 						return (Entry entry) -> numberTester.test (((Language) entry.get (index)).ID);
 					case FLOAT:
@@ -150,89 +152,71 @@ public class ConditionOperator implements Condition {
 
 
 	@SuppressWarnings ("unused")
-	private static Condition buildAllFieldsCondition (DatStructure datStructure, Operator operator, Object valueToSearch) {
-		if (!operator.supportNumber) {
-			Predicate <String> stringTester = getStringCheck (operator, (String) valueToSearch);
-			return (Entry entry) -> entry.stream ().anyMatch (entryValue -> stringTester.test (entryValue.toString ()));
-		} else if (!operator.supportString) {
-			FloatPredicate numericTester = getNumericCheck (operator, Float.valueOf ((String) valueToSearch));
-			return (Entry entry) -> entry.stream ().anyMatch (val -> {
-				if (val instanceof Integer) {
-					return numericTester.test ((Integer) val);
-				} else if (val instanceof Float) {
-					return numericTester.test ((Float) val);
-				} else if (val instanceof Link) {
-					return numericTester.test (((Link) val).target.getID ());
-				} else if (val instanceof Language) {
-					return numericTester.test (((Language) val).ID);
-				}
-				return false;
-			});
-		}
+	private static Condition buildAllFieldsCondition (DatStructure datStructure, Operator operator, String textToSearch) {
+		Predicate <String> stringTester = getStringCheck (operator, textToSearch);
+		FloatPredicate numericTester = getNumericCheck (operator, textToSearch);
 
-		try {
-			Float floatValueToSearch = Float.valueOf ((String) valueToSearch);
-			FloatPredicate numericTester = getNumericCheck (operator, floatValueToSearch);
-			Predicate <String> stringTester = getStringCheck (operator, (String) valueToSearch);
-			return (Entry entry) -> entry.stream ().anyMatch (val -> {
-				if (val instanceof String) {
-					return stringTester.test ((String) val);
-				} else if (val instanceof Integer) {
-					return numericTester.test ((Integer) val);
-				} else if (val instanceof Float) {
-					return numericTester.test ((Float) val);
-				} else if (val instanceof Link) {
-					return numericTester.test (((Link) val).target.getID ());
-				} else if (val instanceof Language) {
-					return numericTester.test (((Language) val).ID);
-				}
-				return false;
-			});
-		} catch (NumberFormatException e) {
-			Predicate <String> stringTester = getStringCheck (operator, (String) valueToSearch);
-			return (Entry entry) -> entry.stream ().anyMatch (entryValue -> stringTester.test (entryValue.toString ()));
-		}
+		return (Entry entry) -> entry.stream ().anyMatch (val -> {
+			if (val instanceof String) {
+				return stringTester.test ((String) val);
+			} else if (val instanceof Integer) {
+				return numericTester.test ((Integer) val);
+			} else if (val instanceof Float) {
+				return numericTester.test ((Float) val);
+			} else if (val instanceof Link) {
+				return numericTester.test (((Link) val).target.getID ());
+			} else if (val instanceof Language) {
+				return numericTester.test (((Language) val).ID);
+			}
+			return false;
+		});
 	}
 
 
 
 
-	private static Predicate <Integer> getEnumCheck (Operator operator, EnumValue valueToSearch) {
+
+	private static IntPredicate getEnumCheck (Operator operator, EnumValue valueToSearch) {
 		int ordinalToSearch = valueToSearch.ordinal ();
 		switch (operator) {
 			case EQUAL:
-				return (Integer entryValue) -> entryValue == ordinalToSearch;
+				return (int entryValue) -> entryValue == ordinalToSearch;
 			case DIFFERENT:
-				return (Integer entryValue) -> entryValue != ordinalToSearch;
+				return (int entryValue) -> entryValue != ordinalToSearch;
 			case GREATER:
-				return (Integer entryValue) -> entryValue > ordinalToSearch;
+				return (int entryValue) -> entryValue > ordinalToSearch;
 			case GREATER_EQUAL:
-				return (Integer entryValue) -> entryValue >= ordinalToSearch;
+				return (int entryValue) -> entryValue >= ordinalToSearch;
 			case LESS:
-				return (Integer entryValue) -> entryValue < ordinalToSearch;
+				return (int entryValue) -> entryValue < ordinalToSearch;
 			case LESS_EQUAL:
-				return (Integer entryValue) -> entryValue <= ordinalToSearch;
+				return (int entryValue) -> entryValue <= ordinalToSearch;
 			default:
-				return (Integer entryValue) -> false;
+				return (int entryValue) -> false;
 		}
 	}
 
-	private static FloatPredicate getNumericCheck (Operator operator, float valueToSearch) {
-		switch (operator) {
-			case EQUAL:
-				return (float entryValue) -> entryValue == valueToSearch;
-			case DIFFERENT:
-				return (float entryValue) -> entryValue != valueToSearch;
-			case GREATER:
-				return (float entryValue) -> entryValue > valueToSearch;
-			case GREATER_EQUAL:
-				return (float entryValue) -> entryValue >= valueToSearch;
-			case LESS:
-				return (float entryValue) -> entryValue < valueToSearch;
-			case LESS_EQUAL:
-				return (float entryValue) -> entryValue <= valueToSearch;
-			default:
-				return (float entryValue) -> false;
+	private static FloatPredicate getNumericCheck (Operator operator, String valueToSearch) {
+		try {
+			float floatValueToSearch = Float.valueOf (valueToSearch);
+			switch (operator) {
+				case EQUAL:
+					return (float entryValue) -> entryValue == floatValueToSearch;
+				case DIFFERENT:
+					return (float entryValue) -> entryValue != floatValueToSearch;
+				case GREATER:
+					return (float entryValue) -> entryValue > floatValueToSearch;
+				case GREATER_EQUAL:
+					return (float entryValue) -> entryValue >= floatValueToSearch;
+				case LESS:
+					return (float entryValue) -> entryValue < floatValueToSearch;
+				case LESS_EQUAL:
+					return (float entryValue) -> entryValue <= floatValueToSearch;
+				default:
+					return (float entryValue) -> false;
+			}
+		} catch (NumberFormatException e) {
+			return (float entryValue) -> false;
 		}
 	}
 

@@ -24,6 +24,7 @@ import constants.EnumValue;
 import datmanager.Core;
 import datmanager.DatFile;
 import datstructure.DatStructure;
+import datstructure.Entry;
 import datstructure.FieldStruct;
 import datstructure.FieldType;
 import gui.components.JButtonRed;
@@ -47,7 +48,7 @@ public class DialogConditionBuilder extends JDialog {
 			gbc_lblOperator = new GridBagConstraints (),
 			gbc_comboBoxOperator = new GridBagConstraints (),
 			gbc_lblValue = new GridBagConstraints (),
-			gbc_textField = new GridBagConstraints (),
+			gbc_searchField = new GridBagConstraints (),
 			gbc_btnCancel = new GridBagConstraints (),
 			gbc_btnOk = new GridBagConstraints ();
 
@@ -71,21 +72,30 @@ public class DialogConditionBuilder extends JDialog {
 	private final JCheckBox							checkField				= new JCheckBox ("True");
 	private final JComboBox <EnumValue>				comboBoxEnum			= new JComboBox <> ();
 	private final DefaultComboBoxModel <EnumValue>	comboBoxEnumModel		= new DefaultComboBoxModel <> ();
+	private final JComboBox <Entry>					comboBoxEntry			= new JComboBox <> ();
+	private final DefaultComboBoxModel <Entry>		comboBoxEntryModel		= new DefaultComboBoxModel <> ();
 
 
 	private final JButton	btnOk		= new JButtonRed ("OK");
 	private final JButton	btnCancel	= new JButtonRed ("Cancel");
-	private FieldType		searchMode	= null;
+	private FieldType		searchMode	= FieldType.INTEGER;
 
 
 
 	{
 		setBounds (GUI.getBounds (this, 450, 225));
 		setResizable (false);
-		comboBoxOperator.setModel (comboBoxOperatorModel);
-		comboBoxEnum.setModel (comboBoxEnumModel);
+
 		lblName.setHorizontalAlignment (SwingConstants.CENTER);
+		comboBoxOperator.setModel (comboBoxOperatorModel);
+		textField.setVisible (true);
+		checkField.setVisible (false);
+		comboBoxEnum.setModel (comboBoxEnumModel);
+		comboBoxEnum.setVisible (false);
+		comboBoxEntry.setModel (comboBoxEntryModel);
+		comboBoxEntry.setVisible (false);
 		btnCancel.addActionListener (e -> dispose ());
+
 		contentPanel.setLayout (gbl_contentPanel);
 		contentPanel.setBorder (new EmptyBorder (10, 10, 10, 10));
 		contentPanel.setBackground (GUI.COLOR_UI_BACKGROUND);
@@ -95,15 +105,12 @@ public class DialogConditionBuilder extends JDialog {
 		contentPanel.add (lblOperator, gbc_lblOperator);
 		contentPanel.add (comboBoxOperator, gbc_comboBoxOperator);
 		contentPanel.add (lblValue, gbc_lblValue);
-		contentPanel.add (textField, gbc_textField);
-		contentPanel.add (checkField, gbc_textField);
-		contentPanel.add (comboBoxEnum, gbc_textField);
+		contentPanel.add (textField, gbc_searchField);
+		contentPanel.add (checkField, gbc_searchField);
+		contentPanel.add (comboBoxEnum, gbc_searchField);
+		contentPanel.add (comboBoxEntry, gbc_searchField);
 		contentPanel.add (btnOk, gbc_btnOk);
 		contentPanel.add (btnCancel, gbc_btnCancel);
-
-		textField.setVisible (true);
-		checkField.setVisible (false);
-		comboBoxEnum.setVisible (false);
 
 		setContentPane (contentPanel);
 		getRootPane ().setDefaultButton (btnOk);
@@ -151,155 +158,184 @@ public class DialogConditionBuilder extends JDialog {
 		if (extraField) {
 			fields[length + 1] = "(EXTRA FIELD) " + datStructure.extraField.toString ();
 		}
+
+		comboBoxField.addActionListener (e -> comboBoxCheckSelection (datStructure));
 		comboBoxField.setModel (new DefaultComboBoxModel <> (fields));
-		comboBoxField.addActionListener (e -> {
-			int index = comboBoxField.getSelectedIndex () - 1;
-			try {
-				FieldStruct field = datStructure.getFieldStruct (index);
-				if (field == null) {
-					if (searchMode != null) {
-						searchMode = null;
-						comboBoxOperatorModel.removeAllElements ();
-						for (Operator oper : Operator.allOperators) {
-							comboBoxOperatorModel.addElement (oper);
-						}
-						comboBoxOperator.setEnabled (comboBoxOperatorModel.getSize () > 1);
-					}
-				} else {
-					switch (field.type) {
-						case BOOLEAN:
-							if (searchMode != FieldType.BOOLEAN) {
-								searchMode = FieldType.BOOLEAN;
+		btnOk.addActionListener (e -> buttonOkClick (datFile, datStructure));
 
-								comboBoxOperatorModel.removeAllElements ();
-								for (Operator oper : Operator.boolOperators) {
-									comboBoxOperatorModel.addElement (oper);
-								}
-								comboBoxOperator.setEnabled (comboBoxOperatorModel.getSize () > 1);
+		comboBoxCheckSelection (datStructure);
+	}
 
-								textField.setVisible (false);
-								checkField.setVisible (true);
-								comboBoxEnum.setVisible (false);
-								checkField.setSelected (false);
-							}
-							break;
-						case ENUM:
-							if (searchMode != FieldType.ENUM) {
-								searchMode = FieldType.ENUM;
 
-								comboBoxOperatorModel.removeAllElements ();
-								for (Operator oper : Operator.enumOperators) {
-									comboBoxOperatorModel.addElement (oper);
-								}
-								comboBoxOperator.setEnabled (comboBoxOperatorModel.getSize () > 1);
-
-								textField.setVisible (false);
-								checkField.setVisible (false);
-								comboBoxEnum.setVisible (true);
-							}
-
-							comboBoxEnumModel.removeAllElements ();
-							for (EnumValue ev : field.enumValues) {
-								comboBoxEnumModel.addElement (ev);
-							}
-							comboBoxEnumModel.setSelectedItem (field.enumValues[0]);
-							break;
-						case STRING:
-							if (searchMode != FieldType.STRING) {
-								searchMode = FieldType.STRING;
-
-								comboBoxOperatorModel.removeAllElements ();
-								for (Operator oper : Operator.strOperators) {
-									comboBoxOperatorModel.addElement (oper);
-								}
-								comboBoxOperator.setEnabled (comboBoxOperatorModel.getSize () > 1);
-
-								textField.setVisible (true);
-								checkField.setVisible (false);
-								comboBoxEnum.setVisible (false);
-							}
-							break;
-						default:
-							if (searchMode != FieldType.FLOAT) {
-								searchMode = FieldType.FLOAT;
-
-								comboBoxOperatorModel.removeAllElements ();
-								for (Operator oper : Operator.mathOperators) {
-									comboBoxOperatorModel.addElement (oper);
-								}
-								comboBoxOperator.setEnabled (comboBoxOperatorModel.getSize () > 1);
-
-								textField.setVisible (true);
-								checkField.setVisible (false);
-								comboBoxEnum.setVisible (false);
-							}
-					}
-				}
-			} catch (IllegalArgumentException exc) {
-				Core.printException (this, exc, "An error occurred while selecting the field", "Error", true);
-			}
-		});
-
-		btnOk.addActionListener (e -> {
-			String text = textField.getText ();
-			if (textField.isVisible () && text.isEmpty ()) {
-				JOptionPane.showMessageDialog (this, "Can't create a new filter without a value", "Missing value", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			FieldType type = null;
-			int index = comboBoxField.getSelectedIndex () - 1;
-			try {
-				FieldStruct field = datStructure.getFieldStruct (index);
-				if (field != null) {
-					type = field.type;
-				}
-			} catch (IllegalArgumentException exc) {
-				Core.printException (this, exc, "An error occurred while checking the field", "Error", true);
-				return;
-			}
-
-			Operator operator = (Operator) comboBoxOperator.getSelectedItem ();
-			Object value;
-			if (type == null) {
-				value = text.trim ();
-				if (!operator.supportString) {
-					try {
-						Float.parseFloat (text);
-					} catch (NumberFormatException nfe) {
-						JOptionPane.showMessageDialog (this, "Operator doesn't support strings", "Invalid search", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
+	private void comboBoxCheckSelection (DatStructure datStructure) {
+		int index = comboBoxField.getSelectedIndex () - 1;
+		try {
+			FieldStruct field = datStructure.getFieldStruct (index);
+			if (field == null) {
+				if (searchMode != null) {
+					searchMode = null;
+					updateOperatorList (Operator.allOperators);
+					textField.setText ("");
+					textField.setVisible (true);
+					checkField.setVisible (false);
+					comboBoxEnum.setVisible (false);
+					comboBoxEntry.setVisible (false);
 				}
 			} else {
-				switch (type) {
+				switch (field.type) {
 					case BOOLEAN:
-						value = checkField.isSelected ();
+						if (searchMode != FieldType.BOOLEAN) {
+							searchMode = FieldType.BOOLEAN;
+							updateOperatorList (Operator.boolOperators);
+							checkField.setSelected (false);
+							textField.setVisible (false);
+							checkField.setVisible (true);
+							comboBoxEnum.setVisible (false);
+							comboBoxEntry.setVisible (false);
+						}
 						break;
 					case ENUM:
-						value = comboBoxEnum.getSelectedItem ();
+						if (searchMode != FieldType.ENUM) {
+							searchMode = FieldType.ENUM;
+							updateOperatorList (Operator.enumOperators);
+							textField.setVisible (false);
+							checkField.setVisible (false);
+							comboBoxEnum.setVisible (true);
+							comboBoxEntry.setVisible (false);
+						}
+						updateComboBox (comboBoxEnumModel, field.enumValues);
+						break;
+					case LINK:
+						if (searchMode != FieldType.LINK) {
+							searchMode = FieldType.LINK;
+							updateOperatorList (Operator.linkOperators);
+							textField.setVisible (false);
+							checkField.setVisible (false);
+							comboBoxEnum.setVisible (false);
+							comboBoxEntry.setVisible (true);
+						}
+						updateComboBox (comboBoxEntryModel, field.linkToStruct.datFile.getAllEntries (false));
 						break;
 					case STRING:
-						value = text.trim ();
+						if (searchMode != FieldType.STRING) {
+							searchMode = FieldType.STRING;
+							updateOperatorList (Operator.strOperators);
+							textField.setText ("");
+							textField.setVisible (true);
+							checkField.setVisible (false);
+							comboBoxEnum.setVisible (false);
+							comboBoxEntry.setVisible (false);
+						}
 						break;
 					default:
-						try {
-							value = Float.parseFloat (text.trim ());
-						} catch (NumberFormatException nfe) {
-							JOptionPane.showMessageDialog (this, "Must insert a numeric value to search", "Field unavailable", JOptionPane.ERROR_MESSAGE);
-							return;
+						if (searchMode != FieldType.FLOAT) {
+							searchMode = FieldType.FLOAT;
+							updateOperatorList (Operator.mathOperators);
+							textField.setText ("");
+							textField.setVisible (true);
+							checkField.setVisible (false);
+							comboBoxEnum.setVisible (false);
+							comboBoxEntry.setVisible (false);
 						}
 				}
 			}
+		} catch (IllegalArgumentException exc) {
+			Core.printException (this, exc, "An error occurred while selecting the field", "Error", true);
+		}
+	}
 
 
-			if (condition == null) {
-				condition = new ConditionOperator (datFile, index, operator, value);
-			} else {
-				condition.setData (datFile, index, operator, value);
+	private void buttonOkClick (DatFile datFile, DatStructure datStructure) {
+		String text = textField.getText ();
+		if ((textField.isVisible () && text.isEmpty ())
+				|| (comboBoxEnum.isVisible () && comboBoxEnumModel.getSize () <= 0)
+				|| (comboBoxEntry.isVisible () && comboBoxEntryModel.getSize () <= 0)) {
+			JOptionPane.showMessageDialog (this, "Can't create a new filter without a value", "Missing value", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		FieldType type = null;
+		int index = comboBoxField.getSelectedIndex () - 1;
+		try {
+			FieldStruct field = datStructure.getFieldStruct (index);
+			if (field != null) {
+				type = field.type;
 			}
-			setVisible (false);
-		});
+		} catch (IllegalArgumentException exc) {
+			Core.printException (this, exc, "An error occurred while checking the field", "Error", true);
+			return;
+		}
+
+		Operator operator = (Operator) comboBoxOperator.getSelectedItem ();
+		Object value;
+		if (type == null) {
+			value = text.trim ();
+			if (!operator.supportString) {
+				try {
+					Float.parseFloat (text);
+				} catch (NumberFormatException nfe) {
+					JOptionPane.showMessageDialog (this, "Operator doesn't support strings", "Invalid search", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
+		} else {
+			switch (type) {
+				case BOOLEAN:
+					value = checkField.isSelected ();
+					break;
+				case ENUM:
+					value = comboBoxEnum.getSelectedItem ();
+					break;
+				case LINK:
+					value = comboBoxEntry.getSelectedItem ();
+					break;
+				case STRING:
+					value = text.trim ();
+					break;
+				default:
+					try {
+						Float.parseFloat (text.trim ());
+						value = text.trim ();
+					} catch (NumberFormatException nfe) {
+						JOptionPane.showMessageDialog (this, "Must insert a numeric value to search", "Field unavailable", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+			}
+		}
+
+
+		if (condition == null) {
+			condition = new ConditionOperator (datFile, index, operator, value);
+		} else {
+			condition.setData (datFile, index, operator, value);
+		}
+		setVisible (false);
+	}
+
+
+	private void updateOperatorList (Operator[] operators) {
+		updateComboBox (comboBoxOperatorModel, operators);
+		comboBoxOperator.setEnabled (comboBoxOperatorModel.getSize () > 1);
+	}
+
+	private static <T> void updateComboBox (DefaultComboBoxModel <T> model, T[] array) {
+		model.removeAllElements ();
+		for (T element : array) {
+			model.addElement (element);
+		}
+		if (model.getSize () > 0) {
+			model.setSelectedItem (model.getElementAt (0));
+		}
+	}
+
+	private static <T> void updateComboBox (DefaultComboBoxModel <T> model, Iterable <T> iterable) {
+		model.removeAllElements ();
+		for (T element : iterable) {
+			model.addElement (element);
+		}
+		if (model.getSize () > 0) {
+			model.setSelectedItem (model.getElementAt (0));
+		}
 	}
 
 
@@ -367,10 +403,10 @@ public class DialogConditionBuilder extends JDialog {
 		gbc_lblValue.gridx = 0;
 		gbc_lblValue.gridy = 3;
 
-		gbc_textField.fill = GridBagConstraints.BOTH;
-		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 3;
-		gbc_textField.insets = new Insets (0, 5, 5, 5);
+		gbc_searchField.fill = GridBagConstraints.BOTH;
+		gbc_searchField.gridx = 1;
+		gbc_searchField.gridy = 3;
+		gbc_searchField.insets = new Insets (0, 5, 5, 5);
 
 		gbc_btnOk.fill = GridBagConstraints.BOTH;
 		gbc_btnOk.insets = new Insets (20, 5, 5, 5);

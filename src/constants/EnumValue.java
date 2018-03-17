@@ -22,6 +22,8 @@ public interface EnumValue {
 	int getCode ();
 
 
+	String name ();
+
 	int ordinal ();
 
 	/**
