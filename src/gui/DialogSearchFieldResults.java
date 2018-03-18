@@ -20,9 +20,9 @@ import gui.components.JButtonRed;
 import gui.components.JListDouble;
 import gui.components.JScrollPaneRed;
 import gui.components.JSearchFieldEntry;
-import gui.ui.EEScrollBarUI;
-import gui.ui.GridBagConstraintsExtended;
-import gui.ui.GridBagLayoutExtended;
+import gui.misc.EEScrollBarUI;
+import gui.misc.GridBagConstraintsExtended;
+import gui.misc.GridBagLayoutExtended;
 
 /**
  * This dialog show all results of the search "Fields with the same value".

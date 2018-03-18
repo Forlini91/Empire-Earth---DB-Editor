@@ -34,9 +34,9 @@ import datstructure.DatStructure;
 import gui.components.JButtonDat;
 import gui.components.JButtonRed;
 import gui.components.JScrollPaneRed;
-import gui.ui.EEScrollBarUI;
-import gui.ui.GridBagConstraintsExtended;
-import gui.ui.GridBagLayoutExtended;
+import gui.misc.EEScrollBarUI;
+import gui.misc.GridBagConstraintsExtended;
+import gui.misc.GridBagLayoutExtended;
 
 
 /**

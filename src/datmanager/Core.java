@@ -11,6 +11,9 @@ import java.math.RoundingMode;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
@@ -76,6 +79,55 @@ public class Core {
 	}
 
 
+
+	public static List <String> splitWords (String text) {
+		List <String> list = new ArrayList <> ();
+		int from = 0;
+		int to = text.indexOf (' ');
+
+		while (to >= 0) {
+			String token = text.substring (from, to);
+			if (token.length () > 0) {
+				list.add (token);
+			}
+			from = to + 1;
+			to = text.indexOf (' ', from);
+		}
+
+		String token = text.substring (from);
+		if (token.length () > 0) {
+			list.add (token);
+		}
+
+		return list;
+	}
+
+
+	public static <T> boolean containsAny (Collection <T> c1, Collection <? extends T> c2) {
+		for (T t : c2) {
+			if (c1.contains (t)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	public static String concat (Collection <?> c, String separator) {
+		StringBuilder sb = new StringBuilder ();
+		boolean first = true;
+		for (Object o : c) {
+			if (first) {
+				first = false;
+			} else {
+				sb.append (separator);
+			}
+			sb.append (o);
+		}
+		return sb.toString ();
+	}
+
+
 	public static boolean isNumber (String text) {
 		try {
 			Float.valueOf (text);
@@ -85,7 +137,15 @@ public class Core {
 		}
 	}
 
-	public static Float toNumber (String text) {
+	public static Integer toIntNumber (String text) {
+		try {
+			return Integer.valueOf (text);
+		} catch (Throwable e) {
+			return null;
+		}
+	}
+
+	public static Float toFloatNumber (String text) {
 		try {
 			return Float.valueOf (text);
 		} catch (Throwable e) {

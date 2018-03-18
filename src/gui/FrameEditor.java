@@ -61,13 +61,13 @@ import gui.components.JListDouble;
 import gui.components.JListEntry;
 import gui.components.JPanelEntry;
 import gui.components.JScrollPaneRed;
-import gui.components.JSearchFieldEntry;
+import gui.components.JSearchTextField;
 import gui.components.JTextFieldField;
-import gui.ui.EEScrollBarUI;
-import gui.ui.EESliderUI;
-import gui.ui.GridBagConstraintsExtended;
-import gui.ui.GridBagLayoutExtended;
-import gui.ui.GridLayoutExtended;
+import gui.misc.EEScrollBarUI;
+import gui.misc.EESliderUI;
+import gui.misc.GridBagConstraintsExtended;
+import gui.misc.GridBagLayoutExtended;
+import gui.misc.GridLayoutExtended;
 
 
 /**
@@ -84,6 +84,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	private final GridLayout			gridLayout				= new GridLayoutExtended (false, false, 0, 4, 0, 0);
 	private final GridBagConstraints	gbc_entryGroupListPane	= new GridBagConstraintsExtended (4, 4, 0, 0, 0, 0);
 	private final GridBagConstraints	gbc_entryListPane		= new GridBagConstraintsExtended (4, 4, 0, 0, 1, 0);
+	private final GridBagConstraints	gbc_entryListSearchPane	= new GridBagConstraintsExtended (4, 4, 0, 0, 0, 0, 2, 1);
 	private final GridBagConstraints	gbc_entrySearchField	= new GridBagConstraintsExtended (4, 4, 0, 0, 1, 1);
 	private final GridBagConstraints	gbc_scrollPaneFields	= new GridBagConstraintsExtended (4, 4, 0, 4, 2, 0, 4, 1);
 	private final GridBagConstraints	gbc_entryDescription	= new GridBagConstraintsExtended (4, 4, 0, 4, 2, 1, 4, 1);
@@ -127,11 +128,13 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	private JPanel						contentPane			= new JPanel ();
 	private JListDouble <EntryGroup>	entryGroupList		= new JListDouble <> (false);
 	private JListEntry					entryList			= new JListEntry ();
+	private JListEntry					entryListSearch		= new JListEntry ();
 	private JScrollPane					entryGroupListPane	= new JScrollPaneRed (entryGroupList, "Epochs");
 	private JScrollPane					entryListPane		= new JScrollPaneRed (entryList, "Entries");
+	private JScrollPane					entryListSearchPane	= new JScrollPaneRed (entryListSearch, "Search results:");
 	private JPanel						panelFields			= new JPanel ();
 	private JScrollPane					scrollPaneFields	= new JScrollPaneRed (panelFields, "Fields");
-	private JSearchFieldEntry			entrySearchField	= new JSearchFieldEntry (entryList);
+	private JSearchTextField			entrySearchField	= new JSearchTextField (entryListSearch);
 	private JLabel						entryDescription	= new JLabel ("");
 
 
@@ -250,6 +253,9 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		contentPane.add (addField, gbc_addID);
 		contentPane.add (removeField, gbc_removeID);
 		contentPane.setBackground (GUI.COLOR_UI_BACKGROUND);
+
+		entryListSearch.switchList.setVisible (false);
+
 		scrollPaneFields.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
 		scrollPaneFields.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
 		panelFields.setBackground (GUI.COLOR_UI_BACKGROUND);
@@ -301,6 +307,10 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			@SuppressWarnings ("synthetic-access")
 			public void showMenu (MouseEvent e) {
 				if (e.isPopupTrigger ()) {
+					entryListMenuAdd.setEnabled (true);
+					entryListMenuRemove.setEnabled (true);
+					entryListMenuDuplicate.setEnabled (true);
+					entryListMenuMoveTo.setEnabled (true);
 					entryListMenuGoToFamily.setEnabled (entryListMenuGoToFamily.isVisible () && isDbObject && familyFile != null && ((Link) currentEntry.get (2)).target.isValidLinkTarget ());
 					entryListMenuGoToGraphic.setEnabled (entryListMenuGoToGraphic.isVisible () && isDbObject && graphicFile != null && ((Link) currentEntry.get (39)).target.isValidLinkTarget ());
 					entryListMenuGoToUpgrade.setEnabled (entryListMenuGoToUpgrade.isVisible () && isDbObject && upgradeFile != null && ((Link) currentEntry.get (121)).target.isValidLinkTarget ());
@@ -314,6 +324,56 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		entryList.switchList.setHorizontalTextPosition (SwingConstants.LEFT);
 		entryListPane.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
 		entryListPane.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
+
+
+		entryList.switchList.setHorizontalAlignment (SwingConstants.RIGHT);
+		entryList.switchList.setHorizontalTextPosition (SwingConstants.LEFT);
+		entryListPane.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
+		entryListPane.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
+
+		entryListSearch.addListSelectionListener (e -> {
+			if (e == null || !e.getValueIsAdjusting ()) {
+				Entry selected = entryListSearch.getSelectedElement ();
+				if (selected != null) {
+					currentEntry = selected;
+					loadEntry (currentEntry);
+				}
+			}
+		});
+		entryListSearch.addMouseListener (new MouseAdapter () {
+			@Override
+			@SuppressWarnings ("synthetic-access")
+			public void mousePressed (MouseEvent e) {
+				entryListSearch.selectElement (e);
+				showMenu (e);
+			}
+
+			@Override
+			public void mouseReleased (MouseEvent e) {
+				showMenu (e);
+			}
+
+			@SuppressWarnings ("synthetic-access")
+			public void showMenu (MouseEvent e) {
+				if (e.isPopupTrigger ()) {
+					entryListMenuAdd.setEnabled (false);
+					entryListMenuRemove.setEnabled (false);
+					entryListMenuDuplicate.setEnabled (false);
+					entryListMenuMoveTo.setEnabled (false);
+					entryListMenuGoToFamily.setEnabled (entryListMenuGoToFamily.isVisible () && isDbObject && familyFile != null && ((Link) currentEntry.get (2)).target.isValidLinkTarget ());
+					entryListMenuGoToGraphic.setEnabled (entryListMenuGoToGraphic.isVisible () && isDbObject && graphicFile != null && ((Link) currentEntry.get (39)).target.isValidLinkTarget ());
+					entryListMenuGoToUpgrade.setEnabled (entryListMenuGoToUpgrade.isVisible () && isDbObject && upgradeFile != null && ((Link) currentEntry.get (121)).target.isValidLinkTarget ());
+					entryListMenuGoToTech.setEnabled (entryListMenuGoToTech.isVisible () && isDbObject && techFile != null && ((Link) currentEntry.get (225)).target.isValidLinkTarget ());
+					entryListMenuGoToParentSet.setEnabled (entryListMenuGoToParentSet.isVisible () && isDbUnitSet && getParentEntry (datFile, currentEntry, 19) != EntryLocation.NULL);
+					entryListMenu.show (e.getComponent (), e.getX (), e.getY ());
+				}
+			}
+		});
+		entryListSearch.switchList.setVisible (false);
+		entryListSearchPane.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
+		entryListSearchPane.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
+
+
 
 		entryListMenu.add (entryListMenuAdd);
 		entryListMenu.add (entryListMenuRemove);
@@ -565,6 +625,25 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			entryListPane.setPreferredSize (new Dimension (x1 + x2, entryListPane.getPreferredSize ().height));
 		}
 		contentPane.add (entryListPane, gbc_entryListPane);
+
+		contentPane.add (entryListSearchPane, gbc_entryListSearchPane);
+		entrySearchField.setDatStructure (datFile.datStructure);
+		entryListSearchPane.setVisible (false);
+
+		entrySearchField.addSearchListener (text -> {
+			if (text == null) {
+				entryGroupListPane.setVisible (datFile.entryGroups.size () > 1);
+				entryListPane.setVisible (true);
+				entryList.switchList.setVisible (true);
+				entryListSearchPane.setVisible (false);
+			} else {
+				entryGroupListPane.setVisible (false);
+				entryListPane.setVisible (false);
+				entryList.switchList.setVisible (false);
+				entryListSearchPane.setVisible (true);
+			}
+			entryListPane.getParent ().revalidate ();
+		});
 
 		entryGroupList.setList (datFile.entryGroups);
 		boolean allowNewEntry = datFile.datStructure.newEntryValues != null;

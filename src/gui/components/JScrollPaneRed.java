@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
-import gui.ui.EEScrollBarUI;
+import gui.misc.EEScrollBarUI;
 
 /**
  * A scrollpane with red color and customized aspect

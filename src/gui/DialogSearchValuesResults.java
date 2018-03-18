@@ -24,9 +24,9 @@ import datstructure.EntryValueMap;
 import gui.components.EntryFieldInterface;
 import gui.components.JButtonRed;
 import gui.components.JListDouble;
-import gui.ui.EEScrollBarUI;
-import gui.ui.GridBagConstraintsExtended;
-import gui.ui.GridBagLayoutExtended;
+import gui.misc.EEScrollBarUI;
+import gui.misc.GridBagConstraintsExtended;
+import gui.misc.GridBagLayoutExtended;
 
 
 /**

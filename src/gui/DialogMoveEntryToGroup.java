@@ -19,8 +19,8 @@ import gui.components.AbstractJListExtended;
 import gui.components.JButtonRed;
 import gui.components.JListExtended;
 import gui.components.JScrollPaneRed;
-import gui.ui.GridBagConstraintsExtended;
-import gui.ui.GridBagLayoutExtended;
+import gui.misc.GridBagConstraintsExtended;
+import gui.misc.GridBagLayoutExtended;
 
 /**
  * This dialog let the player choose a new group for the selected element, and move the element there.

@@ -24,9 +24,9 @@ import datmanager.DatFile;
 import datstructure.DatStructure;
 import gui.components.JButtonRed;
 import gui.components.JToggleButtonRed;
-import gui.ui.EEScrollBarUI;
-import gui.ui.GridBagConstraintsExtended;
-import gui.ui.GridBagLayoutExtended;
+import gui.misc.EEScrollBarUI;
+import gui.misc.GridBagConstraintsExtended;
+import gui.misc.GridBagLayoutExtended;
 
 
 /**

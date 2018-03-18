@@ -25,7 +25,7 @@ import datstructure.Entry;
 import gui.components.JButtonRed;
 import gui.components.JListExtended;
 import gui.components.JScrollPaneRed;
-import gui.ui.EEScrollBarUI;
+import gui.misc.EEScrollBarUI;
 import operations.Condition;
 import operations.ConditionOperator;
 

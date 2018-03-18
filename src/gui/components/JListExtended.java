@@ -3,34 +3,42 @@ package gui.components;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
+
+import gui.misc.ListDataCollection;
 
 
 /**
  * JList which keep the reference to the passed list.
  * You can change the list from outside this class, then use the command
  * refresh() to update the list.
+ *
  * @author MarcoForlini
  * @param <E> The type of elements
  */
 public class JListExtended <E> extends JList <E> implements AbstractJListExtended <E> {
 
-	private static final long serialVersionUID = -1460528354644591567L;
+	private static final long		serialVersionUID	= -1460528354644591567L;
 
 	/** The list of elements in the list */
-	public List <E> list;
+	public List <E>					list;
+	public ListDataCollection <E>	model				= new ListDataCollection <> ();
+
+	{
+		setModel (model);
+	}
+
 
 	/**
 	 * Creates a new {@link JListExtended}
 	 */
-	JListExtended () {
-		/* Nothing to do */}
+	JListExtended () {/* Nothing to do */}
 
 	/**
 	 * Creates a new {@link JListExtended}
+	 *
 	 * @param list The list of elements
 	 */
 	public JListExtended (List <E> list) {
@@ -88,7 +96,8 @@ public class JListExtended <E> extends JList <E> implements AbstractJListExtende
 
 	@Override
 	public void refresh () {
-		setListData (new Vector<> (list));
+		model.setList (list);
+		// setListData (new Vector <> (list));
 	}
 
 }

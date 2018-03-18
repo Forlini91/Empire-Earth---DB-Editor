@@ -19,9 +19,9 @@ import datstructure.EntryGroup;
 import gui.components.JButtonRed;
 import gui.components.JListEntry;
 import gui.components.JSearchFieldEntry;
-import gui.ui.EEScrollBarUI;
-import gui.ui.GridBagConstraintsExtended;
-import gui.ui.GridBagLayoutExtended;
+import gui.misc.EEScrollBarUI;
+import gui.misc.GridBagConstraintsExtended;
+import gui.misc.GridBagLayoutExtended;
 
 /**
  * In the {@code DialogSearchValuesResults} dialog the user can double click on any entry to get the full list of entries.
