@@ -37,7 +37,7 @@ public class JComboBoxEnumEffect extends JComboBox <EffectCode> implements Entry
 	private int												index;
 	private FrameEditor										frameEditor;
 
-	private ListSearcher <EffectCode>						searcher			= new ListSearcher<> (NAME_MATCHER, ID_MATCHER);
+	private ListSearcher <EffectCode>						searcher			= new ListSearcher <> (NAME_MATCHER, ID_MATCHER);
 	private JTextComponent									textEditor			= ((JTextComponent) getEditor ().getEditorComponent ());
 	private Object											defaultVal			= null;
 	private boolean											altered				= false;
@@ -168,7 +168,7 @@ public class JComboBoxEnumEffect extends JComboBox <EffectCode> implements Entry
 				}
 		}
 		for (int i = 2; i < 14; i++) {
-			frameEditor.baseFields.get (i).setEnabled (toEnable[i]);
+			frameEditor.setFieldEnabled (i, toEnable[i]);
 		}
 	}
 

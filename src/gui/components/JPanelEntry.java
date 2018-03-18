@@ -89,10 +89,7 @@ public class JPanelEntry extends JPanel {
 		if (field == null) {
 			JTextFieldField textField = new JTextFieldField (fieldStruct, index);
 			if (fieldStruct.indexSize >= 0) {
-				textField.registerUpdater (
-						text -> {
-							frameEditor.baseFields.get (fieldStruct.indexSize).setVal (text.length ());
-						});
+				textField.registerUpdater (text -> frameEditor.setFieldValue (fieldStruct.indexSize, text.length ()));
 			}
 			field = textField;
 		}

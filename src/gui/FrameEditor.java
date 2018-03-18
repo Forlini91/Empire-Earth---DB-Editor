@@ -57,8 +57,8 @@ import datstructure.structures.Upgrade;
 import gui.components.EntryFieldInterface;
 import gui.components.JButtonRed;
 import gui.components.JComboBoxField;
-import gui.components.JListDouble;
 import gui.components.JListEntry;
+import gui.components.JListExtended;
 import gui.components.JPanelEntry;
 import gui.components.JScrollPaneRed;
 import gui.components.JSearchTextField;
@@ -77,518 +77,93 @@ import gui.misc.GridLayoutExtended;
  */
 public class FrameEditor extends JFrame implements WindowListener, WindowFocusListener {
 
+	private static final long	serialVersionUID		= 4896492699448510891L;
 
-	private static final long			serialVersionUID		= -3426470254615698936L;
+	private static final Font	DESCRIPTION_FONT		= new Font ("Dialog", Font.BOLD, 8);
+	private static final int	GRID_MIN_ENTRY_SLOTS	= 32;
 
-	private final GridBagLayoutExtended	gbl_contentPane			= new GridBagLayoutExtended (new int[] { 0, 0, 100, 200, 200, 100 }, new int[] { 400, 32, 32 }, new double[] { 0, 0, 0.5, 0, 0, 0.5 }, new double[] { 1.0, 0.0, 0 });
-	private final GridLayout			gridLayout				= new GridLayoutExtended (false, false, 0, 4, 0, 0);
-	private final GridBagConstraints	gbc_entryGroupListPane	= new GridBagConstraintsExtended (4, 4, 0, 0, 0, 0);
-	private final GridBagConstraints	gbc_entryListPane		= new GridBagConstraintsExtended (4, 4, 0, 0, 1, 0);
-	private final GridBagConstraints	gbc_entryListSearchPane	= new GridBagConstraintsExtended (4, 4, 0, 0, 0, 0, 2, 1);
-	private final GridBagConstraints	gbc_entrySearchField	= new GridBagConstraintsExtended (4, 4, 0, 0, 1, 1);
-	private final GridBagConstraints	gbc_scrollPaneFields	= new GridBagConstraintsExtended (4, 4, 0, 4, 2, 0, 4, 1);
-	private final GridBagConstraints	gbc_entryDescription	= new GridBagConstraintsExtended (4, 4, 0, 4, 2, 1, 4, 1);
-	private final GridBagConstraints	gbc_switchList			= new GridBagConstraintsExtended (4, 4, 4, 0, 0, 1);
-	private final GridBagConstraints	gbc_resetButton			= new GridBagConstraintsExtended (4, 4, 4, 0, 0, 2);
-	private final GridBagConstraints	gbc_saveButton			= new GridBagConstraintsExtended (4, 4, 4, 0, 1, 2);
-	private final GridBagConstraints	gbc_removeID			= new GridBagConstraintsExtended (4, 4, 4, 0, 3, 2);
-	private final GridBagConstraints	gbc_addID				= new GridBagConstraintsExtended (4, 4, 4, 4, 4, 2);
-	private static final int			GRID_MIN_ENTRY_SLOTS	= 32;
 
+	private final GridBagLayoutExtended	gbl_contentPane				= new GridBagLayoutExtended (new int[] { 0, 0, 100, 200, 200, 100 }, new int[] { 400, 32, 32 }, new double[] { 0, 0, 0.5, 0, 0, 0.5 }, new double[] { 1.0, 0.0, 0 });
+	private final GridLayout			gridLayout					= new GridLayoutExtended (false, false, 0, 4, 0, 0);
+	private final GridBagConstraints	gbc_entryGroupListPane		= new GridBagConstraintsExtended (4, 4, 0, 0, 0, 0);
+	private final GridBagConstraints	gbc_entryListPane			= new GridBagConstraintsExtended (4, 4, 0, 0, 1, 0);
+	private final GridBagConstraints	gbc_entrySearchField		= new GridBagConstraintsExtended (4, 4, 0, 0, 1, 1);
+	private final GridBagConstraints	gbc_scrollPaneFields		= new GridBagConstraintsExtended (4, 4, 0, 4, 2, 0, 4, 1);
+	private final GridBagConstraints	gbc_entryDescription		= new GridBagConstraintsExtended (4, 4, 0, 4, 2, 1, 4, 1);
+	private final GridBagConstraints	gbc_switchList				= new GridBagConstraintsExtended (4, 4, 4, 0, 0, 1);
+	private final GridBagConstraints	gbc_resetButton				= new GridBagConstraintsExtended (4, 4, 4, 0, 0, 2);
+	private final GridBagConstraints	gbc_saveButton				= new GridBagConstraintsExtended (4, 4, 4, 0, 1, 2);
+	private final GridBagConstraints	gbc_removeID				= new GridBagConstraintsExtended (4, 4, 4, 0, 3, 2);
+	private final GridBagConstraints	gbc_addID					= new GridBagConstraintsExtended (4, 4, 4, 4, 4, 2);
+
+	private JPanel						contentPane					= new JPanel ();
+	private JListExtended <EntryGroup>	entryGroupList				= new JListExtended <> (false);
+	private JListEntry					entryList					= new JListEntry (true);
+	private JScrollPane					entryGroupListPane			= new JScrollPaneRed (entryGroupList, "Epochs");
+	private JScrollPane					entryListPane				= new JScrollPaneRed (entryList, "Entries");
+	private JPanel						panelFields					= new JPanel ();
+	private JScrollPane					scrollPaneFields			= new JScrollPaneRed (panelFields, "Fields");
+	private JSearchTextField			entrySearchField			= new JSearchTextField (entryList);
+	private JLabel						entryDescription			= new JLabel ("");
+
+	private JLabel						numColumnsLabel				= new JLabel ("Columns: 4");
+	private JSlider						numColumnsSlider			= new JSlider ();
+	private JButton						menuBarList					= new JButtonRed ("List entries");
+	private JButton						menuBarAdvancedSearch		= new JButtonRed ("Advanced search");
+	private JButton						reset						= new JButtonRed ("Reset entry");
+	private JButton						save						= new JButtonRed ("Save entry");
+	private JButton						addField					= new JButtonRed ("Add field");
+	private JButton						removeField					= new JButtonRed ("Remove field");
+
+	private final JPopupMenu			fieldMenu					= new JPopupMenu ();
+	private final JMenuItem				fieldMenuSearchValues		= new JMenuItem ("Show all values used for this field");
+	private final JMenuItem				fieldMenuSearchFields		= new JMenuItem ("Show all fields with the same value");
+	private final JMenuItem				fieldMenuMarkUnusedFields	= new JMenuItem ("Mark all unused/interesting fields");
+	private final JMenuItem				fieldMenuUnmarkUnusedFields	= new JMenuItem ("Remove marks");
+	private final JMenuItem				fieldMenuRefreshList		= new JMenuItem ("Refresh list");
+	private final JMenuItem				fieldMenuOpenLink			= new JMenuItem ("Open link");
+	private final JMenuItem				fieldMenuNextFree			= new JMenuItem ("Find next free ID/number");
+
+	private final JPopupMenu			entryListMenu				= new JPopupMenu ();
+	private final JMenuItem				entryListMenuAdd			= new JMenuItem ("Add entry");
+	private final JMenuItem				entryListMenuRemove			= new JMenuItem ("Remove entry");
+	private final JMenuItem				entryListMenuDuplicate		= new JMenuItem ("Duplicate entry");
+	private final JMenuItem				entryListMenuCopyData		= new JMenuItem ("Copy entry fields");
+	private final JMenuItem				entryListMenuPasteData		= new JMenuItem ("Paste entry fields");
+	private final JMenuItem				entryListMenuMoveTo			= new JMenuItem ("Move to epoch...");
+	private final JMenuItem				entryListMenuShowLinks		= new JMenuItem ("Show all links to this entry");
+	private final JMenuItem				entryListMenuGoToFamily		= new JMenuItem ("Go to Family");
+	private final JMenuItem				entryListMenuGoToGraphic	= new JMenuItem ("Go to Graphic");
+	private final JMenuItem				entryListMenuGoToUpgrade	= new JMenuItem ("Go to Upgrade");
+	private final JMenuItem				entryListMenuGoToTech		= new JMenuItem ("Go to Technology");
+	private final JMenuItem				entryListMenuGoToObject		= new JMenuItem ("Go to Object");
+	private final JMenuItem				entryListMenuGoToParentSet	= new JMenuItem ("Go to parent set");
+
+
+	private final DatFile				datFile;
+	private final List <JPanelEntry>	baseFields;
+	private final List <JPanelEntry>	extraFields;
+	private FieldStruct					extraFieldStructure		= null;
+	private int							indexCountExtra			= -1;
+	private JPanelEntry					panelCountExtra			= null;
+	private final DatFile				objectFile				= Objects.instance.datFile;
 	private final DatFile				techFile				= TechTree.instance.datFile;
 	private final DatFile				familyFile				= Family.instance.datFile;
 	private final DatFile				upgradeFile				= Upgrade.instance.datFile;
 	private final DatFile				graphicFile				= Graphics.instance.datFile;
-	private final boolean				isDbObject, isDbUnitSet, isDbTechTree, isDbEvents;
+	private final boolean				isDbObject;
+	private final boolean				isDbUnitSet;
+	private final boolean				isDbTechTree;
+	private final boolean				isDbEvents;
 
-
-	/** The data loaded */
-	public DatFile				datFile;
-
-	/** Base fields */
-	public List <JPanelEntry>	baseFields;
-
-	/** Extra fields (dbtechtree.dat and dbevents.dat) */
-	public List <JPanelEntry>	extraFields;
-
-	/** Selected entry group */
-	public EntryGroup			currentEntryGroup;
-
-	/** Selected entry */
-	public Entry				currentEntry	= null;
-
-	/** Copied entry */
-	public Entry				copyEntry		= null;
-
-
-
-	private Component					rightClicked		= null;
-	private Set <JPanelEntry>			marked				= new HashSet <> (80);
-
-	private JPanel						contentPane			= new JPanel ();
-	private JListDouble <EntryGroup>	entryGroupList		= new JListDouble <> (false);
-	private JListEntry					entryList			= new JListEntry ();
-	private JListEntry					entryListSearch		= new JListEntry ();
-	private JScrollPane					entryGroupListPane	= new JScrollPaneRed (entryGroupList, "Epochs");
-	private JScrollPane					entryListPane		= new JScrollPaneRed (entryList, "Entries");
-	private JScrollPane					entryListSearchPane	= new JScrollPaneRed (entryListSearch, "Search results:");
-	private JPanel						panelFields			= new JPanel ();
-	private JScrollPane					scrollPaneFields	= new JScrollPaneRed (panelFields, "Fields");
-	private JSearchTextField			entrySearchField	= new JSearchTextField (entryListSearch);
-	private JLabel						entryDescription	= new JLabel ("");
-
-
-
-	private JButton	menuBarSaveFile			= new JButtonRed ("Save to file");
-	private JMenu	menuBarNumColumns		= new JMenu ("Num columns");
-	private JPanel	menuBarNumColumnsPanel	= new JPanel ();
-	private JLabel	numColumnsLabel			= new JLabel ("Columns: 4");
-	private JSlider	numColumnsSlider		= new JSlider ();
-	private JButton	menuBarList				= new JButtonRed ("List entries");
-	private JButton	menuBarAdvancedSearch	= new JButtonRed ("Advanced search");
-	private JButton	reset					= new JButtonRed ("Reset entry");
-	private JButton	save					= new JButtonRed ("Save entry");
-	private JButton	addField				= new JButtonRed ("Add field");
-	private JButton	removeField				= new JButtonRed ("Remove field");
-
-
-	private final JPopupMenu	fieldMenu					= new JPopupMenu ();
-	private final JMenuItem		fieldMenuSearchValues		= new JMenuItem ("Show all values used for this field");
-	private final JMenuItem		fieldMenuSearchFields		= new JMenuItem ("Show all fields with the same value");
-	private final JMenuItem		fieldMenuMarkUnusedFields	= new JMenuItem ("Mark all unused/interesting fields");
-	private final JMenuItem		fieldMenuUnmarkUnusedFields	= new JMenuItem ("Remove marks");
-	private final JMenuItem		fieldMenuRefreshList		= new JMenuItem ("Refresh list");
-	private final JMenuItem		fieldMenuOpenLink			= new JMenuItem ("Open link");
-	private final JMenuItem		fieldMenuNextFree			= new JMenuItem ("Find next free ID/number");
-
-	private final JPopupMenu	entryListMenu				= new JPopupMenu ();
-	private final JMenuItem		entryListMenuAdd			= new JMenuItem ("Add entry");
-	private final JMenuItem		entryListMenuRemove			= new JMenuItem ("Remove entry");
-	private final JMenuItem		entryListMenuDuplicate		= new JMenuItem ("Duplicate entry");
-	private final JMenuItem		entryListMenuCopyData		= new JMenuItem ("Copy entry fields");
-	private final JMenuItem		entryListMenuPasteData		= new JMenuItem ("Paste entry fields");
-	private final JMenuItem		entryListMenuMoveTo			= new JMenuItem ("Move to epoch...");
-	private final JMenuItem		entryListMenuShowLinks		= new JMenuItem ("Show all links to this entry");
-	private final JMenuItem		entryListMenuGoToFamily		= new JMenuItem ("Go to Family");
-	private final JMenuItem		entryListMenuGoToGraphic	= new JMenuItem ("Go to Graphic");
-	private final JMenuItem		entryListMenuGoToUpgrade	= new JMenuItem ("Go to Upgrade");
-	private final JMenuItem		entryListMenuGoToTech		= new JMenuItem ("Go to Technology");
-	private final JMenuItem		entryListMenuGoToParentSet	= new JMenuItem ("Go to parent set");
-
-	private final JMenuBar		menuBar						= new JMenuBar ();
-	private int					numBaseFields				= 0;
-	private int					numPlacedExtraFields		= 0;
-	private int					indexCountExtra				= -1;
-	private JPanelEntry			panelCountExtra				= null;
-	private FieldStruct			extraFieldStructure			= null;
-
-
-
-
-
-	// Initializations independent from constructor arguments
-	{
-		setBounds (GUI.getBounds (this, 0.85, 0.85));
-		setIconImage (GUI.IMAGE_ICON.getImage ());
-		setDefaultCloseOperation (WindowConstants.DO_NOTHING_ON_CLOSE);
-		setContentPane (contentPane);
-
-		menuBarSaveFile.addActionListener (e -> {
-			datFile.saveFile (FrameEditor.this);
-		});
-		menuBarSaveFile.setMnemonic (KeyEvent.VK_Q);
-		menuBarSaveFile.setToolTipText ("(ALT + Q) Save this file");
-
-		menuBarList.addActionListener (e -> {
-			JDialog d = new DialogListEntries (this, entryList.list, entryList.listClean);
-			d.setVisible (true);
-		});
-
-		menuBarAdvancedSearch.addActionListener (e -> {
-			JDialog d = new DialogConditionAssembler (this, datFile);
-			d.setVisible (true);
-		});
-
-		menuBarNumColumnsPanel.setLayout (new GridLayout (2, 1, 0, 0));
-		menuBarNumColumnsPanel.add (numColumnsLabel);
-		menuBarNumColumnsPanel.add (numColumnsSlider);
-		menuBarNumColumns.add (menuBarNumColumnsPanel);
-		numColumnsLabel.setHorizontalAlignment (SwingConstants.LEFT);
-		numColumnsSlider.setUI (new EESliderUI (numColumnsSlider, GUI.COLOR_UI_ELEMENT));
-		numColumnsSlider.setMinimum (2);
-		numColumnsSlider.setMaximum (32);
-		numColumnsSlider.setValue (4);
-		numColumnsSlider.setSnapToTicks (true);
-		numColumnsSlider.setMinorTickSpacing (1);
-		numColumnsSlider.setMajorTickSpacing (2);
-		numColumnsSlider.setPreferredSize (new Dimension (250, numColumnsSlider.getPreferredSize ().height));
-		numColumnsSlider.addChangeListener (e -> {
-			int value = numColumnsSlider.getValue ();
-			gridLayout.setColumns (value);
-			numColumnsLabel.setText ("Columns: " + value);
-			panelFields.revalidate ();
-		});
-		menuBarNumColumns.setBackground (GUI.COLOR_UI_ELEMENT);
-		menuBarNumColumns.setForeground (Color.WHITE);
-		menuBarNumColumns.setOpaque (true);
-		menuBarNumColumnsPanel.setBackground (GUI.COLOR_UI_BACKGROUND);
-		numColumnsLabel.setOpaque (false);
-		numColumnsSlider.setOpaque (false);
-		menuBar.add (menuBarSaveFile);
-		menuBar.add (menuBarNumColumns);
-		menuBar.add (menuBarList);
-		menuBar.add (menuBarAdvancedSearch);
-		menuBar.setBackground (GUI.COLOR_UI_BACKGROUND);
-		menuBar.setOpaque (true);
-		setJMenuBar (menuBar);
-
-		contentPane.setLayout (gbl_contentPane);
-		contentPane.add (entryGroupListPane, gbc_entryGroupListPane);
-		contentPane.add (scrollPaneFields, gbc_scrollPaneFields);
-		contentPane.add (entryDescription, gbc_entryDescription);
-		contentPane.add (entrySearchField, gbc_entrySearchField);
-		contentPane.add (reset, gbc_resetButton);
-		contentPane.add (save, gbc_saveButton);
-		contentPane.add (entryList.switchList, gbc_switchList);
-		contentPane.add (addField, gbc_addID);
-		contentPane.add (removeField, gbc_removeID);
-		contentPane.setBackground (GUI.COLOR_UI_BACKGROUND);
-
-		entryListSearch.switchList.setVisible (false);
-
-		scrollPaneFields.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
-		scrollPaneFields.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
-		panelFields.setBackground (GUI.COLOR_UI_BACKGROUND);
-		entryDescription.setHorizontalAlignment (SwingConstants.CENTER);
-		entryDescription.setVerticalAlignment (SwingConstants.CENTER);
-		Font font = entryDescription.getFont ();
-		font = new Font (font.getName (), font.getStyle (), font.getSize () - 2);
-		entryDescription.setFont (font);
-
-		entryGroupList.setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
-		entryGroupList.addListSelectionListener (e -> {
-			if (e == null || !e.getValueIsAdjusting ()) {
-				EntryGroup selected = entryGroupList.getSelectedElement ();
-				if (selected != null) {
-					currentEntryGroup = selected;
-					entryList.setList (currentEntryGroup.entries);
-					if (currentEntryGroup.entries.size () > 0) {
-						entryList.setSelectedIndex (0);
-					}
-				}
-			}
-		});
-		entryGroupListPane.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
-		entryGroupListPane.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
-
-		entryList.setSelectionMode (ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		entryList.addListSelectionListener (e -> {
-			if (e == null || !e.getValueIsAdjusting ()) {
-				Entry selected = entryList.getSelectedElement ();
-				if (selected != null) {
-					currentEntry = selected;
-					loadEntry (currentEntry);
-				}
-			}
-		});
-		entryList.addMouseListener (new MouseAdapter () {
-			@Override
-			@SuppressWarnings ("synthetic-access")
-			public void mousePressed (MouseEvent e) {
-				entryList.selectElement (e);
-				showMenu (e);
-			}
-
-			@Override
-			public void mouseReleased (MouseEvent e) {
-				showMenu (e);
-			}
-
-			@SuppressWarnings ("synthetic-access")
-			public void showMenu (MouseEvent e) {
-				if (e.isPopupTrigger ()) {
-					entryListMenuAdd.setEnabled (true);
-					entryListMenuRemove.setEnabled (true);
-					entryListMenuDuplicate.setEnabled (true);
-					entryListMenuMoveTo.setEnabled (true);
-					entryListMenuGoToFamily.setEnabled (entryListMenuGoToFamily.isVisible () && isDbObject && familyFile != null && ((Link) currentEntry.get (2)).target.isValidLinkTarget ());
-					entryListMenuGoToGraphic.setEnabled (entryListMenuGoToGraphic.isVisible () && isDbObject && graphicFile != null && ((Link) currentEntry.get (39)).target.isValidLinkTarget ());
-					entryListMenuGoToUpgrade.setEnabled (entryListMenuGoToUpgrade.isVisible () && isDbObject && upgradeFile != null && ((Link) currentEntry.get (121)).target.isValidLinkTarget ());
-					entryListMenuGoToTech.setEnabled (entryListMenuGoToTech.isVisible () && isDbObject && techFile != null && ((Link) currentEntry.get (225)).target.isValidLinkTarget ());
-					entryListMenuGoToParentSet.setEnabled (entryListMenuGoToParentSet.isVisible () && isDbUnitSet && getParentEntry (datFile, currentEntry, 19) != EntryLocation.NULL);
-					entryListMenu.show (e.getComponent (), e.getX (), e.getY ());
-				}
-			}
-		});
-		entryList.switchList.setHorizontalAlignment (SwingConstants.RIGHT);
-		entryList.switchList.setHorizontalTextPosition (SwingConstants.LEFT);
-		entryListPane.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
-		entryListPane.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
-
-
-		entryList.switchList.setHorizontalAlignment (SwingConstants.RIGHT);
-		entryList.switchList.setHorizontalTextPosition (SwingConstants.LEFT);
-		entryListPane.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
-		entryListPane.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
-
-		entryListSearch.addListSelectionListener (e -> {
-			if (e == null || !e.getValueIsAdjusting ()) {
-				Entry selected = entryListSearch.getSelectedElement ();
-				if (selected != null) {
-					currentEntry = selected;
-					loadEntry (currentEntry);
-				}
-			}
-		});
-		entryListSearch.addMouseListener (new MouseAdapter () {
-			@Override
-			@SuppressWarnings ("synthetic-access")
-			public void mousePressed (MouseEvent e) {
-				entryListSearch.selectElement (e);
-				showMenu (e);
-			}
-
-			@Override
-			public void mouseReleased (MouseEvent e) {
-				showMenu (e);
-			}
-
-			@SuppressWarnings ("synthetic-access")
-			public void showMenu (MouseEvent e) {
-				if (e.isPopupTrigger ()) {
-					entryListMenuAdd.setEnabled (false);
-					entryListMenuRemove.setEnabled (false);
-					entryListMenuDuplicate.setEnabled (false);
-					entryListMenuMoveTo.setEnabled (false);
-					entryListMenuGoToFamily.setEnabled (entryListMenuGoToFamily.isVisible () && isDbObject && familyFile != null && ((Link) currentEntry.get (2)).target.isValidLinkTarget ());
-					entryListMenuGoToGraphic.setEnabled (entryListMenuGoToGraphic.isVisible () && isDbObject && graphicFile != null && ((Link) currentEntry.get (39)).target.isValidLinkTarget ());
-					entryListMenuGoToUpgrade.setEnabled (entryListMenuGoToUpgrade.isVisible () && isDbObject && upgradeFile != null && ((Link) currentEntry.get (121)).target.isValidLinkTarget ());
-					entryListMenuGoToTech.setEnabled (entryListMenuGoToTech.isVisible () && isDbObject && techFile != null && ((Link) currentEntry.get (225)).target.isValidLinkTarget ());
-					entryListMenuGoToParentSet.setEnabled (entryListMenuGoToParentSet.isVisible () && isDbUnitSet && getParentEntry (datFile, currentEntry, 19) != EntryLocation.NULL);
-					entryListMenu.show (e.getComponent (), e.getX (), e.getY ());
-				}
-			}
-		});
-		entryListSearch.switchList.setVisible (false);
-		entryListSearchPane.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
-		entryListSearchPane.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
-
-
-
-		entryListMenu.add (entryListMenuAdd);
-		entryListMenu.add (entryListMenuRemove);
-		entryListMenu.add (entryListMenuDuplicate);
-		entryListMenu.add (entryListMenuCopyData);
-		entryListMenu.add (entryListMenuPasteData);
-		entryListMenu.add (entryListMenuMoveTo);
-		entryListMenu.add (entryListMenuShowLinks);
-		entryListMenu.add (entryListMenuGoToFamily);
-		entryListMenu.add (entryListMenuGoToGraphic);
-		entryListMenu.add (entryListMenuGoToUpgrade);
-		entryListMenu.add (entryListMenuGoToTech);
-		entryListMenu.add (entryListMenuGoToParentSet);
-		entryListMenuPasteData.setVisible (false);
-		entryListMenuAdd.addActionListener (e -> {
-			try {
-				int newSeq = datFile.getAllEntries (true).parallelStream ().mapToInt (Entry::getSequenceNumber).max ().getAsInt () + 1;
-				int newID = currentEntryGroup.entries.parallelStream ().mapToInt (Entry::getID).max ().getAsInt () + 1;
-				Entry newEntry = new Entry (datFile.datStructure, false, null, newSeq, newID);
-				currentEntryGroup.entries.add (newEntry);
-				currentEntryGroup.map.put (newID, newEntry);
-				entryList.setList (currentEntryGroup.entries);
-				entryList.setSelectedElement (newEntry);
-			} catch (NoSuchElementException e1) {
-				Core.printException (this, e1, "An error occurred while adding the new entry. No data has been altered", "Error", true);
-				return;
-			}
-		});
-		entryListMenuRemove.addActionListener (e -> {
-			if (currentEntry != null) {
-				if (JOptionPane.showConfirmDialog (this, "You're going to delete " + currentEntry + "\nAre you sure?", "Delete entry", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, GUI.IMAGE_ICON) == 0) {
-					int index = entryList.getSelectedIndex ();
-					currentEntryGroup.entries.remove (currentEntry);
-					currentEntryGroup.map.remove (currentEntry.getID (), currentEntry);
-					entryList.setList (currentEntryGroup.entries);
-					int size = entryList.getLength ();
-					if (size == 0) {
-						currentEntry = null;
-					} else if (index < size) {
-						entryList.setSelectedIndex (index);
-					} else {
-						entryList.setSelectedIndex (size - 1);
-					}
-				}
-			}
-		});
-		entryListMenuDuplicate.addActionListener (e -> {
-			if (currentEntry != null) {
-				try {
-					int newSeq = datFile.getAllEntries (false).parallelStream ().mapToInt (Entry::getSequenceNumber).max ().getAsInt () + 1;
-					int newID = currentEntryGroup.entries.parallelStream ().mapToInt (Entry::getID).max ().getAsInt () + 1;
-					Entry newEntry = currentEntry.duplicate (newSeq, newID);
-					currentEntryGroup.entries.add (newEntry);
-					currentEntryGroup.map.put (newID, newEntry);
-					entryList.setList (currentEntryGroup.entries);
-					entryList.setSelectedElement (newEntry);
-				} catch (NoSuchElementException e1) {
-					Core.printException (this, e1, "An error occurred while adding the new entry. No data has been altered", "Error", true);
-				}
-			}
-		});
-		entryListMenuCopyData.addActionListener (e -> {
-			if (currentEntry != null) {
-				copyEntry = currentEntry;
-				entryListMenuPasteData.setVisible (true);
-			}
-		});
-		entryListMenuPasteData.addActionListener (e -> {
-			if (currentEntry != null && copyEntry != null) {
-				pasteEntry (copyEntry);
-			}
-		});
-		entryListMenuMoveTo.addActionListener (e -> {
-			if (currentEntryGroup != null && !entryList.isSelectionEmpty ()) {
-				JDialog d = new DialogMoveEntryToGroup (this, datFile.entryGroups, entryGroupList, entryList, currentEntryGroup, entryList.getSelectedElement (), () -> datFile.setUnsaved (true));
-				d.setVisible (true);
-			}
-		});
-		entryListMenuShowLinks.addActionListener (e -> {
-			if (currentEntry != null) {
-				List <Link> linksToEntry = currentEntry.getLinksToEntry (false);
-				JDialog d = new DialogSearchLinkResult (this, currentEntry, Link.getInverseLinks (linksToEntry, true));
-				d.setVisible (true);
-			}
-		});
-		entryListMenuGoToFamily.addActionListener (e -> {
-			if (familyFile != null) {
-				Link link = currentEntry.get (2);
-				Entry entry = link.target;
-				if (!entry.dummyEntry) {
-					EntryGroup group = familyFile.findGroup (entry);
-					if (group != null) {
-						FrameEditor frameEditor = familyFile.openInEditor (this, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
-						frameEditor.goToEntry (group, entry);
-					}
-				}
-			}
-		});
-		entryListMenuGoToGraphic.addActionListener (e -> {
-			if (graphicFile != null) {
-				Link link = currentEntry.get (39);
-				Entry entry = link.target;
-				if (!entry.dummyEntry) {
-					EntryGroup group = graphicFile.findGroup (entry);
-					if (group != null) {
-						FrameEditor frameEditor = graphicFile.openInEditor (this, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
-						frameEditor.goToEntry (group, entry);
-					}
-				}
-			}
-		});
-		entryListMenuGoToUpgrade.addActionListener (e -> {
-			if (upgradeFile != null) {
-				Link link = currentEntry.get (121);
-				Entry entry = link.target;
-				if (!entry.dummyEntry) {
-					EntryGroup group = upgradeFile.findGroup (entry);
-					if (group != null) {
-						FrameEditor frameEditor = upgradeFile.openInEditor (this, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
-						frameEditor.goToEntry (group, entry);
-					}
-				}
-			}
-		});
-		entryListMenuGoToTech.addActionListener (e -> {
-			if (techFile != null) {
-				Link link = currentEntry.get (225);
-				Entry entry = link.target;
-				if (!entry.dummyEntry) {
-					EntryGroup group = techFile.findGroup (entry);
-					if (group != null) {
-						FrameEditor frameEditor = techFile.openInEditor (this, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
-						frameEditor.goToEntry (group, entry);
-					}
-				}
-			}
-		});
-		entryListMenuGoToParentSet.addActionListener (e -> {
-			EntryLocation location = getParentEntry (datFile, currentEntry, 19);
-			if (location != EntryLocation.NULL) {
-				FrameEditor frameEditor = datFile.openInEditor (this, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
-				frameEditor.goToEntry (location.entryGroup, location.entry);
-			}
-		});
-
-
-		fieldMenu.add (fieldMenuSearchValues);
-		fieldMenu.add (fieldMenuSearchFields);
-		fieldMenu.add (fieldMenuMarkUnusedFields);
-		fieldMenu.add (fieldMenuUnmarkUnusedFields);
-		fieldMenu.add (fieldMenuRefreshList);
-		fieldMenu.add (fieldMenuOpenLink);
-		fieldMenu.add (fieldMenuNextFree);
-		fieldMenuSearchValues.addActionListener (e -> {
-			try {
-				EntryFieldInterface field = (EntryFieldInterface) rightClicked;
-				EntryValueMap entryValueMap = EntryValueMap.getValuesMap (datFile.entryGroups, true, field.getIndex ());
-				JDialog d = new DialogSearchValuesResults (this, entryValueMap, field);
-				d.setVisible (true);
-			} catch (Exception exc) {
-				Core.printException (this, exc, "An error occurred while searching the values", "Error", true);
-			}
-		});
-		fieldMenuSearchFields.addActionListener (e -> showSearchFieldResults ());
-		fieldMenuMarkUnusedFields.addActionListener (e -> markUnusedFields ());
-		fieldMenuUnmarkUnusedFields.addActionListener (e -> unmarkUnusedFields ());
-		fieldMenuUnmarkUnusedFields.setVisible (false);
-		fieldMenuRefreshList.addActionListener (e -> ((EntryFieldInterface) rightClicked).refreshField ());
-		fieldMenuOpenLink.addActionListener (e -> {
-			JComboBoxField field = (JComboBoxField) rightClicked;
-			Object selectedItem = field.getSelectedItem ();
-			if (selectedItem != null && selectedItem instanceof Entry) {
-				Entry selectedEntry = (Entry) selectedItem;
-				if (selectedEntry.isValidLinkTarget ()) {
-					DatFile datFile = field.linkToStruct.datFile;
-					if (datFile != null) {
-						EntryGroup entryGroup = datFile.findGroup (selectedEntry);
-						if (entryGroup != null) {
-							FrameEditor frameEditor = datFile.openInEditor (this, (e.getModifiers () & KeyEvent.VK_SHIFT) != 0);
-							frameEditor.goToEntry (entryGroup, selectedEntry);
-						}
-					}
-				}
-			}
-		});
-		fieldMenuNextFree.addActionListener (e -> {
-			EntryFieldInterface field = (EntryFieldInterface) rightClicked;
-			FieldStruct fieldStruct = field.getEntryStruct ();
-			int highest;
-			if (fieldStruct == FieldStruct.ID) {
-				highest = currentEntryGroup.entries.parallelStream ().mapToInt (Entry::getID).max ().getAsInt () + 1;
-			} else if (fieldStruct == FieldStruct.SEQ_NUMBER) {
-				highest = datFile.getAllEntries (false).parallelStream ().mapToInt (Entry::getSequenceNumber).max ().getAsInt () + 1;
-			} else {
-				Core.printException (this, new IllegalStateException ("This is not an ID or Sequence Number field"), "An error occurred while checking the max ID/Number", "Error", true);
-				return;
-			}
-			field.setVal (highest);
-		});
-
-		panelFields.setLayout (gridLayout);
-		panelFields.setOpaque (false);
-		reset.addActionListener (e -> {
-			loadEntry (currentEntry);
-		});
-		reset.setMnemonic (KeyEvent.VK_R);
-		save.setToolTipText ("(ALT + R) Reload entry from list");
-		save.addActionListener (e -> saveEntry ());
-		save.setMnemonic (KeyEvent.VK_S);
-		save.setToolTipText ("(ALT + S) Save entry to list");
-		addField.addActionListener (e -> addField ());
-		removeField.addActionListener (e -> removeField ());
-	}
-
-
+	private int							numBaseFields			= 0;
+	private int							numPlacedExtraFields	= 0;
+	private boolean						searching				= false;
+	private EntryGroup					currentEntryGroup		= null;
+	private Entry						currentEntry			= null;
+	private Entry						copyEntry				= null;
+	private Component					rightClicked			= null;
+	private Set <JPanelEntry>			marked					= new HashSet <> (80);
 
 
 
@@ -599,11 +174,29 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	 */
 	public FrameEditor (DatFile datFile) {
 		super ("Empire Earth - " + (Core.isAOC () ? "Art of Conquest - " : "") + datFile.getName ());
-		setVisible (false);
-
 		this.datFile = datFile;
-		int nFields = datFile.datStructure.fieldStructs.length;
-		baseFields = new ArrayList <> (nFields);
+
+		isDbObject = datFile.datStructure == Objects.instance;
+		isDbUnitSet = datFile.datStructure == UnitSet.instance;
+		isDbTechTree = datFile.datStructure == TechTree.instance;
+		isDbEvents = datFile.datStructure == Events.instance;
+
+		setVisible (false);
+		setBounds (GUI.getBounds (this, 0.85, 0.85));
+		setIconImage (GUI.IMAGE_ICON.getImage ());
+		setDefaultCloseOperation (WindowConstants.DO_NOTHING_ON_CLOSE);
+		setContentPane (contentPane);
+		setAutoRequestFocus (true);
+		addWindowListener (this);
+		addWindowFocusListener (this);
+
+		buildMenuBar ();
+		buildLists ();
+		buildFields ();
+		buildEntryCommands ();
+
+
+		baseFields = new ArrayList <> (datFile.datStructure.fieldStructs.length);
 		extraFields = new ArrayList <> (20);
 		indexCountExtra = datFile.datStructure.indexExtraFields ();
 		buildBaseFields (datFile.datStructure);
@@ -614,59 +207,20 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		}
 		numColumnsSlider.setValue (datFile.datStructure.defaultColumns);
 
-		int x1 = datFile.datStructure.guiGroupsListSize;
-		int x2 = datFile.datStructure.guiEntriesListSize;
-		gbl_contentPane.columnWidths[0] = x1;
-		gbl_contentPane.columnWidths[1] = x2;
-		if (datFile.entryGroups.size () <= 1) {
-			entryGroupListPane.setVisible (false);
-			gbc_entryListPane.gridx = 0;
-			gbc_entryListPane.gridwidth = 2;
-			entryListPane.setPreferredSize (new Dimension (x1 + x2, entryListPane.getPreferredSize ().height));
-		}
+		contentPane.setBackground (GUI.COLOR_UI_BACKGROUND);
+		contentPane.setLayout (gbl_contentPane);
+		contentPane.add (entryGroupListPane, gbc_entryGroupListPane);
 		contentPane.add (entryListPane, gbc_entryListPane);
+		contentPane.add (scrollPaneFields, gbc_scrollPaneFields);
+		contentPane.add (entryDescription, gbc_entryDescription);
+		contentPane.add (entrySearchField, gbc_entrySearchField);
+		contentPane.add (reset, gbc_resetButton);
+		contentPane.add (save, gbc_saveButton);
+		contentPane.add (entryList.switchFilter, gbc_switchList);
+		contentPane.add (addField, gbc_addID);
+		contentPane.add (removeField, gbc_removeID);
 
-		contentPane.add (entryListSearchPane, gbc_entryListSearchPane);
-		entrySearchField.setDatStructure (datFile.datStructure);
-		entryListSearchPane.setVisible (false);
-
-		entrySearchField.addSearchListener (text -> {
-			if (text == null) {
-				entryGroupListPane.setVisible (datFile.entryGroups.size () > 1);
-				entryListPane.setVisible (true);
-				entryList.switchList.setVisible (true);
-				entryListSearchPane.setVisible (false);
-			} else {
-				entryGroupListPane.setVisible (false);
-				entryListPane.setVisible (false);
-				entryList.switchList.setVisible (false);
-				entryListSearchPane.setVisible (true);
-			}
-			entryListPane.getParent ().revalidate ();
-		});
-
-		entryGroupList.setList (datFile.entryGroups);
-		boolean allowNewEntry = datFile.datStructure.newEntryValues != null;
-		entryListMenuAdd.setVisible (allowNewEntry);
-		entryListMenuRemove.setVisible (allowNewEntry);
-		entryListMenuDuplicate.setVisible (allowNewEntry);
-		if (datFile.entryGroups.size () > 0) {
-			entryListMenuMoveTo.setVisible (allowNewEntry && datFile.entryGroups.size () > 1);
-			entryGroupList.setSelectedIndex (0);
-		}
-		isDbObject = datFile.datStructure == Objects.instance;
-		isDbUnitSet = datFile.datStructure == UnitSet.instance;
-		isDbTechTree = datFile.datStructure == TechTree.instance;
-		isDbEvents = datFile.datStructure == Events.instance;
-		entryListMenuGoToTech.setVisible (isDbObject);
-		entryListMenuGoToFamily.setVisible (isDbObject);
-		entryListMenuGoToGraphic.setVisible (isDbObject);
-		entryListMenuGoToUpgrade.setVisible (isDbObject);
-		entryListMenuGoToParentSet.setVisible (isDbUnitSet);
-
-		setAutoRequestFocus (true);
-		addWindowListener (this);
-		addWindowFocusListener (this);
+		entryGroupList.setSelectedIndex (0);
 	}
 
 
@@ -991,6 +545,12 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 
 
+	public void goToEntryInFile (DatFile datFile, EntryGroup entryGroup, Entry entry, boolean forceNewWindow) {
+		FrameEditor frameEditor = datFile.openInEditor (this, forceNewWindow);
+		frameEditor.goToEntry (entryGroup, entry);
+	}
+
+
 	/**
 	 * Jump to the given entry in the given group
 	 *
@@ -1001,12 +561,13 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		if (Settings.DEBUG) {
 			System.out.println ("Go to: " + datFile.getName () + " > " + entryGroup + " > " + entry);
 		}
-		if (!entry.isDefined () && entryList.switchList.isSelected ()) {
-			entryList.switchList.doClick ();
+		if (!entry.isDefined () && entryList.switchFilter.isSelected ()) {
+			entryList.switchFilter.doClick ();
 		}
 		if (!isVisible ()) {
 			setVisible (true);
 		}
+		entrySearchField.setText ("");
 		entryGroupList.setSelectedElement (entryGroup);
 		if (entryGroupList.getLength () > 0) {
 			entryList.setSelectedElement (entry);
@@ -1024,7 +585,6 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		Object value = field.getVal ();
 		Object entryValue;
 		List <Entry> entries = new ArrayList <> ();
-		List <Entry> entriesClean = new ArrayList <> ();
 
 		for (EntryGroup entryGroup : datFile) {
 			for (Entry entry : entryGroup) {
@@ -1032,14 +592,11 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 					entryValue = entry.get (index);
 					if (value.equals (entryValue)) {
 						entries.add (entry);
-						if (entry.isDefined ()) {
-							entriesClean.add (entry);
-						}
 					}
 				}
 			}
 		}
-		JDialog d = new DialogSearchFieldResults (this, entries, entriesClean, field);
+		JDialog d = new DialogSearchFieldResults (this, entries, field);
 		d.setVisible (true);
 	}
 
@@ -1052,15 +609,13 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 	 * This is very useful to identify many unknown fields.
 	 */
 	public void markUnusedFields () {
-		EntryValueMap entryValueMap;
-		FieldStruct fieldStruct;
 		int size;
 		for (JPanelEntry entryPanel : baseFields) {
-			fieldStruct = entryPanel.fieldStruct;
+			FieldStruct fieldStruct = entryPanel.fieldStruct;
 			try {
 				if (fieldStruct.getKnowledge () != Knowledge.KNOWN) {
-					entryValueMap = EntryValueMap.getValuesMap (datFile.entryGroups, true, entryPanel.index);
-					size = entryValueMap.mapClean.size ();
+					EntryValueMap entryValueMap = EntryValueMap.getValuesMap (datFile.entryGroups, entryPanel.index).applyFilter (Entry::isDefined);
+					size = entryValueMap.map.size ();
 					if (size <= 2 || size == entryValueMap.counter) {
 						marked.add (entryPanel);
 						entryPanel.label.setBackground (Color.BLACK);
@@ -1069,10 +624,8 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 							if (fieldStruct.getKnowledge () != Knowledge.NEVER_CHANGE && fieldStruct.getKnowledge () != Knowledge.NEVER_USED) {
 								entryPanel.label.setForeground (Color.RED);
 							}
-						} else if (size == 2) {
-							entryPanel.label.setForeground (Color.YELLOW);
 						} else {
-							entryPanel.label.setForeground (Color.BLUE);
+							entryPanel.label.setForeground (size == 2 ? Color.YELLOW : Color.BLUE);
 						}
 					}
 				}
@@ -1125,6 +678,445 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			}
 		}
 		return EntryLocation.NULL;
+	}
+
+
+
+
+	private void buildMenuBar () {
+		JButton menuBarSaveFile = new JButtonRed ("Save to file");
+		menuBarSaveFile.addActionListener (e -> {
+			datFile.saveFile (FrameEditor.this);
+		});
+		menuBarSaveFile.setMnemonic (KeyEvent.VK_Q);
+		menuBarSaveFile.setToolTipText ("(ALT + Q) Save this file");
+
+		menuBarList.addActionListener (e -> {
+			JDialog d = new DialogListEntries (this, entryList.list);
+			d.setVisible (true);
+		});
+
+		menuBarAdvancedSearch.addActionListener (e -> {
+			JDialog d = new DialogConditionAssembler (this, datFile);
+			d.setVisible (true);
+		});
+
+		JPanel menuBarNumColumnsPanel = new JPanel ();
+		menuBarNumColumnsPanel.setLayout (new GridLayout (2, 1, 0, 0));
+		menuBarNumColumnsPanel.add (numColumnsLabel);
+		menuBarNumColumnsPanel.add (numColumnsSlider);
+
+		JMenu menuBarNumColumns = new JMenu ("Num columns");
+		menuBarNumColumns.add (menuBarNumColumnsPanel);
+		numColumnsLabel.setHorizontalAlignment (SwingConstants.LEFT);
+		numColumnsSlider.setUI (new EESliderUI (numColumnsSlider, GUI.COLOR_UI_ELEMENT));
+		numColumnsSlider.setMinimum (2);
+		numColumnsSlider.setMaximum (32);
+		numColumnsSlider.setValue (4);
+		numColumnsSlider.setSnapToTicks (true);
+		numColumnsSlider.setMinorTickSpacing (1);
+		numColumnsSlider.setMajorTickSpacing (2);
+		numColumnsSlider.setPreferredSize (new Dimension (250, numColumnsSlider.getPreferredSize ().height));
+		numColumnsSlider.addChangeListener (e -> {
+			int value = numColumnsSlider.getValue ();
+			gridLayout.setColumns (value);
+			numColumnsLabel.setText ("Columns: " + value);
+			panelFields.revalidate ();
+		});
+		menuBarNumColumns.setBackground (GUI.COLOR_UI_ELEMENT);
+		menuBarNumColumns.setForeground (Color.WHITE);
+		menuBarNumColumns.setOpaque (true);
+		menuBarNumColumnsPanel.setBackground (GUI.COLOR_UI_BACKGROUND);
+		numColumnsLabel.setOpaque (false);
+		numColumnsSlider.setOpaque (false);
+
+		JMenuBar menuBar = new JMenuBar ();
+		menuBar.add (menuBarSaveFile);
+		menuBar.add (menuBarNumColumns);
+		menuBar.add (menuBarList);
+		menuBar.add (menuBarAdvancedSearch);
+		menuBar.setBackground (GUI.COLOR_UI_BACKGROUND);
+		menuBar.setOpaque (true);
+		setJMenuBar (menuBar);
+	}
+
+
+
+	private void buildLists () {
+		entryGroupList.setList (datFile.entryGroups);
+		entryGroupList.setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
+		entryGroupList.addListSelectionListener (e -> {
+			if (e == null || !e.getValueIsAdjusting ()) {
+				EntryGroup selected = entryGroupList.getSelectedElement ();
+				if (selected != null) {
+					currentEntryGroup = selected;
+					entryList.setList (currentEntryGroup.entries);
+					if (currentEntryGroup.entries.size () > 0) {
+						entryList.setSelectedIndex (0);
+					}
+				}
+			}
+		});
+		entryGroupListPane.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
+		entryGroupListPane.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
+
+		int x1 = datFile.datStructure.guiGroupsListSize;
+		int x2 = datFile.datStructure.guiEntriesListSize;
+		gbl_contentPane.columnWidths[0] = x1;
+		gbl_contentPane.columnWidths[1] = x2;
+
+		if (datFile.entryGroups.size () <= 1) {
+			entryGroupListPane.setVisible (false);
+			gbc_entryListPane.gridx = 0;
+			gbc_entryListPane.gridwidth = 2;
+			entryListPane.setPreferredSize (new Dimension (x1 + x2, entryListPane.getPreferredSize ().height));
+		}
+
+		entryList.setSelectionMode (ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		entryList.addListSelectionListener (e -> {
+			if (e == null || !e.getValueIsAdjusting ()) {
+				Entry selected = entryList.getSelectedElement ();
+				if (selected != null) {
+					currentEntry = selected;
+					loadEntry (currentEntry);
+				}
+			}
+		});
+		entryList.addMouseListener (new MouseAdapter () {
+			@Override
+			@SuppressWarnings ("synthetic-access")
+			public void mousePressed (MouseEvent e) {
+				entryList.selectElement (e);
+				showMenu (e);
+			}
+
+			@Override
+			public void mouseReleased (MouseEvent e) {
+				showMenu (e);
+			}
+
+			@SuppressWarnings ("synthetic-access")
+			public void showMenu (MouseEvent e) {
+				if (e.isPopupTrigger ()) {
+					entryListMenuAdd.setEnabled (!searching);
+					entryListMenuRemove.setEnabled (!searching);
+					entryListMenuDuplicate.setEnabled (!searching);
+					entryListMenuMoveTo.setEnabled (!searching);
+					entryListMenuGoToFamily.setEnabled (entryListMenuGoToFamily.isVisible () && isDbObject && familyFile != null && ((Link) currentEntry.get (2)).target.isValidLinkTarget ());
+					entryListMenuGoToGraphic.setEnabled (entryListMenuGoToGraphic.isVisible () && isDbObject && graphicFile != null && ((Link) currentEntry.get (39)).target.isValidLinkTarget ());
+					entryListMenuGoToUpgrade.setEnabled (entryListMenuGoToUpgrade.isVisible () && isDbObject && upgradeFile != null && ((Link) currentEntry.get (121)).target.isValidLinkTarget ());
+					entryListMenuGoToTech.setEnabled (entryListMenuGoToTech.isVisible () && isDbObject && techFile != null && ((Link) currentEntry.get (225)).target.isValidLinkTarget ());
+					entryListMenuGoToObject.setEnabled (false);
+					// entryListMenuGoToObject.setEnabled (entryListMenuGoToObject.isVisible () && isDbTechTree && objectFile != null && ((Link) currentEntry.get);
+					entryListMenuGoToParentSet.setEnabled (entryListMenuGoToParentSet.isVisible () && isDbUnitSet && getParentEntry (datFile, currentEntry, 19) != EntryLocation.NULL);
+					entryListMenu.show (e.getComponent (), e.getX (), e.getY ());
+				}
+			}
+		});
+		entryList.switchFilter.setHorizontalAlignment (SwingConstants.RIGHT);
+		entryList.switchFilter.setHorizontalTextPosition (SwingConstants.LEFT);
+		entryListPane.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
+		entryListPane.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
+
+
+		entrySearchField.addSearchListener (text -> {
+			if (text == null) {
+				entryGroupListPane.setEnabled (true);
+				entryList.switchFilter.setEnabled (true);
+				searching = false;
+			} else {
+				entryGroupListPane.setEnabled (false);
+				entryList.switchFilter.setEnabled (false);
+				searching = true;
+			}
+		});
+
+
+		buildListContextMenu ();
+	}
+
+
+
+	private void buildListContextMenu () {
+		entryListMenu.add (entryListMenuAdd);
+		entryListMenu.add (entryListMenuRemove);
+		entryListMenu.add (entryListMenuDuplicate);
+		entryListMenu.add (entryListMenuCopyData);
+		entryListMenu.add (entryListMenuPasteData);
+		entryListMenu.add (entryListMenuMoveTo);
+		entryListMenu.add (entryListMenuShowLinks);
+		entryListMenu.add (entryListMenuGoToFamily);
+		entryListMenu.add (entryListMenuGoToGraphic);
+		entryListMenu.add (entryListMenuGoToUpgrade);
+		entryListMenu.add (entryListMenuGoToTech);
+		entryListMenu.add (entryListMenuGoToObject);
+		entryListMenu.add (entryListMenuGoToParentSet);
+		entryListMenuPasteData.setVisible (false);
+
+		entryListMenuAdd.addActionListener (e -> {
+			try {
+				int newSeq = datFile.getAllEntries (true).parallelStream ().mapToInt (Entry::getSequenceNumber).max ().getAsInt () + 1;
+				int newID = currentEntryGroup.entries.parallelStream ().mapToInt (Entry::getID).max ().getAsInt () + 1;
+				Entry newEntry = new Entry (datFile.datStructure, false, null, newSeq, newID);
+				currentEntryGroup.entries.add (newEntry);
+				currentEntryGroup.map.put (newID, newEntry);
+				entryList.setList (currentEntryGroup.entries);
+				entryList.setSelectedElement (newEntry);
+			} catch (NoSuchElementException e1) {
+				Core.printException (this, e1, "An error occurred while adding the new entry. No data has been altered", "Error", true);
+				return;
+			}
+		});
+
+		entryListMenuRemove.addActionListener (e -> {
+			if (currentEntry != null) {
+				if (JOptionPane.showConfirmDialog (this, "You're going to delete " + currentEntry + "\nAre you sure?", "Delete entry", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, GUI.IMAGE_ICON) == 0) {
+					int index = entryList.getSelectedIndex ();
+					currentEntryGroup.entries.remove (currentEntry);
+					currentEntryGroup.map.remove (currentEntry.getID (), currentEntry);
+					entryList.setList (currentEntryGroup.entries);
+					int size = entryList.getLength ();
+					if (size == 0) {
+						currentEntry = null;
+					} else if (index < size) {
+						entryList.setSelectedIndex (index);
+					} else {
+						entryList.setSelectedIndex (size - 1);
+					}
+				}
+			}
+		});
+
+		entryListMenuDuplicate.addActionListener (e -> {
+			if (currentEntry != null) {
+				try {
+					int newSeq = datFile.getAllEntries (false).parallelStream ().mapToInt (Entry::getSequenceNumber).max ().getAsInt () + 1;
+					int newID = currentEntryGroup.entries.parallelStream ().mapToInt (Entry::getID).max ().getAsInt () + 1;
+					Entry newEntry = currentEntry.duplicate (newSeq, newID);
+					currentEntryGroup.entries.add (newEntry);
+					currentEntryGroup.map.put (newID, newEntry);
+					entryList.setList (currentEntryGroup.entries);
+					entryList.setSelectedElement (newEntry);
+				} catch (NoSuchElementException e1) {
+					Core.printException (this, e1, "An error occurred while adding the new entry. No data has been altered", "Error", true);
+				}
+			}
+		});
+
+		entryListMenuCopyData.addActionListener (e -> {
+			if (currentEntry != null) {
+				copyEntry = currentEntry;
+				entryListMenuPasteData.setVisible (true);
+			}
+		});
+
+		entryListMenuPasteData.addActionListener (e -> {
+			if (currentEntry != null && copyEntry != null) {
+				pasteEntry (copyEntry);
+			}
+		});
+
+		entryListMenuMoveTo.addActionListener (e -> {
+			if (currentEntryGroup != null && !entryList.isSelectionEmpty ()) {
+				JDialog d = new DialogMoveEntryToGroup (this, datFile.entryGroups, entryGroupList, entryList, currentEntryGroup, entryList.getSelectedElement (), () -> datFile.setUnsaved (true));
+				d.setVisible (true);
+			}
+		});
+
+		entryListMenuShowLinks.addActionListener (e -> {
+			if (currentEntry != null) {
+				List <Link> linksToEntry = currentEntry.getLinksToEntry (false);
+				JDialog d = new DialogSearchLinkResult (this, currentEntry, Link.getInverseLinks (linksToEntry, true));
+				d.setVisible (true);
+			}
+		});
+
+		entryListMenuGoToFamily.addActionListener (e -> {
+			if (familyFile != null) {
+				openLinkFromFieldIndex (familyFile, 2, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
+			}
+		});
+
+		entryListMenuGoToGraphic.addActionListener (e -> {
+			if (graphicFile != null) {
+				openLinkFromFieldIndex (graphicFile, 39, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
+			}
+		});
+
+		entryListMenuGoToUpgrade.addActionListener (e ->
+
+		{
+			if (upgradeFile != null) {
+				openLinkFromFieldIndex (upgradeFile, 121, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
+			}
+		});
+
+		entryListMenuGoToTech.addActionListener (e -> {
+			if (techFile != null) {
+				openLinkFromFieldIndex (techFile, 225, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
+			}
+		});
+
+		entryListMenuGoToObject.addActionListener (e -> {
+			if (objectFile != null) {
+				openLinkFromFieldIndex (objectFile, 255, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
+			}
+		});
+
+		entryListMenuGoToParentSet.addActionListener (e -> {
+			EntryLocation location = getParentEntry (datFile, currentEntry, 19);
+			if (location != EntryLocation.NULL) {
+				goToEntryInFile (datFile, location.entryGroup, location.entry, (e.getModifiers () & ActionEvent.SHIFT_MASK) != 0);
+			}
+		});
+
+
+		boolean allowNewEntry = datFile.datStructure.newEntryValues != null;
+		entryListMenuAdd.setVisible (allowNewEntry);
+		entryListMenuRemove.setVisible (allowNewEntry);
+		entryListMenuDuplicate.setVisible (allowNewEntry);
+		entryListMenuMoveTo.setVisible (allowNewEntry && datFile.entryGroups.size () > 1);
+		entryListMenuGoToTech.setVisible (isDbObject);
+		entryListMenuGoToFamily.setVisible (isDbObject);
+		entryListMenuGoToGraphic.setVisible (isDbObject);
+		entryListMenuGoToUpgrade.setVisible (isDbObject);
+		entryListMenuGoToParentSet.setVisible (isDbUnitSet);
+	}
+
+
+
+	public void buildFields () {
+		panelFields.setBackground (GUI.COLOR_UI_BACKGROUND);
+		panelFields.setLayout (gridLayout);
+		panelFields.setOpaque (false);
+		scrollPaneFields.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
+		scrollPaneFields.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
+
+		buildFieldsContextMenu ();
+	}
+
+	private void buildFieldsContextMenu () {
+		fieldMenu.add (fieldMenuSearchValues);
+		fieldMenu.add (fieldMenuSearchFields);
+		fieldMenu.add (fieldMenuMarkUnusedFields);
+		fieldMenu.add (fieldMenuUnmarkUnusedFields);
+		fieldMenu.add (fieldMenuRefreshList);
+		fieldMenu.add (fieldMenuOpenLink);
+		fieldMenu.add (fieldMenuNextFree);
+
+		fieldMenuSearchValues.addActionListener (e -> {
+			try {
+				EntryFieldInterface field = (EntryFieldInterface) rightClicked;
+				EntryValueMap entryValueMap = EntryValueMap.getValuesMap (datFile.entryGroups, field.getIndex ());
+				JDialog d = new DialogSearchValuesResults (this, entryValueMap, field);
+				d.setVisible (true);
+			} catch (Exception exc) {
+				Core.printException (this, exc, "An error occurred while searching the values", "Error", true);
+			}
+		});
+
+		fieldMenuSearchFields.addActionListener (e -> showSearchFieldResults ());
+
+		fieldMenuMarkUnusedFields.addActionListener (e -> markUnusedFields ());
+
+		fieldMenuUnmarkUnusedFields.addActionListener (e -> unmarkUnusedFields ());
+		fieldMenuUnmarkUnusedFields.setVisible (false);
+
+		fieldMenuRefreshList.addActionListener (e -> ((EntryFieldInterface) rightClicked).refreshField ());
+
+		fieldMenuOpenLink.addActionListener (e -> {
+			JComboBoxField field = (JComboBoxField) rightClicked;
+			Object selectedItem = field.getSelectedItem ();
+			if (selectedItem != null && selectedItem instanceof Entry) {
+				Entry selectedEntry = (Entry) selectedItem;
+				if (selectedEntry.isValidLinkTarget ()) {
+					DatFile datFile = field.linkToStruct.datFile;
+					if (datFile != null) {
+						EntryGroup entryGroup = datFile.findGroup (selectedEntry);
+						if (entryGroup != null) {
+							FrameEditor frameEditor = datFile.openInEditor (this, (e.getModifiers () & KeyEvent.VK_SHIFT) != 0);
+							frameEditor.goToEntry (entryGroup, selectedEntry);
+						}
+					}
+				}
+			}
+		});
+
+		fieldMenuNextFree.addActionListener (e -> {
+			EntryFieldInterface field = (EntryFieldInterface) rightClicked;
+			FieldStruct fieldStruct = field.getEntryStruct ();
+			int highest;
+			if (fieldStruct == FieldStruct.ID) {
+				highest = currentEntryGroup.entries.parallelStream ().mapToInt (Entry::getID).max ().getAsInt () + 1;
+			} else if (fieldStruct == FieldStruct.SEQ_NUMBER) {
+				highest = datFile.getAllEntries (false).parallelStream ().mapToInt (Entry::getSequenceNumber).max ().getAsInt () + 1;
+			} else {
+				Core.printException (this, new IllegalStateException ("This is not an ID or Sequence Number field"), "An error occurred while checking the max ID/Number", "Error", true);
+				return;
+			}
+			field.setVal (highest);
+		});
+
+	}
+
+
+	private void buildEntryCommands () {
+		entryDescription.setHorizontalAlignment (SwingConstants.CENTER);
+		entryDescription.setVerticalAlignment (SwingConstants.CENTER);
+		entryDescription.setFont (DESCRIPTION_FONT);
+
+		save.setMnemonic (KeyEvent.VK_S);
+		save.setToolTipText ("(ALT + S) Save entry to list");
+		save.addActionListener (e -> saveEntry ());
+
+		reset.setMnemonic (KeyEvent.VK_R);
+		reset.setToolTipText ("(ALT + R) Reload entry from list");
+		reset.addActionListener (e -> loadEntry (currentEntry));
+
+		addField.setMnemonic (KeyEvent.VK_PLUS);
+		addField.setToolTipText ("(ALT + PLUS(+)) Add extra field");
+		addField.addActionListener (e -> addField ());
+
+		removeField.setMnemonic (KeyEvent.VK_MINUS);
+		removeField.setToolTipText ("(ALT + MINUS(-)) Remove latest extra field");
+		removeField.addActionListener (e -> removeField ());
+	}
+
+
+
+	public void setFieldEnabled (int index, boolean enabled) {
+		if (index < baseFields.size ()) {
+			baseFields.get (index).setEnabled (enabled);
+		} else {
+			extraFields.get (index - baseFields.size ()).setEnabled (enabled);
+		}
+	}
+
+	public Object getFieldValue (int index) {
+		if (index < baseFields.size ()) {
+			return baseFields.get (index).getVal ();
+		}
+
+		return extraFields.get (index - baseFields.size ()).getVal ();
+	}
+
+	public void setFieldValue (int index, Object value) {
+		if (index < baseFields.size ()) {
+			baseFields.get (index).setVal (value);
+		} else {
+			extraFields.get (index - baseFields.size ()).setVal (value);
+		}
+	}
+
+	private void openLinkFromFieldIndex (DatFile datFile, int index, boolean forceNewWindow) {
+		Link link = currentEntry.get (index);
+		Entry entry = link.target;
+		if (!entry.dummyEntry) {
+			EntryGroup group = datFile.findGroup (entry);
+			if (group != null) {
+				goToEntryInFile (datFile, group, entry, forceNewWindow);
+			}
+		}
 	}
 
 }

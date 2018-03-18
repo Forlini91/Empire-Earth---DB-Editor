@@ -25,7 +25,7 @@ import gui.FrameEditor;
 
 /**
  * A JComboBox which hold the content of an enum
- * 
+ *
  * @author MarcoForlini
  */
 public class JComboBoxEnumAttribute extends JComboBox <AttributeCode> implements EntryFieldInterface, ItemListener, MouseListener, KeyListener {
@@ -38,14 +38,14 @@ public class JComboBoxEnumAttribute extends JComboBox <AttributeCode> implements
 	private int													index;
 	private FrameEditor											frameEditor;
 
-	private ListSearcher <AttributeCode>						searcher			= new ListSearcher<> (NAME_MATCHER, ID_MATCHER);
+	private ListSearcher <AttributeCode>						searcher			= new ListSearcher <> (NAME_MATCHER, ID_MATCHER);
 	private JTextComponent										textEditor			= ((JTextComponent) getEditor ().getEditorComponent ());
 	private Object												defaultVal			= null;
 	private boolean												altered				= false;
 
 	/**
 	 * Create a new {@link JComboBoxEnumAttribute}
-	 * 
+	 *
 	 * @param fieldStruct The field structure
 	 * @param index Index of the field
 	 * @param frameEditor The FrameEditor object
@@ -108,7 +108,7 @@ public class JComboBoxEnumAttribute extends JComboBox <AttributeCode> implements
 		setSelectedItem (value);
 		textEditor.setCaretPosition (0);
 		altered = false;
-		updateEditor ();
+		updateState ();
 	}
 
 	@Override
@@ -124,21 +124,19 @@ public class JComboBoxEnumAttribute extends JComboBox <AttributeCode> implements
 		return defaultVal;
 	}
 
-	/**
-	 * Update the fields of the editor basing on the value selected here
-	 */
-	public void updateEditor () {
-		AttributeCode attribute = (AttributeCode) getSelectedItem ();
-		frameEditor.baseFields.get (14).setEnabled (attribute == AttributeCode.C40_AREA_EFFECT);
-		frameEditor.baseFields.get (15).setEnabled (attribute == AttributeCode.C42_TERRAIN_FAMILY);
-	}
-
-
 	@Override
 	public void itemStateChanged (ItemEvent e) {
 		altered = true;
-		updateEditor ();
+		updateState ();
 	}
+
+
+	void updateState () {
+		AttributeCode attribute = (AttributeCode) getSelectedItem ();
+		frameEditor.setFieldEnabled (14, attribute == AttributeCode.C40_AREA_EFFECT);
+		frameEditor.setFieldEnabled (15, attribute == AttributeCode.C42_TERRAIN_FAMILY);
+	}
+
 
 	@Override
 	public void keyTyped (KeyEvent e) {/* Do nothing */}

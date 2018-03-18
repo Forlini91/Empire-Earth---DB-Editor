@@ -60,7 +60,7 @@ public class DialogSearchValuesResultsList extends JDialog {
 		setLayout(new GridBagLayoutExtended(new int[]{200}, new int[]{30, 400, 25, 30, 50}, new double[]{1.0}, new double[]{0, 1.0, 0, 0, 0}));
 		add(dlgLabel, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 0));
 		add(dlgScrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
-		add(dlgList.switchList, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 2));
+		add(dlgList.switchFilter, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 2));
 		add(dlgSearch, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 3));
 		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 4));
 

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 
 import constants.EnumValue;
 
@@ -19,8 +20,6 @@ public class EntryValueMap {
 
 	/** Map each value to the list of entries which use that value */
 	public final Map <Object, List <Entry>>	map;
-	/** Map each not-null value to the list of entries which use that value */
-	public final Map <Object, List <Entry>>	mapClean;
 	/** Total number of entries */
 	public final int						counter;
 
@@ -28,13 +27,10 @@ public class EntryValueMap {
 	 * Create a new {@link EntryValueMap}
 	 *
 	 * @param map Map each value to the list of entries which use that value
-	 * @param mapClean Map each not-null value to the list of entries which use
-	 *            that value
 	 * @param counter Total number of entries
 	 */
-	public EntryValueMap (Map <Object, List <Entry>> map, Map <Object, List <Entry>> mapClean, int counter) {
+	public EntryValueMap (Map <Object, List <Entry>> map, int counter) {
 		this.map = map;
-		this.mapClean = mapClean;
 		this.counter = counter;
 	}
 
@@ -44,75 +40,76 @@ public class EntryValueMap {
 	 *
 	 * @param entryGroups The list of entry groups
 	 * @param indexes Indexes of the fields to read
-	 * @param filterUndefined If true, also create a second map which only
-	 *            contains fully defined entries
 	 * @return an EntryValueMap A new EntryValueMap which hold the results
 	 */
-	public static EntryValueMap getValuesMap (List <EntryGroup> entryGroups, boolean filterUndefined, int... indexes) {
-		Map <Object, List <Entry>> valueEntryMap = new HashMap<> ();
-		Map <Object, List <Entry>> valueEntryMapClean = new HashMap<> ();
+	public static EntryValueMap getValuesMap (List <EntryGroup> entryGroups, int... indexes) {
+		Map <Object, List <Entry>> valueEntryMap = new HashMap <> ();
 
 		int counter = 0;
 		for (int index : indexes) {
-			counter += ScanEntries (entryGroups, index, filterUndefined, valueEntryMap, valueEntryMapClean);
+			counter += ScanEntries (entryGroups, index, valueEntryMap);
 		}
 
-		return new EntryValueMap (new TreeMap<> (valueEntryMap), new TreeMap<> (valueEntryMapClean), counter);
+		return new EntryValueMap (new TreeMap <> (valueEntryMap), counter);
 	}
 
 
-	private static int ScanEntries (List <EntryGroup> entryGroups, int index, boolean filterUndefined,
-	                                Map <Object, List <Entry>> valueEntryMap, Map <Object, List <Entry>> valueEntryMapClean) {
+	private static int ScanEntries (List <EntryGroup> entryGroups, int index, Map <Object, List <Entry>> valueEntryMap) {
 		DatStructure datStructure = entryGroups.get (0).datStructure;
-		FieldStruct fieldStruct;
-		if (index < datStructure.fieldStructs.length) {
-			fieldStruct = datStructure.fieldStructs[index];
-		} else {
-			fieldStruct = datStructure.extraField;
-		}
+		FieldStruct fieldStruct = datStructure.getFieldStruct (index);
 
 		int counter = 0;
 		List <Entry> entries;
-		Object value;
-		boolean enumType = fieldStruct.enumValues != null;
-		EnumValue enum0 = enumType ? fieldStruct.enumValues[0] : null;
+		Object key;
+		EnumValue enum0 = fieldStruct.enumValues != null ? fieldStruct.enumValues[0] : null;
 		for (EntryGroup entryGroup : entryGroups) {
 			for (Entry entry : entryGroup) {
 				counter++;
 				if (index < entry.size ()) {
-					value = entry.get (index);
-					if (value instanceof Link) {
-						value = ((Link) value).target;
-					} else if (value instanceof Integer) {
-						if (enumType) {
-							int intVal = (Integer) value;
-							value = enum0.parseValue (intVal);
-							if (value == null) {
+					key = entry.get (index);
+					if (key instanceof Link) {
+						key = ((Link) key).target;
+					} else if (key instanceof Integer) {
+						if (enum0 != null) {
+							int intVal = (Integer) key;
+							key = enum0.parseValue (intVal);
+							if (key == null) {
 								continue;
 							}
 						}
 					}
-					if (!valueEntryMap.containsKey (value)) {
-						entries = new ArrayList<> ();
-						entries.add (entry);
-						valueEntryMap.put (value, entries);
-					} else {
-						valueEntryMap.get (value).add (entry);
-					}
 
-					if (filterUndefined && entry.isDefined ()) {
-						if (!valueEntryMapClean.containsKey (value)) {
-							entries = new ArrayList<> ();
-							entries.add (entry);
-							valueEntryMapClean.put (value, entries);
-						} else {
-							valueEntryMapClean.get (value).add (entry);
-						}
+					if (!valueEntryMap.containsKey (key)) {
+						entries = new ArrayList <> ();
+						entries.add (entry);
+						valueEntryMap.put (key, entries);
+					} else {
+						valueEntryMap.get (key).add (entry);
 					}
 				}
 			}
 		}
 		return counter;
+	}
+
+
+	public EntryValueMap applyFilter (Predicate <Entry> filter) {
+		HashMap <Object, List <Entry>> newMap = new HashMap <> ();
+		for (Map.Entry <Object, List <Entry>> group : map.entrySet ()) {
+			Object key = group.getKey ();
+			for (Entry entry : group.getValue ()) {
+				if (filter.test (entry)) {
+					if (!newMap.containsKey (key)) {
+						List <Entry> list = new ArrayList <> ();
+						list.add (entry);
+						newMap.put (key, list);
+					} else {
+						newMap.get (key).add (entry);
+					}
+				}
+			}
+		}
+		return new EntryValueMap (newMap, counter);
 	}
 
 }
