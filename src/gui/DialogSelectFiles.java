@@ -115,25 +115,29 @@ public class DialogSelectFiles extends JDialog {
 		scrollPanePanel.setLayout (new GridLayout ((int) Math.ceil (files.size () / 5f), 5, 5, 5));
 		for (i = 0; i < files.size (); i++) {
 			JFileContainer newFileCont = new JFileContainer (files.get (i), loaded.get (i), firstLoad);
-			newFileCont.addChangeListener (l -> {
-				if (newFileCont.isSelected ()) { // Enable all requirements as well
-					for (DatStructure req : newFileCont.datFile.datStructure.requirements) {
-						JFileContainer reqCont = containersMap.get (req);
-						if (reqCont != null && !reqCont.isSelected ()) {
-							reqCont.setSelected (true);
+			if (DatFile.LOADED.contains (files.get (i))) {
+				newFileCont.setEnabled (false);
+			} else {
+				newFileCont.addChangeListener (l -> {
+					if (newFileCont.isSelected ()) { // Enable all requirements as well
+						for (DatStructure req : newFileCont.datFile.datStructure.requirements) {
+							JFileContainer reqCont = containersMap.get (req);
+							if (reqCont != null && !reqCont.isSelected ()) {
+								reqCont.setSelected (true);
+							}
+						}
+					} else { // Disable all files which requires this
+						for (JFileContainer fileCont : checkBoxFiles) {
+							if (fileCont.isSelected () && fileCont.datFile.datStructure.requirements.contains (newFileCont.datFile.datStructure)) {
+								fileCont.setSelected (false);
+							}
 						}
 					}
-				} else { // Disable all files which requires this
-					for (JFileContainer fileCont : checkBoxFiles) {
-						if (fileCont.isSelected () && fileCont.datFile.datStructure.requirements.contains (newFileCont.datFile.datStructure)) {
-							fileCont.setSelected (false);
-						}
-					}
-				}
-			});
+				});
+				containersMap.put (newFileCont.datFile.datStructure, newFileCont);
+			}
 			scrollPanePanel.add (newFileCont);
 			checkBoxFiles[i] = newFileCont;
-			containersMap.put (newFileCont.datFile.datStructure, newFileCont);
 		}
 	}
 
@@ -195,30 +199,36 @@ public class DialogSelectFiles extends JDialog {
 
 		@Override
 		public void mouseEntered (MouseEvent arg0) {
-			if (isSelected ()) {
-				highlightInverseRequirements (this);
-				highlight = GUI.COLOR_UI_ELEMENT_PRESSED_HIGHLIGHT;
-			} else {
-				highlightRequirements (this);
-				highlight = GUI.COLOR_UI_ELEMENT_HIGHLIGHT;
+			if (isEnabled ()) {
+				if (isSelected ()) {
+					highlightInverseRequirements (this);
+					highlight = GUI.COLOR_UI_ELEMENT_PRESSED_HIGHLIGHT;
+				} else {
+					highlightRequirements (this);
+					highlight = GUI.COLOR_UI_ELEMENT_HIGHLIGHT;
+				}
+				repaint ();
 			}
-			repaint ();
 		}
 
 		@Override
 		public void mouseExited (MouseEvent arg0) {
-			for (JFileContainer cont : map.values ()) {
-				if (cont.highlight != null) {
-					cont.highlight = null;
-					cont.repaint ();
+			if (isEnabled ()) {
+				for (JFileContainer cont : map.values ()) {
+					if (cont.highlight != null) {
+						cont.highlight = null;
+						cont.repaint ();
+					}
 				}
 			}
 		}
 
 		@Override
 		public void mouseClicked (MouseEvent arg0) {
-			mouseExited (arg0);
-			mouseEntered (arg0);
+			if (isEnabled ()) {
+				mouseExited (arg0);
+				mouseEntered (arg0);
+			}
 		}
 
 		@Override

@@ -41,8 +41,10 @@ public class JToggleButtonRed extends JToggleButton {
 			g.setColor (GUI.COLOR_UI_ELEMENT_PRESSED);
 		} else if (getModel ().isRollover ()) {
 			g.setColor (GUI.COLOR_UI_ELEMENT_MOUSEOVER);
-		} else {
+		} else if (isEnabled ()) {
 			g.setColor (GUI.COLOR_UI_ELEMENT);
+		} else {
+			g.setColor (GUI.COLOR_UI_ELEMENT_DISABLED);
 		}
 		g.fillRect (0, 0, getWidth (), getHeight ());
 		super.paintComponent (g);

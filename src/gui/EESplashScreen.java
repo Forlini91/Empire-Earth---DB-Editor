@@ -1,14 +1,18 @@
 package gui;
 
-import java.awt.Graphics;
+import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 
 import datmanager.Core;
+import datmanager.Settings;
+import gui.components.JImagePanel;
 
 
 /**
@@ -26,22 +30,34 @@ public class EESplashScreen extends JFrame {
 	private static final ImageIcon		IMAGE_ICON	= new ImageIcon (GUI.class.getResource ("EE_Icon.png"));
 
 
+	JImagePanel				imagePanel		= new JImagePanel (image);
+	private final JLabel	labelVersion	= new JLabel ("");
 
 	/**
 	 * Creates a new {@link EESplashScreen}
 	 */
 	public EESplashScreen () {
+		initGUI ();
+	}
+
+	private void initGUI () {
 		setTitle ("Empire Earth - DB Editor");
 		setIconImage (IMAGE_ICON.getImage ());
+		imagePanel.setBorder (new EtchedBorder (EtchedBorder.RAISED, null, null));
+		setContentPane (imagePanel);
+
 		if (image != null) {
-			setContentPane (new JImagePanel (image));
-			setSize (image.getWidth (), image.getHeight ());
-			// setSize (600, 237);
+			setSize (image.getWidth (), image.getHeight ()); // (600, 237);
 		} else {
 			setSize (5, 5);
 		}
 		setLocationRelativeTo (null);
 		setUndecorated (true);
+
+		imagePanel.setLayout (new BorderLayout (0, 0));
+		labelVersion.setHorizontalAlignment (SwingConstants.RIGHT);
+		imagePanel.add (labelVersion, BorderLayout.SOUTH);
+		labelVersion.setText ("Version: " + Settings.VERSION + ' ');
 	}
 
 	/**
@@ -62,31 +78,6 @@ public class EESplashScreen extends JFrame {
 				System.exit (0);
 				return false;
 		}
-	}
-
-
-
-	/**
-	 * A panel which display an image
-	 *
-	 * @author MarcoForlini
-	 */
-	public class JImagePanel extends JPanel {
-
-		private static final long	serialVersionUID	= 8333910792059819240L;
-
-		public BufferedImage		image;
-
-		public JImagePanel (BufferedImage image) {
-			this.image = image;
-		}
-
-		@Override
-		protected void paintComponent (Graphics g) {
-			super.paintComponent (g);
-			g.drawImage (image, 0, 0, null);
-		}
-
 	}
 
 }

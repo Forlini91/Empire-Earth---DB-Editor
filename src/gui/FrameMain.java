@@ -73,7 +73,7 @@ public class FrameMain extends JFrame implements WindowListener {
 		JPanel labelContainer = new JPanel ();
 		labelContainer.add (scrollPaneLabel);
 		labelContainer.setOpaque (false);
-		dbLoad = new JButtonRed ("Load dat file");
+		dbLoad = new JButtonRed ("Load dat files");
 		JButton dbInfo = new JButtonRed ("About");
 		dbLoad.addActionListener (this::loadFiles);
 		dbInfo.addActionListener (evt -> JOptionPane.showMessageDialog (this, S_ABOUT, "About", JOptionPane.INFORMATION_MESSAGE, GUI.IMAGE_EE_HEAVEN_LOGO));
@@ -213,13 +213,16 @@ public class FrameMain extends JFrame implements WindowListener {
 		DialogProgressBar progressDialog = new DialogProgressBar ("Loading...", filesToLoad.size (), true);
 		Collection <DatFile> filesLoaded = new HashSet <> ();
 		Collection <DatFile> filesNotLoaded = new HashSet <> ();
+
+		Thread[] threads = new Thread[filesToLoad.size ()];
 		for (int i = 0; i < filesToLoad.size (); i++) {
-			int index = i; // FUCK "must be effectively final"
-			new Thread ( () -> {
-				DatFile datFile = filesToLoad.get (index);
+			int threadIndex = i; // FUCK "must be effectively final"
+
+			DatFile datFile = filesToLoad.get (threadIndex);
+			threads[threadIndex] = new Thread ( () -> {
 				try {
 					DatFileManager dbManager = new DatFileManager (datFile);
-					dbManager.read (progressDialog::updatePercPart, index);
+					dbManager.read (progressDialog::updatePercPart, threadIndex);
 					synchronized (loadingLock) {
 						filesLoaded.add (datFile);
 						filesToLoad.remove (datFile);
@@ -239,9 +242,12 @@ public class FrameMain extends JFrame implements WindowListener {
 						loadError (datFile, e);
 					}
 				}
-			}).start ();
+			});
 		}
 
+		for (Thread thread : threads) {
+			thread.start ();
+		}
 		try {
 			synchronized (loadingLock) {
 				if (!filesToLoad.isEmpty ()) {
@@ -296,6 +302,8 @@ public class FrameMain extends JFrame implements WindowListener {
 
 
 	private void onLoadSucceed (Collection <DatFile> loaded) {
+		dbLoad.setVisible (false);
+
 		DatFile.LOADED.addAll (loaded);
 		for (DatFile datFileLoaded : DatFile.LOADED) {
 			datFileLoaded.buildLinks ();

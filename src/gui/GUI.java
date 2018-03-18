@@ -36,6 +36,9 @@ public class GUI {
 	/** Color used in all buttons */
 	public static final Color	COLOR_UI_ELEMENT					= new Color (150, 15, 15);
 
+	/** Color used in all buttons */
+	public static final Color	COLOR_UI_ELEMENT_DISABLED			= COLOR_UI_ELEMENT.darker ().darker ();
+
 	/** Color used in all buttons (mouse over) */
 	public static final Color	COLOR_UI_ELEMENT_MOUSEOVER			= COLOR_UI_ELEMENT.brighter ();
 
