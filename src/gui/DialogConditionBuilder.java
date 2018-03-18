@@ -287,7 +287,7 @@ public class DialogConditionBuilder extends JDialog {
 					value = comboBoxEnum.getSelectedItem ();
 					break;
 				case LINK:
-					value = comboBoxEntry.getSelectedItem ();
+					value = ((Entry) comboBoxEntry.getSelectedItem ()).getID ();
 					break;
 				case STRING:
 					value = text.trim ();

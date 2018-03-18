@@ -128,7 +128,7 @@ public class ConditionOperator implements Condition {
 				Predicate <String> stringTester = getStringCheck (operator, (String) value);
 				return (Entry entry) -> stringTester.test (entry.get (index).toString ());
 			case LINK:
-				FloatPredicate linkTester = getNumericCheck (operator, (String) value);
+				FloatPredicate linkTester = getNumericCheck (operator, (Integer) value);
 				if (extraIndexes) {
 					return (Entry entry) -> entry.getExtraFields ().stream ()
 							.map (val -> ((Link) val).target.getID ())
@@ -224,6 +224,27 @@ public class ConditionOperator implements Condition {
 			}
 		} catch (NumberFormatException e) {
 			return (float entryValue) -> false;
+		}
+	}
+
+	private static FloatPredicate getNumericCheck (Operator operator, float floatValueToSearch) {
+		switch (operator) {
+			case EQUAL:
+			case EQUAL_NC:
+				return (float entryValue) -> entryValue == floatValueToSearch;
+			case DIFFERENT:
+			case DIFFERENT_NC:
+				return (float entryValue) -> entryValue != floatValueToSearch;
+			case GREATER:
+				return (float entryValue) -> entryValue > floatValueToSearch;
+			case GREATER_EQUAL:
+				return (float entryValue) -> entryValue >= floatValueToSearch;
+			case LESS:
+				return (float entryValue) -> entryValue < floatValueToSearch;
+			case LESS_EQUAL:
+				return (float entryValue) -> entryValue <= floatValueToSearch;
+			default:
+				return (float entryValue) -> false;
 		}
 	}
 
