@@ -128,7 +128,7 @@ public class ConditionOperator implements Condition {
 				Predicate <String> stringTester = getStringCheck (operator, (String) value);
 				return (Entry entry) -> stringTester.test (entry.get (index).toString ());
 			case LINK:
-				FloatPredicate linkTester = getNumericCheck (operator, (Integer) value);
+				FloatPredicate linkTester = getNumericCheck (operator, ((Entry) value).getID ());
 				if (extraIndexes) {
 					return (Entry entry) -> entry.getExtraFields ().stream ()
 							.map (val -> ((Link) val).target.getID ())

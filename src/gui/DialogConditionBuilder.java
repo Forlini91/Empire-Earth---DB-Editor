@@ -134,13 +134,22 @@ public class DialogConditionBuilder extends JDialog {
 		comboBoxField.setSelectedIndex (condition.index + 1);
 		comboBoxOperator.setSelectedItem (condition.operator);
 
-		if (condition.value instanceof Enum <?>) {
-			comboBoxEnum.setSelectedItem (condition.value);
-		} else if (condition.value instanceof Boolean) {
-			checkField.setSelected ((Boolean) condition.value);
-		} else {
-			textField.setText (condition.value.toString ());
+		FieldType type = condition.datFile.datStructure.getFieldStruct (condition.index).type;
+		switch (type) {
+			case BOOLEAN:
+				checkField.setSelected ((Boolean) condition.value);
+				break;
+			case ENUM:
+				comboBoxEnum.setSelectedItem (condition.value);
+				break;
+			case LINK:
+				comboBoxEntry.setSelectedItem (condition.value);
+				break;
+			default:
+				textField.setText (condition.value.toString ());
+				break;
 		}
+
 	}
 
 
@@ -287,7 +296,7 @@ public class DialogConditionBuilder extends JDialog {
 					value = comboBoxEnum.getSelectedItem ();
 					break;
 				case LINK:
-					value = ((Entry) comboBoxEntry.getSelectedItem ()).getID ();
+					value = comboBoxEntry.getSelectedItem ();
 					break;
 				case STRING:
 					value = text.trim ();

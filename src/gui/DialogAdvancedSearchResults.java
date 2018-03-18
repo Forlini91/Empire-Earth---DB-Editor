@@ -45,6 +45,7 @@ public class DialogAdvancedSearchResults extends JDialog {
 		JListFilter <Entry> dlgList = new JListFilter <> (entries, Entry::isDefined);
 		JScrollPane dlgScrollPane = new JScrollPaneRed (dlgList, "Results:");
 		JSearchFieldEntry dlgSearch = new JSearchFieldEntry (dlgList);
+
 		JButton dlgClose = new JButtonRed ("Close");
 		getContentPane ().setBackground (GUI.COLOR_UI_BACKGROUND);
 		dlgScrollPane.setOpaque (false);

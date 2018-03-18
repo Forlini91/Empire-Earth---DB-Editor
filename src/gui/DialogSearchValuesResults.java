@@ -54,6 +54,7 @@ public class DialogSearchValuesResults extends JDialog {
 		List <Object> listKeys = new ArrayList <> (entryValueMap.map.keySet ());
 		List <List <Entry>> listValuesClean = new ArrayList <> (entryValueMapClean.map.values ());
 		List <Object> listKeysClean = new ArrayList <> (entryValueMapClean.map.keySet ());
+
 		JListExtended <List <Entry>> dlgList = new JListExtended <> (listValuesClean, false);
 		JListExtended <Object> rowHeaderList = new JListExtended <> (listKeysClean, false);
 		JCheckBoxExtended switchFilter = new JCheckBoxExtended ("Hide undefined fiels", true);

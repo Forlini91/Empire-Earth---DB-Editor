@@ -112,18 +112,21 @@ public class JListFilter <E> extends JListExtended <E> {
 		this.switchFilter = switchFilter;
 		this.filter = filter;
 		switchFilter.addActionListener (e -> refresh ());
+		refresh ();
 	}
 
 
 	@Override
 	public void refresh () {
-		if (filter != null && switchFilter.isSelected ()) {
-			E elem = getSelectedElement ();
-			model.clear ();
-			model.addIf (list, filter);
-			setSelectedElement (elem);
-		} else {
-			super.refresh ();
+		if (switchFilter != null) {
+			if (filter != null && switchFilter.isSelected ()) {
+				E elem = getSelectedElement ();
+				model.clear ();
+				model.addIf (list, filter);
+				setSelectedElement (elem);
+			} else {
+				super.refresh ();
+			}
 		}
 	}
 
