@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 import javax.swing.AbstractListModel;
 
-import datmanager.Core;
+import datmanager.Util;
 
 
 /**
@@ -78,7 +78,7 @@ public abstract class MyListModel <E> extends AbstractListModel <E> implements I
 	}
 
 	public boolean containsAny (Collection <? extends E> c) {
-		return Core.containsAny (listData, c);
+		return Util.containsAny (listData, c);
 	}
 
 	public boolean containsAll (Collection <? extends E> c) {

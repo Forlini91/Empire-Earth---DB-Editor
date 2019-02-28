@@ -9,7 +9,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import datmanager.Core;
+import datmanager.Util;
 import datstructure.FieldStruct;
 import datstructure.FieldType;
 
@@ -106,7 +106,7 @@ public class JTextFieldField extends JTextField implements EntryFieldInterface, 
 			setText (((String) value).trim ());
 		} else {
 			if (value instanceof Float) {
-				setText (Core.numberFormat.format ((float) value));
+				setText (Util.numberFormat.format ((float) value));
 			} else {
 				setText (Integer.toString ((int) value));
 			}

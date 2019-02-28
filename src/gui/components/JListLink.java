@@ -3,21 +3,21 @@ package gui.components;
 import java.util.ArrayList;
 import java.util.List;
 
-import datstructure.Entry;
+import datstructure.Link;
 
 /**
  * A JList which can hold the entries
  *
  * @author MarcoForlini
  */
-public class JListEntry extends JListFilter<Entry> {
+public class JListLink extends JListFilter<Link> {
 
 	private static final long serialVersionUID = -1460528354644591567L;
 
 	/**
 	 * Create a new JListEntry
 	 */
-	public JListEntry() {
+	public JListLink() {
 		this(false);
 	}
 
@@ -26,7 +26,7 @@ public class JListEntry extends JListFilter<Entry> {
 	 *
 	 * @param allowMove Allow the user to change the order of elements
 	 */
-	public JListEntry(boolean allowMove) {
+	public JListLink(boolean allowMove) {
 		this(new ArrayList<>(0), allowMove, true);
 	}
 
@@ -35,7 +35,7 @@ public class JListEntry extends JListFilter<Entry> {
 	 *
 	 * @param list The list of elements
 	 */
-	public JListEntry(List<Entry> list) {
+	public JListLink(List<Link> list) {
 		this(list, false);
 	}
 
@@ -45,7 +45,7 @@ public class JListEntry extends JListFilter<Entry> {
 	 * @param list      The list of elements
 	 * @param allowMove Allow the user to change the order of elements
 	 */
-	public JListEntry(List<Entry> list, boolean allowMove) {
+	public JListLink(List<Link> list, boolean allowMove) {
 		this(list, allowMove, true);
 	}
 
@@ -56,13 +56,8 @@ public class JListEntry extends JListFilter<Entry> {
 	 * @param allowMove          Allow the user to change the order of elements
 	 * @param filterInitialState Initial state of the "switch filter" JCheckBox
 	 */
-	public JListEntry(List<Entry> list, boolean allowMove, boolean filterInitialState) {
-		super(list, allowMove, "Hide undefined entries", filterInitialState, Entry::isDefined);
-	}
-
-	@Override
-	public boolean canMove() {
-		return allowMove && filterOverride == null && !filterToggle.isSelected() && model.getSize() > 1 && model.getElementAt(0).datStructure.newEntryValues != null;
+	public JListLink(List<Link> list, boolean allowMove, boolean filterInitialState) {
+		super(list, allowMove, "Hide undefined entries", filterInitialState, Link::isValid);
 	}
 
 }

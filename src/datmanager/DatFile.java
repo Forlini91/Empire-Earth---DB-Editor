@@ -28,18 +28,16 @@ import gui.components.JButtonDat;
 
 /**
  * A DatFile is a File which also hold informations about the structure of the file.
- * @author MarcoForlini
  *
+ * @author MarcoForlini
  */
 public class DatFile extends File implements Iterable<EntryGroup> {
-	
+
 	private static final long serialVersionUID = 4028033199491184179L;
-	
+
 	/** All loaded files */
 	public static final Collection<DatFile> LOADED = new HashSet<>();
 
-	
-	
 	/** The structure of the file. */
 	public final DatStructure datStructure;
 
@@ -48,45 +46,43 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 
 	/** If true, the file has been loaded */
 	private boolean loaded = false;
-	
+
 	/** If true, the file must be saved */
 	private boolean unsaved = false;
 
 	/** The content of the file */
 	public List<EntryGroup> entryGroups = null;
-	
+
 	/** List of dummy entries which only exists to maintain all links intact */
 	public List<Entry> dummyEntryGroup = new ArrayList<>();
-	
+
 	/** Map of dummy entries which only exists to maintain all links intact */
 	public Map<Integer, Entry> dummyEntryMap = new HashMap<>();
 
 	/** List of FrameEditor opened for this file */
 	public final List<FrameEditor> frameEditors = new ArrayList<>();
 
-	
-	
-	
 	/**
 	 * Creates a new <code>DatFile</code> instance by converting the given
-	 * pathname string into an abstract pathname.  If the given string is
+	 * pathname string into an abstract pathname. If the given string is
 	 * the empty string, then the result is the empty abstract pathname.
 	 *
-	 * @param   pathname  A pathname string
-	 * @param	datStructure	The structure of the file
-	 * @throws  NullPointerException
-	 *          If the <code>pathname</code> argument is <code>null</code>
+	 * @param pathname     A pathname string
+	 * @param datStructure The structure of the file
+	 * @throws NullPointerException
+	 *                              If the <code>pathname</code> argument is <code>null</code>
 	 */
-	public DatFile(String pathname, DatStructure datStructure){
-		super(pathname);
+	public DatFile(File parent, DatStructure datStructure) {
+		super(parent, datStructure.fileName);
 		this.datStructure = datStructure;
 	}
-	
+
 	/**
 	 * Create a new DatContent
-	 * @param entryGroups	The content of the file
+	 *
+	 * @param entryGroups The content of the file
 	 */
-	public void loadData (List<EntryGroup> entryGroups){
+	public void loadData(List<EntryGroup> entryGroups) {
 		this.entryGroups = entryGroups;
 		datStructure.datFile = this;
 		loaded = true;
@@ -94,33 +90,32 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 
 	/**
 	 * Check and return if the file has been loaded
+	 *
 	 * @return true if the file has been loaded
 	 */
-	public boolean isLoaded(){
-		return loaded;
-	}
-
+	public boolean isLoaded() { return loaded; }
 
 	/**
 	 * Search for the entry with the given ID in the file
-	 * @param ID	The ID of the entry to search
-	 * @return		The Entry with the given ID and its EntryGroup or null if no Entry exists with the given ID.
+	 *
+	 * @param ID The ID of the entry to search
+	 * @return The Entry with the given ID and its EntryGroup or null if no Entry exists with the given ID.
 	 */
-	public Entry findEntry(Object ID){
-		if (isLoaded()){
+	public Entry findEntry(Object ID) {
+		if (isLoaded()) {
 			Entry result = dummyEntryMap.get(ID);
 			if (result != null) {
 				return result;
 			}
-			if (entryGroups.size() > 1){
-				for (EntryGroup entryGroup : entryGroups){
+			if (entryGroups.size() > 1) {
+				for (final EntryGroup entryGroup : entryGroups) {
 					result = entryGroup.map.get(ID);
 					if (result != null) {
 						return result;
 					}
 				}
 			} else {
-				EntryGroup entryGroup = entryGroups.get(0);
+				final EntryGroup entryGroup = entryGroups.get(0);
 				result = entryGroup.map.get(ID);
 				if (result != null) {
 					return result;
@@ -129,52 +124,46 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Search for the EntryGroup containing the given Entry
-	 * @param entry		The entry
-	 * @return			The group which contains the entry
+	 *
+	 * @param entry The entry
+	 * @return The group which contains the entry
 	 */
-	public EntryGroup findGroup (Entry entry){
-		if (isLoaded()){
-			int ID = entry.getID();
-			if (entryGroups.size() > 1){
-				return entryGroups
-						.parallelStream()
-						.filter(x -> x.map.containsKey(ID))
-						.findAny()
-						.orElseGet(() -> EntryGroup.NULL);
+	public EntryGroup findGroup(Entry entry) {
+		if (isLoaded()) {
+			final int ID = entry.getID();
+			if (entryGroups.size() > 1) {
+				return entryGroups.parallelStream().filter(x -> x.map.containsKey(ID)).findAny().orElseGet(() -> EntryGroup.NULL);
 			}
-			EntryGroup eg0 = entryGroups.get(0);
+			final EntryGroup eg0 = entryGroups.get(0);
 			if (eg0.map.containsKey(ID)) {
 				return eg0;
 			}
 		}
 		return EntryGroup.NULL;
 	}
-	
 
 	/**
 	 * Build and return the list of entries in this file
-	 * @param includeDummy	If true, include the dummy entries
-	 * @return	The list of entries in this file
+	 *
+	 * @param includeDummy If true, include the dummy entries
+	 * @return The list of entries in this file
 	 */
-	public List<Entry> getAllEntries(boolean includeDummy){
-		if (isLoaded()){
+	public List<Entry> getAllEntries(boolean includeDummy) {
+		if (isLoaded()) {
 			int size = includeDummy ? dummyEntryGroup.size() : 0;
 			if (entryGroups.size() > 1) {
-				size += entryGroups
-						.parallelStream()
-						.mapToInt(x->x.entries.size())
-						.sum();
+				size += entryGroups.parallelStream().mapToInt(x -> x.entries.size()).sum();
 			} else {
 				size += entryGroups.get(0).entries.size();
 			}
-			List<Entry> allEntries = new ArrayList<>(size);
+			final List<Entry> allEntries = new ArrayList<>(size);
 			if (includeDummy) {
 				allEntries.addAll(dummyEntryGroup);
 			}
-			for (EntryGroup entryGroup : entryGroups){
+			for (final EntryGroup entryGroup : entryGroups) {
 				allEntries.addAll(entryGroup.entries);
 			}
 			return allEntries;
@@ -183,58 +172,55 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 	}
 
 	@Override
-	public int compareTo (File o) {
-		if (o instanceof DatFile){
+	public int compareTo(File o) {
+		if (o instanceof DatFile) {
 			return datStructure.compareTo(((DatFile) o).datStructure);
 		}
 		return super.compareTo(o);
 	}
 
 	@Override
-	public Iterator <EntryGroup> iterator () {
-		if (isLoaded()){
+	public Iterator<EntryGroup> iterator() {
+		if (isLoaded()) {
 			return entryGroups.iterator();
 		}
 		return null;
 	}
 
 	@Override
-	public String toString(){
+	public String toString() {
 		return "DatContent: " + super.toString();
-	}
-	
-	
-	
-	/**
-	 * Check the file unsaved state
-	 * @return the unsaved state
-	 */
-	public boolean isUnsaved () {
-		return unsaved;
 	}
 
 	/**
+	 * Check the file unsaved state
+	 *
+	 * @return the unsaved state
+	 */
+	public boolean isUnsaved() { return unsaved; }
+
+	/**
 	 * Set/Unset the file unsaved state
+	 *
 	 * @param unsaved the new unsaved state
 	 */
-	public void setUnsaved (boolean unsaved) {
+	public void setUnsaved(boolean unsaved) {
 		this.unsaved = unsaved;
-		if (datButton != null){
+		if (datButton != null) {
 			datButton.setBorder(unsaved ? BorderFactory.createLineBorder(Color.GREEN.darker(), 4) : datButton.defaultBorder);
 		}
 	}
-	
-	
-	
+
 	/**
 	 * Try to open this file in the editor or show an error message to the calling component.
 	 * The file must be already loaded.
-	 * @param parent The calling component
+	 *
+	 * @param parent    The calling component
 	 * @param newWindow If true, force open in a new window
-	 * @return	The editor window associated to the datContent
+	 * @return The editor window associated to the datContent
 	 */
-	public FrameEditor openInEditor(Component parent, boolean newWindow){
-		try{
+	public FrameEditor openInEditor(Component parent, boolean newWindow) {
+		try {
 			if (Settings.DEBUG) {
 				System.out.println("Open: " + getName());
 			}
@@ -247,37 +233,36 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 			}
 			selWindow.setVisible(true);
 			return selWindow;
-		} catch (Exception e){
-			Core.printException(parent, e, "Error while opening the window for DatFile: " + this, "Error", true);
+		} catch (final Exception e) {
+			Util.printException(parent, e, "Error while opening the window for DatFile: " + this, "Error", true);
 			throw e;
 		}
 	}
 
-
-
 	/**
 	 * Save the file. Disable (but not freeze) the calling window until finished.
-	 * @param parent	The parent window
+	 *
+	 * @param parent The parent window
 	 */
-	public void saveFile(Window parent){
+	public void saveFile(Window parent) {
 		if (Settings.DEBUG) {
 			System.out.println("Save file: " + this);
 		}
-		if (parent != null){
+		if (parent != null) {
 			parent.setEnabled(false);
 		}
 		new Thread(() -> {
 			int count = 0;
-			for(EntryGroup entryGroup : entryGroups){
+			for (final EntryGroup entryGroup : entryGroups) {
 				count += entryGroup.entries.size();
 			}
-			DialogProgressBar progressBar = new DialogProgressBar("Saving...", count, false);
+			final DialogProgressBar progressBar = new DialogProgressBar("Saving...", count, false);
 			new Thread(() -> {
 				try {
-					DatFileManager dbManager = new DatFileManager(this);
+					final DatFileManager dbManager = new DatFileManager(this);
 					dbManager.save(progressBar::update);
 					setUnsaved(false);
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					JOptionPane.showMessageDialog(parent, "An error occurred during the saving of " + this + '\n' + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE, GUI.IMAGE_ICON);
 				} finally {
 					progressBar.dispose();
@@ -289,31 +274,30 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 		}).start();
 	}
 
-
-
 	/**
 	 * Convert the ID fields into Links objects.
 	 */
-	public void buildLinks(){
-		FieldStruct[] fieldStructs = datStructure.fieldStructs;
-		int n = fieldStructs.length, n2, indexExtra;
+	public void buildLinks() {
+		final FieldStruct[] fieldStructs = datStructure.fieldStructs;
+		final int n = fieldStructs.length;
+		int n2, indexExtra;
 		FieldStruct fieldStruct;
 		DatFile datFile;
 		Entry sourceEntry, targetEntry;
 		Object value;
 
-		for (int i = 0; i < n; i++){
+		for (int i = 0; i < n; i++) {
 			fieldStruct = fieldStructs[i];
 			if (fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null) {
 				datFile = fieldStruct.linkToStruct.datFile;
-				for (EntryGroup entryGroup : entryGroups){
-					for (int j = 0; j < entryGroup.entries.size(); j++){
+				for (final EntryGroup entryGroup : entryGroups) {
+					for (int j = 0; j < entryGroup.entries.size(); j++) {
 						sourceEntry = entryGroup.entries.get(j);
-						if (i < sourceEntry.size()){
+						if (i < sourceEntry.size()) {
 							value = sourceEntry.get(i);
-							if (value instanceof Integer){
+							if (value instanceof Integer) {
 								targetEntry = datFile.findEntry(value);
-								if (targetEntry == null){
+								if (targetEntry == null) {
 									targetEntry = new Entry(datFile.datStructure, true, '(' + value.toString() + ") Null/Invalid entry", -2, (int) value);
 									datFile.dummyEntryGroup.add(targetEntry);
 									datFile.dummyEntryMap.put((Integer) value, targetEntry);
@@ -333,15 +317,15 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 		if (fieldStruct != null && fieldStruct.linkToStruct != null && fieldStruct.linkToStruct.datFile != null) {
 			indexExtra = datStructure.indexExtraFields();
 			datFile = fieldStruct.linkToStruct.datFile;
-			for (EntryGroup entryGroup : entryGroups){
-				for (int j = 0; j < entryGroup.entries.size(); j++){
+			for (final EntryGroup entryGroup : entryGroups) {
+				for (int j = 0; j < entryGroup.entries.size(); j++) {
 					sourceEntry = entryGroup.entries.get(j);
-					if (indexExtra < sourceEntry.size()){
-						n2 = n + (Integer)sourceEntry.get(indexExtra);
-						for (int i = indexExtra+1; i < n2; i++){
+					if (indexExtra < sourceEntry.size()) {
+						n2 = n + (Integer) sourceEntry.get(indexExtra);
+						for (int i = indexExtra + 1; i < n2; i++) {
 							value = sourceEntry.get(i);
 							targetEntry = datFile.findEntry(value);
-							if (targetEntry == null){
+							if (targetEntry == null) {
 								targetEntry = new Entry(datFile.datStructure, true, '(' + value.toString() + ") Null/Invalid entry", -2, (int) value);
 								datFile.dummyEntryGroup.add(targetEntry);
 								datFile.dummyEntryMap.put((Integer) value, targetEntry);
@@ -357,33 +341,29 @@ public class DatFile extends File implements Iterable<EntryGroup> {
 		}
 	}
 
-
-
-
-
-
 	/**
 	 * This class contains informations about an entry location
+	 *
 	 * @author MarcoForlini
 	 */
 	public static class EntryLocation {
-		
-		/** Dummy EntryLocation used for null/invalid links */
-		public static final EntryLocation NULL = new EntryLocation (null, null);
 
+		/** Dummy EntryLocation used for null/invalid links */
+		public static final EntryLocation NULL = new EntryLocation(null, null);
 
 		/** Entry group */
 		public final EntryGroup entryGroup;
-		
+
 		/** Entry */
 		public final Entry entry;
-		
+
 		/**
 		 * Create a new EntryLocation
-		 * @param entryGroup	The entry group
-		 * @param entry			The entry
+		 *
+		 * @param entryGroup The entry group
+		 * @param entry      The entry
 		 */
-		public EntryLocation (EntryGroup entryGroup, Entry entry) {
+		public EntryLocation(EntryGroup entryGroup, Entry entry) {
 			this.entryGroup = entryGroup;
 			this.entry = entry;
 		}

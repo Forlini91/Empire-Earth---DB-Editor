@@ -1,6 +1,5 @@
 package datstructure;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,10 +7,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import datmanager.DatFile;
-
 
 /**
  * An Entry is an object in the file.
@@ -25,69 +24,76 @@ import datmanager.DatFile;
  *
  * @author MarcoForlini
  */
-public class Entry implements Comparable <Entry>, Iterable <Object> {
+public class Entry implements Comparable<Entry>, Iterable<Object> {
 
-	private static final List <Object>	emptyList		= Collections.unmodifiableList (new ArrayList <> ());
+	public static final Predicate<Entry> filterGenerator(String text) {
+		try {
+			final int num = Integer.valueOf(text);
+			return entry -> entry.isDefined() && (entry.getID() == num && entry.toString().toLowerCase().contains(text));
+		} catch (final NumberFormatException e) {
+			return entry -> entry.isDefined() && entry.toString().toLowerCase().contains(text);
+		}
+	}
 
 	/** Null target entry */
-	public static final Entry			nullEntry		= new Entry (null, true, "Null", -2, -2);
+	public static final Entry nullEntry = new Entry(null, true, "Null", -2, -2);
 	/** Used by fields without name. */
-	public static final String			NAME_NONE		= "<No name>";
+	public static final String NAME_NONE = "<No name>";
 	/** Used by undefined fields. */
-	public static final String			NAME_UNDEFINED	= "<Undefined>";
+	public static final String NAME_UNDEFINED = "<Undefined>";
 
 	/**
 	 * Name of the entry. If null, the name is calculated basing on the fields
 	 */
-	private final String				name;
+	private final String name;
 	/** The structure of this entry. */
-	public final DatStructure			datStructure;
+	public final DatStructure datStructure;
 	/**
 	 * The values of this entry. They are in the same order as the fiels defined
 	 * in the structure.
 	 */
-	private final List <Object>			values;
+	private final List<Object> values;
 	/**
 	 * The entry's sequence number. This is a redundant value which can be found
 	 * in values[indexSequence].
 	 */
-	private int							sequenceNumber;
+	private int sequenceNumber;
 	/**
 	 * The entry's ID. This is a redundant value which can be found in
 	 * values[indexID].
 	 */
-	private int							ID;
+	private int ID;
 	/**
 	 * If true, this entry is just for Link purposes and must be ignored
 	 * anywhere except in Links
 	 */
-	public final boolean				dummyEntry;
+	public final boolean dummyEntry;
 
 	/**
 	 * Create a new entry with the given DatStructure, name, sequence number, ID
 	 * and values.
 	 *
-	 * @param datStructure The dat file structure
-	 * @param dummyEntry If true, this entry is just for Link purposes and must
-	 *            be ignored anywhere except in Links
-	 * @param name The name
+	 * @param datStructure   The dat file structure
+	 * @param dummyEntry     If true, this entry is just for Link purposes and must
+	 *                       be ignored anywhere except in Links
+	 * @param name           The name
 	 * @param sequenceNumber The sequence number
-	 * @param ID The ID
-	 * @param values The values for this entry
+	 * @param ID             The ID
+	 * @param values         The values for this entry
 	 */
-	public Entry (DatStructure datStructure, boolean dummyEntry, String name, int sequenceNumber, int ID, List <Object> values) {
+	public Entry(DatStructure datStructure, boolean dummyEntry, String name, int sequenceNumber, int ID, List<Object> values) {
 		this.datStructure = datStructure;
 		this.dummyEntry = dummyEntry;
 		this.values = values;
-		if (values.size () > 0) {
+		if (values.size() > 0) {
 			try {
 				this.name = name;
-				this.sequenceNumber = datStructure.indexSequence < 0 ? sequenceNumber : get (datStructure.indexSequence);
-				this.ID = datStructure.indexID < 0 ? ID : get (datStructure.indexID);
-			} catch (Exception e) {
-				StringBuilder sb = new StringBuilder ("Error with entry: " + sequenceNumber + "/" + ID + " of " + datStructure + '\n');
-				values.forEach (x -> sb.append ("\tValue: ").append (x).append ('\n'));
-				System.err.println (sb);
+				this.sequenceNumber = datStructure.indexSequence < 0 ? sequenceNumber : get(datStructure.indexSequence);
+				this.ID = datStructure.indexID < 0 ? ID : get(datStructure.indexID);
+			} catch (final Exception e) {
+				final StringBuilder sb = new StringBuilder("Error with entry: " + sequenceNumber + "/" + ID + " of " + datStructure + '\n');
+				values.forEach(x -> sb.append("\tValue: ").append(x).append('\n'));
+				System.err.println(sb);
 				throw e;
 			}
 		} else {
@@ -101,15 +107,15 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 * Create a new Entry with the given DatStructure, name, sequence number and
 	 * ID. Assign default values to all other fields.
 	 *
-	 * @param datStructure The dat file structure
-	 * @param dummyEntry If true, this entry is just for Link purposes and must
-	 *            be ignored anywhere except in Links
-	 * @param name The name
+	 * @param datStructure   The dat file structure
+	 * @param dummyEntry     If true, this entry is just for Link purposes and must
+	 *                       be ignored anywhere except in Links
+	 * @param name           The name
 	 * @param sequenceNumber The sequence number
-	 * @param ID The ID
+	 * @param ID             The ID
 	 */
-	public Entry (DatStructure datStructure, boolean dummyEntry, String name, int sequenceNumber, int ID) {
-		this (datStructure, dummyEntry, name, sequenceNumber, ID, getDefaultValues (datStructure, sequenceNumber, ID));
+	public Entry(DatStructure datStructure, boolean dummyEntry, String name, int sequenceNumber, int ID) {
+		this(datStructure, dummyEntry, name, sequenceNumber, ID, getDefaultValues(datStructure, sequenceNumber, ID));
 	}
 
 	/**
@@ -117,40 +123,40 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 * clone.
 	 *
 	 * @param sequenceNumber The clone's sequence number
-	 * @param ID The clone's ID
+	 * @param ID             The clone's ID
 	 * @return A duplicate of this Entry
 	 */
-	public Entry duplicate (int sequenceNumber, int ID) {
-		List <Object> valuesCopy = new ArrayList <> (values);
+	public Entry duplicate(int sequenceNumber, int ID) {
+		final List<Object> valuesCopy = new ArrayList<>(values);
 		if (datStructure.indexSequence >= 0) {
-			valuesCopy.set (datStructure.indexSequence, sequenceNumber);
+			valuesCopy.set(datStructure.indexSequence, sequenceNumber);
 		}
 		if (datStructure.indexID >= 0) {
-			valuesCopy.set (datStructure.indexID, ID);
+			valuesCopy.set(datStructure.indexID, ID);
 		}
-		return new Entry (datStructure, dummyEntry, null, sequenceNumber, ID, valuesCopy);
+		return new Entry(datStructure, dummyEntry, null, sequenceNumber, ID, valuesCopy);
 	}
 
 	/**
 	 * Return a list of default values for all fields. Useful when adding a new
 	 * entry in the file.
 	 *
-	 * @param datStructure The new entry's structure
+	 * @param datStructure   The new entry's structure
 	 * @param sequenceNumber The new entry's sequence number
-	 * @param ID The new entry's ID
+	 * @param ID             The new entry's ID
 	 * @return A list with all default values for every field defined in the
 	 *         structure.
 	 */
-	private static List <Object> getDefaultValues (DatStructure datStructure, int sequenceNumber, int ID) {
+	private static List<Object> getDefaultValues(DatStructure datStructure, int sequenceNumber, int ID) {
 		if (datStructure == null || datStructure.newEntryValues == null) {
-			return new ArrayList <> (0);
+			return new ArrayList<>(0);
 		}
-		List <Object> values = new ArrayList <> (Arrays.asList (datStructure.newEntryValues));
+		final List<Object> values = new ArrayList<>(Arrays.asList(datStructure.newEntryValues));
 		if (datStructure.indexSequence >= 0) {
-			values.set (datStructure.indexSequence, sequenceNumber);
+			values.set(datStructure.indexSequence, sequenceNumber);
 		}
 		if (datStructure.indexID >= 0) {
-			values.set (datStructure.indexID, ID);
+			values.set(datStructure.indexID, ID);
 		}
 		return values;
 	}
@@ -160,16 +166,16 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 *
 	 * @return A printable name for the entry
 	 */
-	public String getName () {
+	public String getName() {
 		if (name != null) {
 			return name;
-		} else if (isDefined ()) {
+		} else if (isDefined()) {
 			if (datStructure.nameBuilder != null) {
-				return datStructure.nameBuilder.apply (this);
+				return datStructure.nameBuilder.apply(this);
 			}
-			int indexName = datStructure.indexName;
+			final int indexName = datStructure.indexName;
 			if (indexName >= 0) {
-				return (String) values.get (indexName);
+				return (String) values.get(indexName);
 			}
 			return NAME_NONE;
 		}
@@ -181,16 +187,16 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 *
 	 * @return A printable name for the entry
 	 */
-	public String getTrimmedName () {
+	public String getTrimmedName() {
 		if (name != null) {
 			return name;
-		} else if (isDefined ()) {
+		} else if (isDefined()) {
 			if (datStructure.nameBuilder != null) {
-				return datStructure.nameBuilder.apply (this);
+				return datStructure.nameBuilder.apply(this);
 			}
-			int indexName = datStructure.indexName;
+			final int indexName = datStructure.indexName;
 			if (indexName >= 0) {
-				return ((String) values.get (indexName)).trim ();
+				return ((String) values.get(indexName)).trim();
 			}
 			return NAME_NONE;
 		}
@@ -202,27 +208,23 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 *
 	 * @return true if you can jump here, false otherwise
 	 */
-	public boolean isValidLinkTarget () {
-		return !dummyEntry && isDefined ();
-	}
+	public boolean isValidLinkTarget() { return !dummyEntry && isDefined(); }
 
 	/**
 	 * Gets the values of this entry
 	 *
 	 * @return the values of this entry
 	 */
-	public List <Object> getValues () {
-		return values;
-	}
+	public List<Object> getValues() { return values; }
 
 	/**
 	 * Get the entry's ID.
 	 *
 	 * @return the entry's ID
 	 */
-	public int getID () {
-		if (datStructure.indexID >= 0 && datStructure.indexID < values.size ()) {
-			return (Integer) values.get (datStructure.indexID);
+	public int getID() {
+		if (datStructure.indexID >= 0 && datStructure.indexID < values.size()) {
+			return (Integer) values.get(datStructure.indexID);
 		}
 		return ID;
 	}
@@ -232,9 +234,9 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 *
 	 * @param ID The new ID
 	 */
-	public void setID (int ID) {
-		if (datStructure.indexID >= 0 && datStructure.indexID < values.size ()) {
-			values.set (datStructure.indexID, ID);
+	public void setID(int ID) {
+		if (datStructure.indexID >= 0 && datStructure.indexID < values.size()) {
+			values.set(datStructure.indexID, ID);
 		}
 		this.ID = ID;
 	}
@@ -244,9 +246,9 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 *
 	 * @return the entry's sequence number
 	 */
-	public int getSequenceNumber () {
-		if (datStructure.indexSequence >= 0 && datStructure.indexSequence < values.size ()) {
-			return (Integer) values.get (datStructure.indexSequence);
+	public int getSequenceNumber() {
+		if (datStructure.indexSequence >= 0 && datStructure.indexSequence < values.size()) {
+			return (Integer) values.get(datStructure.indexSequence);
 		}
 		return sequenceNumber;
 	}
@@ -256,9 +258,9 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 *
 	 * @param sequenceNumber The new sequence number
 	 */
-	public void setSequenceNumber (int sequenceNumber) {
-		if (datStructure.indexSequence >= 0 && datStructure.indexSequence < values.size ()) {
-			values.set (datStructure.indexSequence, sequenceNumber);
+	public void setSequenceNumber(int sequenceNumber) {
+		if (datStructure.indexSequence >= 0 && datStructure.indexSequence < values.size()) {
+			values.set(datStructure.indexSequence, sequenceNumber);
 		}
 		this.sequenceNumber = sequenceNumber;
 	}
@@ -268,20 +270,18 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 *
 	 * @return true if defined, false otherwise
 	 */
-	public boolean isDefined () {
-		return datStructure != null && getID () >= datStructure.minID && getSequenceNumber () >= datStructure.minSeq;
-	}
+	public boolean isDefined() { return datStructure != null && getID() >= datStructure.minID && getSequenceNumber() >= datStructure.minSeq; }
 
 	@Override
-	public String toString () {
+	public String toString() {
 		if (name != null) {
 			return name;
-		} else if (isDefined ()) {
+		} else if (isDefined()) {
 			if (datStructure.nameBuilder != null) {
-				return "(" + getID () + ") " + datStructure.nameBuilder.apply (this);
+				return "(" + getID() + ") " + datStructure.nameBuilder.apply(this);
 			}
-			if (datStructure.indexName >= 0 && datStructure.indexName < values.size ()) {
-				return "(" + getID () + ") " + ((String) values.get (datStructure.indexName)).trim ();
+			if (datStructure.indexName >= 0 && datStructure.indexName < values.size()) {
+				return "(" + getID() + ") " + ((String) values.get(datStructure.indexName)).trim();
 			}
 			return NAME_NONE;
 		}
@@ -289,25 +289,25 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	}
 
 	@Override
-	public int compareTo (Entry o) {
+	public int compareTo(Entry o) {
 		if (o == null || o.datStructure == null) {
 			return -1;
 		} else if (datStructure == null) {
 			return 1;
 		}
-		switch (datStructure.compareTo (o.datStructure)) {
+		switch (datStructure.compareTo(o.datStructure)) {
 			case -1:
 				return -1;
 			case 1:
 				return 1;
 			default:
-				return Integer.compare (getID (), o.getID ());
+				return Integer.compare(getID(), o.getID());
 		}
 	}
 
 	@Override
-	public Iterator <Object> iterator () {
-		return values.iterator ();
+	public Iterator<Object> iterator() {
+		return values.iterator();
 	}
 
 	/**
@@ -316,44 +316,44 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 * @param ordered If true, order the list
 	 * @return All links to this entry
 	 */
-	public List <Link> getLinksToEntry (boolean ordered) {
-		Collection <Link> linksToEntrySet = new HashSet <> ();
-		DatFile.LOADED.forEach (datFile -> {
-			FieldStruct[] fieldStructs = datFile.datStructure.fieldStructs;
+	public List<Link> getLinksToEntry(boolean ordered) {
+		final Collection<Link> linksToEntrySet = new HashSet<>();
+		DatFile.LOADED.forEach(datFile -> {
+			final FieldStruct[] fieldStructs = datFile.datStructure.fieldStructs;
 			Link link;
-			int n = fieldStructs.length;
+			final int n = fieldStructs.length;
 			for (int i = 0; i < n; i++) {
 				if (fieldStructs[i].linkToStruct == datStructure) {
-					for (EntryGroup entryGroup : datFile) {
-						for (Entry entry : entryGroup) {
-							link = entry.get (i);
+					for (final EntryGroup entryGroup : datFile) {
+						for (final Entry entry : entryGroup) {
+							link = entry.get(i);
 							if (link.target == this) {
-								linksToEntrySet.add (link);
+								linksToEntrySet.add(link);
 							}
 						}
 					}
 				}
 			}
-			FieldStruct extraField = datFile.datStructure.extraField;
+			final FieldStruct extraField = datFile.datStructure.extraField;
 			if (extraField != null && extraField.linkToStruct == datStructure) {
-				int indexExtra = datFile.datStructure.indexExtraFields ();
+				final int indexExtra = datFile.datStructure.indexExtraFields();
 				int n2;
-				for (EntryGroup entryGroup : datFile) {
-					for (Entry entry : entryGroup) {
-						n2 = n + (Integer) entry.get (indexExtra);
+				for (final EntryGroup entryGroup : datFile) {
+					for (final Entry entry : entryGroup) {
+						n2 = n + (Integer) entry.get(indexExtra);
 						for (int i = indexExtra + 1; i < n2; i++) {
-							link = entry.get (i);
+							link = entry.get(i);
 							if (link.target == this) {
-								linksToEntrySet.add (link);
+								linksToEntrySet.add(link);
 							}
 						}
 					}
 				}
 			}
 		});
-		List <Link> linksToEntry = new ArrayList <> (linksToEntrySet);
+		final List<Link> linksToEntry = new ArrayList<>(linksToEntrySet);
 		if (ordered) {
-			linksToEntry.sort (null);
+			linksToEntry.sort(null);
 		}
 		return linksToEntry;
 	}
@@ -363,8 +363,8 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 *
 	 * @return the number of values
 	 */
-	public int size () {
-		return values.size ();
+	public int size() {
+		return values.size();
 	}
 
 	/**
@@ -373,8 +373,8 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 * @param index The index
 	 * @param value The value to set
 	 */
-	public void set (int index, Object value) {
-		values.set (index, value);
+	public void set(int index, Object value) {
+		values.set(index, value);
 	}
 
 	/**
@@ -383,8 +383,8 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 * @param index The index
 	 * @param value The value to add
 	 */
-	public void add (int index, Object value) {
-		values.add (index, value);
+	public void add(int index, Object value) {
+		values.add(index, value);
 	}
 
 	/**
@@ -392,8 +392,8 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 *
 	 * @param value The value to add
 	 */
-	public void add (Object value) {
-		values.add (value);
+	public void add(Object value) {
+		values.add(value);
 	}
 
 	/**
@@ -401,33 +401,31 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 *
 	 * @param index The index
 	 */
-	public void remove (int index) {
-		values.remove (index);
+	public void remove(int index) {
+		values.remove(index);
 	}
 
 	/**
 	 * Gets the value at the given index
 	 *
-	 * @param <T> Type of object returned
+	 * @param       <T> Type of object returned
 	 * @param index The index
 	 * @return The value in the index
 	 * @throws IndexOutOfBoundsException If there's no value with the given
-	 *             index
-	 * @throws ClassCastException If the value type is different than expected
+	 *                                   index
+	 * @throws ClassCastException        If the value type is different than expected
 	 */
-	@SuppressWarnings ("unchecked")
-	public <T> T get (int index) throws IndexOutOfBoundsException, ClassCastException {
-		return (T) values.get (index);
+	@SuppressWarnings("unchecked")
+	public <T> T get(int index) throws IndexOutOfBoundsException, ClassCastException {
+		return (T) values.get(index);
 	}
 
-
-	public List <Object> getExtraFields () {
+	public List<Object> getExtraFields() {
 		if (datStructure.extraField != null) {
-			return values.subList (datStructure.fieldStructs.length, size ());
+			return values.subList(datStructure.fieldStructs.length, size());
 		}
-		return emptyList;
+		return Collections.emptyList();
 	}
-
 
 	/**
 	 * Returns a sequential {@code Stream} with this collection as its source.
@@ -444,8 +442,8 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 * @return a sequential {@code Stream} over the elements in this collection
 	 * @since 1.8
 	 */
-	public Stream <Object> stream () {
-		return values.stream ();
+	public Stream<Object> stream() {
+		return values.stream();
 	}
 
 	/**
@@ -465,8 +463,8 @@ public class Entry implements Comparable <Entry>, Iterable <Object> {
 	 *         collection
 	 * @since 1.8
 	 */
-	public Stream <Object> parallelStream () {
-		return values.parallelStream ();
+	public Stream<Object> parallelStream() {
+		return values.parallelStream();
 	}
 
 }

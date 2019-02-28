@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
-import datmanager.Core;
+import datmanager.Util;
 import datstructure.Entry;
 import datstructure.EntryGroup;
 import gui.components.AbstractJListExtended;
@@ -71,7 +71,7 @@ public class DialogMoveEntryToGroup extends JDialog {
 				onChange.run();
 				entry.getLinksToEntry(false).parallelStream().forEach(link -> link.source.datStructure.datFile.setUnsaved(true));
 			} catch (Exception e){
-				Core.printException(null, e, "An error occurred while moving the entry. No data has been altered", "Error", true);
+				Util.printException(null, e, "An error occurred while moving the entry. No data has been altered", "Error", true);
 			}
 			dispose();
 		});

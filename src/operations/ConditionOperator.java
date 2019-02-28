@@ -4,9 +4,9 @@ import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 import constants.EnumValue;
-import datmanager.Core;
 import datmanager.DatFile;
 import datmanager.Language;
+import datmanager.Util;
 import datstructure.DatStructure;
 import datstructure.Entry;
 import datstructure.FieldStruct;
@@ -77,7 +77,7 @@ public class ConditionOperator implements Condition {
 
 		FieldStruct field = datFile.datStructure.getFieldStruct (index);
 		if (field == null) {
-			name = "<Any field> " + operator + ' ' + (Core.isNumber (value.toString ()) ? '\"' + (String) value + '\"' : value);
+			name = "<Any field> " + operator + ' ' + (Util.isNumber (value.toString ()) ? '\"' + (String) value + '\"' : value);
 		} else {
 			name = "(" + index + ") " + field.name + ' ' + operator + ' ' + (field.type == FieldType.STRING ? '\"' + (String) value + '\"' : value);
 		}
