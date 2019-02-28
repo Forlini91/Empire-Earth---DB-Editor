@@ -48,7 +48,7 @@ public class TechTree extends DatStructure {
 					new FieldStruct ("<4 in all Epochs, 0 everywhere else>", FieldType.INTEGER), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct ("Calamity", Calamity.instance, 0),
 					new FieldStruct ("Hotkey ID", UIHotkey.instance, 0), new FieldStruct ("<Only Monoteism and Mech Minotaur use this>", FieldType.INTEGER, 4, Knowledge.UNKNOWN), new FieldStruct ("<Only Monoteism and Mech Minotaur use this>", FieldType.INTEGER, 4, Knowledge.UNKNOWN), FieldStruct.UNKNOWN_INT4,
 					FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-					FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_BOOL1, new FieldStruct ("Only in scenario"), new FieldStruct ("<All powers and power techs use 0>"),
+					FieldStruct.UNKNOWN_FLOAT, new FieldStruct ("researchable in editor trigger"), new FieldStruct ("Only in scenario"), new FieldStruct ("<All powers and power techs use 0>"),
 					new FieldStruct ("<All powers and power techs use 0>"), new FieldStruct ("Epoch number", FieldType.INTEGER), new FieldStruct ("Buildings to advance epoch", FieldType.INTEGER), new FieldStruct ("Epoch IDs", FieldType.INTEGER),
 					new FieldStruct ("Last build object", Objects.instance, 0, false), new FieldStruct ("Num of tech builders", FieldType.INTEGER, 4, false)
 			};
@@ -75,7 +75,7 @@ public class TechTree extends DatStructure {
 					new FieldStruct ("<4 in all Epochs, 0 everywhere else>", FieldType.INTEGER), FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct ("Calamity", Calamity.instance, 0),
 					new FieldStruct ("Hotkey ID", UIHotkey.instance, 0), new FieldStruct ("<Only Monoteism and Mech Minotaur use this>", FieldType.INTEGER, 4, Knowledge.UNKNOWN), new FieldStruct ("<Only Monoteism and Mech Minotaur use this>", FieldType.INTEGER, 4, Knowledge.UNKNOWN), FieldStruct.UNUSED_INT4,
 					FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT,
-					FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_BOOL1, new FieldStruct ("Only in scenario"), new FieldStruct ("<All powers and power techs use 0>"),
+					FieldStruct.UNKNOWN_FLOAT, new FieldStruct ("researchable in editor trigger"), new FieldStruct ("Only in scenario"), new FieldStruct ("<All powers and power techs use 0>"),
 					new FieldStruct ("<All powers and power techs use 0>"), FieldStruct.UNUSED_INT4, new FieldStruct ("Epoch number", FieldType.INTEGER), new FieldStruct ("Buildings to advance epoch", FieldType.INTEGER),
 					new FieldStruct ("Epoch IDs", FieldType.INTEGER), new FieldStruct ("Last build object", Objects.instance, 0, false), new FieldStruct ("Num of tech builders", FieldType.INTEGER, 4, false)
 			};
