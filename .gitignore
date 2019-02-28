@@ -2,8 +2,12 @@
 /bin/
 /DB - AOC.lnk
 /DB - Vanilla.lnk
+/DB - collegamento.lnk
 /Empire Earth - DB Editor.jar
 /EE Hex Editing Guide.pdf
 /Empire Earth - DB Editor - Manual.pdf
 /.gitignore
-/DB - collegamento.lnk
+=======
+
+\.directory
+>>>>>>> branch 'master' of git@github.com:Forlini91/Empire-Earth---DB-Editor.git
