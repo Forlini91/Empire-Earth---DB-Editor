@@ -30,7 +30,7 @@ public class Core {
 		splashScreen.setVisible(true);
 		final int answer = JOptionPane.showOptionDialog(splashScreen, "Vanilla or AOC?", "Empire Earth - DB Editor", 0, JOptionPane.QUESTION_MESSAGE, null, editorModeChoices, editorModeChoices[0]);
 		if (answer == 2) {
-			return;
+			System.exit(0);
 		} else {
 			AOC = (answer == 1);
 		}

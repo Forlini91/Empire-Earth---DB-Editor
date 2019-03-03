@@ -62,28 +62,21 @@ public final class Util {
 		return null;
 	}
 
-	public static boolean isNumber(String text) {
+	public static boolean isInteger(String text) {
 		try {
-			Float.valueOf(text);
+			Integer.parseInt(text, 10);
 			return true;
 		} catch (final Throwable e) {
 			return false;
 		}
 	}
 
-	public static Integer toIntNumber(String text) {
+	public static boolean isFloat(String text) {
 		try {
-			return Integer.valueOf(text);
+			Float.parseFloat(text);
+			return true;
 		} catch (final Throwable e) {
-			return null;
-		}
-	}
-
-	public static Float toFloatNumber(String text) {
-		try {
-			return Float.valueOf(text);
-		} catch (final Throwable e) {
-			return null;
+			return false;
 		}
 	}
 

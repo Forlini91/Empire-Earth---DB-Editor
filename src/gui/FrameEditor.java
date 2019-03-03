@@ -290,7 +290,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			rightClicked = (Component) panelEntry.field;
 			fieldMenuRefreshList.setVisible(fieldStruct.linkToStruct != null);
 			fieldMenuOpenLink.setVisible(fieldStruct.linkToStruct != null);
-			fieldMenuNextFree.setVisible(fieldStruct == FieldStruct.ID || fieldStruct == FieldStruct.SEQ_NUMBER);
+			fieldMenuNextFree.setVisible(fieldStruct == DatStructure.getCommonField("ID") || fieldStruct == DatStructure.getCommonField("SEQ_NUMBER"));
 		}));
 		return panelEntry;
 	}
@@ -401,7 +401,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		for (int i = 0; i < numBaseFields; i++) {
 			try {
 				baseFields.get(i).setVal(entry.get(i));
-			} catch (final IllegalArgumentException e) {
+			} catch (final Exception e) {
 				final String message = "Error while writing value " + entry.get(i) + " in field (" + i + ") " + entry.datStructure.fieldStructs[i];
 				Util.printException(this, e, message, "Error", true);
 				throw new IllegalArgumentException(message, e);
@@ -1011,9 +1011,9 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			final EntryFieldInterface field = (EntryFieldInterface) rightClicked;
 			final FieldStruct fieldStruct = field.getEntryStruct();
 			int highest;
-			if (fieldStruct == FieldStruct.ID) {
+			if (fieldStruct == DatStructure.getCommonField("ID")) {
 				highest = currentEntryGroup.entries.parallelStream().mapToInt(Entry::getID).max().getAsInt() + 1;
-			} else if (fieldStruct == FieldStruct.SEQ_NUMBER) {
+			} else if (fieldStruct == DatStructure.getCommonField("SEQ_NUMBER")) {
 				highest = datFile.getAllEntries(false).parallelStream().mapToInt(Entry::getSequenceNumber).max().getAsInt() + 1;
 			} else {
 				Util.printException(this, new IllegalStateException("This is not an ID or Sequence Number field"), "An error occurred while checking the max ID/Number", "Error", true);

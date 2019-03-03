@@ -101,6 +101,9 @@ public class DatFileManager {
 		List<Entry> entries;
 		if (defineNumEntries) {
 			try {
+				if (numEntries > 10000 || numEntries < 0) {
+					System.out.println(datFile.toString() + ' ' + numEntries);
+				}
 				entries = new ArrayList<>(numEntries);
 			} catch (final OutOfMemoryError e) {
 				throw new IOException(e);
@@ -123,6 +126,7 @@ public class DatFileManager {
 
 					switch (fieldStruct.getType()) {
 						case STRING:
+						case DYNAMIC_STRING:
 							if (fieldStruct.getIndexSize() >= 0) {
 								size = (int) values.get(fieldStruct.getIndexSize());
 							} else {
@@ -220,6 +224,7 @@ public class DatFileManager {
 							try {
 								switch (fieldStruct.getType()) {
 									case STRING:
+									case DYNAMIC_STRING:
 										if (fieldStruct.getIndexSize() >= 0) {
 											size = entry.get(fieldStruct.getIndexSize());
 										} else {

@@ -114,7 +114,7 @@ public class FrameMain extends JFrame implements WindowListener {
 			if (selectedDirectory == null) {
 				return null;
 			}
-			allFiles = Arrays.stream(DatStructure.GetAllStructures()).map(datStructure -> new DatFile(selectedDirectory, datStructure)).filter(DatFile::exists).collect(Collectors.toList());
+			allFiles = Arrays.stream(DatStructure.GetLoadedStructures()).map(datStructure -> new DatFile(selectedDirectory, datStructure)).filter(DatFile::exists).collect(Collectors.toList());
 
 			if (!allFiles.isEmpty()) {
 				break;

@@ -1,12 +1,10 @@
 package datstructure.structures;
 
+import java.io.IOException;
 import java.util.List;
 
 import datstructure.DatStructure;
-import datstructure.DatStructureParse;
-import datstructure.DatStructureParse.ParseState;
 import datstructure.Entry;
-import datstructure.FieldStruct;
 
 
 /**
@@ -14,28 +12,22 @@ import datstructure.FieldStruct;
  *
  * @author MarcoForlini
  */
-@DatStructureParse (Vanilla = ParseState.MISSING_UNKNOWN, AOC = ParseState.MISSING_UNKNOWN)
 public class Sounds extends DatStructure {
 
 	/**
 	 * Unique instance of this structure
 	 */
-	public static final Sounds instance = new Sounds ();
+	public static final Sounds instance = new Sounds();
 
 	/**
 	 * Creates a new {@link Sounds}
 	 */
-	private Sounds () {
-		super ("Sounds", "dbsounds.dat", true, 0, 1, 0, 2, 3, 4, 4, 125, 175);
+	private Sounds() {
+		super("Sounds", "dbsounds.dat", true, 0, 1, 0, 2, 3, 4, 4, 125, 175);
 	}
 
 	@Override
-	public void init () {
-		fieldStructs = new FieldStruct[] {
-				FieldStruct.STRING_SIZE, new FieldStruct ("Pathname", 0), FieldStruct.NAME, FieldStruct.SEQ_NUMBER,
-				FieldStruct.ID, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-				FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4
-		};
+	public void customInit() throws IOException {
 		newEntryValues = new Object[] {
 				0, "", "<New sound>", 0, -1, 0, 0, 0,
 				0, 0, 0
@@ -43,22 +35,22 @@ public class Sounds extends DatStructure {
 	}
 
 	@Override
-	public int indexExtraFields () {
+	public int indexExtraFields() {
 		return -1;
 	}
 
 	@Override
-	public boolean hasCustomEntryName () {
+	public boolean hasCustomEntryName() {
 		return false;
 	}
 
 	@Override
-	public String getCustomEntryName (int index, List <Object> values) {
+	public String getCustomEntryName(int index, List<Object> values) {
 		return null;
 	}
 
 	@Override
-	public String getEntryDescription (Entry entry) {
+	public String getEntryDescription(Entry entry) {
 		return null;
 	}
 

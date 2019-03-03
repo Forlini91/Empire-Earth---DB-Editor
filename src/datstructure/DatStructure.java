@@ -1,7 +1,11 @@
 package datstructure;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -10,7 +14,6 @@ import datmanager.Core;
 import datmanager.DatFile;
 import datmanager.Settings;
 import datmanager.Util;
-import datstructure.DatStructureParse.ParseState;
 import datstructure.structures.AIUnitTargeting;
 import datstructure.structures.AmbientSounds;
 import datstructure.structures.Animals;
@@ -50,6 +53,7 @@ import datstructure.structures.UnitSet;
 import datstructure.structures.Upgrade;
 import datstructure.structures.WeaponToHit;
 import datstructure.structures.World;
+import gui.FrameMain;
 
 /**
  * Represents the structure of the entries of a file
@@ -59,6 +63,8 @@ import datstructure.structures.World;
 public abstract class DatStructure {
 
 	/** All structures used by Vanilla files */
+	protected static final File resourcesDirectory = Paths.get("Resources").toFile();
+	protected static final File gameDirectory = new File(resourcesDirectory, Core.isAOC() ? "AOC" : "Vanilla");
 	private static final DatStructure[] ALL_VANILLA_DATSTRUCTURES = new DatStructure[] { AIUnitTargeting.instance, AmbientSounds.instance, Animals.instance, AreaEffect.instance, Buttons.instance, Calamity.instance, Civilization.instance,
 			CliffTerrain.instance, ColorTable.instance, CPBehavior.instance, Effects.instance, Events.instance, Family.instance, GameVariant.instance, GFXEffects.instance, Graphics.instance, Music.instance, Objects.instance, PremadeCivs.instance,
 			RandomMap.instance, Sounds.instance, StartingResourches.instance, TechTree.instance, Terrain.instance, TerrainGrayTextures.instance, TerrainType.instance, UIBack.instance, UIControlEvents.instance, UIControls.instance, UIFonts.instance,
@@ -70,51 +76,20 @@ public abstract class DatStructure {
 			UIControls.instance, UIFonts.instance, UIFormEvents.instance, UIForms.instance, UIHotkey.instance, UnitBehavior.instance, UnitSet.instance, Upgrade.instance, WeaponToHit.instance, World.instance };
 
 	public static DatStructure[] GetAllStructures() {
-		if (Core.isAOC()) {
-			return ALL_AOC_DATSTRUCTURES;
-		} else {
-			return ALL_VANILLA_DATSTRUCTURES;
-		}
+		return Core.isAOC() ? ALL_AOC_DATSTRUCTURES : ALL_VANILLA_DATSTRUCTURES;
 	}
 
-	/** Unique field: A 4 bytes integer which point to an area effect's ID. */
-	public static final FieldStruct ID_AREA_EFFECT = new FieldStruct("Area Effect ID", AreaEffect.instance, 0);
-	/** Unique field: A 4 bytes integer which point to a button's ID. */
-	public static final FieldStruct ID_BUTTON = new FieldStruct("Button ID", Buttons.instance, 0);
-	/** Unique field: A 4 bytes integer which point to a family's ID. */
-	public static final FieldStruct ID_FAMILY = new FieldStruct("Family ID", Family.instance, 0);
-	/** Unique field: A 4 bytes integer which point to a graphic's ID. */
-	public static final FieldStruct ID_GRAPHIC = new FieldStruct("Graphic ID", Graphics.instance, 0);
-	/** Unique field: A 4 bytes integer which point to an object's ID. */
-	public static final FieldStruct ID_OBJECT = new FieldStruct("Object ID", Objects.instance, 0);
-	/** Unique field: A 4 bytes integer which point to a sound ID. */
-	public static final FieldStruct ID_SOUND = new FieldStruct("Sound ID", Sounds.instance, 0);
-	/** Unique field: A 4 bytes integer which point to a tech's ID. */
-	public static final FieldStruct ID_TECH = new FieldStruct("Tech ID", TechTree.instance, 0);
-	/** Unique field: A 4 bytes integer which point to a terrain's ID. */
-	public static final FieldStruct ID_TERRAIN = new FieldStruct("Terrain ID", Terrain.instance, 0);
-	/** Unique field: A 4 bytes integer which point to an hotkey's ID. */
-	public static final FieldStruct ID_UI_HOTKEY = new FieldStruct("Hotkey ID", UIHotkey.instance, 0);
-	/** Unique field: A 4 bytes integer which point to an hotkey's ID. */
-	public static final FieldStruct ID_UI_FORM = new FieldStruct("Form ID", UIForms.instance, 0);
-	/** Unique field: A 4 bytes integer which point to an unit set's ID. */
-	public static final FieldStruct ID_UI_FONT = new FieldStruct("Font ID", UIFonts.instance, 0);
-	/** Unique field: A 4 bytes integer which point to an unit set's ID. */
-	public static final FieldStruct ID_UNIT_SET = new FieldStruct("Unit set ID", UnitSet.instance, 0);
-	/** Unique field: A 4 bytes integer which point to an upgrade's ID. */
-	public static final FieldStruct ID_UPGRADE = new FieldStruct("Updrade ID", Upgrade.instance, 0);
-	/** Unique field: A 4 bytes integer which point to a weapon to hit's ID. */
-	public static final FieldStruct ID_WEAPON_TO_HIT = new FieldStruct("Weapon to hit ID", WeaponToHit.instance, 0);
-	/** Unique field: A 4 bytes integer which point to an object's ID. */
-	public static final FieldStruct ID_TECH_FROM_OBJECT = new FieldStruct("Build from object", Objects.instance, 0);
-	/** Unique field: A 4 bytes integer which point to a tech's ID. */
-	public static final FieldStruct ID_OBJECT_BUILD_TECH = new FieldStruct("Can build tech", TechTree.instance, 0);
-	/** Unique field: A 4 bytes integer which point to a button's ID. */
-	public static final FieldStruct ID_BUTTON_COMMAND = new FieldStruct("Button/Command ID", Buttons.instance, 0);
-	/** Special field: A 4 bytes float which define an unused ID. */
-	public static final FieldStruct ID_GFX_UNUSED = new FieldStruct("Unused GFX effect", GFXEffects.instance, 0, Knowledge.NEVER_USED);
-	/** Special field: A 4 bytes float which define a (still) unknown ID. */
-	public static final FieldStruct ID_GFX_UNKNOWN = new FieldStruct("Unknown GFX effect", GFXEffects.instance, 0, Knowledge.UNKNOWN);
+	public static DatStructure[] GetLoadedStructures() {
+		return Arrays.stream(Core.isAOC() ? ALL_AOC_DATSTRUCTURES : ALL_VANILLA_DATSTRUCTURES).filter(ds -> ds.initialized).toArray(DatStructure[]::new);
+	}
+
+
+	private static Map<String, FieldStruct> commonFieldsMap = null;
+
+	public static FieldStruct getCommonField(String name) {
+		return commonFieldsMap.get(name);
+	}
+
 
 	/**
 	 * Initialize the structures outside the constructor.
@@ -127,23 +102,39 @@ public abstract class DatStructure {
 	 * else if we delay the fields initialization like this, then the objects
 	 * are already defined and stored in the variables, so they can be accessed
 	 * without problems.
+	 *
+	 * @throws IOException
 	 */
 	public static void initAllStructures() {
 		if (Settings.DEBUG) {
 			System.out.println("Initialize structures");
 		}
-		final var allStructures = GetAllStructures();
-		for (final DatStructure datStructure : allStructures) {
-			datStructure.init();
-			datStructure.afterInit();
-			if (Settings.DEBUG) {
-				datStructure.debugDatStructure();
+		gameDirectory.mkdirs();
+		final Map<String, DatStructure> datStructureMap = Arrays.stream(GetAllStructures()).collect(Collectors.toMap(ds -> ds.fileName, ds -> ds));
+
+		try {
+			final var commonFieldsReader = new DatStructureReader(new File(gameDirectory, "COMMON.dats"), datStructureMap);
+			commonFieldsMap = commonFieldsReader.toMap();
+		} catch (final IOException exc) {
+			Util.printException(FrameMain.instance, exc, true);
+			return;
+		}
+
+		for (final DatStructure datStructure : GetAllStructures()) {
+			try {
+				datStructure.initialize(datStructureMap);
+			} catch (final IOException exc) {
+				Util.printException(FrameMain.instance, exc, true);
+				continue;
 			}
 		}
 		if (Settings.DEBUG) {
-			System.out.println("Initialized all " + allStructures.length + " structures");
+			System.out.println("Structures initialized");
 		}
 	}
+
+
+	private boolean initialized = false;
 
 	/** DatFile associated with this DatStructure */
 	public DatFile datFile = null;
@@ -276,75 +267,28 @@ public abstract class DatStructure {
 
 	/**
 	 * Initialize the structure of the file
+	 *
+	 * @throws IOException
 	 */
-	public abstract void init();
+	public abstract void customInit() throws IOException;
 
 	/**
 	 * Initialize some (redundant) useful fields to anticipate some calculations
+	 *
+	 * @throws IOException
 	 */
-	public void afterInit() {
+	public void initialize(Map<String, DatStructure> datStructureMap) throws IOException {
+		final var datStructureReader = new DatStructureReader(new File(gameDirectory, fileName + 's'), datStructureMap);
+		fieldStructs = datStructureReader.toArray();
+		customInit();
 		entrySize = Arrays.stream(fieldStructs).mapToInt(x -> x.size).sum();
 		dynamicSizeFields = Arrays.stream(fieldStructs).filter(x -> x.indexSize >= 0).toArray(FieldStruct[]::new);
 		requirements = Arrays.stream(fieldStructs).filter(x -> x.type == FieldType.LINK).map(x -> x.linkToStruct).collect(Collectors.toSet());
 		if (extraField != null && extraField.linkToStruct != null) {
 			requirements.add(extraField.linkToStruct);
 		}
-	}
-
-	private void debugDatStructure() {
-		final Class<? extends DatStructure> cl = getClass();
-		ParseState parseState;
-		boolean noAnnotation = false;
-		if (cl.isAnnotationPresent(DatStructureParse.class)) {
-			noAnnotation = true;
-			final DatStructureParse parse = cl.getAnnotation(DatStructureParse.class);
-			parseState = Core.isAOC() ? parse.AOC() : parse.Vanilla();
-		} else {
-			parseState = ParseState.MISSING_UNKNOWN;
-		}
-
-		int count = 0;
-		for (final FieldStruct fieldStruct : fieldStructs) {
-			count += fieldStruct.size;
-		}
-		System.out.println("\t\tInitialize: " + String.format("%1$-25s", fileName) + "   >   parse state = " + String.format("%1$-15s", parseState.toString()) + "  |  entry size (bytes) = " + String.format("%1$-4d", count) + "  |  num. fields: "
-				+ String.format("%1$-3d", fieldStructs.length) + "  |  defaults: " + (newEntryValues != null ? newEntryValues.length : "null"));
-
-		switch (parseState) {
-			case COMPLETE:
-				if (Arrays.stream(fieldStructs).anyMatch(fs -> fs.knowledge == Knowledge.UNKNOWN)) {
-					Util.printError(null, "The file " + this + " has been marked as \"completely parsed\" but there are still some unknown fields!", "Error in the definitions");
-				} else if (Arrays.stream(fieldStructs).anyMatch(fs -> fs.knowledge != Knowledge.KNOWN)) {
-					Util.printError(null, "The file " + this + " has been marked as \"completely parsed\" but there are still some unused fields!", "Error in the definitions");
-				}
-				break;
-
-			case UNKNOWN_PARSED:
-				if (Arrays.stream(fieldStructs).anyMatch(fs -> fs.knowledge == Knowledge.UNKNOWN)) {
-					Util.printError(null, "The file " + this + " has been marked as \"unknown parsed\" but there are still some unknown fields!", "Error in the definitions");
-				} else if (Arrays.stream(fieldStructs).allMatch(fs -> fs.knowledge == Knowledge.KNOWN)) {
-					Util.printWarning(null, "The file " + this + " has been marked as \"unknown parsed\" but it's complete instead!", "Warning in the definitions");
-				}
-				break;
-
-			case MISSING_UNKNOWN:
-				if (!Arrays.stream(fieldStructs).anyMatch(fs -> fs.knowledge == Knowledge.UNKNOWN)) {
-					if (Arrays.stream(fieldStructs).anyMatch(fs -> fs.knowledge != Knowledge.KNOWN)) {
-						if (noAnnotation) {
-							Util.printWarning(null, "The file " + this + " should be marked as \"unknown parsed\".\nAdd the annotation \"@DatStructureParse\" to the class definition", "Missing definition");
-						} else {
-							Util.printError(null, "The file " + this + " has been marked as \"missing unknown\" but all unknown have been parsed instead (but it's not fully parsed yet)!", "Error in the definitions");
-						}
-					} else {
-						if (noAnnotation) {
-							Util.printWarning(null, "The file " + this + " should be marked as \"complete\".\nAdd the annotation \"@DatStructureParse\" to the class definition", "Missing definition");
-						} else {
-							Util.printError(null, "The file " + this + " has been marked as \"missing unknown\" but it's complete instead.", "Error in the definitions");
-						}
-					}
-				}
-			default:
-		}
+		initialized = true;
+		debugDatStructure();
 	}
 
 	/**
@@ -396,6 +340,14 @@ public abstract class DatStructure {
 		} else {
 			throw new IllegalArgumentException("Can't find the a field with this index > " + index);
 		}
+	}
+
+
+
+	private void debugDatStructure() {
+		final int count = Arrays.stream(fieldStructs).mapToInt(field -> field.size).sum();
+		System.out.println("\t\tInitialize: " + String.format("%1$-25s", fileName) + "   >   min entry size (bytes) = " + String.format("%1$-4d", count) + "  |  num. fields: "
+				+ String.format("%1$-3d", fieldStructs.length));
 	}
 
 }

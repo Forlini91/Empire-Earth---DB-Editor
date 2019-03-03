@@ -1,0 +1,3 @@
+0	@NAME
+1	@SEQ_NUMBER
+2	4	INTEGER	Num effects	Num effects	BLOCKED	KNOWN	BLACK

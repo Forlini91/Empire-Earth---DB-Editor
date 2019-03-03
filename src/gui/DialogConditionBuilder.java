@@ -218,6 +218,7 @@ public class DialogConditionBuilder extends JDialog {
 						updateComboBox(comboBoxEntryModel, field.linkToStruct.datFile.getAllEntries(false));
 						break;
 					case STRING:
+					case DYNAMIC_STRING:
 						if (searchMode != FieldType.STRING) {
 							searchMode = FieldType.STRING;
 							updateOperatorList(Operator.strOperators);
@@ -290,6 +291,7 @@ public class DialogConditionBuilder extends JDialog {
 					value = comboBoxEntry.getSelectedItem();
 					break;
 				case STRING:
+				case DYNAMIC_STRING:
 					value = text.trim();
 					break;
 				default:

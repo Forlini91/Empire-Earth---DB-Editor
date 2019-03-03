@@ -19,65 +19,65 @@ import datstructure.Link;
 public enum EffectCode implements EnumValue {
 
 	/** Do nothing */
-	NONE ("None", -1),
+	NONE("None", -1),
 	/** Assign a new dbbutton entry to this object */
-	C01_SET_BUTTON ("Set button", 1),
+	C01_SET_BUTTON("Set button", 1),
 	/** Set/Mod the given attribute */
-	C02_ALTER_ATTRIBUTE ("Alter attribute", 2),
+	C02_ALTER_ATTRIBUTE("Alter attribute", 2),
 	/** Unknown effect */
-	C03_UNKNOWN ("Unknown effect", 3),
+	C03_UNKNOWN("Unknown effect", 3),
 	/**
 	 * Unknown effect. It's only used by entry 1358 (which is unused by the
 	 * game)
 	 */
-	C04_UNKNOWN ("Unknown effect", 4),
+	C04_UNKNOWN("Unknown effect", 4),
 	/** Unknown effect */
-	C05_UNKNOWN ("Unknown effect", 5),
+	C05_UNKNOWN("Unknown effect", 5),
 	/** Assign a new dbgraphic entry to this object */
-	C06_SET_GRAPHIC ("Set graphic", 6),
+	C06_SET_GRAPHIC("Set graphic", 6),
 	/** Unknown effect */
-	C07_UNKNOWN ("Unknown effect", 7),
+	C07_UNKNOWN("Unknown effect", 7),
 	/** Enable the selected tech */
-	C08_ENABLE_TECH ("Enable tech", 8),
+	C08_ENABLE_TECH("Enable tech", 8),
 	/** Disable the selected tech */
-	C09_DISABLE_TECH ("Disable tech", 9),
+	C09_DISABLE_TECH("Disable tech", 9),
 	/** Special effect used by entries 237 and 238 */
-	C10_START_GAME ("Start game", 10),
+	C10_START_GAME("Start game", 10),
 	/** Unknown effect */
-	C11_UNKNOWN ("Unknown effect", 11),
+	C11_UNKNOWN("Unknown effect", 11),
 	/** Assign a new GUI background */
-	C12_GUI_BACKGROUND ("GUI Background", 12),
+	C12_GUI_BACKGROUND("GUI Background", 12),
 	/** Unknown effect */
-	C13_UNKNOWN ("Unknown effect", 13),
+	C13_UNKNOWN("Unknown effect", 13),
 	/** Unknown effect */
-	C14_UNKNOWN ("Unknown effect", 14),
+	C14_UNKNOWN("Unknown effect", 14),
 	/** Assign a new action sound in slot 1 */
-	C15_SET_ACTION_SOUND_1 ("Set action sound 1", 15),
+	C15_SET_ACTION_SOUND_1("Set action sound 1", 15),
 	/** Unknown effect */
-	C16_UNKNOWN ("Unknown effect", 16),
+	C16_UNKNOWN("Unknown effect", 16),
 	/** Assign a new death sound */
-	C17_SET_DEATH_SOUND ("Set death sound", 17),
+	C17_SET_DEATH_SOUND("Set death sound", 17),
 	/** Assign a new selection sound in slot 1 */
-	C18_SET_SELECTION_SOUND_1 ("Set selection sound 1", 18),
+	C18_SET_SELECTION_SOUND_1("Set selection sound 1", 18),
 	/** Replace all objects of the given class with objects of another given class and tech (they will inherit health, power and upgrades) */
-	C19_UPDGRADE_ALL_OBJECTS ("Upgrade objects", 19),
+	C19_UPDGRADE_ALL_OBJECTS("Upgrade objects", 19),
 	/** Assign a new action sound in slot 2 */
-	C20_SET_ACTION_SOUND_2 ("Set action sound 2", 20),
+	C20_SET_ACTION_SOUND_2("Set action sound 2", 20),
 	/** Assign a new selection sound in slot 2 */
-	C21_SET_SELECTION_SOUND_2 ("Set selection sound 2", 21),
+	C21_SET_SELECTION_SOUND_2("Set selection sound 2", 21),
 	/** Replace the current object with an object from the given class (it will inherit health and power, but not the upgrades) */
-	C22_REPLACE_OBJECTS ("Replace objects", 22),;
+	C22_REPLACE_OBJECTS("Replace objects", 22),;
 
 	/** Name to be shown in the UI */
-	public final String				name;
+	public final String name;
 
 	/** Code used in the dat files */
-	public final int				code;
+	public final int code;
 
 	/** Function which build the name of the entry */
-	public Function <Entry, String>	nameBuilder;
+	public Function<Entry, String> nameBuilder;
 
-	EffectCode (String effectName, int effectCode) {
+	EffectCode(String effectName, int effectCode) {
 		name = effectName;
 		code = effectCode;
 		switch (effectCode) {
@@ -85,31 +85,31 @@ public enum EffectCode implements EnumValue {
 				nameBuilder = entry -> name;
 				break;
 			case 1:
-				nameBuilder = entry -> name + ":  " + getObjectSetTech (entry) + "  >  " + getButton (entry);
+				nameBuilder = entry -> name + ":  " + getObjectSetTech(entry) + "  >  " + getButton(entry);
 				break;
 			case 2:
-				nameBuilder = entry -> name + ":  " + getAttribute (entry);
+				nameBuilder = entry -> name + ":  " + getAttribute(entry);
 				break;
 			case 6:
-				nameBuilder = entry -> name + ":  " + getObjectTech (entry) + "  >  " + getGraphic (entry);
+				nameBuilder = entry -> name + ":  " + getObjectTech(entry) + "  >  " + getGraphic(entry);
 				break;
 			case 8:
 			case 9:
-				nameBuilder = entry -> name + ":  " + getTech (entry);
+				nameBuilder = entry -> name + ":  " + getTech(entry);
 				break;
 			case 12:
-				nameBuilder = entry -> name + ":  " + getGraphic (entry);
+				nameBuilder = entry -> name + ":  " + getGraphic(entry);
 				break;
 			case 15:
 			case 17:
 			case 18:
 			case 20:
 			case 21:
-				nameBuilder = entry -> name + ":  " + getObjectSet (entry) + "  >  " + getSound (entry);
+				nameBuilder = entry -> name + ":  " + getObjectSet(entry) + "  >  " + getSound(entry);
 				break;
 			case 19:
 			case 22:
-				nameBuilder = entry -> name + ":  " + getObjectSet (entry) + "  >  " + getObject2 (entry);
+				nameBuilder = entry -> name + ":  " + getObjectSet(entry) + "  >  " + getObject2(entry);
 				break;
 			default:
 				nameBuilder = entry -> name;
@@ -117,17 +117,17 @@ public enum EffectCode implements EnumValue {
 	}
 
 	@Override
-	public String getName () {
-		return name;
-	}
+	public String getName() { return name; }
 
 	@Override
-	public int getCode () {
-		return code;
-	}
+	public int getCode() { return code; }
 
 	@Override
-	public EffectCode parseValue (int code) {
+	public EffectCode parseValue(int code) {
+		return EffectCode.parse(code);
+	}
+
+	public static EffectCode parse(int code) {
 		switch (code) {
 			case -1:
 				return NONE;
@@ -181,8 +181,8 @@ public enum EffectCode implements EnumValue {
 	}
 
 	@Override
-	public String toString () {
-		return buildUIName ();
+	public String toString() {
+		return buildUIName();
 	}
 
 	/**
@@ -191,14 +191,14 @@ public enum EffectCode implements EnumValue {
 	 * @param entry The entry
 	 * @return The object /set
 	 */
-	public static Entry getObjectSet (Entry entry) {
+	public static Entry getObjectSet(Entry entry) {
 		Link link;
-		link = entry.get (5);
-		if (link.target.isDefined ()) {
+		link = entry.get(5);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
-		link = entry.get (7);
-		if (link.target.isDefined ()) {
+		link = entry.get(7);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
 		return Entry.nullEntry;
@@ -210,14 +210,14 @@ public enum EffectCode implements EnumValue {
 	 * @param entry The entry
 	 * @return The object from/tech
 	 */
-	public static Entry getObjectTech (Entry entry) {
+	public static Entry getObjectTech(Entry entry) {
 		Link link;
-		link = entry.get (5);
-		if (link.target.isDefined ()) {
+		link = entry.get(5);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
-		link = entry.get (10);
-		if (link.target.isDefined ()) {
+		link = entry.get(10);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
 		return Entry.nullEntry;
@@ -229,18 +229,18 @@ public enum EffectCode implements EnumValue {
 	 * @param entry The entry
 	 * @return The object from/set/tech
 	 */
-	public static Entry getObjectSetTech (Entry entry) {
+	public static Entry getObjectSetTech(Entry entry) {
 		Link link;
-		link = entry.get (5);
-		if (link.target.isDefined ()) {
+		link = entry.get(5);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
-		link = entry.get (7);
-		if (link.target.isDefined ()) {
+		link = entry.get(7);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
-		link = entry.get (10);
-		if (link.target.isDefined ()) {
+		link = entry.get(10);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
 		return Entry.nullEntry;
@@ -252,9 +252,9 @@ public enum EffectCode implements EnumValue {
 	 * @param entry The entry
 	 * @return The object 1
 	 */
-	public static Entry getObject1 (Entry entry) {
-		Link link = entry.get (5);
-		if (link.target.isDefined ()) {
+	public static Entry getObject1(Entry entry) {
+		final Link link = entry.get(5);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
 		return Entry.nullEntry;
@@ -266,9 +266,9 @@ public enum EffectCode implements EnumValue {
 	 * @param entry The entry
 	 * @return The object 2
 	 */
-	public static Entry getObject2 (Entry entry) {
-		Link link = entry.get (6);
-		if (link.target.isDefined ()) {
+	public static Entry getObject2(Entry entry) {
+		final Link link = entry.get(6);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
 		return Entry.nullEntry;
@@ -280,9 +280,9 @@ public enum EffectCode implements EnumValue {
 	 * @param entry The entry
 	 * @return The graphic
 	 */
-	public static Entry getGraphic (Entry entry) {
-		Link link = entry.get (9);
-		if (link.target.isDefined ()) {
+	public static Entry getGraphic(Entry entry) {
+		final Link link = entry.get(9);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
 		return Entry.nullEntry;
@@ -294,9 +294,9 @@ public enum EffectCode implements EnumValue {
 	 * @param entry The entry
 	 * @return The tech
 	 */
-	public static Entry getTech (Entry entry) {
-		Link link = entry.get (10);
-		if (link.target.isDefined ()) {
+	public static Entry getTech(Entry entry) {
+		final Link link = entry.get(10);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
 		return Entry.nullEntry;
@@ -308,9 +308,9 @@ public enum EffectCode implements EnumValue {
 	 * @param entry The entry
 	 * @return The sound
 	 */
-	public static Entry getSound (Entry entry) {
-		Link link = entry.get (12);
-		if (link.target.isDefined ()) {
+	public static Entry getSound(Entry entry) {
+		final Link link = entry.get(12);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
 		return Entry.nullEntry;
@@ -322,9 +322,9 @@ public enum EffectCode implements EnumValue {
 	 * @param entry The entry
 	 * @return The button
 	 */
-	public static Entry getButton (Entry entry) {
-		Link link = entry.get (13);
-		if (link.target.isDefined ()) {
+	public static Entry getButton(Entry entry) {
+		final Link link = entry.get(13);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
 		return Entry.nullEntry;
@@ -336,9 +336,9 @@ public enum EffectCode implements EnumValue {
 	 * @param entry The entry
 	 * @return The area effect
 	 */
-	public static Entry getAreaEffect (Entry entry) {
-		Link link = entry.get (14);
-		if (link.target.isDefined ()) {
+	public static Entry getAreaEffect(Entry entry) {
+		final Link link = entry.get(14);
+		if (link.target.isDefined()) {
 			return link.target;
 		}
 		return Entry.nullEntry;
@@ -350,9 +350,9 @@ public enum EffectCode implements EnumValue {
 	 * @param entry The entry
 	 * @return The area effect
 	 */
-	public static TerrainFamily getTerrainFamily (Entry entry) {
-		int code = entry.get (15);
-		return TerrainFamily.C00_AMBIENT.parseValue (code);
+	public static TerrainFamily getTerrainFamily(Entry entry) {
+		final int code = entry.get(15);
+		return TerrainFamily.C00_AMBIENT.parseValue(code);
 	}
 
 	/**
@@ -361,38 +361,38 @@ public enum EffectCode implements EnumValue {
 	 * @param entry The entry
 	 * @return The attribute name/code
 	 */
-	public static Object getAttribute (Entry entry) {
-		int attributeCode = (int) entry.get (11);
-		AttributeCode attribute = AttributeCode.C01_ATTACK.parseValue (attributeCode);
+	public static Object getAttribute(Entry entry) {
+		final int attributeCode = (int) entry.get(11);
+		final AttributeCode attribute = AttributeCode.C01_ATTACK.parseValue(attributeCode);
 		if (attribute != null) {
 			switch (attribute) {
 				case C23_POP_LIMIT:
 				case C38_COMMERCIAL_TAXES:
-					return attribute.name + ' ' + getAttributeValue (entry);
+					return attribute.name + ' ' + getAttributeValue(entry);
 				case C40_AREA_EFFECT:
-					return getObjectSet (entry) + "  >  " + attribute.name + " = " + getAreaEffect (entry);
+					return getObjectSet(entry) + "  >  " + attribute.name + " = " + getAreaEffect(entry);
 				case C42_TERRAIN_FAMILY:
-					return getObjectSet (entry) + "  >  " + attribute.name + " (" + getTerrainFamily (entry) + ") = "
-							+ ((Float) entry.get (2) > 0 ? "enable" : "disable");
+					return getObjectSet(entry) + "  >  " + attribute.name + " (" + getTerrainFamily(entry) + ") = "
+							+ ((Float) entry.get(2) > 0 ? "enable" : "disable");
 				case C45_NAME:
-					Float langID = entry.get (2);
+					final Float langID = entry.get(2);
 					if (langID > 0) {
-						return getObjectSet (entry) + "  >  " + attribute.name + " = "
-								+ Language.getMap ().get (langID.intValue ());
+						return getObjectSet(entry) + "  >  " + attribute.name + " = "
+								+ Language.getMap().get(langID.intValue());
 					}
-					return getObjectSet (entry) + "  >  " + attribute.name + " = (" + langID + ')';
+					return getObjectSet(entry) + "  >  " + attribute.name + " = (" + langID + ')';
 				default:
-					return getObjectSetTech (entry) + "  >  " + attribute.name + getAttributeValue (entry);
+					return getObjectSetTech(entry) + "  >  " + attribute.name + getAttributeValue(entry);
 			}
 		}
-		return getObjectSetTech (entry) + "  >  " + attributeCode;
+		return getObjectSetTech(entry) + "  >  " + attributeCode;
 	}
 
-	private static DecimalFormat df = new DecimalFormat ("#.##");
+	private static DecimalFormat df = new DecimalFormat("#.##");
 	static {
-		df.setRoundingMode (RoundingMode.HALF_DOWN);
-		df.setDecimalSeparatorAlwaysShown (false);
-		df.setPositivePrefix ("+");
+		df.setRoundingMode(RoundingMode.HALF_DOWN);
+		df.setDecimalSeparatorAlwaysShown(false);
+		df.setPositivePrefix("+");
 	}
 
 	/**
@@ -402,17 +402,17 @@ public enum EffectCode implements EnumValue {
 	 * @param entry The entry
 	 * @return The string for the attribute's value
 	 */
-	public static String getAttributeValue (Entry entry) {
-		float val = entry.get (2); // Set value to "val"
+	public static String getAttributeValue(Entry entry) {
+		float val = entry.get(2); // Set value to "val"
 		if (val != 0) {
 			return " = " + val;
 		}
-		val = entry.get (3); // Alter value by "val"
+		val = entry.get(3); // Alter value by "val"
 		if (val != 0) {
 			return (val > 0 ? " + " + val : " - " + -val);
 		}
-		val = 100 * (Float) entry.get (4); // Alter multiplier by "val"
-		return ' ' + df.format (val) + '%';
+		val = 100 * (Float) entry.get(4); // Alter multiplier by "val"
+		return ' ' + df.format(val) + '%';
 	}
 
 }

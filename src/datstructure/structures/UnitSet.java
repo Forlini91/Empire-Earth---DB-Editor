@@ -1,13 +1,10 @@
 package datstructure.structures;
 
+import java.io.IOException;
 import java.util.List;
 
 import datstructure.DatStructure;
-import datstructure.DatStructureParse;
-import datstructure.DatStructureParse.ParseState;
 import datstructure.Entry;
-import datstructure.FieldStruct;
-import datstructure.FieldType;
 
 
 /**
@@ -15,31 +12,22 @@ import datstructure.FieldType;
  *
  * @author MarcoForlini
  */
-@DatStructureParse (Vanilla = ParseState.COMPLETE, AOC = ParseState.COMPLETE)
 public class UnitSet extends DatStructure {
 
 	/**
 	 * Unique instance of this structure
 	 */
-	public static final UnitSet instance = new UnitSet ();
+	public static final UnitSet instance = new UnitSet();
 
 	/**
 	 * Creates a new {@link UnitSet}
 	 */
-	private UnitSet () {
-		super ("Unit sets", "dbunitset.dat", true, 0, 1, 0, 0, 1, 2, 3, 150, 200);
+	private UnitSet() {
+		super("Unit sets", "dbunitset.dat", true, 0, 1, 0, 0, 1, 2, 3, 150, 200);
 	}
 
 	@Override
-	public void init () {
-		fieldStructs = new FieldStruct[] {
-				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, FieldStruct.ID, ID_FAMILY,
-				ID_FAMILY, ID_FAMILY, ID_FAMILY, ID_FAMILY,
-				ID_FAMILY, ID_FAMILY, ID_FAMILY, ID_OBJECT,
-				ID_OBJECT, ID_OBJECT, ID_OBJECT, ID_OBJECT,
-				ID_OBJECT, ID_OBJECT, ID_OBJECT, new FieldStruct ("Include unit set...", UnitSet.instance, 0),
-				new FieldStruct ("Exclude unit set", UnitSet.instance, 0), new FieldStruct ("Is the first set in the list", FieldType.INTEGER)
-		};
+	public void customInit() throws IOException {
 		newEntryValues = new Object[] {
 				"<New unit set>", 0, -1, 0, 0, 0, 0, 0,
 				0, 0, 0, -1, -1, -1, -1, -1,
@@ -48,22 +36,22 @@ public class UnitSet extends DatStructure {
 	}
 
 	@Override
-	public int indexExtraFields () {
+	public int indexExtraFields() {
 		return -1;
 	}
 
 	@Override
-	public boolean hasCustomEntryName () {
+	public boolean hasCustomEntryName() {
 		return false;
 	}
 
 	@Override
-	public String getCustomEntryName (int index, List <Object> values) {
+	public String getCustomEntryName(int index, List<Object> values) {
 		return null;
 	}
 
 	@Override
-	public String getEntryDescription (Entry entry) {
+	public String getEntryDescription(Entry entry) {
 		return null;
 	}
 

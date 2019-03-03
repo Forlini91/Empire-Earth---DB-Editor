@@ -1,13 +1,11 @@
 package datstructure.structures;
 
+import java.io.IOException;
 import java.util.List;
 
 import datstructure.DatStructure;
-import datstructure.DatStructureParse;
-import datstructure.DatStructureParse.ParseState;
 import datstructure.Entry;
 import datstructure.FieldStruct;
-import datstructure.FieldType;
 
 
 /**
@@ -15,49 +13,45 @@ import datstructure.FieldType;
  *
  * @author MarcoForlini
  */
-@DatStructureParse (Vanilla = ParseState.COMPLETE, AOC = ParseState.COMPLETE)
 public class Events extends DatStructure {
 
 	/**
 	 * Unique instance of this structure
 	 */
-	public static final Events instance = new Events ();
+	public static final Events instance = new Events();
 
 	/**
 	 * Creates a new {@link Events}
 	 */
-	private Events () {
-		super ("Events", "dbevents.dat", false, 0, 1, 1, 0, 1, -1, 2, 125, 175);
+	private Events() {
+		super("Events", "dbevents.dat", false, 0, 1, 1, 0, 1, -1, 2, 125, 175);
 	}
 
 	@Override
-	public void init () {
-		extraField = new FieldStruct ("Effect", Effects.instance, 0);
-		fieldStructs = new FieldStruct[] {
-				FieldStruct.NAME, FieldStruct.SEQ_NUMBER, new FieldStruct ("Num effects", FieldType.INTEGER, 4, false),
-		};
+	public void customInit() throws IOException {
+		extraField = new FieldStruct("Effect", Effects.instance, 0);
 		newEntryValues = new Object[] {
 				"<New event>", 0, 0
 		};
 	}
 
 	@Override
-	public int indexExtraFields () {
+	public int indexExtraFields() {
 		return fieldStructs.length - 1;
 	}
 
 	@Override
-	public boolean hasCustomEntryName () {
+	public boolean hasCustomEntryName() {
 		return false;
 	}
 
 	@Override
-	public String getCustomEntryName (int index, List <Object> values) {
+	public String getCustomEntryName(int index, List<Object> values) {
 		return null;
 	}
 
 	@Override
-	public String getEntryDescription (Entry entry) {
+	public String getEntryDescription(Entry entry) {
 		return null;
 	}
 

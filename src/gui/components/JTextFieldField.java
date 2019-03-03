@@ -11,7 +11,6 @@ import javax.swing.event.DocumentListener;
 
 import datmanager.Util;
 import datstructure.FieldStruct;
-import datstructure.FieldType;
 
 
 /**
@@ -21,39 +20,40 @@ import datstructure.FieldType;
  */
 public class JTextFieldField extends JTextField implements EntryFieldInterface, FocusListener, DocumentListener {
 
-	private static final long				serialVersionUID	= -7134081240220832439L;
-	private static final Color				BROWN				= new Color (127, 51, 0);
-	private static final Consumer <String>	nullUpdater			= text -> {/* Do nothing */};
+	private static final long serialVersionUID = -7134081240220832439L;
+	private static final Color BROWN = new Color(127, 51, 0);
+	private static final Consumer<String> nullUpdater = text -> {
+		/* Do nothing */};
 
-	private final FieldStruct				fieldStruct;
-	private final int						index;
-	private final Color						defaultColor;
-	private Object							defaultVal			= null;
-	private boolean							altered				= false;
-	private Consumer <String>				updater				= nullUpdater;
+	private final FieldStruct fieldStruct;
+	private final int index;
+	private final Color defaultColor;
+	private Object defaultVal = null;
+	private boolean altered = false;
+	private Consumer<String> updater = nullUpdater;
 
 
 	/**
 	 * Create a new {@link JTextFieldField}
 	 *
 	 * @param fieldStruct The field structure
-	 * @param index Index of the field
+	 * @param index       Index of the field
 	 */
-	public JTextFieldField (FieldStruct fieldStruct, int index) {
+	public JTextFieldField(FieldStruct fieldStruct, int index) {
 		this.fieldStruct = fieldStruct;
 		this.index = index;
-		if (fieldStruct.getColor () == Color.RED) {
+		if (fieldStruct.getColor() == Color.RED) {
 			defaultColor = BROWN;
 		} else {
-			defaultColor = fieldStruct.getColor ();
+			defaultColor = fieldStruct.getColor();
 		}
-		setColumns (10);
-		setEditable (fieldStruct.isEditable ());
-		setForeground (defaultColor);
-		setCaretPosition (0);
+		setColumns(10);
+		setEditable(fieldStruct.isEditable());
+		setForeground(defaultColor);
+		setCaretPosition(0);
 
-		addFocusListener (this);
-		getDocument ().addDocumentListener (this);
+		addFocusListener(this);
+		getDocument().addDocumentListener(this);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class JTextFieldField extends JTextField implements EntryFieldInterface, 
 	 *
 	 * @param updater The updater function
 	 */
-	public void registerUpdater (Consumer <String> updater) {
+	public void registerUpdater(Consumer<String> updater) {
 		if (updater != null) {
 			this.updater = updater;
 		} else {
@@ -70,94 +70,91 @@ public class JTextFieldField extends JTextField implements EntryFieldInterface, 
 	}
 
 	@Override
-	public void resetColor () {
-		setForeground (defaultColor);
+	public void resetColor() {
+		setForeground(defaultColor);
 	}
 
 	@Override
-	public FieldStruct getEntryStruct () {
-		return fieldStruct;
-	}
+	public FieldStruct getEntryStruct() { return fieldStruct; }
 
 	@Override
-	public int getIndex () {
-		return index;
-	}
+	public int getIndex() { return index; }
 
 	@Override
-	public Object getVal () {
-		switch (fieldStruct.getType ()) {
+	public Object getVal() {
+		switch (fieldStruct.getType()) {
 			case STRING:
-				return getText ();
+			case DYNAMIC_STRING:
+				return getText();
 			case FLOAT:
-				return Float.valueOf (getText ());
+				return Float.valueOf(getText());
 			default:
-				if (getText ().isEmpty ()) {
+				if (getText().isEmpty()) {
 					return 0;
 				}
-				return Integer.valueOf (getText ());
+				return Integer.valueOf(getText());
 		}
 	}
 
 	@Override
-	public void setVal (Object value) {
+	public void setVal(Object value) {
 		defaultVal = value;
-		if (fieldStruct.getType () == FieldType.STRING) {
-			setText (((String) value).trim ());
-		} else {
-			if (value instanceof Float) {
-				setText (Util.numberFormat.format ((float) value));
-			} else {
-				setText (Integer.toString ((int) value));
-			}
+		switch (fieldStruct.getType()) {
+			case STRING:
+			case DYNAMIC_STRING:
+				setText(((String) value).trim());
+				break;
+			default:
+				if (value instanceof Float) {
+					setText(Util.numberFormat.format((float) value));
+				} else {
+					setText(Integer.toString((int) value));
+				}
 		}
-		setCaretPosition (0);
+		setCaretPosition(0);
 		altered = false;
 	}
 
 	@Override
-	public boolean isAltered () {
-		return altered;
+	public boolean isAltered() { return altered; }
+
+	@Override
+	public Object getDefaultVal() { return defaultVal; }
+
+	@Override
+	public void refreshField() {
+		/* Do nothing */}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		repaint();
 	}
 
 	@Override
-	public Object getDefaultVal () {
-		return defaultVal;
-	}
-
-	@Override
-	public void refreshField () {/* Do nothing */}
-
-	@Override
-	public void focusGained (FocusEvent e) {
-		repaint ();
-	}
-
-	@Override
-	public void focusLost (FocusEvent e) {
-		repaint ();
+	public void focusLost(FocusEvent e) {
+		repaint();
 	}
 
 
 	@Override
-	public void insertUpdate (DocumentEvent e) {
+	public void insertUpdate(DocumentEvent e) {
 		altered = true;
-		String str = getText ();
-		updater.accept (str);
+		final String str = getText();
+		updater.accept(str);
 	}
 
 	@Override
-	public void removeUpdate (DocumentEvent e) {
+	public void removeUpdate(DocumentEvent e) {
 		altered = true;
-		String str = getText ();
-		updater.accept (str);
+		final String str = getText();
+		updater.accept(str);
 	}
 
 	@Override
-	public void changedUpdate (DocumentEvent e) {
+	public void changedUpdate(DocumentEvent e) {
 		altered = true;
-		String str = getText ();
-		updater.accept (str);
+		final String str = getText();
+		updater.accept(str);
 	}
 
 }

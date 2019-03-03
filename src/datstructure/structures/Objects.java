@@ -1,160 +1,34 @@
 package datstructure.structures;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.IntStream;
 
-import constants.ObjectType;
-import constants.ResourceType;
-import constants.UnitType;
-import constants.WonderType;
 import datmanager.Core;
 import datstructure.DatStructure;
-import datstructure.DatStructureParse;
-import datstructure.DatStructureParse.ParseState;
 import datstructure.Entry;
-import datstructure.FieldStruct;
-import datstructure.FieldType;
-import datstructure.Knowledge;
-
 
 /**
  * Represents the file dbobjects.dat
  *
  * @author MarcoForlini
  */
-@DatStructureParse (Vanilla = ParseState.MISSING_UNKNOWN, AOC = ParseState.MISSING_UNKNOWN)
 public class Objects extends DatStructure {
 
 	/**
 	 * Unique instance of this structure
 	 */
-	public static final Objects instance = new Objects ();
+	public static final Objects instance = new Objects();
 
 	/**
 	 * Creates a new {@link Objects}
 	 */
-	private Objects () {
-		super ("Objects", "dbobjects.dat", true, 0, 1, 0, 0, 1, 5, 4, 125, 175);
+	private Objects() {
+		super("Objects", "dbobjects.dat", true, 0, 1, 0, 0, 1, 5, 4, 125, 175);
 	}
 
 	@Override
-	public void init () {
-		if (!Core.isAOC ()) { // File structure has been changed in AOC
-			fieldStructs = new FieldStruct[] {
-					FieldStruct.NAME, FieldStruct.SEQ_NUMBER, new FieldStruct ("Family ID", "Object belong to this family", Family.instance, 0), FieldStruct.UNKNOWN_INT4,
-					FieldStruct.UNKNOWN_INT4, FieldStruct.ID, new FieldStruct ("Health", FieldType.INTEGER), FieldStruct.UNKNOWN_INT4,
-					new FieldStruct ("Min range", FieldType.FLOAT), new FieldStruct ("Max range", FieldType.FLOAT), new FieldStruct ("Line of sight", FieldType.FLOAT), new FieldStruct ("Attack reload time", FieldType.FLOAT),
-					new FieldStruct ("Area of effect", FieldType.FLOAT), new FieldStruct ("Speed", FieldType.FLOAT), new FieldStruct ("Acceleration/Deceleration", FieldType.FLOAT), new FieldStruct ("Idle turning speed", FieldType.FLOAT),
-					new FieldStruct ("Moving turning speed", FieldType.FLOAT), FieldStruct.UNKNOWN_FLOAT, new FieldStruct ("<PROBABLY> Is air unit", FieldType.INTEGER), new FieldStruct ("Flight time", FieldType.INTEGER),
-					FieldStruct.UNKNOWN_FLOAT, new FieldStruct ("Attack angle", FieldType.FLOAT), new FieldStruct ("<PROBABLY> Attack from the side", FieldType.INTEGER), ID_WEAPON_TO_HIT,
-					new FieldStruct ("Attack", FieldType.INTEGER), new FieldStruct ("Shock armor", FieldType.INTEGER), new FieldStruct ("Arrow armor", FieldType.INTEGER), new FieldStruct ("Pierce armor", FieldType.INTEGER),
-					new FieldStruct ("Gun armor", FieldType.INTEGER), new FieldStruct ("Laser armor", FieldType.INTEGER), new FieldStruct ("Missile armor", FieldType.INTEGER), new FieldStruct ("Projectile ID", Objects.instance, 0),
-					new FieldStruct ("Family attack type", "Decides the type of family resistance used by the user", IntStream.range (0, 66).boxed ().toArray (Integer[]::new)), FieldStruct.UNKNOWN_INT4, new FieldStruct ("Graphic size", FieldType.FLOAT), new FieldStruct ("TAI Script", FieldType.STRING, 52),
-					new FieldStruct ("Unit type", UnitType.values ()), FieldStruct.UNUSED_INT4, ID_BUTTON, ID_GRAPHIC,
-					new FieldStruct ("Build rate", FieldType.FLOAT), new FieldStruct ("Iron gather rate", FieldType.FLOAT), new FieldStruct ("Farm gather rate", FieldType.FLOAT), new FieldStruct ("Gold gather rate", FieldType.FLOAT),
-					new FieldStruct ("Stone gather rate", FieldType.FLOAT), new FieldStruct ("Wood gather rate", FieldType.FLOAT), new FieldStruct ("Hunt gather rate", FieldType.FLOAT), new FieldStruct ("Forage gather rate", FieldType.FLOAT),
-					new FieldStruct ("Creation sound", Sounds.instance, 0), new FieldStruct ("Action sound 1", Sounds.instance, 0), new FieldStruct ("Action sound 2", Sounds.instance, 0), new FieldStruct ("Selection sound 1", Sounds.instance, 0),
-					new FieldStruct ("Selection sound 2", Sounds.instance, 0), new FieldStruct ("Death sound", Sounds.instance, 0), new FieldStruct ("<PROBABLY> Can build", FieldType.BOOLEAN), ID_BUTTON_COMMAND,
-					ID_BUTTON_COMMAND, ID_BUTTON_COMMAND, ID_BUTTON_COMMAND, ID_BUTTON_COMMAND,
-					ID_BUTTON_COMMAND, ID_BUTTON_COMMAND, ID_BUTTON_COMMAND, ID_BUTTON_COMMAND,
-					FieldStruct.UNCHANGED_INT4, new FieldStruct ("Square occupied", FieldType.INTEGER), new FieldStruct ("Resource type", ResourceType.values ()), new FieldStruct ("Resource amount", FieldType.FLOAT),
-					new FieldStruct ("Always face camera", FieldType.INTEGER), FieldStruct.UNKNOWN_INT4, new FieldStruct ("Rotting time", FieldType.FLOAT), new FieldStruct ("Population count", FieldType.INTEGER),
-					new FieldStruct ("Transport capacity", FieldType.INTEGER), new FieldStruct ("Show area effect stat"), new FieldStruct ("Show repair stat", "Don't know what's this stat"), new FieldStruct ("Show shock armor stat"),
-					new FieldStruct ("Show pierce armor stat"), new FieldStruct ("Show arrow armor stat"), new FieldStruct ("Show laser armor stat"), new FieldStruct ("Show gun armor stat"),
-					new FieldStruct ("Show missile armor stat"), new FieldStruct ("Show range", FieldType.INTEGER), new FieldStruct ("Morale bonus", "Requires an AreaEffect", FieldType.INTEGER), FieldStruct.UNKNOWN_INT4,
-					FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_INT4, new FieldStruct ("Flight altitude", FieldType.FLOAT),
-					FieldStruct.ID_LANGUAGE, FieldStruct.UNKNOWN_INT4, new FieldStruct ("Healer heal amount", FieldType.INTEGER), new FieldStruct ("Health regeneration", FieldType.INTEGER),
-					new FieldStruct ("Can garrison in air transports"), new FieldStruct ("Can garrison in land transports"), new FieldStruct ("Can garrison in sea transports"), FieldStruct.UNUSED_INT1,
-					new FieldStruct ("Object type", ObjectType.values ()), FieldStruct.UNKNOWN_INT4, new FieldStruct ("Circle selection size", FieldType.FLOAT), new FieldStruct ("Shadow size", FieldType.FLOAT),
-					FieldStruct.UNUSED_INT4, new FieldStruct ("Size in formation", FieldType.FLOAT), new FieldStruct ("Size of collider", FieldType.FLOAT), new FieldStruct ("Collidable"),
-					FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_FLOAT,
-					new FieldStruct ("Initial projectile angle", FieldType.FLOAT), new FieldStruct ("Ammo amount", FieldType.INTEGER), new FieldStruct ("<PROBABLY> Drop bombs"), FieldStruct.UNKNOWN_BOOL1,
-					FieldStruct.UNKNOWN_BOOL1, new FieldStruct ("<PROBABLY> Parabolic projectile"), FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
-					new FieldStruct ("Category 1", FieldType.INTEGER), new FieldStruct ("Category 2", FieldType.INTEGER), new FieldStruct ("Category 3", FieldType.INTEGER), new FieldStruct ("Category 4", FieldType.INTEGER),
-					FieldStruct.UNKNOWN_INT4, ID_UPGRADE, new FieldStruct ("<Used by units/buildings who can convert>", FieldType.INTEGER), FieldStruct.UNKNOWN_FLOAT,
-					new FieldStruct ("Can be owned by a player", "In the editor you can place this object as belonging to a player"), new FieldStruct ("Can be owned by \"World\"", "In the editor you can place this object as belonging to \"World\""), FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
-					new FieldStruct ("You can kill this object with Delete key"), FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT1, FieldStruct.UNUSED_INT1,
-					new FieldStruct ("Low health effect ID", GFXEffects.instance, 0), new FieldStruct ("Death effect ID", GFXEffects.instance, 0), new FieldStruct ("Start of attack ID", GFXEffects.instance, 0), ID_GFX_UNKNOWN,
-					new FieldStruct ("Movement effect", GFXEffects.instance, 0), ID_GFX_UNKNOWN, new FieldStruct ("Heal other effect ID", GFXEffects.instance, 0), ID_GFX_UNKNOWN,
-					ID_GFX_UNKNOWN, new FieldStruct ("Get hit effect ID", GFXEffects.instance, 0), new FieldStruct ("Permanent effect", GFXEffects.instance, 0), ID_GFX_UNUSED,
-					new FieldStruct ("Projectile effect", GFXEffects.instance, 0), ID_GFX_UNUSED, ID_GFX_UNUSED, ID_GFX_UNUSED,
-					ID_GFX_UNUSED, ID_GFX_UNUSED, ID_GFX_UNKNOWN, new FieldStruct ("<only used by volcano-projectile and meteor>", FieldType.INTEGER),
-					new FieldStruct ("Attack effect ID", GFXEffects.instance, 0), new FieldStruct ("Disease effect ID 1", GFXEffects.instance, 0), new FieldStruct ("Disease effect ID 2", GFXEffects.instance, 0), new FieldStruct ("Diffraction shield effect ID", GFXEffects.instance, 0),
-					new FieldStruct ("Pulse cannon effect ID", GFXEffects.instance, 0), new FieldStruct ("Battle cry effect ID", GFXEffects.instance, 0), new FieldStruct ("Bomb hole effect ID", GFXEffects.instance, 0), ID_GFX_UNUSED,
-					ID_GFX_UNKNOWN, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct ("<only used by ships>", FieldType.FLOAT),
-					FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
-					new FieldStruct ("Terrain: Grass, Snow"), new FieldStruct ("Elevation: Deep water"), new FieldStruct ("Terrain: Rock, Stones and Artificial"), FieldStruct.UNKNOWN_BOOL1,
-					FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
-					FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, new FieldStruct ("Terrain: Asphalt"), new FieldStruct ("Elevation: cliffs"),
-					new FieldStruct ("Elevation: Shallow water"), FieldStruct.UNKNOWN_BOOL1, new FieldStruct ("Terrain: Sand"), new FieldStruct ("Terrain: Space"),
-					FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT1, FieldStruct.UNUSED_INT1, FieldStruct.UNUSED_INT1,
-					ID_AREA_EFFECT, ID_AREA_EFFECT, ID_AREA_EFFECT, ID_AREA_EFFECT,
-					FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct ("Carry capacity", FieldType.FLOAT),
-					FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_BOOL1,
-					FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_INT1, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-					new FieldStruct ("Debris on death", Objects.instance, 0), new FieldStruct ("Debris on death", Objects.instance, 0), FieldStruct.UNKNOWN_INT4, new FieldStruct ("Stealth discover range", "If stealthy, enemies won't detect it as long as they are outside this range", FieldType.INTEGER),
-					new FieldStruct ("Interaction type", FieldType.INTEGER), new FieldStruct ("Max citizens garrison", FieldType.INTEGER), new FieldStruct ("Initial garrisoned citizens", FieldType.INTEGER), new FieldStruct ("Garrison upgrade object to", TechTree.instance, 0),
-					new FieldStruct ("Plane refuel location", FieldType.INTEGER), new FieldStruct ("Healing range / Ability range", FieldType.INTEGER), new FieldStruct ("Wonder bonus", WonderType.values ()), new FieldStruct ("Effect apply to", UnitSet.instance, 0),
-					FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, new FieldStruct ("Friendly damage mult", FieldType.FLOAT), new FieldStruct ("Garrisoned citizens bonus", FieldType.FLOAT),
-					FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-					new FieldStruct ("Num techs it can build", FieldType.INTEGER, 4, false), ID_TECH, new FieldStruct ("Is building?"), new FieldStruct ("Stealth"),
-					FieldStruct.UNKNOWN_BOOL1, new FieldStruct ("<Seems related to aircraft, but the clubman...>", FieldType.INTEGER, 1), FieldStruct.UNKNOWN_INT4, new FieldStruct ("Spawn on death", Objects.instance, 0),
-					new FieldStruct ("Power", FieldType.INTEGER), new FieldStruct ("Power recover rate", FieldType.INTEGER), new FieldStruct ("Default stance", UnitBehavior.instance, 0), new FieldStruct ("Conversion time", FieldType.INTEGER),
-					FieldStruct.UNKNOWN_FLOAT, new FieldStruct ("<It seems heal power, but the roman legionnaire...>", FieldType.FLOAT, 4, Knowledge.UNKNOWN), FieldStruct.UNKNOWN_FLOAT, new FieldStruct ("<PROBABLY> Load range", FieldType.FLOAT),
-					new FieldStruct ("<PROBABLY> Unload range", FieldType.FLOAT), new FieldStruct ("Can walk through trees"), FieldStruct.UNUSED_BOOL1, FieldStruct.UNKNOWN_BOOL1,
-					new FieldStruct ("Can attack area"), new FieldStruct ("<PROBABLY> Melee attack"), new FieldStruct ("Garrison heal rate", FieldType.INTEGER, 1), FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_INT1,
-					new FieldStruct ("Unknown string", FieldType.STRING, 100), new FieldStruct ("Unknown string", FieldType.STRING, 100),
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-			};
+	public void customInit() throws IOException {
+		if (!Core.isAOC()) { // File structure has been changed in AOC
 			newEntryValues = new Object[] {
 					"<New object>", 0, -1, -1, 0, -1, 0, 0,
 					0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
@@ -214,129 +88,7 @@ public class Objects extends DatStructure {
 					-1, -1, -1, -1, -1, -1, -1, -1,
 					-1, -1, -1, -1, -1, -1, -1, -1,
 			};
-
-
-
 		} else {
-
-
-
-			fieldStructs = new FieldStruct[] {
-					FieldStruct.NAME, FieldStruct.SEQ_NUMBER, new FieldStruct ("Family ID", "Object belong to this family", Family.instance, 0), FieldStruct.UNKNOWN_INT4,
-					FieldStruct.UNKNOWN_INT4, FieldStruct.ID, new FieldStruct ("Health", FieldType.INTEGER), FieldStruct.UNKNOWN_INT4,
-					new FieldStruct ("Min range", FieldType.FLOAT), new FieldStruct ("Max range", FieldType.FLOAT), new FieldStruct ("Line of sight", FieldType.FLOAT), new FieldStruct ("Attack reload time", FieldType.FLOAT),
-					new FieldStruct ("Area of effect", FieldType.FLOAT), new FieldStruct ("Speed", FieldType.FLOAT), new FieldStruct ("Acceleration/Deceleration", FieldType.FLOAT), new FieldStruct ("Idle turning speed", FieldType.FLOAT),
-					new FieldStruct ("Moving turning speed", FieldType.FLOAT), FieldStruct.UNKNOWN_FLOAT, new FieldStruct ("<PROBABLY> Is air unit", FieldType.INTEGER), new FieldStruct ("Flight time", FieldType.INTEGER),
-					FieldStruct.UNKNOWN_FLOAT, new FieldStruct ("Attack angle", FieldType.FLOAT), new FieldStruct ("<PROBABLY> Attack from the side", FieldType.INTEGER), ID_WEAPON_TO_HIT,
-					new FieldStruct ("Attack", FieldType.INTEGER), new FieldStruct ("Shock armor", FieldType.INTEGER), new FieldStruct ("Arrow armor", FieldType.INTEGER), new FieldStruct ("Pierce armor", FieldType.INTEGER),
-					new FieldStruct ("Gun armor", FieldType.INTEGER), new FieldStruct ("Laser armor", FieldType.INTEGER), new FieldStruct ("Missile armor", FieldType.INTEGER), new FieldStruct ("Projectile ID", Objects.instance, 0),
-					new FieldStruct ("Family attack type", "Decides the type of family resistance used by the user", IntStream.range (0, 66).boxed ().toArray (Integer[]::new)), FieldStruct.UNKNOWN_INT4, new FieldStruct ("Graphic size", FieldType.FLOAT), new FieldStruct ("TAI Script", FieldType.STRING, 52),
-					new FieldStruct ("Unit type", UnitType.values ()), FieldStruct.UNUSED_INT4, ID_BUTTON, ID_GRAPHIC,
-					new FieldStruct ("Build rate", FieldType.FLOAT), new FieldStruct ("Iron gather rate", FieldType.FLOAT), new FieldStruct ("Farm gather rate", FieldType.FLOAT), new FieldStruct ("Gold gather rate", FieldType.FLOAT),
-					new FieldStruct ("Stone gather rate", FieldType.FLOAT), new FieldStruct ("Wood gather rate", FieldType.FLOAT), new FieldStruct ("Hunt gather rate", FieldType.FLOAT), new FieldStruct ("Forage gather rate", FieldType.FLOAT),
-					new FieldStruct ("Creation sound", Sounds.instance, 0), new FieldStruct ("Action sound 1", Sounds.instance, 0), new FieldStruct ("Action sound 2", Sounds.instance, 0), new FieldStruct ("Selection sound 1", Sounds.instance, 0),
-					new FieldStruct ("Selection sound 2", Sounds.instance, 0), new FieldStruct ("Death sound", Sounds.instance, 0), new FieldStruct ("<PROBABLY> Can build", FieldType.BOOLEAN), ID_BUTTON_COMMAND,
-					ID_BUTTON_COMMAND, ID_BUTTON_COMMAND, ID_BUTTON_COMMAND, ID_BUTTON_COMMAND,
-					ID_BUTTON_COMMAND, ID_BUTTON_COMMAND, ID_BUTTON_COMMAND, ID_BUTTON_COMMAND,
-					FieldStruct.UNCHANGED_INT4, new FieldStruct ("Square occupied", FieldType.INTEGER), new FieldStruct ("Resource type", ResourceType.values ()), new FieldStruct ("Resource amount", FieldType.FLOAT),
-					new FieldStruct ("Always face camera", FieldType.INTEGER), FieldStruct.UNKNOWN_INT4, new FieldStruct ("Rotting time", FieldType.FLOAT), new FieldStruct ("Population count", FieldType.INTEGER),
-					new FieldStruct ("Transport capacity", FieldType.INTEGER), new FieldStruct ("Show area effect stat"), new FieldStruct ("Show repair stat", "Don't know what's this stat"), new FieldStruct ("Show shock armor stat"),
-					new FieldStruct ("Show pierce armor stat"), new FieldStruct ("Show arrow armor stat"), new FieldStruct ("Show laser armor stat"), new FieldStruct ("Show gun armor stat"),
-					new FieldStruct ("Show missile armor stat"), new FieldStruct ("Show range", FieldType.INTEGER), new FieldStruct ("Morale bonus", "Requires an AreaEffect", FieldType.INTEGER), FieldStruct.UNKNOWN_INT4,
-					FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_INT4, new FieldStruct ("Flight altitude", FieldType.FLOAT),
-					FieldStruct.ID_LANGUAGE, FieldStruct.UNKNOWN_INT4, new FieldStruct ("Healer heal amount", FieldType.INTEGER), new FieldStruct ("Health regeneration", FieldType.INTEGER),
-					new FieldStruct ("Can garrison in air transports"), new FieldStruct ("Can garrison in land transports"), new FieldStruct ("Can garrison in sea transports"), FieldStruct.UNUSED_INT1,
-					new FieldStruct ("Object type", ObjectType.values ()), FieldStruct.UNKNOWN_INT4, new FieldStruct ("Circle selection size", FieldType.FLOAT), new FieldStruct ("Shadow size", FieldType.FLOAT),
-					FieldStruct.UNUSED_INT4, new FieldStruct ("Size in formation", FieldType.FLOAT), new FieldStruct ("Size of collider", FieldType.FLOAT), new FieldStruct ("Collidable"),
-					FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_FLOAT,
-					new FieldStruct ("Initial projectile angle", FieldType.FLOAT), new FieldStruct ("Ammo amount", FieldType.INTEGER), new FieldStruct ("<PROBABLY> Drop bombs"), FieldStruct.UNKNOWN_BOOL1,
-					FieldStruct.UNKNOWN_BOOL1, new FieldStruct ("<PROBABLY> Parabolic projectile"), FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4,
-					new FieldStruct ("Category 1", FieldType.INTEGER), new FieldStruct ("Category 2", FieldType.INTEGER), new FieldStruct ("Category 3", FieldType.INTEGER), new FieldStruct ("Category 4", FieldType.INTEGER),
-					FieldStruct.UNKNOWN_INT4, ID_UPGRADE, new FieldStruct ("<Used by units/buildings who can convert>", FieldType.INTEGER), FieldStruct.UNKNOWN_FLOAT,
-					new FieldStruct ("Can be owned by a player", "In the editor you can place this object as belonging to a player"), new FieldStruct ("Can be owned by \"World\"", "In the editor you can place this object as belonging to \"World\""), FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
-					new FieldStruct ("You can kill this object with Delete key"), FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_INT1, FieldStruct.UNUSED_INT1,
-					new FieldStruct ("Low health effect ID", GFXEffects.instance, 0), new FieldStruct ("Death effect ID", GFXEffects.instance, 0), new FieldStruct ("Start of attack ID", GFXEffects.instance, 0), ID_GFX_UNKNOWN,
-					new FieldStruct ("Movement effect", GFXEffects.instance, 0), ID_GFX_UNKNOWN, new FieldStruct ("Heal other effect ID", GFXEffects.instance, 0), ID_GFX_UNKNOWN,
-					ID_GFX_UNKNOWN, new FieldStruct ("Get hit effect ID", GFXEffects.instance, 0), new FieldStruct ("Permanent effect", GFXEffects.instance, 0), ID_GFX_UNUSED,
-					new FieldStruct ("Projectile effect", GFXEffects.instance, 0), ID_GFX_UNUSED, ID_GFX_UNUSED, ID_GFX_UNUSED,
-					ID_GFX_UNUSED, ID_GFX_UNUSED, ID_GFX_UNKNOWN, new FieldStruct ("<only used by volcano-projectile and meteor>", FieldType.INTEGER),
-					new FieldStruct ("Attack effect ID", GFXEffects.instance, 0), new FieldStruct ("Disease effect ID 1", GFXEffects.instance, 0), new FieldStruct ("Disease effect ID 2", GFXEffects.instance, 0), new FieldStruct ("Diffraction shield effect ID", GFXEffects.instance, 0),
-					new FieldStruct ("Pulse cannon effect ID", GFXEffects.instance, 0), new FieldStruct ("Battle cry effect ID", GFXEffects.instance, 0), new FieldStruct ("Bomb hole effect ID", GFXEffects.instance, 0), ID_GFX_UNUSED,
-					ID_GFX_UNKNOWN, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, new FieldStruct ("<only used by ships>", FieldType.FLOAT),
-					FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4,
-					new FieldStruct ("Terrain: Grass, Snow"), new FieldStruct ("Elevation: Deep water"), new FieldStruct ("Terrain: Rock, Stones and Artificial"), FieldStruct.UNKNOWN_BOOL1,
-					FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1,
-					FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, new FieldStruct ("Terrain: Asphalt"), new FieldStruct ("Elevation: cliffs"),
-					new FieldStruct ("Elevation: Shallow water"), FieldStruct.UNKNOWN_BOOL1, new FieldStruct ("Terrain: Sand"), new FieldStruct ("Terrain: Space"),
-					FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_INT1, FieldStruct.UNUSED_INT1,
-					ID_AREA_EFFECT, ID_AREA_EFFECT, ID_AREA_EFFECT, ID_AREA_EFFECT,
-					FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, new FieldStruct ("Carry capacity", FieldType.FLOAT),
-					FieldStruct.UNKNOWN_INT4, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_BOOL1,
-					FieldStruct.UNKNOWN_BOOL1, FieldStruct.UNUSED_INT1, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-					new FieldStruct ("Debris on death", Objects.instance, 0), new FieldStruct ("Debris on death", Objects.instance, 0), FieldStruct.UNKNOWN_INT4, new FieldStruct ("Stealth discover range", "If stealthy, enemies won't detect it as long as they are outside this range", FieldType.INTEGER),
-					new FieldStruct ("Interaction type", FieldType.INTEGER), new FieldStruct ("Max citizens garrison", FieldType.INTEGER), new FieldStruct ("Initial garrisoned citizens", FieldType.INTEGER), new FieldStruct ("Garrison upgrade object to", TechTree.instance, 0),
-					new FieldStruct ("Plane refuel location", FieldType.INTEGER), new FieldStruct ("Healing range / Ability range", FieldType.INTEGER), new FieldStruct ("Wonder bonus", WonderType.values ()), new FieldStruct ("Effect apply to", UnitSet.instance, 0),
-					FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNKNOWN_FLOAT, new FieldStruct ("Friendly damage mult", FieldType.FLOAT), new FieldStruct ("Garrison citizens bonus", FieldType.FLOAT),
-					FieldStruct.UNKNOWN_FLOAT, FieldStruct.UNUSED_INT4, FieldStruct.UNKNOWN_INT4, FieldStruct.UNKNOWN_INT4,
-					new FieldStruct ("Num techs it can build", FieldType.INTEGER, 4, false), ID_TECH, new FieldStruct ("Is building?"), new FieldStruct ("Stealth"),
-					FieldStruct.UNKNOWN_BOOL1, new FieldStruct ("<Seems related to aircraft, but the clubman...>", FieldType.INTEGER, 1), FieldStruct.UNKNOWN_INT4, new FieldStruct ("Spawn on death", Objects.instance, 0),
-					new FieldStruct ("Power", FieldType.INTEGER), new FieldStruct ("Power recover rate", FieldType.INTEGER), new FieldStruct ("Default stance", UnitBehavior.instance, 0), new FieldStruct ("Conversion time", FieldType.INTEGER),
-					FieldStruct.UNKNOWN_FLOAT, new FieldStruct ("<It seems heal power, but the roman legionnaire...>", FieldType.FLOAT, 4, Knowledge.UNKNOWN), FieldStruct.UNKNOWN_FLOAT, new FieldStruct ("<PROBABLY> Load range", FieldType.FLOAT),
-					new FieldStruct ("<PROBABLY> Unload range", FieldType.FLOAT), new FieldStruct ("Can walk through trees"), FieldStruct.UNUSED_BOOL1, FieldStruct.UNKNOWN_BOOL1,
-					new FieldStruct ("Can attack area"), new FieldStruct ("<PROBABLY> Melee attack"), new FieldStruct ("Garrison heal rate", FieldType.INTEGER, 1), FieldStruct.UNKNOWN_INT1, FieldStruct.UNKNOWN_INT1,
-					new FieldStruct ("Unknown string", FieldType.STRING, 100), new FieldStruct ("Unknown string", FieldType.STRING, 100),
-					FieldStruct.UNUSED_INT4, FieldStruct.UNUSED_INT4, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH,
-					ID_OBJECT_BUILD_TECH, ID_OBJECT_BUILD_TECH, FieldStruct.UNKNOWN_INT4
-			};
 			newEntryValues = new Object[] {
 					"<New object>", 0, -1, -1, 0, -1, 0, 0,
 					0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f,
@@ -401,22 +153,22 @@ public class Objects extends DatStructure {
 	}
 
 	@Override
-	public int indexExtraFields () {
+	public int indexExtraFields() {
 		return -1;
 	}
 
 	@Override
-	public boolean hasCustomEntryName () {
+	public boolean hasCustomEntryName() {
 		return false;
 	}
 
 	@Override
-	public String getCustomEntryName (int index, List <Object> values) {
+	public String getCustomEntryName(int index, List<Object> values) {
 		return null;
 	}
 
 	@Override
-	public String getEntryDescription (Entry entry) {
+	public String getEntryDescription(Entry entry) {
 		return null;
 	}
 
