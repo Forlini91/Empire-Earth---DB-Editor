@@ -50,7 +50,7 @@ public class DialogSearchValuesResults extends JDialog {
 		super(parent, ModalityType.DOCUMENT_MODAL);
 
 		final JLabel dlgLabel = new JLabel("All values and entries which use them (double click for full list or open links):");
-		final EntryValueMap entryValueMapClean = entryValueMap.applyFilter(Entry::isDefined);
+		final EntryValueMap entryValueMapClean = entryValueMap.filter(Entry::isDefined);
 
 		final List<Object> keys = entryValueMap.map.keySet().stream().sorted(FieldStruct.valueComparator).collect(Collectors.toList());
 		final List<Object> cleanKeys = entryValueMapClean.map.keySet().stream().sorted(FieldStruct.valueComparator).collect(Collectors.toList());

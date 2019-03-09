@@ -30,20 +30,9 @@ public class EntryValueMap {
 	 * @param map     Map each value to the list of entries which use that value
 	 * @param counter Total number of entries
 	 */
-	public EntryValueMap(Map<Object, List<Entry>> map, int counter) {
+	private EntryValueMap(Map<Object, List<Entry>> map, int counter) {
 		this.map = map;
 		this.counter = counter;
-	}
-
-
-	private static final class KeyValue<K, V> {
-		public final K key;
-		public final V value;
-
-		public KeyValue(K key, V value) {
-			this.key = key;
-			this.value = value;
-		}
 	}
 
 
@@ -54,12 +43,23 @@ public class EntryValueMap {
 	 * @param indexes     Indexes of the fields to read
 	 * @return an EntryValueMap A new EntryValueMap which hold the results
 	 */
-	public static EntryValueMap getValuesMap(List<EntryGroup> entryGroups, DatStructure datStructure, int fieldIndex) {
+	public EntryValueMap(List<EntryGroup> entryGroups, DatStructure datStructure, int fieldIndex) {
+		class KeyValue {
+			public final Object key;
+			public final Entry value;
+
+			public KeyValue(Object key, Entry value) {
+				this.key = key;
+				this.value = value;
+			}
+		}
+
 		final Entry[] entries = entryGroups.parallelStream().flatMap(entryGroup -> entryGroup.entries.stream()).toArray(Entry[]::new);
 		final FieldStruct fieldStruct = datStructure.getFieldStruct(fieldIndex);
 		final EnumValue enum0 = fieldStruct.enumValues != null ? fieldStruct.enumValues[0] : null;
 
-		final var valuesMap = Arrays.stream(entries)
+		counter = entries.length;
+		map = Arrays.stream(entries)
 				.map(entry -> {
 					if (entry.size() <= fieldIndex) {
 						return null;
@@ -75,15 +75,14 @@ public class EntryValueMap {
 							}
 						}
 					}
-					return new KeyValue<>(fieldValue, entry);
+					return new KeyValue(fieldValue, entry);
 				})
 				.filter(obj -> obj != null)
 				.collect(Collectors.groupingBy(keyValue -> keyValue.key, Collectors.mapping(keyValue -> keyValue.value, Collectors.toList())));
-		valuesMap.values().forEach(list -> list.sort(FieldStruct.valueComparator));
-		return new EntryValueMap(valuesMap, entries.length);
+		map.values().forEach(list -> list.sort(FieldStruct.valueComparator));
 	}
 
-	public EntryValueMap applyFilter(Predicate<Entry> filter) {
+	public EntryValueMap filter(Predicate<Entry> filter) {
 		final HashMap<Object, List<Entry>> newMap = new HashMap<>(map);
 		newMap.entrySet().forEach(entrySet -> {
 			final var list = new ArrayList<>(entrySet.getValue());

@@ -607,7 +607,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			final FieldStruct fieldStruct = entryPanel.fieldStruct;
 			try {
 				if (fieldStruct.getKnowledge() != Knowledge.KNOWN) {
-					final EntryValueMap entryValueMap = EntryValueMap.getValuesMap(datFile.entryGroups, datFile.datStructure, entryPanel.index).applyFilter(Entry::isDefined);
+					final EntryValueMap entryValueMap = new EntryValueMap(datFile.entryGroups, datFile.datStructure, entryPanel.index).filter(Entry::isDefined);
 					size = entryValueMap.map.size();
 					if (size <= 2 || size == entryValueMap.counter) {
 						marked.add(entryPanel);
@@ -771,7 +771,6 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		});
 		entryList.addMouseListener(new MouseAdapter() {
 			@Override
-			@SuppressWarnings("synthetic-access")
 			public void mousePressed(MouseEvent e) {
 				entryList.selectElement(e);
 				showMenu(e);
@@ -782,7 +781,6 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 				showMenu(e);
 			}
 
-			@SuppressWarnings("synthetic-access")
 			public void showMenu(MouseEvent e) {
 				if (e.isPopupTrigger()) {
 					entryListMenuAdd.setEnabled(!searching);
@@ -987,7 +985,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		fieldMenuSearchValues.addActionListener(e -> {
 			try {
 				final EntryFieldInterface field = (EntryFieldInterface) rightClicked;
-				final EntryValueMap entryValueMap = EntryValueMap.getValuesMap(datFile.entryGroups, datFile.datStructure, field.getIndex());
+				final EntryValueMap entryValueMap = new EntryValueMap(datFile.entryGroups, datFile.datStructure, field.getIndex());
 				final JDialog d = new DialogSearchValuesResults(this, entryValueMap, field);
 				d.setVisible(true);
 			} catch (final Exception exc) {

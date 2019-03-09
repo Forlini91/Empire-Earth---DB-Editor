@@ -155,7 +155,6 @@ public class ConditionOperator implements Condition {
 
 
 
-	@SuppressWarnings("unused")
 	private static Condition buildAllFieldsCondition(DatStructure datStructure, Operator operator, String textToSearch) {
 		final Predicate<String> stringTester = getStringCheck(operator, textToSearch);
 		final FloatPredicate numericTester = getNumericCheck(operator, textToSearch);
