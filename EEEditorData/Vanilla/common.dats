@@ -1,11 +1,13 @@
-#####DON'T DELETE THESE ONES
+########## DON'T ALTER/DELETE THESE ONES, but you can still customize Name, Description and Color
 ID	4	INTEGER	ID	ID	EDITABLE	KNOWN	BLUE
 SEQ_NUMBER	4	INTEGER	Sequence number	Sequence number	EDITABLE	KNOWN	BLUE
 NAME	100	STRING	Name	Name	EDITABLE	KNOWN	BLUE
-ID_LANGUAGE	4	LANGUAGE	Language ID	Language ID	EDITABLE	KNOWN	BLACK
-STRING_SIZE	4	INTEGER	String size	String size	BLOCKED	KNOWN	BLACK
+ID_LANGUAGE	4	LANGUAGE	Language ID	Language ID	EDITABLE	KNOWN	#00C000
+STRING_SIZE	4	INTEGER	String size	String size	BLOCKED	KNOWN	GRAY
 ID_TECH_FROM_OBJECT	4	LINK	dbobjects.dat:0	Build from object	Build from object	EDITABLE	KNOWN	BLACK
-#####DON'T DELETE THE ABOVE ONES
+EVENT_EXTRA_FIELD	4	LINK	dbeffects.dat:0	Effects	Effects	EDITABLE	KNOWN	BLACK
+##########
+
 
 ALTER_HEALTH_BY	4	FLOAT	Alter health percent... 	Alter health percent... 	EDITABLE	KNOWN	BLACK
 ID_UNIT_SET_GV	4	LINK	dbunitset.dat:0	... of Set:	... of Set:	EDITABLE	KNOWN	BLACK

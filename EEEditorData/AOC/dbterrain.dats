@@ -5,11 +5,11 @@
 4	@ID
 5	4	LINK	dbterraingraytextures.dat:0	Terrain gray type	Terrain gray type	EDITABLE	KNOWN	BLACK
 6	@ID_LANGUAGE
-7	0	BOOLEAN	Valid	Valid	EDITABLE	KNOWN	BLACK
+7	4	BOOLEAN	Valid	Valid	EDITABLE	KNOWN	BLACK
 8	4	ENUM	TerrainFamily	Terrain family	Terrain family	EDITABLE	KNOWN	BLACK
 9	4	INTEGER	Tyles on X axis	Tyles on X axis	EDITABLE	KNOWN	BLACK
 10	4	INTEGER	Tiles on Y axis	Tiles on Y axis	EDITABLE	KNOWN	BLACK
-11	0	INTEGER	Available: 0-No, 1-Animated, 65536-Static	Available: 0-No, 1-Animated, 65536-Static	EDITABLE	KNOWN	BLACK
+11	4	INTEGER	Available: 0-No, 1-Animated, 65536-Static	Available: 0-No, 1-Animated, 65536-Static	EDITABLE	KNOWN	BLACK
 12	4	LINK	dbterraintype.dat:0	Terrain type	Terrain type	EDITABLE	KNOWN	BLACK
 13	4	LINK	dbobjects.dat:0	Object from ID (1)	Object from ID (1)	EDITABLE	KNOWN	BLACK
 14	4	LINK	dbobjects.dat:0	Object from ID (2)	Object from ID (2)	EDITABLE	KNOWN	BLACK

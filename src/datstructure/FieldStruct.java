@@ -5,7 +5,6 @@ import java.util.Comparator;
 
 import constants.EnumValue;
 import datmanager.Util;
-import gui.GUI;
 
 
 /**
@@ -41,7 +40,7 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 	/** Size of the field in bytes. */
 	public final int size;
 	/** Information about our knowledge about this field */
-	public final Knowledge knowledge;
+	public final Knowledge knowledge; // TODO: UNUSED FOR NOW
 	/** If false, the user shouldn't touch this field */
 	public final boolean editable;
 	/** Color used in the GUI for this field */
@@ -91,201 +90,6 @@ public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
 		this.indexSize = indexSize;
 		this.defaultValue = defaultValue;
 	}
-
-
-	/**
-	 * Create a new boolean FieldStruct with the given name
-	 *
-	 * @param name Name of the field
-	 */
-	public FieldStruct(String name) {
-		this(FieldType.BOOLEAN, 1, name, null, true, Knowledge.KNOWN, Color.BLACK, null, null, null, -1, -1);
-	}
-
-
-	/**
-	 * Create a new boolean FieldStruct with the given name
-	 *
-	 * @param name        Name of the field
-	 * @param description Description of the field
-	 */
-	public FieldStruct(String name, String description) {
-		this(FieldType.BOOLEAN, 1, name, description, true, Knowledge.KNOWN, Color.BLACK, null, null, null, -1, -1);
-	}
-
-
-	/**
-	 * Create a new 4 bytes FieldStruct with the given name and type
-	 *
-	 * @param name Name of the field
-	 * @param type Type of the field
-	 */
-	public FieldStruct(String name, FieldType type) {
-		this(type, 4, name, null, true, Knowledge.KNOWN, Color.BLACK, null, null, null, -1, -1);
-	}
-
-
-	/**
-	 * Create a new 4 bytes FieldStruct with the given name and type
-	 *
-	 * @param name        Name of the field
-	 * @param description Description of the field
-	 * @param type        Type of the field
-	 */
-	public FieldStruct(String name, String description, FieldType type) {
-		this(type, 4, name, description, true, Knowledge.KNOWN, Color.BLACK, null, null, null, -1, -1);
-	}
-
-
-	/**
-	 * Create a new FieldStruct with the given name, type and size
-	 *
-	 * @param name Name of the field
-	 * @param type Type of the field
-	 * @param size Size of the field
-	 */
-	public FieldStruct(String name, FieldType type, int size) {
-		this(type, size, name, null, true, Knowledge.KNOWN, Color.BLACK, null, null, null, -1, -1);
-	}
-
-
-	/**
-	 * Create a new FieldStruct with the given name, type and size
-	 *
-	 * @param name     Name of the field
-	 * @param type     Type of the field
-	 * @param size     Size of the field
-	 * @param editable If false, the field can't be edited
-	 */
-	public FieldStruct(String name, FieldType type, int size, boolean editable) {
-		this(type, size, name, null, editable, Knowledge.KNOWN, Color.BLACK, null, null, null, -1, -1);
-	}
-
-
-	/**
-	 * Create a new FieldStruct with the given name, type and size
-	 *
-	 * @param name      Name of the field
-	 * @param type      Type of the field
-	 * @param size      Size of the field
-	 * @param knowledge The current knowledge we have about this field
-	 */
-	public FieldStruct(String name, FieldType type, int size, Knowledge knowledge) {
-		this(type, size, name, null, true, knowledge, Color.BLACK, null, null, null, -1, -1);
-	}
-
-
-	/**
-	 * Create a new FieldStruct with the given name, type and size
-	 *
-	 * @param name      Name of the field
-	 * @param type      Type of the field
-	 * @param size      Size of the field
-	 * @param knowledge The current knowledge we have about this field
-	 * @param color     The color used by the field
-	 */
-	public FieldStruct(String name, FieldType type, int size, Knowledge knowledge, Color color) {
-		this(type, size, name, null, true, knowledge, color, null, null, null, -1, -1);
-	}
-
-
-	/**
-	 * Create a new FieldStruct with the given name, which is a link to another entry
-	 *
-	 * @param name         Name of the field
-	 * @param linkToStruct Link to this dat
-	 * @param defaultValue Default value if the link can't be found
-	 */
-	public FieldStruct(String name, DatStructure linkToStruct, Integer defaultValue) {
-		this(FieldType.LINK, 4, name, null, true, Knowledge.KNOWN, GUI.COLOR_FIELD_LINK, null, null, linkToStruct, defaultValue, -1);
-	}
-
-
-	/**
-	 * Create a new FieldStruct with the given name, which is a link to another entry
-	 *
-	 * @param name         Name of the field
-	 * @param description  Description of the field
-	 * @param linkToStruct Link to this dat
-	 * @param defaultValue Default value if the link can't be found
-	 */
-	public FieldStruct(String name, String description, DatStructure linkToStruct, Integer defaultValue) {
-		this(FieldType.LINK, 4, name, description, true, Knowledge.KNOWN, GUI.COLOR_FIELD_LINK, null, null, linkToStruct, defaultValue, -1);
-	}
-
-
-	/**
-	 * Create a new FieldStruct with the given name, which is a link to another entry
-	 *
-	 * @param name         Name of the field
-	 * @param linkToStruct Link to this dat
-	 * @param defaultValue Default value if the link can't be found
-	 * @param editable     If false, the field can't be edited
-	 */
-	public FieldStruct(String name, DatStructure linkToStruct, Integer defaultValue, boolean editable) {
-		this(FieldType.LINK, 4, name, null, editable, Knowledge.KNOWN, GUI.COLOR_FIELD_LINK, null, null, linkToStruct, defaultValue, -1);
-	}
-
-
-	/**
-	 * Create a new FieldStruct with the given name and knowledge, which is a link to another entry
-	 *
-	 * @param name         Name of the field
-	 * @param linkToStruct Link to this dat
-	 * @param defaultValue Default value if the link can't be found
-	 * @param knowledge    The current knowledge we have about this field
-	 */
-	public FieldStruct(String name, DatStructure linkToStruct, Integer defaultValue, Knowledge knowledge) {
-		this(FieldType.LINK, 4, name, null, true, knowledge, GUI.COLOR_FIELD_LINK, null, null, linkToStruct, defaultValue, -1);
-	}
-
-
-	/**
-	 * Create a new FieldStruct with the given name and list of values
-	 *
-	 * @param name       Name of the field
-	 * @param enumValues Array with all available values for this field
-	 */
-	public FieldStruct(String name, EnumValue[] enumValues) {
-		this(FieldType.ENUM, 4, name, null, true, Knowledge.KNOWN, GUI.COLOR_FIELD_LINK, null, enumValues, null, -1, -1);
-	}
-
-
-	/**
-	 * Create a new FieldStruct with the given name and list of values
-	 *
-	 * @param name       Name of the field
-	 * @param enumValues Array with all available values for this field
-	 * @param editable   If false, the field can't be edited
-	 */
-	public FieldStruct(String name, EnumValue[] enumValues, boolean editable) {
-		this(FieldType.ENUM, 4, name, null, editable, Knowledge.KNOWN, GUI.COLOR_FIELD_LINK, null, enumValues, null, -1, -1);
-	}
-
-
-	/**
-	 * Create a new FieldStruct with the given name and list of values
-	 *
-	 * @param name        Name of the field
-	 * @param description Description of the field
-	 * @param arrValues   Array with all integer values available for this field
-	 */
-	public FieldStruct(String name, String description, Integer[] arrValues) {
-		this(FieldType.RANGE, 4, name, description, true, Knowledge.KNOWN, GUI.COLOR_FIELD_LINK, arrValues, null, null, -1, -1);
-	}
-
-
-	/**
-	 * Create a new FieldStruct with the given name and index of the field with the size of the string.
-	 *
-	 * @param name      Name of the field
-	 * @param indexSize Index of field which hold the size of the string
-	 */
-	public FieldStruct(String name, int indexSize) {
-		this(FieldType.DYNAMIC_STRING, 0, name, null, true, Knowledge.KNOWN, Color.BLACK, null, null, null, -1, indexSize);
-	}
-
-
 
 
 

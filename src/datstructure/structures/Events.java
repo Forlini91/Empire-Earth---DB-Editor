@@ -5,7 +5,6 @@ import java.util.List;
 
 import datstructure.DatStructure;
 import datstructure.Entry;
-import datstructure.FieldStruct;
 
 
 /**
@@ -29,7 +28,7 @@ public class Events extends DatStructure {
 
 	@Override
 	public void customInit() throws IOException {
-		extraField = new FieldStruct("Effect", Effects.instance, 0);
+		extraField = DatStructure.getCommonField("EVENT_EXTRA_FIELD"); // new FieldStruct("Effect", Effects.instance, 0);
 		newEntryValues = new Object[] {
 				"<New event>", 0, 0
 		};

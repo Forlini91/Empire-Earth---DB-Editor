@@ -43,5 +43,5 @@
 42	4	INTEGER	Epoch number	Epoch number	EDITABLE	KNOWN	BLACK
 43	4	INTEGER	Buildings to advance epoch	Buildings to advance epoch	EDITABLE	KNOWN	BLACK
 44	4	INTEGER	Epoch IDs	Epoch IDs	EDITABLE	KNOWN	BLACK
-45	4	LINK	dbobjects.dat:0	Last build object	Last build object	BLOCKED	KNOWN	BLACK
-46	4	INTEGER	Num of tech builders	Num of tech builders	BLOCKED	KNOWN	BLACK
+45	4	LINK	dbobjects.dat:0	Last build object	Last build object	BLOCKED	KNOWN	GRAY
+46	4	INTEGER	Num of tech builders	Num of tech builders	BLOCKED	KNOWN	GRAY

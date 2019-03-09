@@ -15,9 +15,6 @@ import datmanager.StringIterator;
 
 public class DatStructureReader {
 
-	public static final FieldStruct TOO_FEW_PARAMETERS = new FieldStruct("INVALID", "TOO FEW PARAMETERS");
-	public static final FieldStruct TOO_MANY_PARAMETERS = new FieldStruct("INVALID", "TOO MANY PARAMETERS");
-
 	private final File file;
 	private final Map<String, DatStructure> datStructureMap;
 
@@ -26,39 +23,39 @@ public class DatStructureReader {
 		this.datStructureMap = datStructureMap;
 	}
 
-	private Stream<String> read() throws IOException {
+	private Stream<String> read() throws IOException, NumberFormatException, IndexOutOfBoundsException {
 		return Files.lines(file.toPath()).map(String::strip);
 	}
 
-	public FieldStruct[] toArray() throws IOException {
-		return read().map(this::parseLineIndex).filter(Objects::nonNull).toArray(FieldStruct[]::new);
+	public FieldStruct[] toArray() throws IOException, NumberFormatException, IndexOutOfBoundsException {
+		return read().map(line -> parseLineIndex(file, line)).filter(Objects::nonNull).toArray(FieldStruct[]::new);
 	}
 
 	public Map<String, FieldStruct> toMap() throws IOException {
-		return read().map(this::parseLineCommon).filter(Objects::nonNull).collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+		return read().map(line -> parseLineCommon(file, line)).filter(Objects::nonNull).collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
 	}
 
-	private FieldStruct parseLineIndex(String line) throws IndexOutOfBoundsException {
+	private FieldStruct parseLineIndex(File file, String line) throws NumberFormatException, IndexOutOfBoundsException {
 		if (line.isEmpty() || line.charAt(0) == '#') {
 			return null;
 		}
 
 		final StringIterator it = new StringIterator(line, '\t');
-		it.nextStripped(); // line number. skip
-		return parseLine(it);
+		final String lineNum = it.nextStripped(); // line number
+		return parseLine(file, lineNum, it);
 	}
 
-	private MapEntry<FieldStruct> parseLineCommon(String line) throws IndexOutOfBoundsException {
+	private MapEntry<FieldStruct> parseLineCommon(File file, String line) throws NumberFormatException, IndexOutOfBoundsException {
 		if (line.isEmpty() || line.charAt(0) == '#') {
 			return null;
 		}
 
 		final StringIterator it = new StringIterator(line, '\t');
 		final String key = it.nextStripped(); // key for the map
-		return new MapEntry<>(key, parseLine(it));
+		return new MapEntry<>(key, parseLine(file, key, it));
 	}
 
-	private FieldStruct parseLine(StringIterator it) throws IndexOutOfBoundsException {
+	private FieldStruct parseLine(File file, String key, StringIterator it) throws NumberFormatException, IndexOutOfBoundsException {
 		/*
 		 * <Size> <Type> <Extra?> <Name> <Description=null> <Editable=true> <Knowledge=KNOWN> <Color=BLACK>
 		 * Extra is one of:
@@ -80,6 +77,9 @@ public class DatStructureReader {
 		}
 
 		final int size = Integer.parseInt(token);
+		if (size < 0) {
+			throw new IllegalArgumentException("File " + file.getName() + ", line: " + key + " size can't be negative!");
+		}
 
 		token = it.nextStripped();
 		final FieldType type = FieldType.parse(token);
@@ -111,7 +111,13 @@ public class DatStructureReader {
 				token = it.nextStripped();
 				indexSize = Integer.parseInt(token);
 				break;
+			case STRING:
+			case LANGUAGE:
+				break;
 			default:
+				if (size != 1 && size != 4) {
+					throw new IllegalArgumentException("File " + file.getName() + ", line: " + key + " numeric/boolean types can't have size other than 1 or 4!");
+				}
 				break;
 		}
 
@@ -157,7 +163,7 @@ public class DatStructureReader {
 				return Color.CYAN;
 			case "BLUE":
 				return Color.BLUE;
-			case "MAGENT":
+			case "MAGENTA":
 				return Color.MAGENTA;
 			case "PINK":
 				return Color.PINK;
@@ -169,8 +175,18 @@ public class DatStructureReader {
 				return Color.YELLOW;
 			case "GREEN":
 				return Color.GREEN;
-			default:
-				return defaultColor;
 		}
+
+		if (name.charAt(0) == '#' && name.length() == 7) {
+			try {
+				final int r = Integer.parseInt(name.substring(1, 3), 16);
+				final int g = Integer.parseInt(name.substring(3, 5), 16);
+				final int b = Integer.parseInt(name.substring(5), 16);
+				return new Color(r, g, b);
+			} catch (final NumberFormatException e) {
+				// Just jump outside this
+			}
+		}
+		return defaultColor;
 	}
 }

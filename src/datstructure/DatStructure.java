@@ -277,11 +277,11 @@ public abstract class DatStructure {
 		final var datStructureReader = new DatStructureReader(new File(Core.getDirectory(), fileName + 's'), datStructureMap);
 		fieldStructs = datStructureReader.toArray();
 		customInit();
-		entrySize = Arrays.stream(fieldStructs).mapToInt(x -> x.size).sum();
-		dynamicSizeFields = Arrays.stream(fieldStructs).filter(x -> x.indexSize >= 0).toArray(FieldStruct[]::new);
-		requirements = Arrays.stream(fieldStructs).filter(x -> x.type == FieldType.LINK).map(x -> x.linkToStruct).collect(Collectors.toSet());
-		if (extraField != null && extraField.linkToStruct != null) {
-			requirements.add(extraField.linkToStruct);
+		entrySize = Arrays.stream(fieldStructs).mapToInt(x -> x.getSize()).sum();
+		dynamicSizeFields = Arrays.stream(fieldStructs).filter(x -> x.getIndexSize() >= 0).toArray(FieldStruct[]::new);
+		requirements = Arrays.stream(fieldStructs).filter(x -> x.getType() == FieldType.LINK).map(x -> x.getLinkToStruct()).collect(Collectors.toSet());
+		if (extraField != null && extraField.getLinkToStruct() != null) {
+			requirements.add(extraField.getLinkToStruct());
 		}
 		initialized = true;
 		debugDatStructure();
@@ -341,7 +341,7 @@ public abstract class DatStructure {
 
 
 	private void debugDatStructure() {
-		final int count = Arrays.stream(fieldStructs).mapToInt(field -> field.size).sum();
+		final int count = Arrays.stream(fieldStructs).mapToInt(field -> field.getSize()).sum();
 		System.out.println("\t\tInitialize: " + String.format("%1$-25s", fileName) + "   >   min entry size (bytes) = " + String.format("%1$-4d", count) + "  |  num. fields: "
 				+ String.format("%1$-3d", fieldStructs.length));
 	}
