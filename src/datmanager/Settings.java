@@ -8,7 +8,7 @@ package datmanager;
 public class Settings {
 
 	/** The editor version */
-	public static final float VERSION = 1.7f;
+	public static final float VERSION = 2.0f;
 
 	/** Enable/disable the debug mode */
 	public static final boolean DEBUG = true;
