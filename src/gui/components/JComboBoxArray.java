@@ -71,7 +71,7 @@ public class JComboBoxArray extends JComboBox<Integer> implements EntryFieldInte
 	}
 
 	@Override
-	public FieldStruct getEntryStruct() { return fieldStruct; }
+	public FieldStruct getFieldStruct() { return fieldStruct; }
 
 	@Override
 	public int getIndex() { return index; }
@@ -134,33 +134,35 @@ public class JComboBoxArray extends JComboBox<Integer> implements EntryFieldInte
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		SwingUtilities.invokeLater(() -> {
-			final String text = textEditor.getText();
-			if (text == null || text.isEmpty()) {
-				if (Settings.DEBUG) {
-					System.out.println("Select: null");
-				}
-				setSelectedItem(null);
-			} else if (e.getKeyCode() == KeyEvent.VK_TAB && isPopupVisible()) {
-				setSelectedItem(popup.getList().getSelectedValue());
-			} else {
-				if (!isPopupVisible()) {
-					showPopup();
-				}
-				final List<Integer> results = searcher.find(fieldStruct.arrValues, null, text);
-				if (results != null) {
-					final Integer enumValue = searcher.findNext();
-					if (enumValue != null) {
-						popup.getList().setSelectedValue(enumValue, true);
+		if (isEnabled()) {
+			SwingUtilities.invokeLater(() -> {
+				final String text = textEditor.getText();
+				if (text == null || text.isEmpty()) {
+					if (Settings.DEBUG) {
+						System.out.println("Select: null");
+					}
+					setSelectedItem(null);
+				} else if (e.getKeyCode() == KeyEvent.VK_TAB && isPopupVisible()) {
+					setSelectedItem(popup.getList().getSelectedValue());
+				} else {
+					if (!isPopupVisible()) {
+						showPopup();
+					}
+					final List<Integer> results = searcher.find(fieldStruct.arrValues, null, text);
+					if (results != null) {
+						final Integer enumValue = searcher.findNext();
+						if (enumValue != null) {
+							popup.getList().setSelectedValue(enumValue, true);
+						}
 					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (SwingUtilities.isLeftMouseButton(e)) {
+		if (isEnabled() && SwingUtilities.isLeftMouseButton(e)) {
 			showPopup();
 		}
 	}

@@ -57,7 +57,7 @@ public class DialogSearchFieldResults extends JDialog {
 		getRootPane().registerKeyboardAction((e) -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 		dlgClose.addActionListener(al -> dispose());
 
-		setTitle("For field: " + field.getIndex() + " - " + field.getEntryStruct());
+		setTitle("For field: " + field.getIndex() + " - " + field.getFieldStruct());
 		setBounds(GUI.getBounds(this, 0.6, 0.8));
 		setLayout(new GridBagLayoutExtended(new int[] { 200 }, new int[] { 400, 30, 25, 50 }, new double[] { 1.0 }, new double[] { 1.0, 0, 0, 0 }));
 		add(dlgScrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 0));

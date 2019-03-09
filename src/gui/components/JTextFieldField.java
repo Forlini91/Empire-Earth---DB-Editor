@@ -75,7 +75,7 @@ public class JTextFieldField extends JTextField implements EntryFieldInterface, 
 	}
 
 	@Override
-	public FieldStruct getEntryStruct() { return fieldStruct; }
+	public FieldStruct getFieldStruct() { return fieldStruct; }
 
 	@Override
 	public int getIndex() { return index; }

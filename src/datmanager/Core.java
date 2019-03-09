@@ -1,5 +1,8 @@
 package datmanager;
 
+import java.io.File;
+import java.nio.file.Paths;
+
 import javax.swing.JOptionPane;
 
 import datstructure.DatStructure;
@@ -24,6 +27,10 @@ public class Core {
 	 * @return true if editor is in AOC mode, false otherwise
 	 */
 	public static boolean isAOC() { return AOC; }
+
+	private static final File DataDirectory = Paths.get("EEEditorData").toFile();
+
+	public static File getDirectory() { return new File(DataDirectory, Core.isAOC() ? "AOC" : "Vanilla"); }
 
 	public static void main(String[] args) {
 		final EESplashScreen splashScreen = new EESplashScreen();

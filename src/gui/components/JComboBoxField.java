@@ -32,83 +32,79 @@ import gui.PopupMenuHandler;
 
 /**
  * A JComboBox which can hold the value of a field
- * 
+ *
  * @author MarcoForlini
  */
-public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInterface, MouseListener, KeyListener, ItemListener, FocusListener {
+public class JComboBoxField extends JComboBox<Entry> implements EntryFieldInterface, MouseListener, KeyListener, ItemListener, FocusListener {
 
-	private static final long		serialVersionUID	= -5787229930995728192L;
+	private static final long serialVersionUID = -5787229930995728192L;
 
 	/** The list of entries */
-	public List <Entry>				allEntries;
+	public List<Entry> allEntries;
 	/** The linked DatStructure */
-	public final DatStructure		linkToStruct;
+	public final DatStructure linkToStruct;
 
-	private ListSearcher <Entry>	searcher			= new ListSearcher<> (ListSearcher.ENTRY_NAME_MATCHER, ListSearcher.ENTRY_ID_MATCHER);
-	private JTextComponent			textEditor			= ((JTextComponent) getEditor ().getEditorComponent ());
-	private final int				index;
-	private final FieldStruct		fieldStruct;
-	private Object					defaultVal			= null;
-	private boolean					altered				= false;
+	private final ListSearcher<Entry> searcher = new ListSearcher<>(ListSearcher.ENTRY_NAME_MATCHER, ListSearcher.ENTRY_ID_MATCHER);
+	private final JTextComponent textEditor = ((JTextComponent) getEditor().getEditorComponent());
+	private final int index;
+	private final FieldStruct fieldStruct;
+	private Object defaultVal = null;
+	private boolean altered = false;
 
 	/**
 	 * Create a new {@link JComboBoxField}
-	 * 
+	 *
 	 * @param fieldStruct The field structure
-	 * @param index Index of the field
+	 * @param index       Index of the field
 	 */
-	public JComboBoxField (FieldStruct fieldStruct, int index) {
+	public JComboBoxField(FieldStruct fieldStruct, int index) {
 		this.fieldStruct = fieldStruct;
 		this.index = index;
-		linkToStruct = fieldStruct.getLinkToStruct ();
-		allEntries = linkToStruct.datFile.getAllEntries (true);
-		setToolTipText (fieldStruct.getDescription ());
-		setModel (new DefaultComboBoxModel<> (new Vector<> (allEntries)));
-		addMouseListener (this);
-		textEditor.addMouseListener (this);
-		addItemListener (this);
+		linkToStruct = fieldStruct.getLinkToStruct();
+		allEntries = linkToStruct.datFile.getAllEntries(true);
+		setToolTipText(fieldStruct.getDescription());
+		setModel(new DefaultComboBoxModel<>(new Vector<>(allEntries)));
+		addMouseListener(this);
+		textEditor.addMouseListener(this);
+		addItemListener(this);
 		if (fieldStruct.editable) {
-			setEnabled (true);
-			setEditable (true);
-			textEditor.addFocusListener (this);
-			textEditor.addKeyListener (this);
+			setEnabled(true);
+			setEditable(true);
+			textEditor.addFocusListener(this);
+			textEditor.addKeyListener(this);
 		} else {
-			setEnabled (false);
+			setEnabled(false);
 		}
 	}
 
 	@Override
-	public void setPopupMenu (PopupMenuHandler l) {
-		addMouseListener (l);
-		textEditor.addMouseListener (l);
+	public void setPopupMenu(PopupMenuHandler l) {
+		addMouseListener(l);
+		textEditor.addMouseListener(l);
 	}
 
 	@Override
-	public void resetColor () {
-		setForeground (null);
+	public void resetColor() {
+		setForeground(null);
 	}
 
 	@Override
-	public FieldStruct getEntryStruct () {
-		return fieldStruct;
-	}
+	public FieldStruct getFieldStruct() { return fieldStruct; }
 
 	@Override
-	public int getIndex () {
-		return index;
-	}
+	public int getIndex() { return index; }
 
 	@Override
-	public Object getVal () {
-		Object obj = getSelectedItem ();
+	public Object getVal() {
+		final Object obj = getSelectedItem();
 		if (Settings.DEBUG) {
-			System.out.println ("Getting: " + fieldStruct + " = " + obj + " (Defaults: " + fieldStruct.defaultValue + '/' + defaultVal + ')');
+			System.out.println("Getting: " + fieldStruct + " = " + obj + " (Defaults: " + fieldStruct.defaultValue + '/' + defaultVal + ')');
 		}
 		if (obj != null) {
 			if (obj instanceof Entry) {
-				return ((Entry) obj).getID ();
+				return ((Entry) obj).getID();
 			} else if (obj instanceof String) {
-				return Integer.valueOf ((String) obj);
+				return Integer.valueOf((String) obj);
 			} else if (defaultVal != null) {
 				return defaultVal;
 			} else {
@@ -119,165 +115,171 @@ public class JComboBoxField extends JComboBox <Entry> implements EntryFieldInter
 	}
 
 	@Override
-	public void setVal (Object value) {
+	public void setVal(Object value) {
 		defaultVal = value;
-		DatFile datFile = linkToStruct.datFile;
+		final DatFile datFile = linkToStruct.datFile;
 		if (datFile == null) {
-			setSelectedItem (value);
+			setSelectedItem(value);
 			return;
 		}
-		Entry entry = datFile.findEntry (value);
+		final Entry entry = datFile.findEntry(value);
 		if (entry != null) {
-			setSelectedItem (entry);
+			setSelectedItem(entry);
 		} else {
-			setSelectedItem (null);
+			setSelectedItem(null);
 		}
-		textEditor.setCaretPosition (0);
+		textEditor.setCaretPosition(0);
 		altered = false;
 	}
 
 	@Override
-	public void refreshField () {
-		Object sel = getSelectedItem ();
+	public void refreshField() {
+		final Object sel = getSelectedItem();
 		if (linkToStruct != null) {
-			DatFile datFile = linkToStruct.datFile;
+			final DatFile datFile = linkToStruct.datFile;
 			if (datFile != null) {
-				allEntries = datFile.getAllEntries (true);
-				setModel (new DefaultComboBoxModel<> (new Vector<> (allEntries)));
+				allEntries = datFile.getAllEntries(true);
+				setModel(new DefaultComboBoxModel<>(new Vector<>(allEntries)));
 			}
 		}
-		setSelectedItem (sel);
+		setSelectedItem(sel);
 	}
 
 	@Override
-	public boolean isAltered () {
-		return altered;
-	}
+	public boolean isAltered() { return altered; }
 
 	@Override
-	public Object getDefaultVal () {
-		return defaultVal;
-	}
+	public Object getDefaultVal() { return defaultVal; }
 
 
 
 	@Override
-	public void keyTyped (KeyEvent e) {/* Do nothing */}
+	public void keyTyped(KeyEvent e) {
+		/* Do nothing */}
 
 	@Override
-	public void keyPressed (KeyEvent e) {/* Do nothing */}
+	public void keyPressed(KeyEvent e) {
+		/* Do nothing */}
 
 	@Override
-	public void keyReleased (KeyEvent e) {
-		SwingUtilities.invokeLater ( () -> {
-			int key = e.getKeyCode ();
-			if (key == KeyEvent.VK_UNDEFINED) {
-				return;
-			}
-			String text = textEditor.getText ();
-			if (text == null || text.isEmpty ()) {
-				if (Settings.DEBUG) {
-					System.out.println ("Select: null");
-				}
-				setSelectedItem (null);
-				return;
-			}
-			boolean isEnter = key == KeyEvent.VK_ENTER;
-			if (isEnter && !e.isControlDown () && !e.isShiftDown ()) {
-				ComboPopup popup = (ComboPopup) getUI ().getAccessibleChild (this, 0);
-				JList <?> list = popup.getList ();
-				if (list.getSelectedValue () != null) {
-					setSelectedItem (list.getSelectedValue ());
-				} else {
-					setSelectedItem (searcher.getCurrent ());
-				}
-				hidePopup ();
-				return;
-			}
-			switch (key) {
-				case KeyEvent.VK_CONTROL:
-				case KeyEvent.VK_SHIFT:
-				case KeyEvent.VK_ALT:
-				case KeyEvent.VK_ALT_GRAPH:
+	public void keyReleased(KeyEvent e) {
+		if (isEnabled()) {
+			SwingUtilities.invokeLater(() -> {
+				final int key = e.getKeyCode();
+				if (key == KeyEvent.VK_UNDEFINED) {
 					return;
-			}
-			if (!e.isActionKey ()) {
-				if (!isPopupVisible ()) {
-					showPopup ();
 				}
-				boolean lastSearch = searcher.getCurrent () != null;
-				List <Entry> results = searcher.find (allEntries, null, text);
-				if (results != null) {
-					Entry entry = isEnter && e.isShiftDown () ? searcher.findPrevious () : searcher.findNext ();
+				final String text = textEditor.getText();
+				if (text == null || text.isEmpty()) {
 					if (Settings.DEBUG) {
-						System.out.println ("Find: " + entry);
+						System.out.println("Select: null");
 					}
-					if (entry != null) {
-						ComboPopup popup = (ComboPopup) getUI ().getAccessibleChild (this, 0);
-						popup.getList ().setSelectedValue (entry, true);
-					} else if (lastSearch) {
-						Toolkit.getDefaultToolkit ().beep ();
+					setSelectedItem(null);
+					return;
+				}
+				final boolean isEnter = key == KeyEvent.VK_ENTER;
+				if (isEnter && !e.isControlDown() && !e.isShiftDown()) {
+					final ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);
+					final JList<?> list = popup.getList();
+					if (list.getSelectedValue() != null) {
+						setSelectedItem(list.getSelectedValue());
+					} else {
+						setSelectedItem(searcher.getCurrent());
+					}
+					hidePopup();
+					return;
+				}
+				switch (key) {
+					case KeyEvent.VK_CONTROL:
+					case KeyEvent.VK_SHIFT:
+					case KeyEvent.VK_ALT:
+					case KeyEvent.VK_ALT_GRAPH:
+						return;
+				}
+				if (!e.isActionKey()) {
+					if (!isPopupVisible()) {
+						showPopup();
+					}
+					final boolean lastSearch = searcher.getCurrent() != null;
+					final List<Entry> results = searcher.find(allEntries, null, text);
+					if (results != null) {
+						final Entry entry = isEnter && e.isShiftDown() ? searcher.findPrevious() : searcher.findNext();
+						if (Settings.DEBUG) {
+							System.out.println("Find: " + entry);
+						}
+						if (entry != null) {
+							final ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);
+							popup.getList().setSelectedValue(entry, true);
+						} else if (lastSearch) {
+							Toolkit.getDefaultToolkit().beep();
+						}
 					}
 				}
-			}
-		});
-	}
-
-	@Override
-	public void mouseClicked (MouseEvent e) {
-		Object selectedItem = getSelectedItem ();
-		if (e.isControlDown () && selectedItem != null && selectedItem instanceof Entry) {
-			Entry selectedEntry = (Entry) selectedItem;
-			if (!selectedEntry.isValidLinkTarget ()) {
-				return;
-			}
-			DatFile datFile = linkToStruct.datFile;
-			if (datFile != null) {
-				EntryGroup entryGroup = datFile.findGroup (selectedEntry);
-				if (entryGroup != null) {
-					FrameEditor frameEditor = datFile.openInEditor (this, e.isShiftDown ());
-					frameEditor.goToEntry (entryGroup, selectedEntry);
-				}
-			}
-		} else if (fieldStruct.editable && SwingUtilities.isLeftMouseButton (e)) {
-			showPopup ();
+			});
 		}
 	}
 
 	@Override
-	public void mousePressed (MouseEvent e) {/* Do nothing */}
+	public void mouseClicked(MouseEvent e) {
+		if (isEnabled()) {
+			final Object selectedItem = getSelectedItem();
+			if (e.isControlDown() && selectedItem != null && selectedItem instanceof Entry) {
+				final Entry selectedEntry = (Entry) selectedItem;
+				if (!selectedEntry.isValidLinkTarget()) {
+					return;
+				}
+				final DatFile datFile = linkToStruct.datFile;
+				if (datFile != null) {
+					final EntryGroup entryGroup = datFile.findGroup(selectedEntry);
+					if (entryGroup != null) {
+						final FrameEditor frameEditor = datFile.openInEditor(this, e.isShiftDown());
+						frameEditor.goToEntry(entryGroup, selectedEntry);
+					}
+				}
+			} else if (fieldStruct.editable && SwingUtilities.isLeftMouseButton(e)) {
+				showPopup();
+			}
+		}
+	}
 
 	@Override
-	public void mouseReleased (MouseEvent e) {/* Do nothing */}
+	public void mousePressed(MouseEvent e) {
+		/* Do nothing */}
 
 	@Override
-	public void mouseEntered (MouseEvent e) {/* Do nothing */}
+	public void mouseReleased(MouseEvent e) {
+		/* Do nothing */}
 
 	@Override
-	public void mouseExited (MouseEvent e) {/* Do nothing */}
+	public void mouseEntered(MouseEvent e) {
+		/* Do nothing */}
 
 	@Override
-	public void itemStateChanged (ItemEvent e) {
+	public void mouseExited(MouseEvent e) {
+		/* Do nothing */}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
 		altered = true;
 	}
 
 	@Override
-	public void focusLost (FocusEvent e) {
-		ComboPopup cp = (ComboPopup) getUI ().getAccessibleChild (JComboBoxField.this, 0);
+	public void focusLost(FocusEvent e) {
+		final ComboPopup cp = (ComboPopup) getUI().getAccessibleChild(JComboBoxField.this, 0);
 		Object item = null;
-		item = cp.getList ().getSelectedValue ();
+		item = cp.getList().getSelectedValue();
 		if (item == null) {
-			item = searcher.getCurrent ();
+			item = searcher.getCurrent();
 		}
 		if (item != null) {
-			setSelectedItem (item);
+			setSelectedItem(item);
 		}
 	}
 
 	@Override
-	public void focusGained (FocusEvent e) {
-		textEditor.setCaretPosition (textEditor.getText ().length ());
-		textEditor.moveCaretPosition (0);
+	public void focusGained(FocusEvent e) {
+		textEditor.setCaretPosition(textEditor.getText().length());
+		textEditor.moveCaretPosition(0);
 	}
 
 

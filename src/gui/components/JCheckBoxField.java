@@ -46,7 +46,7 @@ public class JCheckBoxField extends JCheckBox implements EntryFieldInterface, Ch
 	}
 
 	@Override
-	public FieldStruct getEntryStruct () {
+	public FieldStruct getFieldStruct () {
 		return fieldStruct;
 	}
 	

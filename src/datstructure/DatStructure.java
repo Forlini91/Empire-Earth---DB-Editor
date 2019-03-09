@@ -2,7 +2,6 @@ package datstructure;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -63,8 +62,6 @@ import gui.FrameMain;
 public abstract class DatStructure {
 
 	/** All structures used by Vanilla files */
-	protected static final File resourcesDirectory = Paths.get("Resources").toFile();
-	protected static final File gameDirectory = new File(resourcesDirectory, Core.isAOC() ? "AOC" : "Vanilla");
 	private static final DatStructure[] ALL_VANILLA_DATSTRUCTURES = new DatStructure[] { AIUnitTargeting.instance, AmbientSounds.instance, Animals.instance, AreaEffect.instance, Buttons.instance, Calamity.instance, Civilization.instance,
 			CliffTerrain.instance, ColorTable.instance, CPBehavior.instance, Effects.instance, Events.instance, Family.instance, GameVariant.instance, GFXEffects.instance, Graphics.instance, Music.instance, Objects.instance, PremadeCivs.instance,
 			RandomMap.instance, Sounds.instance, StartingResourches.instance, TechTree.instance, Terrain.instance, TerrainGrayTextures.instance, TerrainType.instance, UIBack.instance, UIControlEvents.instance, UIControls.instance, UIFonts.instance,
@@ -109,11 +106,10 @@ public abstract class DatStructure {
 		if (Settings.DEBUG) {
 			System.out.println("Initialize structures");
 		}
-		gameDirectory.mkdirs();
 		final Map<String, DatStructure> datStructureMap = Arrays.stream(GetAllStructures()).collect(Collectors.toMap(ds -> ds.fileName, ds -> ds));
 
 		try {
-			final var commonFieldsReader = new DatStructureReader(new File(gameDirectory, "COMMON.dats"), datStructureMap);
+			final var commonFieldsReader = new DatStructureReader(new File(Core.getDirectory(), "common.dats"), datStructureMap);
 			commonFieldsMap = commonFieldsReader.toMap();
 		} catch (final IOException exc) {
 			Util.printException(FrameMain.instance, exc, true);
@@ -278,7 +274,7 @@ public abstract class DatStructure {
 	 * @throws IOException
 	 */
 	public void initialize(Map<String, DatStructure> datStructureMap) throws IOException {
-		final var datStructureReader = new DatStructureReader(new File(gameDirectory, fileName + 's'), datStructureMap);
+		final var datStructureReader = new DatStructureReader(new File(Core.getDirectory(), fileName + 's'), datStructureMap);
 		fieldStructs = datStructureReader.toArray();
 		customInit();
 		entrySize = Arrays.stream(fieldStructs).mapToInt(x -> x.size).sum();

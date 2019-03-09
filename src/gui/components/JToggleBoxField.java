@@ -48,7 +48,7 @@ public class JToggleBoxField extends JToggleButton implements EntryFieldInterfac
 	}
 
 	@Override
-	public FieldStruct getEntryStruct () {
+	public FieldStruct getFieldStruct () {
 		return fieldStruct;
 	}
 

@@ -20,7 +20,7 @@ public interface EntryFieldInterface {
 	 * 
 	 * @return the structure of the field
 	 */
-	FieldStruct getEntryStruct ();
+	FieldStruct getFieldStruct ();
 
 	/**
 	 * Gets the index of the field

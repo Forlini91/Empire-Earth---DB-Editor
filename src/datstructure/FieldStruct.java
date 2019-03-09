@@ -1,6 +1,7 @@
 package datstructure;
 
 import java.awt.Color;
+import java.util.Comparator;
 
 import constants.EnumValue;
 import datmanager.Util;
@@ -13,6 +14,23 @@ import gui.GUI;
  * @author MarcoForlini
  */
 public class FieldStruct implements Comparable<FieldStruct>, Cloneable {
+
+	public static final Comparator<Object> valueComparator = (o1, o2) -> {
+		if (o1 instanceof Link) {
+			return ((Link) o1).target.compareTo(((Link) o2).target);
+		} else if (o1 instanceof Entry) {
+			return ((Entry) o1).compareTo((Entry) o2);
+		} else if (o1 instanceof EnumValue) {
+			return Integer.compare(((EnumValue) o1).ordinal(), ((EnumValue) o2).ordinal());
+		} else if (o1 instanceof Integer) {
+			return Integer.compare((Integer) o1, (Integer) o2);
+		} else {
+			return Float.compare((Float) o1, (Float) o2);
+		}
+	};
+
+
+
 
 	/** Name of the field. */
 	public final String name;

@@ -5,8 +5,8 @@ import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -21,6 +21,7 @@ import datmanager.DatFile;
 import datstructure.Entry;
 import datstructure.EntryGroup;
 import datstructure.EntryValueMap;
+import datstructure.FieldStruct;
 import gui.components.EntryFieldInterface;
 import gui.components.JButtonRed;
 import gui.components.JCheckBoxExtended;
@@ -41,70 +42,71 @@ public class DialogSearchValuesResults extends JDialog {
 	/**
 	 * Create a new {@link DialogSearchValuesResults}
 	 *
-	 * @param parent The parent window
+	 * @param parent        The parent window
 	 * @param entryValueMap The map of values
-	 * @param field The selected field
+	 * @param field         The selected field
 	 */
-	public DialogSearchValuesResults (Window parent, EntryValueMap entryValueMap, EntryFieldInterface field) {
-		super (parent, ModalityType.DOCUMENT_MODAL);
+	public DialogSearchValuesResults(Window parent, EntryValueMap entryValueMap, EntryFieldInterface field) {
+		super(parent, ModalityType.DOCUMENT_MODAL);
 
-		JLabel dlgLabel = new JLabel ("All values and entries which use them (double click for full list or open links):");
-		EntryValueMap entryValueMapClean = entryValueMap.applyFilter (Entry::isDefined);
-		List <List <Entry>> listValues = new ArrayList <> (entryValueMap.map.values ());
-		List <Object> listKeys = new ArrayList <> (entryValueMap.map.keySet ());
-		List <List <Entry>> listValuesClean = new ArrayList <> (entryValueMapClean.map.values ());
-		List <Object> listKeysClean = new ArrayList <> (entryValueMapClean.map.keySet ());
+		final JLabel dlgLabel = new JLabel("All values and entries which use them (double click for full list or open links):");
+		final EntryValueMap entryValueMapClean = entryValueMap.applyFilter(Entry::isDefined);
 
-		JListExtended <List <Entry>> dlgList = new JListExtended <> (listValuesClean, false);
-		JListExtended <Object> rowHeaderList = new JListExtended <> (listKeysClean, false);
-		JCheckBoxExtended switchFilter = new JCheckBoxExtended ("Hide undefined fiels", true);
-		switchFilter.addActionListener (e -> {
-			boolean sel = switchFilter.isSelected ();
-			dlgList.setList (sel ? listValuesClean : listValues);
-			rowHeaderList.setList (sel ? listKeysClean : listKeys);
+		final List<Object> keys = entryValueMap.map.keySet().stream().sorted(FieldStruct.valueComparator).collect(Collectors.toList());
+		final List<Object> cleanKeys = entryValueMapClean.map.keySet().stream().sorted(FieldStruct.valueComparator).collect(Collectors.toList());
+		final List<List<Entry>> values = keys.stream().map(key -> entryValueMap.map.get(key)).collect(Collectors.toList());
+		final List<List<Entry>> cleanValues = cleanKeys.stream().map(key -> entryValueMapClean.map.get(key)).collect(Collectors.toList());
+
+		final JListExtended<List<Entry>> dlgList = new JListExtended<>(cleanValues, false);
+		final JListExtended<Object> rowHeaderList = new JListExtended<>(cleanKeys, false);
+		final JCheckBoxExtended switchFilter = new JCheckBoxExtended("Hide undefined fiels", true);
+		switchFilter.addActionListener(e -> {
+			final boolean sel = switchFilter.isSelected();
+			dlgList.setList(sel ? cleanValues : values);
+			rowHeaderList.setList(sel ? cleanKeys : keys);
 		});
 
-		JScrollPane dlgScrollPane = new JScrollPane (dlgList);
-		dlgScrollPane.setRowHeaderView (rowHeaderList);
-		dlgList.setBorder (new EmptyBorder (0, 5, 0, 5));
-		rowHeaderList.setBorder (new EmptyBorder (0, 5, 0, 5));
-		JButton dlgClose = new JButtonRed ("Close");
-		getContentPane ().setBackground (GUI.COLOR_UI_BACKGROUND);
-		rowHeaderList.setBackground (GUI.COLOR_UI_ELEMENT);
-		DefaultListCellRenderer x = (DefaultListCellRenderer) rowHeaderList.getCellRenderer ();
-		x.setBackground (GUI.COLOR_UI_ELEMENT);
-		rowHeaderList.setForeground (Color.WHITE);
+		final JScrollPane dlgScrollPane = new JScrollPane(dlgList);
+		dlgScrollPane.setRowHeaderView(rowHeaderList);
+		dlgList.setBorder(new EmptyBorder(0, 5, 0, 5));
+		rowHeaderList.setBorder(new EmptyBorder(0, 5, 0, 5));
+		final JButton dlgClose = new JButtonRed("Close");
+		getContentPane().setBackground(GUI.COLOR_UI_BACKGROUND);
+		rowHeaderList.setBackground(GUI.COLOR_UI_ELEMENT);
+		final DefaultListCellRenderer x = (DefaultListCellRenderer) rowHeaderList.getCellRenderer();
+		x.setBackground(GUI.COLOR_UI_ELEMENT);
+		rowHeaderList.setForeground(Color.WHITE);
 
-		dlgLabel.setOpaque (false);
-		dlgScrollPane.setOpaque (false);
-		dlgScrollPane.getViewport ().setOpaque (false);
-		dlgScrollPane.getVerticalScrollBar ().setUI (new EEScrollBarUI ());
-		dlgScrollPane.getHorizontalScrollBar ().setUI (new EEScrollBarUI ());
-		dlgList.addMouseListener (new MouseAdapter () {
+		dlgLabel.setOpaque(false);
+		dlgScrollPane.setOpaque(false);
+		dlgScrollPane.getViewport().setOpaque(false);
+		dlgScrollPane.getVerticalScrollBar().setUI(new EEScrollBarUI());
+		dlgScrollPane.getHorizontalScrollBar().setUI(new EEScrollBarUI());
+		dlgList.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseReleased (MouseEvent e) {
-				int index = dlgList.getSelectedIndex ();
-				rowHeaderList.setSelectedIndex (index);
+			public void mouseReleased(MouseEvent e) {
+				final int index = dlgList.getSelectedIndex();
+				rowHeaderList.setSelectedIndex(index);
 			}
 
 			@Override
-			public void mouseClicked (MouseEvent e) {
-				int index = dlgList.getSelectedIndex ();
-				if (e.getClickCount () == 2) {
-					List <Entry> selEntries = dlgList.get (index);
-					if (selEntries != null && !selEntries.isEmpty ()) {
-						if (selEntries.size () > 1) {
-							JDialog d = new DialogSearchValuesResultsList (DialogSearchValuesResults.this, selEntries, rowHeaderList.get (index));
-							d.setVisible (true);
+			public void mouseClicked(MouseEvent e) {
+				final int index = dlgList.getSelectedIndex();
+				if (e.getClickCount() == 2) {
+					final List<Entry> selEntries = dlgList.get(index);
+					if (selEntries != null && !selEntries.isEmpty()) {
+						if (selEntries.size() > 1) {
+							final JDialog d = new DialogSearchValuesResultsList(DialogSearchValuesResults.this, selEntries, rowHeaderList.get(index));
+							d.setVisible(true);
 						} else {
-							Entry selEntry = selEntries.get (0);
+							final Entry selEntry = selEntries.get(0);
 							if (selEntry != null) {
-								DatFile datFile = selEntry.datStructure.datFile;
+								final DatFile datFile = selEntry.datStructure.datFile;
 								if (datFile != null) {
-									EntryGroup entryGroup = datFile.findGroup (selEntry);
+									final EntryGroup entryGroup = datFile.findGroup(selEntry);
 									if (entryGroup != null) {
-										FrameEditor frameEditor = datFile.openInEditor (DialogSearchValuesResults.this, true);
-										frameEditor.goToEntry (entryGroup, selEntry);
+										final FrameEditor frameEditor = datFile.openInEditor(DialogSearchValuesResults.this, true);
+										frameEditor.goToEntry(entryGroup, selEntry);
 									}
 								}
 							}
@@ -114,36 +116,36 @@ public class DialogSearchValuesResults extends JDialog {
 			}
 
 			@Override
-			public void mouseDragged (MouseEvent e) {
-				int index = dlgList.getSelectedIndex ();
-				rowHeaderList.setSelectedIndex (index);
+			public void mouseDragged(MouseEvent e) {
+				final int index = dlgList.getSelectedIndex();
+				rowHeaderList.setSelectedIndex(index);
 			}
 		});
-		rowHeaderList.addMouseListener (new MouseAdapter () {
+		rowHeaderList.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseReleased (MouseEvent e) {
-				int index = rowHeaderList.getSelectedIndex ();
-				dlgList.setSelectedIndex (index);
+			public void mouseReleased(MouseEvent e) {
+				final int index = rowHeaderList.getSelectedIndex();
+				dlgList.setSelectedIndex(index);
 			}
 
 			@Override
-			public void mouseClicked (MouseEvent e) {
-				int index = rowHeaderList.getSelectedIndex ();
-				if (e.getClickCount () == 2) {
-					List <Entry> selEntries = dlgList.get (index);
-					if (selEntries != null && !selEntries.isEmpty ()) {
-						if (selEntries.size () > 1) {
-							JDialog d = new DialogSearchValuesResultsList (DialogSearchValuesResults.this, selEntries, rowHeaderList.get (index));
-							d.setVisible (true);
+			public void mouseClicked(MouseEvent e) {
+				final int index = rowHeaderList.getSelectedIndex();
+				if (e.getClickCount() == 2) {
+					final List<Entry> selEntries = dlgList.get(index);
+					if (selEntries != null && !selEntries.isEmpty()) {
+						if (selEntries.size() > 1) {
+							final JDialog d = new DialogSearchValuesResultsList(DialogSearchValuesResults.this, selEntries, rowHeaderList.get(index));
+							d.setVisible(true);
 						} else {
-							Entry selEntry = selEntries.get (0);
+							final Entry selEntry = selEntries.get(0);
 							if (selEntry != null) {
-								DatFile datFile = selEntry.datStructure.datFile;
+								final DatFile datFile = selEntry.datStructure.datFile;
 								if (datFile != null) {
-									EntryGroup entryGroup = datFile.findGroup (selEntry);
+									final EntryGroup entryGroup = datFile.findGroup(selEntry);
 									if (entryGroup != null) {
-										FrameEditor frameEditor = datFile.openInEditor (DialogSearchValuesResults.this, true);
-										frameEditor.goToEntry (entryGroup, selEntry);
+										final FrameEditor frameEditor = datFile.openInEditor(DialogSearchValuesResults.this, true);
+										frameEditor.goToEntry(entryGroup, selEntry);
 									}
 								}
 							}
@@ -153,22 +155,22 @@ public class DialogSearchValuesResults extends JDialog {
 			}
 
 			@Override
-			public void mouseDragged (MouseEvent e) {
-				int index = dlgList.getSelectedIndex ();
-				rowHeaderList.setSelectedIndex (index);
+			public void mouseDragged(MouseEvent e) {
+				final int index = dlgList.getSelectedIndex();
+				rowHeaderList.setSelectedIndex(index);
 			}
 		});
 
-		getRootPane ().registerKeyboardAction ( (e) -> dispose (), KeyStroke.getKeyStroke (KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
-		dlgClose.addActionListener (al -> dispose ());
+		getRootPane().registerKeyboardAction((e) -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+		dlgClose.addActionListener(al -> dispose());
 
-		setTitle ("For field: " + field.getIndex () + " - " + field.getEntryStruct ());
-		setBounds (GUI.getBounds (this, 0.6, 0.8));
-		setLayout (new GridBagLayoutExtended (new int[] { 200 }, new int[] { 30, 400, 25, 50 }, new double[] { 1.0 }, new double[] { 0, 1.0, 0, 0 }));
-		add (dlgLabel, new GridBagConstraintsExtended (5, 5, 0, 5, 0, 0));
-		add (dlgScrollPane, new GridBagConstraintsExtended (5, 5, 0, 5, 0, 1));
-		add (switchFilter, new GridBagConstraintsExtended (5, 5, 0, 5, 0, 2));
-		add (dlgClose, new GridBagConstraintsExtended (5, 5, 5, 5, 0, 3));
+		setTitle("For field: " + field.getIndex() + " - " + field.getFieldStruct());
+		setBounds(GUI.getBounds(this, 0.6, 0.8));
+		setLayout(new GridBagLayoutExtended(new int[] { 200 }, new int[] { 30, 400, 25, 50 }, new double[] { 1.0 }, new double[] { 0, 1.0, 0, 0 }));
+		add(dlgLabel, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 0));
+		add(dlgScrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
+		add(switchFilter, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 2));
+		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 3));
 	}
 
 }

@@ -2,11 +2,12 @@ package datstructure;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import constants.EnumValue;
 
@@ -19,19 +20,30 @@ import constants.EnumValue;
 public class EntryValueMap {
 
 	/** Map each value to the list of entries which use that value */
-	public final Map <Object, List <Entry>>	map;
+	public final Map<Object, List<Entry>> map;
 	/** Total number of entries */
-	public final int						counter;
+	public final int counter;
 
 	/**
 	 * Create a new {@link EntryValueMap}
 	 *
-	 * @param map Map each value to the list of entries which use that value
+	 * @param map     Map each value to the list of entries which use that value
 	 * @param counter Total number of entries
 	 */
-	public EntryValueMap (Map <Object, List <Entry>> map, int counter) {
+	public EntryValueMap(Map<Object, List<Entry>> map, int counter) {
 		this.map = map;
 		this.counter = counter;
+	}
+
+
+	private static final class KeyValue<K, V> {
+		public final K key;
+		public final V value;
+
+		public KeyValue(K key, V value) {
+			this.key = key;
+			this.value = value;
+		}
 	}
 
 
@@ -39,77 +51,47 @@ public class EntryValueMap {
 	 * Scan all entries and group entries by value
 	 *
 	 * @param entryGroups The list of entry groups
-	 * @param indexes Indexes of the fields to read
+	 * @param indexes     Indexes of the fields to read
 	 * @return an EntryValueMap A new EntryValueMap which hold the results
 	 */
-	public static EntryValueMap getValuesMap (List <EntryGroup> entryGroups, int... indexes) {
-		Map <Object, List <Entry>> valueEntryMap = new HashMap <> ();
+	public static EntryValueMap getValuesMap(List<EntryGroup> entryGroups, DatStructure datStructure, int fieldIndex) {
+		final Entry[] entries = entryGroups.parallelStream().flatMap(entryGroup -> entryGroup.entries.stream()).toArray(Entry[]::new);
+		final FieldStruct fieldStruct = datStructure.getFieldStruct(fieldIndex);
+		final EnumValue enum0 = fieldStruct.enumValues != null ? fieldStruct.enumValues[0] : null;
 
-		int counter = 0;
-		for (int index : indexes) {
-			counter += ScanEntries (entryGroups, index, valueEntryMap);
-		}
-
-		return new EntryValueMap (new TreeMap <> (valueEntryMap), counter);
-	}
-
-
-	private static int ScanEntries (List <EntryGroup> entryGroups, int index, Map <Object, List <Entry>> valueEntryMap) {
-		DatStructure datStructure = entryGroups.get (0).datStructure;
-		FieldStruct fieldStruct = datStructure.getFieldStruct (index);
-
-		int counter = 0;
-		List <Entry> entries;
-		Object key;
-		EnumValue enum0 = fieldStruct.enumValues != null ? fieldStruct.enumValues[0] : null;
-		for (EntryGroup entryGroup : entryGroups) {
-			for (Entry entry : entryGroup) {
-				counter++;
-				if (index < entry.size ()) {
-					key = entry.get (index);
-					if (key instanceof Link) {
-						key = ((Link) key).target;
-					} else if (key instanceof Integer) {
+		final var valuesMap = Arrays.stream(entries)
+				.map(entry -> {
+					if (entry.size() <= fieldIndex) {
+						return null;
+					}
+					Object fieldValue = entry.get(fieldIndex);
+					if (fieldValue instanceof Link) {
+						fieldValue = ((Link) fieldValue).target;
+					} else if (fieldValue instanceof Integer) {
 						if (enum0 != null) {
-							int intVal = (Integer) key;
-							key = enum0.parseValue (intVal);
-							if (key == null) {
-								continue;
+							fieldValue = enum0.parseValue((Integer) fieldValue);
+							if (fieldValue == null) {
+								return null;
 							}
 						}
 					}
-
-					if (!valueEntryMap.containsKey (key)) {
-						entries = new ArrayList <> ();
-						entries.add (entry);
-						valueEntryMap.put (key, entries);
-					} else {
-						valueEntryMap.get (key).add (entry);
-					}
-				}
-			}
-		}
-		return counter;
+					return new KeyValue<>(fieldValue, entry);
+				})
+				.filter(obj -> obj != null)
+				.collect(Collectors.groupingBy(keyValue -> keyValue.key, Collectors.mapping(keyValue -> keyValue.value, Collectors.toList())));
+		valuesMap.values().forEach(list -> list.sort(FieldStruct.valueComparator));
+		return new EntryValueMap(valuesMap, entries.length);
 	}
 
-
-	public EntryValueMap applyFilter (Predicate <Entry> filter) {
-		HashMap <Object, List <Entry>> newMap = new HashMap <> ();
-		for (Map.Entry <Object, List <Entry>> group : map.entrySet ()) {
-			Object key = group.getKey ();
-			for (Entry entry : group.getValue ()) {
-				if (filter.test (entry)) {
-					if (!newMap.containsKey (key)) {
-						List <Entry> list = new ArrayList <> ();
-						list.add (entry);
-						newMap.put (key, list);
-					} else {
-						newMap.get (key).add (entry);
-					}
-				}
-			}
-		}
-		return new EntryValueMap (newMap, counter);
+	public EntryValueMap applyFilter(Predicate<Entry> filter) {
+		final HashMap<Object, List<Entry>> newMap = new HashMap<>(map);
+		newMap.entrySet().forEach(entrySet -> {
+			final var list = new ArrayList<>(entrySet.getValue());
+			list.removeIf(Predicate.not(filter));
+			entrySet.setValue(list);
+		});
+		newMap.entrySet().removeIf(entrySet -> entrySet.getValue().isEmpty());
+		return new EntryValueMap(newMap, counter);
 	}
 
 }

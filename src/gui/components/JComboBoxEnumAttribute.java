@@ -28,167 +28,168 @@ import gui.FrameEditor;
  *
  * @author MarcoForlini
  */
-public class JComboBoxEnumAttribute extends JComboBox <AttributeCode> implements EntryFieldInterface, ItemListener, MouseListener, KeyListener {
+public class JComboBoxEnumAttribute extends JComboBox<AttributeCode> implements EntryFieldInterface, ItemListener, MouseListener, KeyListener {
 
-	private static final long									serialVersionUID	= -5787229930995728192L;
-	private static final BiPredicate <String, AttributeCode>	NAME_MATCHER		= (text, attributeCode) -> attributeCode.name.toLowerCase ().contains (text);
-	private static final BiPredicate <Integer, AttributeCode>	ID_MATCHER			= (val, attributeCode) -> attributeCode.code == val || NAME_MATCHER.test (val.toString (), attributeCode);
+	private static final long serialVersionUID = -5787229930995728192L;
+	private static final BiPredicate<String, AttributeCode> NAME_MATCHER = (text, attributeCode) -> attributeCode.name.toLowerCase().contains(text);
+	private static final BiPredicate<Integer, AttributeCode> ID_MATCHER = (val, attributeCode) -> attributeCode.code == val || NAME_MATCHER.test(val.toString(), attributeCode);
 
-	private FieldStruct											fieldStruct;
-	private int													index;
-	private FrameEditor											frameEditor;
+	private final FieldStruct fieldStruct;
+	private final int index;
+	private final FrameEditor frameEditor;
 
-	private ListSearcher <AttributeCode>						searcher			= new ListSearcher <> (NAME_MATCHER, ID_MATCHER);
-	private JTextComponent										textEditor			= ((JTextComponent) getEditor ().getEditorComponent ());
-	private Object												defaultVal			= null;
-	private boolean												altered				= false;
+	private final ListSearcher<AttributeCode> searcher = new ListSearcher<>(NAME_MATCHER, ID_MATCHER);
+	private final JTextComponent textEditor = ((JTextComponent) getEditor().getEditorComponent());
+	private Object defaultVal = null;
+	private boolean altered = false;
 
 	/**
 	 * Create a new {@link JComboBoxEnumAttribute}
 	 *
 	 * @param fieldStruct The field structure
-	 * @param index Index of the field
+	 * @param index       Index of the field
 	 * @param frameEditor The FrameEditor object
 	 */
-	public JComboBoxEnumAttribute (FieldStruct fieldStruct, int index, FrameEditor frameEditor) {
-		super (AttributeCode.values ());
+	public JComboBoxEnumAttribute(FieldStruct fieldStruct, int index, FrameEditor frameEditor) {
+		super(AttributeCode.values());
 		this.fieldStruct = fieldStruct;
 		this.index = index;
 		this.frameEditor = frameEditor;
-		setToolTipText (fieldStruct.getDescription ());
-		setEditable (true);
-		addItemListener (this);
-		addMouseListener (this);
-		textEditor.addKeyListener (this);
+		setToolTipText(fieldStruct.getDescription());
+		setEditable(true);
+		addItemListener(this);
+		addMouseListener(this);
+		textEditor.addKeyListener(this);
 	}
 
 	@Override
-	public synchronized void addMouseListener (MouseListener l) {
-		super.addMouseListener (l);
+	public synchronized void addMouseListener(MouseListener l) {
+		super.addMouseListener(l);
 		if (textEditor != null) {
-			textEditor.addMouseListener (l);
+			textEditor.addMouseListener(l);
 		}
 	}
 
 	@Override
-	public void resetColor () {
-		setForeground (null);
+	public void resetColor() {
+		setForeground(null);
 	}
 
 	@Override
-	public FieldStruct getEntryStruct () {
-		return fieldStruct;
-	}
+	public FieldStruct getFieldStruct() { return fieldStruct; }
 
 	@Override
-	public int getIndex () {
-		return index;
-	}
+	public int getIndex() { return index; }
 
 	@Override
-	public Integer getVal () {
-		EffectCode obj = (EffectCode) getSelectedItem ();
+	public Integer getVal() {
+		final EffectCode obj = (EffectCode) getSelectedItem();
 		if (Settings.DEBUG) {
-			System.out.println ("Getting: " + fieldStruct + " = " + obj);
+			System.out.println("Getting: " + fieldStruct + " = " + obj);
 		}
 		return obj.code;
 	}
 
 	@Override
-	public void setVal (Object value) {
+	public void setVal(Object value) {
 		defaultVal = value;
-		for (EnumValue enumValue : fieldStruct.enumValues) {
-			if (value.equals (enumValue.getCode ())) {
-				setSelectedItem (enumValue);
-				textEditor.setCaretPosition (0);
+		for (final EnumValue enumValue : fieldStruct.enumValues) {
+			if (value.equals(enumValue.getCode())) {
+				setSelectedItem(enumValue);
+				textEditor.setCaretPosition(0);
 				altered = false;
 				return;
 			}
 		}
-		setSelectedItem (value);
-		textEditor.setCaretPosition (0);
+		setSelectedItem(value);
+		textEditor.setCaretPosition(0);
 		altered = false;
-		updateState ();
+		updateState();
 	}
 
 	@Override
-	public void refreshField () {/* Do nothing */}
+	public void refreshField() {
+		/* Do nothing */}
 
 	@Override
-	public boolean isAltered () {
-		return altered;
-	}
+	public boolean isAltered() { return altered; }
 
 	@Override
-	public Object getDefaultVal () {
-		return defaultVal;
-	}
+	public Object getDefaultVal() { return defaultVal; }
 
 	@Override
-	public void itemStateChanged (ItemEvent e) {
+	public void itemStateChanged(ItemEvent e) {
 		altered = true;
-		updateState ();
+		updateState();
 	}
 
 
-	void updateState () {
-		AttributeCode attribute = (AttributeCode) getSelectedItem ();
-		frameEditor.setFieldEnabled (14, attribute == AttributeCode.C40_AREA_EFFECT);
-		frameEditor.setFieldEnabled (15, attribute == AttributeCode.C42_TERRAIN_FAMILY);
+	void updateState() {
+		final AttributeCode attribute = (AttributeCode) getSelectedItem();
+		frameEditor.setFieldEnabled(14, attribute == AttributeCode.C40_AREA_EFFECT);
+		frameEditor.setFieldEnabled(15, attribute == AttributeCode.C42_TERRAIN_FAMILY);
 	}
 
 
 	@Override
-	public void keyTyped (KeyEvent e) {/* Do nothing */}
+	public void keyTyped(KeyEvent e) {
+		/* Do nothing */}
 
 	@Override
-	public void keyPressed (KeyEvent e) {/* Do nothing */}
+	public void keyPressed(KeyEvent e) {
+		/* Do nothing */}
 
 	@Override
-	public void keyReleased (KeyEvent e) {
-		SwingUtilities.invokeLater ( () -> {
-			String text = textEditor.getText ();
-			if (text == null || text.isEmpty ()) {
-				if (Settings.DEBUG) {
-					System.out.println ("Select: null");
-				}
-				setSelectedItem (null);
-			} else if (e.getKeyCode () == KeyEvent.VK_TAB && isPopupVisible ()) {
-				ComboPopup popup = (ComboPopup) getUI ().getAccessibleChild (this, 0);
-				setSelectedItem (popup.getList ().getSelectedValue ());
-			} else {
-				if (!isPopupVisible ()) {
-					showPopup ();
-				}
-				List <AttributeCode> results = searcher.find (AttributeCode.values (), null, text);
-				if (results != null) {
-					AttributeCode result = searcher.findNext ();
-					if (result != null) {
-						ComboPopup popup = (ComboPopup) getUI ().getAccessibleChild (this, 0);
-						popup.getList ().setSelectedValue (result, true);
+	public void keyReleased(KeyEvent e) {
+		if (isEnabled()) {
+			SwingUtilities.invokeLater(() -> {
+				final String text = textEditor.getText();
+				if (text == null || text.isEmpty()) {
+					if (Settings.DEBUG) {
+						System.out.println("Select: null");
+					}
+					setSelectedItem(null);
+				} else if (e.getKeyCode() == KeyEvent.VK_TAB && isPopupVisible()) {
+					final ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);
+					setSelectedItem(popup.getList().getSelectedValue());
+				} else {
+					if (!isPopupVisible()) {
+						showPopup();
+					}
+					final List<AttributeCode> results = searcher.find(AttributeCode.values(), null, text);
+					if (results != null) {
+						final AttributeCode result = searcher.findNext();
+						if (result != null) {
+							final ComboPopup popup = (ComboPopup) getUI().getAccessibleChild(this, 0);
+							popup.getList().setSelectedValue(result, true);
+						}
 					}
 				}
-			}
-		});
-	}
-
-	@Override
-	public void mouseClicked (MouseEvent e) {
-		if (SwingUtilities.isLeftMouseButton (e)) {
-			showPopup ();
+			});
 		}
 	}
 
 	@Override
-	public void mousePressed (MouseEvent e) {/* Do nothing */}
+	public void mouseClicked(MouseEvent e) {
+		if (isEnabled() && SwingUtilities.isLeftMouseButton(e)) {
+			showPopup();
+		}
+	}
 
 	@Override
-	public void mouseReleased (MouseEvent e) {/* Do nothing */}
+	public void mousePressed(MouseEvent e) {
+		/* Do nothing */}
 
 	@Override
-	public void mouseEntered (MouseEvent e) {/* Do nothing */}
+	public void mouseReleased(MouseEvent e) {
+		/* Do nothing */}
 
 	@Override
-	public void mouseExited (MouseEvent e) {/* Do nothing */}
+	public void mouseEntered(MouseEvent e) {
+		/* Do nothing */}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		/* Do nothing */}
 
 }

@@ -36,6 +36,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+import constants.EnumValue;
 import datmanager.Core;
 import datmanager.DatFile;
 import datmanager.DatFile.EntryLocation;
@@ -565,13 +566,27 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		final EntryFieldInterface field = (EntryFieldInterface) rightClicked;
 		final int index = field.getIndex();
 		final Object value = field.getVal();
-		Object entryValue;
 		final List<Entry> entries = new ArrayList<>();
 
+		final FieldStruct fieldStruct = field.getFieldStruct();
+		final EnumValue enum0 = fieldStruct.enumValues != null ? fieldStruct.enumValues[0] : null;
 		for (final EntryGroup entryGroup : datFile) {
 			for (final Entry entry : entryGroup) {
 				if (index < entry.size()) {
-					entryValue = entry.get(index);
+					Object entryValue = entry.get(index);
+					if (entryValue instanceof Link) {
+						entryValue = ((Link) entryValue).target.getID();
+					} else if (entryValue instanceof Entry) {
+						entryValue = ((Entry) entryValue).getID();
+					} else if (entryValue instanceof Integer) {
+						if (enum0 != null) {
+							final int intVal = (Integer) entryValue;
+							entryValue = enum0.parseValue(intVal);
+							if (entryValue == null) {
+								continue;
+							}
+						}
+					}
 					if (value.equals(entryValue)) {
 						entries.add(entry);
 					}
@@ -592,7 +607,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			final FieldStruct fieldStruct = entryPanel.fieldStruct;
 			try {
 				if (fieldStruct.getKnowledge() != Knowledge.KNOWN) {
-					final EntryValueMap entryValueMap = EntryValueMap.getValuesMap(datFile.entryGroups, entryPanel.index).applyFilter(Entry::isDefined);
+					final EntryValueMap entryValueMap = EntryValueMap.getValuesMap(datFile.entryGroups, datFile.datStructure, entryPanel.index).applyFilter(Entry::isDefined);
 					size = entryValueMap.map.size();
 					if (size <= 2 || size == entryValueMap.counter) {
 						marked.add(entryPanel);
@@ -972,7 +987,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		fieldMenuSearchValues.addActionListener(e -> {
 			try {
 				final EntryFieldInterface field = (EntryFieldInterface) rightClicked;
-				final EntryValueMap entryValueMap = EntryValueMap.getValuesMap(datFile.entryGroups, field.getIndex());
+				final EntryValueMap entryValueMap = EntryValueMap.getValuesMap(datFile.entryGroups, datFile.datStructure, field.getIndex());
 				final JDialog d = new DialogSearchValuesResults(this, entryValueMap, field);
 				d.setVisible(true);
 			} catch (final Exception exc) {
@@ -1009,7 +1024,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 		fieldMenuNextFree.addActionListener(e -> {
 			final EntryFieldInterface field = (EntryFieldInterface) rightClicked;
-			final FieldStruct fieldStruct = field.getEntryStruct();
+			final FieldStruct fieldStruct = field.getFieldStruct();
 			int highest;
 			if (fieldStruct == DatStructure.getCommonField("ID")) {
 				highest = currentEntryGroup.entries.parallelStream().mapToInt(Entry::getID).max().getAsInt() + 1;

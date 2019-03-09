@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import datmanager.DatFile;
+import datmanager.Util;
 
 /**
  * An Entry is an object in the file.
@@ -31,6 +32,12 @@ public class Entry implements Comparable<Entry>, Iterable<Object> {
 			final int num = Integer.valueOf(text);
 			return entry -> entry.isDefined() && (entry.getID() == num && entry.toString().toLowerCase().contains(text));
 		} catch (final NumberFormatException e) {
+			if (text.indexOf('*') >= 0) {
+				final var patterns = Util.split(text.toLowerCase(), '*');
+				if (patterns.size() > 0) {
+					return entry -> entry.isDefined() && Util.matchPatterns(entry.toString().toLowerCase(), patterns);
+				}
+			}
 			return entry -> entry.isDefined() && entry.toString().toLowerCase().contains(text);
 		}
 	}

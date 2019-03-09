@@ -35,8 +35,14 @@ public class StringIterator implements Iterator<String> {
 			to = text.indexOf(separatorC, pos);
 		}
 
-		final String subStr = to >= 0 ? text.substring(pos, to) : text.substring(pos);
-		pos = to + 1;
+		final String subStr;
+		if (to < 0) {
+			subStr = text.substring(pos);
+			pos = Integer.MAX_VALUE; // Can't be lower than any other INT array size
+		} else {
+			subStr = text.substring(pos, to);
+			pos = to + 1;
+		}
 		return subStr;
 	}
 

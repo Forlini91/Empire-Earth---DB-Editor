@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import datmanager.Util;
+
 /**
  * This class represents a link between an entry and another entry
  *
@@ -16,6 +18,12 @@ public class Link implements Comparable<Link> {
 			final int num = Integer.valueOf(text);
 			return link -> link.isValid() && link.target.getID() == num || link.toString().toLowerCase().contains(text);
 		} catch (final NumberFormatException e) {
+			if (text.indexOf('*') >= 0) {
+				final var patterns = Util.split(text.toLowerCase(), '*');
+				if (patterns.size() > 0) {
+					return link -> link.isValid() && Util.matchPatterns(link.toString().toLowerCase(), patterns);
+				}
+			}
 			return link -> link.isValid() && link.toString().toLowerCase().contains(text);
 		}
 	}

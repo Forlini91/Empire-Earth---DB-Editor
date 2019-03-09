@@ -12,7 +12,10 @@ import java.math.RoundingMode;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
@@ -78,6 +81,37 @@ public final class Util {
 		} catch (final Throwable e) {
 			return false;
 		}
+	}
+
+	public static List<String> split(String text, char separator) {
+		return split_internal(new StringIterator(text, separator));
+	}
+
+	public static List<String> split(String text, String separator) {
+		return split_internal(new StringIterator(text, separator));
+	}
+
+	private static List<String> split_internal(Iterator<String> it) {
+		final List<String> list = new ArrayList<>();
+		it.forEachRemaining(elem -> {
+			if (elem != null && !elem.isBlank()) {
+				list.add(elem);
+			}
+		});
+		return list;
+	}
+
+	public static boolean matchPatterns(String text, List<String> patterns) {
+		int pos = 0;
+		for (final String pattern : patterns) {
+			final int next = text.indexOf(pattern, pos);
+			if (next >= 0) {
+				pos = next + pattern.length();
+			} else {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static <T> boolean containsAny(Collection<T> c1, Collection<? extends T> c2) {
