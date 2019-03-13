@@ -9,7 +9,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import javax.swing.JTextField;
@@ -18,21 +17,24 @@ import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicTextFieldUI;
 import javax.swing.text.JTextComponent;
 
+import datstructure.LocalizedObject;
+
 /**
  * @author MarcoForlini
  */
-public class JSearchTextField<T> extends JTextField implements DocumentListener, FocusListener {
+public class JSearchTextField<T extends LocalizedObject> extends JTextField implements DocumentListener, FocusListener {
 
 	private static final long serialVersionUID = 1L;
 
 	private final List<SearchTextListener> listeners = new ArrayList<>();
 
-	private final JListFilter<T> jList;
-	private final Function<String, Predicate<T>> filterGenerator;
+	private final JListLocalized<T> jList;
+	private final FilterBuilder<T> filterGenerator;
 
-	public JSearchTextField(JListFilter<T> jList, Function<String, Predicate<T>> filterGenerator) {
+	public JSearchTextField(JListLocalized<T> jList, FilterBuilder<T> filterGenerator) {
 		this.jList = jList;
 		this.filterGenerator = filterGenerator;
+		this.jList.localizeToggle.addActionListener(e -> search());
 
 		setBackground(Color.WHITE);
 		setOpaque(true);
@@ -62,7 +64,7 @@ public class JSearchTextField<T> extends JTextField implements DocumentListener,
 			jList.filterOverride = null;
 		} else {
 			fireSearchEvent(text);
-			jList.filterOverride = filterGenerator.apply(text);
+			jList.filterOverride = filterGenerator.build(text, jList.localizeToggle.isSelected());
 		}
 		jList.refresh();
 	}
@@ -113,6 +115,10 @@ public class JSearchTextField<T> extends JTextField implements DocumentListener,
 
 	public interface SearchTextListener {
 		void searched(String text);
+	}
+
+	public interface FilterBuilder<T> {
+		Predicate<T> build(String text, boolean localized);
 	}
 
 }

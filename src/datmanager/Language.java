@@ -39,7 +39,7 @@ public class Language implements Comparable<Language> {
 	}
 
 	public static void updateLanguages() {
-		final File languageFile = new File(Core.getDirectory(), "language.txt");
+		final File languageFile = new File(Core.getDataDirectory(), "language.txt");
 		if (languageFile.exists() && languageFile.canRead()) {
 			LIST.clear();
 			try (Scanner scanner = new Scanner(languageFile)) {

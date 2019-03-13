@@ -23,7 +23,7 @@ public class UIControls extends DatStructure {
 	 * Creates a new {@link UIControls}
 	 */
 	private UIControls() {
-		super("UI Controls", "dbuicontrols.dat", true, 0, 1, 0, 0, 18, 19, 4, 125, 175);
+		super("UI Controls", "dbuicontrols.dat", true, 0, 1, 0, 0, 18, 19, -1, 4, 125, 175);
 	}
 
 	@Override

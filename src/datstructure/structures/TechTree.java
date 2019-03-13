@@ -23,7 +23,7 @@ public class TechTree extends DatStructure {
 	 * Creates a new {@link TechTree}
 	 */
 	private TechTree() {
-		super("Technologies", "dbtechtree.dat", true, 1, 1, 0, 0, 1, 2, 4, 175, 225);
+		super("Technologies", "dbtechtree.dat", true, 1, 1, 0, 0, 1, 2, 22, 4, 175, 225);
 	}
 
 	@Override

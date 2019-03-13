@@ -27,7 +27,7 @@ public class RandomMap extends DatStructure {
 	 * When saving, <num groups> is recalculated as the number of distinct groups IDs.
 	 */
 	private RandomMap() {
-		super("Random map", "dbrandommap.dat", true, 0, 0, 0, 2, -1, 0, 2, 125, 175);
+		super("Random map", "dbrandommap.dat", true, 0, 0, 0, 2, -1, 0, -1, 2, 125, 175);
 	}
 
 	@Override

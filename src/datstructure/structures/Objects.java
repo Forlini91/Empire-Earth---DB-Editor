@@ -23,7 +23,7 @@ public class Objects extends DatStructure {
 	 * Creates a new {@link Objects}
 	 */
 	private Objects() {
-		super("Objects", "dbobjects.dat", true, 0, 1, 0, 0, 1, 5, 4, 125, 175);
+		super("Objects", "dbobjects.dat", true, 0, 1, 0, 0, 1, 5, 88, 4, 125, 175);
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class AreaEffect extends DatStructure {
 	 * Creates a new {@link AreaEffect}
 	 */
 	private AreaEffect() {
-		super("Area effects", "dbareaeffect.dat", true, 0, 1, 0, 0, 1, 2, 4, 125, 175);
+		super("Area effects", "dbareaeffect.dat", true, 0, 1, 0, 0, 1, 2, -1, 4, 125, 175);
 	}
 
 	@Override

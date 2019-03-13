@@ -25,7 +25,7 @@ public class Effects extends DatStructure {
 	 * Creates a new {@link Effects}
 	 */
 	private Effects() {
-		super("Effects", "dbeffects.dat", false, 0, 1, 1, -1, 0, 1, 3, 200, 275);
+		super("Effects", "dbeffects.dat", false, 0, 1, 1, -1, 0, 1, -1, 3, 200, 275);
 	}
 
 	@Override

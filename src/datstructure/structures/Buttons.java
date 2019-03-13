@@ -23,7 +23,7 @@ public class Buttons extends DatStructure {
 	 * Creates a new {@link Buttons}
 	 */
 	private Buttons() {
-		super("Buttons", "dbbuttons.dat", true, 0, 1, 0, 0, 2, 3, 2, 125, 175);
+		super("Buttons", "dbbuttons.dat", true, 0, 1, 0, 0, 2, 3, -1, 2, 125, 175);
 	}
 
 	@Override

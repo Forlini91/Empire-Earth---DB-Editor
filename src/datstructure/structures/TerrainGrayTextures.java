@@ -23,7 +23,7 @@ public class TerrainGrayTextures extends DatStructure {
 	 * Creates a new {@link TerrainGrayTextures}
 	 */
 	private TerrainGrayTextures() {
-		super("Terrain gray textures", "dbterraingraytextures.dat", true, 0, 1, 0, 2, 3, 4, 4, 125, 175);
+		super("Terrain gray textures", "dbterraingraytextures.dat", true, 0, 1, 0, 2, 3, 4, -1, 4, 125, 175);
 	}
 
 	@Override

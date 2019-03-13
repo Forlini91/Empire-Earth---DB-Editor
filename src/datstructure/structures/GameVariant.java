@@ -23,7 +23,7 @@ public class GameVariant extends DatStructure {
 	 * Creates a new {@link GameVariant}
 	 */
 	private GameVariant() {
-		super("Game variants", "dbgamevariant.dat", true, 0, 1, 0, 0, 1, 2, 4, 125, 175);
+		super("Game variants", "dbgamevariant.dat", true, 0, 1, 0, 0, 1, 2, 27, 4, 125, 175);
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class UIFormEvents extends DatStructure {
 	 * Creates a new {@link UIFormEvents}
 	 */
 	private UIFormEvents() {
-		super("UI FormsEvents", "dbuiformevents.dat", true, 0, 0, 0, 0, 1, 2, 2, 125, 175);
+		super("UI FormsEvents", "dbuiformevents.dat", true, 0, 0, 0, 0, 1, 2, -1, 2, 125, 175);
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class UIControlEvents extends DatStructure {
 	 * Creates a new {@link UIControlEvents}
 	 */
 	private UIControlEvents() {
-		super("UI Control events", "dbuicontrolevents.dat", true, 0, 1, 0, 0, 1, 2, 3, 150, 200);
+		super("UI Control events", "dbuicontrolevents.dat", true, 0, 1, 0, 0, 1, 2, -1, 3, 150, 200);
 	}
 
 	@Override

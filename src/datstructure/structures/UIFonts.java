@@ -23,7 +23,7 @@ public class UIFonts extends DatStructure {
 	 * Creates a new {@link UIFonts}
 	 */
 	private UIFonts() {
-		super("UI Fonts", "dbuifonts.dat", true, 0, 1, 0, 0, 1, 2, 3, 125, 175);
+		super("UI Fonts", "dbuifonts.dat", true, 0, 1, 0, 0, 1, 2, -1, 3, 125, 175);
 	}
 
 	@Override

@@ -56,7 +56,11 @@ public interface EnumValue {
 				return AttributeCode.values();
 			case "ButtonPosition":
 				return ButtonPosition.values();
+			case "CalamityTargetType":
+				return CalamityTargetType.values();
 			case "CalamityType":
+				return CalamityType.values();
+			case "ControlType":
 				return ControlType.values();
 			case "EffectCode":
 				return EffectCode.values();

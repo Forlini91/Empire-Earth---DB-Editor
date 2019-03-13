@@ -24,7 +24,7 @@ public class CPBehavior extends DatStructure {
 	 * Creates a new {@link CPBehavior}
 	 */
 	private CPBehavior() {
-		super("CP Behavior", "dbcpbehavior.dat", true, 0, 1, 0, -1, 0, 1, 3, 125, 175);
+		super("CP Behavior", "dbcpbehavior.dat", true, 0, 1, 0, -1, 0, 1, -1, 3, 125, 175);
 	}
 
 	@Override

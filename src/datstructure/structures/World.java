@@ -24,7 +24,7 @@ public class World extends DatStructure {
 	 * Creates a new {@link World}
 	 */
 	private World() {
-		super("World", "dbworld.dat", true, 0, 1, 0, -1, 2, 3, 2, 125, 175);
+		super("World", "dbworld.dat", true, 0, 1, 0, -1, 2, 3, -1, 2, 125, 175);
 	}
 
 	@Override

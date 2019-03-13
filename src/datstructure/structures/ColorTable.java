@@ -23,7 +23,7 @@ public class ColorTable extends DatStructure {
 	 * Creates a new {@link ColorTable}
 	 */
 	private ColorTable() {
-		super("Color table", "dbcolortable.dat", true, 0, 1, 0, 0, 1, 2, 4, 125, 175);
+		super("Color table", "dbcolortable.dat", true, 0, 1, 0, 0, 1, 2, -1, 4, 125, 175);
 	}
 
 	// COMPLETED

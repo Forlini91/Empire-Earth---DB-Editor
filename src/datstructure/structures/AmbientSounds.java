@@ -23,7 +23,7 @@ public class AmbientSounds extends DatStructure {
 	 * Creates a new {@link AmbientSounds}
 	 */
 	private AmbientSounds() {
-		super("Ambient sounds", "dbambientsounds.dat", true, 0, 1, 0, 0, 1, 2, 4, 125, 175);
+		super("Ambient sounds", "dbambientsounds.dat", true, 0, 1, 0, 0, 1, 2, -1, 4, 125, 175);
 	}
 
 	@Override

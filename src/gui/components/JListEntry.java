@@ -10,7 +10,7 @@ import datstructure.Entry;
  *
  * @author MarcoForlini
  */
-public class JListEntry extends JListFilter<Entry> {
+public class JListEntry extends JListLocalized<Entry> {
 
 	private static final long serialVersionUID = -1460528354644591567L;
 
@@ -57,7 +57,7 @@ public class JListEntry extends JListFilter<Entry> {
 	 * @param filterInitialState Initial state of the "switch filter" JCheckBox
 	 */
 	public JListEntry(List<Entry> list, boolean allowMove, boolean filterInitialState) {
-		super(list, allowMove, "Hide undefined entries", filterInitialState, Entry::isDefined);
+		super(list, allowMove, filterInitialState, Entry::isDefined);
 	}
 
 	@Override

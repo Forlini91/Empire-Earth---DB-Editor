@@ -23,7 +23,7 @@ public class UIForms extends DatStructure {
 	 * Creates a new {@link UIForms}
 	 */
 	private UIForms() {
-		super("UI Forms", "dbuiforms.dat", true, 0, 0, 0, 0, 2, 3, 4, 125, 175); // TODO: Check this
+		super("UI Forms", "dbuiforms.dat", true, 0, 0, 0, 0, 2, 3, -1, 4, 125, 175); // TODO: Check this
 	}
 
 	@Override

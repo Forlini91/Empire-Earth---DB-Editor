@@ -23,7 +23,7 @@ public class Family extends DatStructure {
 	 * Creates a new {@link Family}
 	 */
 	private Family() {
-		super("Families", "dbfamily.dat", true, 0, 1, 0, 0, 1, 2, 4, 125, 175);
+		super("Families", "dbfamily.dat", true, 0, 1, 0, 0, 1, 2, -1, 4, 125, 175);
 	}
 
 	@Override

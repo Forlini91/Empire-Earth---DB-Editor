@@ -23,7 +23,7 @@ public class UnitSet extends DatStructure {
 	 * Creates a new {@link UnitSet}
 	 */
 	private UnitSet() {
-		super("Unit sets", "dbunitset.dat", true, 0, 1, 0, 0, 1, 2, 3, 150, 200);
+		super("Unit sets", "dbunitset.dat", true, 0, 1, 0, 0, 1, 2, -1, 3, 150, 200);
 	}
 
 	@Override

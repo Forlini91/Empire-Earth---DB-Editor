@@ -23,7 +23,7 @@ public class UIHotkey extends DatStructure {
 	 * Creates a new {@link UIHotkey}
 	 */
 	private UIHotkey() {
-		super("UI Hotkeys", "dbuihotkey.dat", true, 0, 1, 0, 2, 0, 1, 4, 125, 175);
+		super("UI Hotkeys", "dbuihotkey.dat", true, 0, 1, 0, 2, 0, 1, -1, 4, 125, 175);
 	}
 
 	@Override

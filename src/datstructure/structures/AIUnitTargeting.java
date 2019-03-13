@@ -23,7 +23,7 @@ public class AIUnitTargeting extends DatStructure {
 	 * Creates a new {@link AIUnitTargeting}
 	 */
 	private AIUnitTargeting() {
-		super("AI Unit Targeting", "dbaiunittargeting.dat", true, 0, 1, 0, 0, 1, 2, 4, 125, 175);
+		super("AI Unit Targeting", "dbaiunittargeting.dat", true, 0, 1, 0, 0, 1, 2, -1, 4, 125, 175);
 	}
 
 	@Override

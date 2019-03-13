@@ -24,7 +24,7 @@ public class Civilization extends DatStructure {
 	 * Creates a new {@link Civilization}
 	 */
 	private Civilization() {
-		super("Civilizations", "dbcivilization.dat", true, 0, 0, 1, 2, 0, 1, 4, 125, 175);
+		super("Civilizations", "dbcivilization.dat", true, 0, 0, 1, 2, 0, 1, 3, 4, 125, 175);
 	}
 
 	@Override

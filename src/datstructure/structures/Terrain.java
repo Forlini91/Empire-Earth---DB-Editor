@@ -23,7 +23,7 @@ public class Terrain extends DatStructure {
 	 * Creates a new {@link Terrain}
 	 */
 	private Terrain() {
-		super("Terrain", "dbterrain.dat", true, 0, 1, 0, 2, 3, 4, 4, 125, 175);
+		super("Terrain", "dbterrain.dat", true, 0, 1, 0, 2, 3, 4, 6, 4, 125, 175);
 	}
 
 	@Override

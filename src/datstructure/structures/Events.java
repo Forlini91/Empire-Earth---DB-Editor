@@ -23,7 +23,7 @@ public class Events extends DatStructure {
 	 * Creates a new {@link Events}
 	 */
 	private Events() {
-		super("Events", "dbevents.dat", false, 0, 1, 1, 0, 1, -1, 2, 125, 175);
+		super("Events", "dbevents.dat", false, 0, 1, 1, 0, 1, -1, -1, 2, 125, 175);
 	}
 
 	@Override

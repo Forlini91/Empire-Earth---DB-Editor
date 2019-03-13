@@ -59,7 +59,7 @@ public class DialogSearchValuesResults extends JDialog {
 
 		final JListExtended<List<Entry>> dlgList = new JListExtended<>(cleanValues, false);
 		final JListExtended<Object> rowHeaderList = new JListExtended<>(cleanKeys, false);
-		final JCheckBoxExtended switchFilter = new JCheckBoxExtended("Hide undefined fiels", true);
+		final JCheckBoxExtended switchFilter = new JCheckBoxExtended("Hide undefined", true);
 		switchFilter.addActionListener(e -> {
 			final boolean sel = switchFilter.isSelected();
 			dlgList.setList(sel ? cleanValues : values);

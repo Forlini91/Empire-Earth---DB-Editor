@@ -23,7 +23,7 @@ public class PremadeCivs extends DatStructure {
 	 * Creates a new {@link PremadeCivs}
 	 */
 	private PremadeCivs() {
-		super("Premade civilizations", "dbpremadecivs.dat", true, 0, 1, 0, 2, 0, 1, 2, 125, 175);
+		super("Premade civilizations", "dbpremadecivs.dat", true, 0, 1, 0, 2, 0, 1, 4, 2, 125, 175);
 	}
 
 	@Override

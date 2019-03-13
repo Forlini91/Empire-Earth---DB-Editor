@@ -11,7 +11,10 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import datmanager.DatFile;
+import datmanager.Language;
 import datmanager.Util;
+import datstructure.structures.Objects;
+import datstructure.structures.TechTree;
 
 /**
  * An Entry is an object in the file.
@@ -25,20 +28,20 @@ import datmanager.Util;
  *
  * @author MarcoForlini
  */
-public class Entry implements Comparable<Entry>, Iterable<Object> {
+public class Entry implements Comparable<Entry>, Iterable<Object>, LocalizedObject {
 
-	public static final Predicate<Entry> filterGenerator(String text) {
+	public static final Predicate<Entry> filterGenerator(String text, boolean localization) {
 		try {
 			final int num = Integer.valueOf(text);
-			return entry -> entry.isDefined() && (entry.getID() == num && entry.toString().toLowerCase().contains(text));
+			return entry -> entry.isDefined() && (entry.getID() == num && (localization ? entry.toLocalizedString() : entry.toString()).toLowerCase().contains(text));
 		} catch (final NumberFormatException e) {
 			if (text.indexOf('*') >= 0) {
 				final var patterns = Util.split(text.toLowerCase(), '*');
 				if (patterns.size() > 0) {
-					return entry -> entry.isDefined() && Util.matchPatterns(entry.toString().toLowerCase(), patterns);
+					return entry -> entry.isDefined() && Util.matchPatterns((localization ? entry.toLocalizedString() : entry.toString()).toString().toLowerCase(), patterns);
 				}
 			}
-			return entry -> entry.isDefined() && entry.toString().toLowerCase().contains(text);
+			return entry -> entry.isDefined() && (localization ? entry.toLocalizedString() : entry.toString()).toLowerCase().contains(text);
 		}
 	}
 
@@ -293,6 +296,31 @@ public class Entry implements Comparable<Entry>, Iterable<Object> {
 			return NAME_NONE;
 		}
 		return NAME_UNDEFINED;
+	}
+
+	@Override
+	public String toLocalizedString() {
+		if (datStructure.indexLanguage >= 0 && datStructure.indexLanguage < size()) {
+			final Integer languageId = get(datStructure.indexLanguage);
+			if (languageId == 0 && datStructure == TechTree.instance) {
+				final Link objLink = (Link) get(19);
+				if (objLink.isValid() && Objects.instance.indexLanguage < objLink.target.size()) {
+					final Integer objLanguageId = objLink.target.get(Objects.instance.indexLanguage);
+					if (objLanguageId > 0) {
+						final var language = Language.getMap().get(objLanguageId);
+						if (language != null) {
+							return "(" + getID() + ") " + language.text;
+						}
+					}
+				}
+			} else if (languageId >= 0) {
+				final var language = Language.getMap().get(languageId);
+				if (language != null) {
+					return "(" + getID() + ") " + language.text;
+				}
+			}
+		}
+		return toString();
 	}
 
 	@Override

@@ -11,20 +11,20 @@ import datmanager.Util;
  *
  * @author MarcoForlini
  */
-public class Link implements Comparable<Link> {
+public class Link implements Comparable<Link>, LocalizedObject {
 
-	public static final Predicate<Link> filterGenerator(String text) {
+	public static final Predicate<Link> filterGenerator(String text, boolean localization) {
 		try {
 			final int num = Integer.valueOf(text);
-			return link -> link.isValid() && link.target.getID() == num || link.toString().toLowerCase().contains(text);
+			return link -> link.isValid() && link.target.getID() == num || (localization ? link.toLocalizedString() : link.toString()).toLowerCase().contains(text);
 		} catch (final NumberFormatException e) {
 			if (text.indexOf('*') >= 0) {
 				final var patterns = Util.split(text.toLowerCase(), '*');
 				if (patterns.size() > 0) {
-					return link -> link.isValid() && Util.matchPatterns(link.toString().toLowerCase(), patterns);
+					return link -> link.isValid() && Util.matchPatterns((localization ? link.toLocalizedString() : link.toString()).toLowerCase(), patterns);
 				}
 			}
-			return link -> link.isValid() && link.toString().toLowerCase().contains(text);
+			return link -> link.isValid() && (localization ? link.toLocalizedString() : link.toString()).toLowerCase().contains(text);
 		}
 	}
 
@@ -71,6 +71,11 @@ public class Link implements Comparable<Link> {
 	@Override
 	public String toString() {
 		return "(" + target.datStructure + "  >  " + fieldStruct.name + ")   " + target.toString();
+	}
+
+	@Override
+	public String toLocalizedString() {
+		return "(" + target.datStructure + "  >  " + fieldStruct.name + ")   " + target.toLocalizedString();
 	}
 
 	/**

@@ -23,7 +23,7 @@ public class Sounds extends DatStructure {
 	 * Creates a new {@link Sounds}
 	 */
 	private Sounds() {
-		super("Sounds", "dbsounds.dat", true, 0, 1, 0, 2, 3, 4, 4, 125, 175);
+		super("Sounds", "dbsounds.dat", true, 0, 1, 0, 2, 3, 4, -1, 4, 125, 175);
 	}
 
 	@Override

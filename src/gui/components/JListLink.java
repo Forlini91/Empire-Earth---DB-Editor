@@ -10,7 +10,7 @@ import datstructure.Link;
  *
  * @author MarcoForlini
  */
-public class JListLink extends JListFilter<Link> {
+public class JListLink extends JListLocalized<Link> {
 
 	private static final long serialVersionUID = -1460528354644591567L;
 
@@ -57,7 +57,7 @@ public class JListLink extends JListFilter<Link> {
 	 * @param filterInitialState Initial state of the "switch filter" JCheckBox
 	 */
 	public JListLink(List<Link> list, boolean allowMove, boolean filterInitialState) {
-		super(list, allowMove, "Hide undefined entries", filterInitialState, Link::isValid);
+		super(list, allowMove, filterInitialState, Link::isValid);
 	}
 
 }

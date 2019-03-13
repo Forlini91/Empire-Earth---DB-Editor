@@ -23,7 +23,7 @@ public class Upgrade extends DatStructure {
 	 * Creates a new {@link Upgrade}
 	 */
 	private Upgrade() {
-		super("Upgrades", "dbupgrade.dat", true, 0, 1, 1, 0, 31, 32, 4, 125, 175);
+		super("Upgrades", "dbupgrade.dat", true, 0, 1, 1, 0, 31, 32, -1, 4, 125, 175);
 	}
 
 	@Override

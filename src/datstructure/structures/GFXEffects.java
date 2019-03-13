@@ -23,7 +23,7 @@ public class GFXEffects extends DatStructure {
 	 * Creates a new {@link GFXEffects}
 	 */
 	private GFXEffects() {
-		super("GFX Effects", "dbgfxeffects.dat", true, 0, 1, 0, 0, 1, 2, 4, 125, 175);
+		super("GFX Effects", "dbgfxeffects.dat", true, 0, 1, 0, 0, 1, 2, 18, 4, 125, 175);
 	}
 
 	@Override

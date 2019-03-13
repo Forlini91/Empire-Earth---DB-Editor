@@ -23,7 +23,7 @@ public class Graphics extends DatStructure {
 	 * Creates a new {@link Graphics}
 	 */
 	private Graphics() {
-		super("Graphics", "dbgraphics.dat", true, 0, 1, 1, 66, 67, 68, 4, 125, 175);
+		super("Graphics", "dbgraphics.dat", true, 0, 1, 1, 66, 67, 68, -1, 4, 125, 175);
 	}
 
 	@Override

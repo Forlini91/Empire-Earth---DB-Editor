@@ -203,6 +203,15 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		}
 		numColumnsSlider.setValue(datFile.datStructure.defaultColumns);
 
+		final JPanel entryListOptionsPanel = new JPanel();
+		entryListOptionsPanel.setLayout(new GridLayout(1, 2));
+		if (datFile.datStructure.indexLanguage >= 0) {
+			entryListOptionsPanel.add(entryList.localizeToggle);
+		}
+		entryListOptionsPanel.add(entryList.filterToggle);
+		entryList.filterToggle.setHorizontalAlignment(SwingConstants.RIGHT);
+		entryList.filterToggle.setHorizontalTextPosition(SwingConstants.RIGHT);
+
 		contentPane.setBackground(GUI.COLOR_UI_BACKGROUND);
 		contentPane.setLayout(gbl_contentPane);
 		contentPane.add(entryGroupListPane, gbc_entryGroupListPane);
@@ -212,7 +221,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		contentPane.add(entrySearchField, gbc_entrySearchField);
 		contentPane.add(reset, gbc_resetButton);
 		contentPane.add(save, gbc_saveButton);
-		contentPane.add(entryList.filterToggle, gbc_switchList);
+		contentPane.add(entryListOptionsPanel, gbc_switchList);
 		contentPane.add(addField, gbc_addID);
 		contentPane.add(removeField, gbc_removeID);
 

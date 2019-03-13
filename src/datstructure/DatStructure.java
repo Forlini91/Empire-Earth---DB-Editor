@@ -92,13 +92,9 @@ public abstract class DatStructure {
 	 * Initialize the structures outside the constructor.
 	 * This is needed as files can reference each other.
 	 * Example: dbObject and dbTechTree reference each other.
-	 * if we initialize the fields in the constructor, then one of them will try
-	 * to access the other {@link DatStructure} and call its constructor, which
-	 * in turn have a field which try to access this object, which is still in
-	 * the constructor and so it's not defined yet, causing a runtime error.
-	 * else if we delay the fields initialization like this, then the objects
-	 * are already defined and stored in the variables, so they can be accessed
-	 * without problems.
+	 * If we initialize the fields in the constructor, then one of them will try to access the other {@link DatStructure} and call its constructor,
+	 * which in turn have a field which try to access this object, which is still in the constructor and so it's not defined yet, causing a runtime error.
+	 * Instead, if we delay the fields initialization like this, then the objects are already defined and stored in the variables, so they can be accessed without problems.
 	 *
 	 * @throws IOException
 	 */
@@ -109,7 +105,7 @@ public abstract class DatStructure {
 		final Map<String, DatStructure> datStructureMap = Arrays.stream(GetAllStructures()).collect(Collectors.toMap(ds -> ds.fileName, ds -> ds));
 
 		try {
-			final var commonFieldsReader = new DatStructureReader(new File(Core.getDirectory(), "common.dats"), datStructureMap);
+			final var commonFieldsReader = new DatStructureReader(new File(Core.getDataDirectory(), "common.dats"), datStructureMap);
 			commonFieldsMap = commonFieldsReader.toMap();
 		} catch (final IOException exc) {
 			Util.printException(FrameMain.instance, exc, true);
@@ -145,15 +141,10 @@ public abstract class DatStructure {
 	public final boolean defineNumEntries;
 
 	/**
-	 * The game define a counter "num entries" at the beginning of each group in
-	 * the file.
-	 * This field alter the counter when reading and writing, to adjust the real
-	 * number of entries in the file.
-	 * For now, only dbtechtree.dat require this, due to its particular
-	 * structure.
-	 * In dbtechtree there is more than one group, and each counter says N, but
-	 * there are actually N+1 entries (because there's also the "Epoch" entry,
-	 * which is not counted).
+	 * The game define a counter "num entries" at the beginning of each group in the file.
+	 * This field alter the counter when reading and writing, to adjust the real number of entries in the file.
+	 * For now, only dbtechtree.dat require this, due to its particular structure.
+	 * In dbtechtree there is more than one group, and each counter says N, but there are actually N+1 entries (because there's also the "Epoch" entry, which is not counted).
 	 */
 	public final int adjustNumEntries;
 
@@ -164,36 +155,35 @@ public abstract class DatStructure {
 	public final int minID;
 
 	/**
-	 * Index of the field which hold the entry name. It's -1 if entries have no
-	 * name.
+	 * Index of the field which hold the entry name. It's -1 if entries have no name.
 	 */
 	public final int indexName;
 
 	/**
-	 * Index of the field which hold the entry sequence number. It's -1 entries
-	 * have no sequence number.
+	 * Index of the field which hold the entry sequence number. It's -1 entries have no sequence number.
 	 */
 	public final int indexSequence;
 
 	/**
-	 * Index of the field which hold the entry ID. It's -1 if entries have no
-	 * ID.
+	 * Index of the field which hold the entry ID. It's -1 if entries have no ID.
 	 */
 	public final int indexID;
 
 	/**
-	 * This field define the type/size of extra fields, which are all identical
-	 * (if the entry size can be dynamic).
+	 * Index of the field which hold the entry Language. It's -1 if there's no Language field.
+	 */
+	public final int indexLanguage;
+
+	/**
+	 * This field define the type/size of extra fields, which are all identical (if the entry size can be dynamic).
 	 * Only dbtechtree.dat and dbevent.dat use this.
 	 * It's null if not used.
 	 */
 	public FieldStruct extraField = null;
 
 	/**
-	 * This array define the description/type/size of all fields of a single
-	 * entry in the file.
-	 * You can expect the sum of the sizes of these entries must match the size
-	 * of an entry in the file.
+	 * This array define the description/type/size of all fields of a single entry in the file.
+	 * You can expect the sum of the sizes of these entries must match the size of an entry in the file.
 	 */
 	public FieldStruct[] fieldStructs;
 
@@ -233,11 +223,13 @@ public abstract class DatStructure {
 	 * @param indexName          Index of the name (-1 if there's no name)
 	 * @param indexSequence      Index of the sequence number (-1 if there's no sequence number)
 	 * @param indexID            Index of the ID (-1 if there's no ID)
+	 * @param indexLanguage      Index of the language (-1 if there's no Language)
 	 * @param defaultColumns     Default number of columns displayed in the UI.
 	 * @param guiGroupsListSize  Size of the groups list and the Reset button in the editor
 	 * @param guiEntriesListSize Size of the entries list and the Save Entry button in the editor
 	 */
-	public DatStructure(String name, String fileName, boolean defineNumEntries, int adjustNumEntries, int minSeq, int minID, int indexName, int indexSequence, int indexID, int defaultColumns, int guiGroupsListSize, int guiEntriesListSize) {
+	public DatStructure(String name, String fileName, boolean defineNumEntries, int adjustNumEntries, int minSeq, int minID, int indexName, int indexSequence, int indexID, int indexLanguage, int defaultColumns, int guiGroupsListSize,
+			int guiEntriesListSize) {
 		this.name = name;
 		this.fileName = fileName;
 		this.defineNumEntries = defineNumEntries;
@@ -247,6 +239,7 @@ public abstract class DatStructure {
 		this.indexName = indexName;
 		this.indexSequence = indexSequence;
 		this.indexID = indexID;
+		this.indexLanguage = indexLanguage;
 		this.defaultColumns = defaultColumns;
 		this.guiGroupsListSize = guiGroupsListSize;
 		this.guiEntriesListSize = guiEntriesListSize;
@@ -274,7 +267,7 @@ public abstract class DatStructure {
 	 * @throws IOException
 	 */
 	public void initialize(Map<String, DatStructure> datStructureMap) throws IOException {
-		final var datStructureReader = new DatStructureReader(new File(Core.getDirectory(), fileName + 's'), datStructureMap);
+		final var datStructureReader = new DatStructureReader(new File(Core.getDataDirectory(), fileName + 's'), datStructureMap);
 		fieldStructs = datStructureReader.toArray();
 		customInit();
 		entrySize = Arrays.stream(fieldStructs).mapToInt(x -> x.getSize()).sum();

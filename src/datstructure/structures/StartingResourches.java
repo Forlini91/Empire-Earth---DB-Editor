@@ -23,7 +23,7 @@ public class StartingResourches extends DatStructure {
 	 * Creates a new {@link StartingResourches}
 	 */
 	private StartingResourches() {
-		super("Starting resourches", "dbstartingresources.dat", true, 0, 1, 0, 0, 1, 2, 3, 125, 175);
+		super("Starting resourches", "dbstartingresources.dat", true, 0, 1, 0, 0, 1, 2, 3, 3, 125, 175);
 	}
 
 	@Override

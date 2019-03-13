@@ -23,7 +23,7 @@ public class UnitBehavior extends DatStructure {
 	 * Creates a new {@link UnitBehavior}
 	 */
 	private UnitBehavior() {
-		super("Unit behavior", "dbunitbehavior.dat", true, 0, 1, 0, 0, 1, 2, 3, 125, 175);
+		super("Unit behavior", "dbunitbehavior.dat", true, 0, 1, 0, 0, 1, 2, -1, 3, 125, 175);
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class Calamity extends DatStructure {
 	 * Creates a new {@link Calamity}
 	 */
 	private Calamity() {
-		super("Calamities", "dbcalamity.dat", true, 0, 1, 0, 0, 7, 8, 4, 125, 175);
+		super("Calamities", "dbcalamity.dat", true, 0, 1, 0, 0, 7, 8, 39, 4, 125, 175);
 	}
 
 	@Override

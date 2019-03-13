@@ -24,7 +24,7 @@ public class CivPower extends DatStructure {
 	 * Creates a new {@link CivPower}
 	 */
 	private CivPower() {
-		super("Powers", "dbcivpowers.dat", true, 0, 1, 0, 0, 1, 2, 3, 125, 175);
+		super("Powers", "dbcivpowers.dat", true, 0, 1, 0, 0, 1, 2, -1, 3, 125, 175);
 	}
 
 	@Override

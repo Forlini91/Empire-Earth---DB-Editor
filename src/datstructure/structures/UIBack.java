@@ -23,7 +23,7 @@ public class UIBack extends DatStructure {
 	 * Creates a new {@link UIBack}
 	 */
 	private UIBack() {
-		super("UI Back", "dbuiback.dat", true, 0, 1, 0, 0, 9, 10, 4, 125, 175);
+		super("UI Back", "dbuiback.dat", true, 0, 1, 0, 0, 9, 10, -1, 4, 125, 175);
 	}
 
 	@Override
