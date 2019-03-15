@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -9,8 +10,10 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 
 import datmanager.DatFile;
 import datstructure.Entry;
@@ -40,7 +43,7 @@ public class DialogSearchLinkResult extends JDialog {
 	 * @param pointedEntry The pointed entry
 	 * @param links        The list of links
 	 */
-	public DialogSearchLinkResult(Frame parent, Entry pointedEntry, List<Link> links) {
+	public DialogSearchLinkResult(Frame parent, DatFile datFile, Entry pointedEntry, List<Link> links) {
 		super(parent, ModalityType.DOCUMENT_MODAL);
 
 		final JListLink dlgList = new JListLink(links);
@@ -59,10 +62,21 @@ public class DialogSearchLinkResult extends JDialog {
 
 		setTitle("Links to entry: " + pointedEntry);
 		setBounds(GUI.getBounds(this, 0.6, 0.8));
-		setLayout(new GridBagLayoutExtended(new int[] { 200 }, new int[] { 400, 30, 50 }, new double[] { 1.0 }, new double[] { 1.0, 0, 0 }));
+		setLayout(new GridBagLayoutExtended(new int[] { 200 }, new int[] { 400, 30, 25, 50 }, new double[] { 1.0 }, new double[] { 1.0, 0, 0, 0 }));
+
+		final JPanel entryListOptionsPanel = new JPanel();
+		entryListOptionsPanel.setLayout(new GridLayout(1, 2));
+		if (datFile.datStructure.indexLanguage >= 0) {
+			entryListOptionsPanel.add(dlgList.localizeToggle);
+		}
+		entryListOptionsPanel.add(dlgList.filterToggle);
+		dlgList.filterToggle.setHorizontalAlignment(SwingConstants.RIGHT);
+		dlgList.filterToggle.setHorizontalTextPosition(SwingConstants.RIGHT);
+
 		add(dlgScrollPane, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 0));
 		add(dlgSearch, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
-		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 2));
+		add(entryListOptionsPanel, new GridBagConstraintsExtended(5, 5, 0, 5, 0, 1));
+		add(dlgClose, new GridBagConstraintsExtended(5, 5, 5, 5, 0, 3));
 
 		dlgList.addMouseListener(new MouseAdapter() {
 			@Override

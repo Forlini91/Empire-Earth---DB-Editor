@@ -10,7 +10,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -225,18 +224,14 @@ public class FrameMain extends JFrame implements WindowListener {
 		dbLoad.setVisible(false);
 
 		DatFile.LOADED.addAll(loaded);
-		for (final DatFile datFileLoaded : DatFile.LOADED) {
-			datFileLoaded.buildLinks();
-		}
+		DatFile.LOADED.forEach(DatFile::buildLinks);
 		DatFile.LOADED.forEach(df -> df.dummyEntryGroup.sort(null));
 
 		final int gridRows = Math.max(10, DatFile.LOADED.size());
 		scrollPanePanel.setVisible(false);
 		scrollPanePanel.removeAll();
 		scrollPanePanel.setLayout(new GridLayout((int) Math.ceil(gridRows / 3f), 3, 6, 6));
-		for (final DatFile datFile : DatFile.LOADED.parallelStream().sorted().toArray(DatFile[]::new)) {
-			scrollPanePanel.add(new JButtonDat(this, datFile));
-		}
+		DatFile.LOADED.stream().sorted().map(datFile -> new JButtonDat(this, datFile)).forEach(scrollPanePanel::add);
 		if (firstLoad) {
 			contentPane.add(scrollPane, new GridBagConstraintsExtended(10, 10, 10, 10, 1, 0, 0, 3));
 			firstLoad = false;
@@ -253,13 +248,10 @@ public class FrameMain extends JFrame implements WindowListener {
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		final Set<DatFile> unsaved = new HashSet<>();
-		for (final DatFile datFile : DatFile.LOADED) {
-			if (datFile.isLoaded() && datFile.isUnsaved()) {
-				unsaved.add(datFile);
-			}
-		}
-		if (!unsaved.isEmpty()) {
+		final Set<DatFile> unsaved = DatFile.LOADED.stream().filter(DatFile::isLoaded).filter(DatFile::isUnsaved).collect(Collectors.toSet());
+		if (unsaved.isEmpty()) {
+			System.exit(0);
+		} else {
 			final String[] choices = { "Save", "Don't save", "Cancel" };
 			switch (JOptionPane.showOptionDialog(this, "There are unsaved changes. Do you want to save all unsaved files?", "Unsaved changes", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, GUI.IMAGE_ICON, choices, choices[0])) {
 				case 2:
@@ -271,8 +263,6 @@ public class FrameMain extends JFrame implements WindowListener {
 				case 1:
 					System.exit(0);
 			}
-		} else {
-			System.exit(0);
 		}
 	}
 

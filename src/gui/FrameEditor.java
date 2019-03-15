@@ -239,9 +239,10 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		if (datFile.isUnsaved() && datFile.frameEditors.size() <= 1) {
 			switch (JOptionPane.showConfirmDialog(this, "Some entries have been altered. Do you want to save them to the file?\nChanges won't be lost anyway until you close the program, so you can open this window again and save later",
 					"Save to file?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, GUI.IMAGE_ICON)) {
-				case 0:
+				case JOptionPane.YES_OPTION:
 					datFile.saveFile(this);
-				case 1:
+					// Don't break. We're going to close the window anyway
+				case JOptionPane.NO_OPTION:
 					datFile.frameEditors.remove(this);
 					dispose();
 			}
@@ -602,7 +603,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 				}
 			}
 		}
-		final JDialog d = new DialogSearchFieldResults(this, entries, field);
+		final JDialog d = new DialogSearchFieldResults(this, datFile, entries, field);
 		d.setVisible(true);
 	}
 
@@ -860,7 +861,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 
 		entryListMenuRemove.addActionListener(e -> {
 			if (currentEntry != null) {
-				if (JOptionPane.showConfirmDialog(this, "You're going to delete " + currentEntry + "\nAre you sure?", "Delete entry", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, GUI.IMAGE_ICON) == 0) {
+				if (JOptionPane.showConfirmDialog(this, "You're going to delete " + currentEntry + "\nAre you sure?", "Delete entry", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, GUI.IMAGE_ICON) == JOptionPane.YES_OPTION) {
 					final int index = entryList.getSelectedIndex();
 					currentEntryGroup.entries.remove(currentEntry);
 					currentEntryGroup.map.remove(currentEntry.getID(), currentEntry);
@@ -916,7 +917,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 		entryListMenuShowLinks.addActionListener(e -> {
 			if (currentEntry != null) {
 				final List<Link> linksToEntry = currentEntry.getLinksToEntry(false);
-				final JDialog d = new DialogSearchLinkResult(this, currentEntry, Link.getInverseLinks(linksToEntry, true));
+				final JDialog d = new DialogSearchLinkResult(this, datFile, currentEntry, Link.getInverseLinks(linksToEntry, true));
 				d.setVisible(true);
 			}
 		});
@@ -995,7 +996,7 @@ public class FrameEditor extends JFrame implements WindowListener, WindowFocusLi
 			try {
 				final EntryFieldInterface field = (EntryFieldInterface) rightClicked;
 				final EntryValueMap entryValueMap = new EntryValueMap(datFile.entryGroups, datFile.datStructure, field.getIndex());
-				final JDialog d = new DialogSearchValuesResults(this, entryValueMap, field);
+				final JDialog d = new DialogSearchValuesResults(this, datFile, entryValueMap, field);
 				d.setVisible(true);
 			} catch (final Exception exc) {
 				Util.printException(this, exc, "An error occurred while searching the values", "Error", true);

@@ -137,7 +137,7 @@ public class DialogConditionAssembler extends JDialog {
 		final ConditionOperator[] conds = filtersList.list.toArray(ConditionOperator[]::new);
 		final Condition c = and ? Condition.and(conds) : Condition.or(conds);
 		final List<Entry> results = datFile.getAllEntries(false).parallelStream().filter(c::match).collect(Collectors.toList());
-		final JDialog d = new DialogAdvancedSearchResults(parent, results, datFile);
+		final JDialog d = new DialogAdvancedSearchResults(parent, datFile, results);
 		d.setVisible(true);
 	}
 

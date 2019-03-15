@@ -43,11 +43,17 @@ public class Core {
 		final EESplashScreen splashScreen = new EESplashScreen();
 		splashScreen.setVisible(true);
 
-		final int answer = JOptionPane.showOptionDialog(splashScreen, "Vanilla or AOC?", "Empire Earth - DB Editor", 0, JOptionPane.QUESTION_MESSAGE, null, editorModeChoices, editorModeChoices[0]);
-		if (answer == 2) {
-			System.exit(0);
-		} else {
-			AOC = (answer == 1);
+		switch (JOptionPane.showOptionDialog(splashScreen, "Vanilla or AOC?", "Empire Earth - DB Editor", 0, JOptionPane.QUESTION_MESSAGE, null, editorModeChoices, editorModeChoices[0])) {
+			case JOptionPane.CLOSED_OPTION:
+			case 2:
+				System.exit(0);
+				break;
+			case 0:
+				AOC = false;
+				break;
+			case 1:
+				AOC = true;
+				break;
 		}
 
 		final Thread registryThread = new Thread(Core::readGameFolder);

@@ -46,7 +46,7 @@ public class DialogSearchValuesResults extends JDialog {
 	 * @param entryValueMap The map of values
 	 * @param field         The selected field
 	 */
-	public DialogSearchValuesResults(Window parent, EntryValueMap entryValueMap, EntryFieldInterface field) {
+	public DialogSearchValuesResults(Window parent, DatFile datFile, EntryValueMap entryValueMap, EntryFieldInterface field) {
 		super(parent, ModalityType.DOCUMENT_MODAL);
 
 		final JLabel dlgLabel = new JLabel("All values and entries which use them (double click for full list or open links):");
@@ -96,7 +96,7 @@ public class DialogSearchValuesResults extends JDialog {
 					final List<Entry> selEntries = dlgList.get(index);
 					if (selEntries != null && !selEntries.isEmpty()) {
 						if (selEntries.size() > 1) {
-							final JDialog d = new DialogSearchValuesResultsList(DialogSearchValuesResults.this, selEntries, rowHeaderList.get(index));
+							final JDialog d = new DialogSearchValuesResultsList(DialogSearchValuesResults.this, datFile, selEntries, rowHeaderList.get(index));
 							d.setVisible(true);
 						} else {
 							final Entry selEntry = selEntries.get(0);
@@ -135,7 +135,7 @@ public class DialogSearchValuesResults extends JDialog {
 					final List<Entry> selEntries = dlgList.get(index);
 					if (selEntries != null && !selEntries.isEmpty()) {
 						if (selEntries.size() > 1) {
-							final JDialog d = new DialogSearchValuesResultsList(DialogSearchValuesResults.this, selEntries, rowHeaderList.get(index));
+							final JDialog d = new DialogSearchValuesResultsList(DialogSearchValuesResults.this, datFile, selEntries, rowHeaderList.get(index));
 							d.setVisible(true);
 						} else {
 							final Entry selEntry = selEntries.get(0);
